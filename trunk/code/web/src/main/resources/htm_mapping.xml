@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+
+<mapping>
+	<class name="gov.hhs.fhh.data.Person">
+	   <map-to xml="person"/>
+       <field name="htmNode" type="gov.hhs.fhh.data.util.htmimport.HTMNode" >
+            <bind-xml name="htmNode"/>
+       </field>
+	</class>
+    <class name="gov.hhs.fhh.data.util.htmimport.HTMNode">
+       <field name="inputNodes" type="gov.hhs.fhh.data.util.htmimport.InputNode" collection="arraylist">
+            <bind-xml name="input"/>
+       </field>
+    </class>
+    <class name="gov.hhs.fhh.data.util.htmimport.InputNode">
+       <field name="type" type="string">
+           <bind-xml name="type" node="attribute"/>
+       </field>
+       <field name="name" type="string">
+           <bind-xml name="name" node="attribute"/>
+       </field>
+       <field name="value" type="string">
+           <bind-xml name="value" node="attribute"/>
+       </field>
+    </class>
+</mapping>

@@ -1,0 +1,140 @@
+From: Ullman-Cullere, Mollie [MULLMANCULLERE@PARTNERS.ORG]
+Sent: Tuesday, July 29, 2008 12:43 AM
+To: Weikart, Dan (HHS/ASPE); Madeleine.Cadwallader2@va.gov
+Subject: FW: FW: Review request - HHS/VA Family History project SNOMED -
+Conditions List
+
+Follow Up Flag: Follow up
+Flag Status: Red
+
+Attachments: Family History List 2008 0722.xls
+
+Although Dr. Campbell didn't specifically provide feedback, he did send their list.  It is more extensive, so you may want to verify that the HHS/VA list is included and perhaps reference the list of diseases when the time comes to expand the HHS/VA set.
+ 
+In regards to format, this is how family history of disease would be entered on a patient's problem list within their medical record.  
+ 
+Regards,
+Mollie
+
+________________________________
+
+From: James R Campbell [mailto:campbell@unmc.edu]
+Sent: Sun 7/27/2008 4:19 PM
+To: Hughes, Kevin S.,M.D.; Madeleine.Cadwallader2@va.gov
+Cc: Goldberg, Howard S.; michael.lincoln@med.va.gov; Ullman-Cullere, Mollie
+Subject: Re: FW: Review request - HHS/VA Family History project SNOMED - Conditions List
+
+
+
+SNOMED CT allows for varying level of clinical expression and family history data is well supported, but it has the semantic class of a "Situation".  We have been recording physician requested data for family history in SNOMED for 20 years and the list is not long.  I have enclosed our coding of the 140 concepts that have been requested (all-inclusive) during that time frame.  This is listed as worksheet "Nebraska Lexicon".
+I have listed ICD-9-CM coding as well as the SNOMED CT alpha code.  All SNOMED codes beginning with "DZ-" are extension concepts modeled at Nebraska.  Note that 77/140 in our list are post-coordinated and are not currently in the standard SNOMED release.  Your list has far fewer than that unless you mean to code some of the synonyms listed which may represent alternative diagnoses.  In all I estimate that  you have relatively few concepts requiring post-coordination.
+
+Family history is an ideal semantic group for programmatic post-coordination, but we employ a "just-in-time" interface support that has worked fine for us.  The use case of "Grandma had breast cancer" is
+simply:
+
+"Family history of breast cancer in grandmother (SITUATION)" (extension
+concept)
+ISA G-0325 Family history of breast cancer SUBJECT RELATIONSHIP CONTEXT S-10113 Grandmother
+
+For well documented use cases with value for patient care, we should get response for addition of the modest number of concepts you need to core SNOMED.  Alternatively, if they are parochial to the US, I suspect  that we will be maintaining a US national extension with the NLM just as we have been doing for GE customers here at Nebraska Jim
+
+PS: You are welcome to use anything I have provided....
+James R. Campbell MD
+campbell@unmc.edu
+402-559-7505 Office
+402-559-8396 Fax
+
+(See attached file: Family History List 2008 0722.xls)
+
+
+                                                                          
+             "Hughes, Kevin                                               
+             S.,M.D."                                                     
+             <KSHUGHES@PARTNER                                          To
+             S.ORG>                    "Ullman-Cullere, Mollie"           
+                                       <MULLMANCULLERE@PARTNERS.ORG>,     
+             07/26/2008 12:35          <michael.lincoln@med.va.gov>,      
+             PM                        "Goldberg, Howard S."              
+                                       <HGOLDBERG@PARTNERS.ORG>,          
+                                       <campbell@unmc.edu>                
+                                                                        cc
+                                                                          
+                                                                   Subject
+                                       FW: Review request - HHS/VA Family 
+                                       History project SNOMED - Conditions
+                                       List                               
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+
+
+
+
+I made some comments on sheet 1, column one.  This is very dependent on how much detail you want.  SNOMED is tough for data from families directly as SNOMED is very granular, while patients give gross descriptions.  A patient says that the grandmother had breast cancer, and SNOMED tries to push you to say if it is invasive or not (Which you do not know)  You will need to use the least specific SNOMED term for each item.
+
+Thanks,
+Kevin
+
+
+Kevin S. Hughes, M.D., FACS
+Surgical Director,Breast Screening
+Co-Director, Avon Comprehensive Breast Evaluation Center Massachusetts General Hospital
+55 Fruit Street, Yawkey 7
+Boston, Massachusetts 02114
+Fax (617) 724-3895
+Phone (617) 724-0048
+
+
+To test our Risk Applications Software, go to:
+http://www.HughesRiskApps.Com <http://www.hughesriskapps.com/> 
+
+From: Ullman-Cullere, Mollie
+Sent: Thursday, July 24, 2008 9:06 AM
+To: michael.lincoln@med.va.gov; Goldberg, Howard S.; Hughes, Kevin S.,M.D.; campbell@unmc.edu
+Subject: Review request - HHS/VA Family History project SNOMED - Conditions List
+
+Hello,
+
+I've been assisting HHS and the VA in their Family History project, which is focused on upgrading current family history tools to utilize HIT standards.  I also serve as co-chair of the HL7 clinical genomics workgroup and work in the area of clinical genetics at Partners Healthcare.
+
+Attached is a list of 30 familial conditions that the project team has determined important to capture in patient entered family history.  First phase of the project includes a re-write of the Surgeon General's My Family Health Portrait tool, so that it will utilize HIT standards like SNOMED and HL7.
+
+In addition, the attached list of familial conditions will be submitted to the NLM as a data set available for others to use in family history implementations.  The project participants are committed to growing this list over time but feel this is a good starting point and would appreciate your feedback.  Would it be possible to get your input in the next week to 10 days?
+
+Drs Lincoln and Campbell, Dr. Goldberg recommended I contact you.  I am aware Dr Bob Dolan has left Kaiser Permanente.  Please feel free to forward this email to a contact within their SNOMED team.
+
+Regards,
+Mollie
+
+Mollie Ullman-Cullere MS, MSE
+Senior Information Architect/Project Manager Harvard Medical School - Partners Healthcare Center for Genetics and Genomics http://www.hpcgg.org <http://www.hpcgg.org/> 
+cell:    617-909-4309
+
+
+
+From: Cadwallader, Madeleine (Bay Pines OIFO) [mailto:Madeleine.Cadwallader2@va.gov]
+Sent: Tue 7/22/2008 4:29 PM
+To: Ullman-Cullere, Mollie
+Subject: FHH - Conditions List
+Attached is the updated conditions list.
+
+Madeleine Cadwallader
+My HealtheVet Team
+Veterans/Consumers Health Informatics Office VHA Office of Information U.S. Department of Veterans Affairs
+PH: 727-772-7585
+
+
+
+
+The information transmitted in this electronic communication is intended only for the person or entity to whom it is addressed and may contain confidential and/or privileged material. Any review, retransmission, dissemination or other use of or taking of any action in reliance upon this information by persons or entities other than the intended recipient is prohibited. If you received this information in error, please contact the Compliance HelpLine at
+800-856-1983 and
+properly dispose of this information.
+
+
+
+
+
+

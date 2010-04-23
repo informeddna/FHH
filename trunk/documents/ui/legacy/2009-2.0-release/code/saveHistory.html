@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Save My Family History</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="styles/fhh.css" rel="stylesheet" type="text/css" />
+
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+</head>
+<body  onLoad="MM_preloadImages('images/icon_myFamily_over.gif','images/icon_saveHistory_over.gif','images/icon_viewReport_over.gif','../images/icon_getHelp_over.gif')">
+
+<div class="mainContainer"> 
+  <!-- BEGIN INCLUDE - header -->
+	<div class="headerContainer">
+		<table border="0" cellpadding="0" cellspacing="0" class="bannerTable">
+			<tr>
+				<td class="bannerTdTitle"><img src="images/banner_subpage.jpg" alt="My Family Health Portrait - A tool from the U.S. Surgeon General" class="fhhBannerTitle" /></td>
+				<td class="bannerTdPhotos"><img src="images/photos_subpage.jpg" alt="Collection of family photos from diverse families." class="fhhBannerPhotos" /></td>
+			</tr>
+		</table>
+		<table border="0" cellpadding="0" cellspacing="0" class="mainNavTable">
+			<tr>
+				<td class="mainNavTd"><a href="home.html">Home</a><a href="familyHistory.html">My Family History</a><a href="reindex.html">Recenter Family History</a><a href="viewReport.html">View History Report</a></td>
+			  <td class="utilNavTd"><a href="#">Get Help</a><a href="#">En Espanol</a></td>
+			</tr>
+		</table>
+	</div>
+  <!-- END INCLUDE - header -->
+	
+  <!-- BEGIN CONTENT -->
+  <div class="contentContainer">
+		<h1>Save My Family History to My Computer</h1>
+		<p>To ensure privacy of your personal health information, your information is not saved on this web site or any other system.  You must save your family health history to your computer or portable disk (i.e. floppy disk, USB flash drive, etc.).</p>
+		<p>There are two ways to save your family history file:</p>
+		<ul>
+			<li><span class="bold">Save as Self:</span> Keeps you at the center of your family tree. <em>It is highly recommended that you first save your file as Self, prior to saving it as another family member.</em></li>
+			<li><span class="bold">Save as Family Member: </span> Creates a health history centered on one of your relatives instead of yourself.  You can then give the health history to that relative so they can create their own family health history without having to start from the very beginning.</li>
+		</ul>
+		<div class="formBox">
+			<table cellpadding="0" cellspacing="0" summary="Personal information form" class="formLayout">
+				<tbody>
+					<tr>
+						<th><label>Save as Family Member</label>:</th>
+						<td><select name="relative"></select>
+							<!--%@ IF relative != Self - display the following preview buttons %-->
+							<div class="dynamicPanel">
+								<div class="p">You may preview this relative's family prior to saving the file.</div>
+								<div><input name="submit" type="button" value="Preview as Family Tree" /> <input name="submit" type="button" value="Preview as List of Names" /></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th><label>Save file with file name</label>:</th>
+						<td><input name="filename" type="text" size="80" /> <span class="bold">.xml</span></td>
+					</tr>
+					<tr>
+						<th><label>Save to my computer</label>:</th>
+						<td><input name="filelocation" type="text" size="80" /> <input name="" type="button" value="Browse" /></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="buttonContainer"><input name="submit" type="button" value="Save History" /> <input name="cancel" type="button" value="Cancel" /></div>
+	</div>
+  <!-- END CONTENT -->
+	
+	<!-- BEGIN INCLUDE - footer -->
+	<table border="0" cellpadding="0" cellspacing="0" class="footerTable"> 
+		<tr>
+			<td class="footerTdLinks">
+				<a href="#">Help</a> | <a href="#">Glossary</a> | <a href="#">FAQs</a> | <a href="#">Accessibility</a> | <a href="#">Privacy &amp; Security Policy</a> | <a href="#">About This Site</a> | <a href="#">Contact Us</a> | <a href="#">Site Updates</a>
+			</td>
+			<td class="footerTdLogos">
+				<img src="images/logo_hhs.gif" alt="HHS Logo" />&nbsp;&nbsp;<img src="images/logo_phs.gif" alt="PHS Logo" />
+			</td>
+		</tr>
+	</table>
+  <!-- END INCLUDE - footer -->
+</div>
+</body>
+</html>

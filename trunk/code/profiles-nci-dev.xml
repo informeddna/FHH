@@ -1,0 +1,24 @@
+<profilesXml>
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                 <jboss.home>/usr/local/jboss-4.0.5.GA-ejb3</jboss.home>
+                 <jboss.hostname>ncias-d118-v.nci.nih.gov</jboss.hostname>
+                 <jboss.configuration>ncicb-comm</jboss.configuration>
+	             <jboss.naming.port>11299</jboss.naming.port>
+                 <database.url.prefix>jdbc:mysql://cbdb-d2001.nci.nih.gov:3649/</database.url.prefix>
+				 <database.name>famhlths</database.name>
+	        <admin.db.username>famhlth</admin.db.username>
+        	<admin.db.password>5@mh3l!</admin.db.password>
+				 
+                 <jdbc.username>famhlth</jdbc.username>
+                 <jdbc.password>5@mh3l!</jdbc.password>
+                 
+            </properties>
+        </profile>
+    </profiles>
+</profilesXml>

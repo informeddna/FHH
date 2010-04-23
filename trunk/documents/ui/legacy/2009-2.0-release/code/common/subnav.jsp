@@ -1,0 +1,10 @@
+		<!-- BEGIN INCLUDE - subnav -->
+		<!--%@ IF My Family History page = ACTIVE - display image icon_myFamily_active.gif.  ELSE display image icon_myFamily.gif. %-->
+		<a href="../includes/myFamilyHistory.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('myFamily','','../includes/images/icon_myFamily_over.gif',1)"><img src="../includes/images/icon_myFamily.gif" alt="Manage My Family Health History" name="myFamily" width="48" height="58" border="0" id="myFamily" /></a>
+		<!--%@ IF Save History page = ACTIVE - display image icon_saveHistory_active.gif. ELSE display image icon_saveHistory.gif. %-->
+		<a href="../includes/saveHistory.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('saveHistory','','../includes/images/icon_saveHistory_over.gif',1)"><img src="../includes/images/icon_saveHistory.gif" alt="Save My History File" name="saveHistory" width="48" height="58" border="0" id="ssveHistory" /></a>
+		<!--%@ IF View Report page = ACTIVE - display image icon_viewReport_active.gif. ELSE display image icon_viewReport.gif. %-->
+		<a href="../includes/viewReport.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('viewReport','','../includes/images/icon_viewReport_over.gif',1)"><img src="../includes/images/icon_viewReport.gif" alt="View My Family Health History Report" name="viewReport" width="48" height="58" border="0" id="viewReport" /></a> 
+		<!--%@ IF Get Help page = ACTIVE - display image icon_getHelp_active.gif. ELSE display image icon_getHelp.gif. %-->
+		<a href="#" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('getHelp','','../includes/images/icon_getHelp_over.gif',1)"><img src="../includes/images/icon_getHelp.gif" alt="Get Help" name="getHelp" width="48" height="58" border="0" id="getHelp" /></a>
+		<!-- END INCLUDE - subnav -->

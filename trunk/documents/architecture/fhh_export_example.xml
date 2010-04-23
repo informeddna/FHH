@@ -1,0 +1,222 @@
+<FamilyHistory classCode="OBS" moodCode="EVN">
+    <id extension="gov.hhs.fhh:718163810183" />
+    <effectiveTime value="09/26/2008" />
+    <methodCode displayName="Surgeon General's Family Health History Tool" />
+    <subject typeCode="SBJ">
+        <patient classCode="PAT">
+            <patientPerson>
+                <id extension="1" /> <!--  marta's id is 1 -->
+                <name formatted="Marta Marquez" />
+                <administrativeGenderCode code="F" codeSystemName="[TBD]" displayName="female" />
+                <birthTime value="07/11/1974" />
+                <deceasedIndCode value="false" />
+                <multipleBirthIndicator value="true" />
+                <raceCode code="413582008" codeSystemName="SNOMED_CT" displayName="Asian" />
+                <ethnicGroupCode code="414408004" codeSystemName="SNOMED_CT" displayName="Hispanic or Latino" />
+                <!-- information about Marta -->
+                <subjectOf2>
+                    <!--  Martha disease information -->
+                    <clinicalObservation>
+                        <code code="38341003" codeSystemName="SNOMED_CT" displayName="Hypertension" />
+                        <subject>
+                            <dataEstimatedAge>
+                                <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                <value value="26" unit="year" />
+                            </dataEstimatedAge>
+                        </subject>
+                    </clinicalObservation>
+                    <!-- Marta has a user-entered medical condition to indicate -->
+                    <clinicalObservation>
+                        <code originalText="underactive thyroid" />
+                        <subject>
+                            <dataEstimatedAge>
+                                <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                <value unit="year">
+                                    <low value="20" />
+                                    <high value="29" />
+                                </value>
+                            </dataEstimatedAge>
+                        </subject>
+                    </clinicalObservation>
+                    <!--  Marta entered her height and weight into the fhh tool; the tool calculated her bmi -->
+                    <clinicalObservation>
+                        <code code="271603002" codeSystemName="SNOMED_CT" displayName="height" />
+                        <value unit="inch" value="64" />
+                    </clinicalObservation>
+                    <clinicalObservation>
+                        <code code="107647005" codeSystemName="SNOMED_CT" displayName="weight" />
+                        <value unit="pound" value="120" />
+                    </clinicalObservation>
+                    <clinicalObservation>
+                        <code code="301331008" codeSystemName="SNOMED_CT" displayName="bmi" />
+                        <value unit="percentage" value="20.5" />
+                    </clinicalObservation>
+                     <!-- Marta is an identical twin (see multiple birth indicator above) -->
+                    <clinicalObservation>
+                        <code code="313415001" codeSystemName="SNOMED_CT" displayName="Identical Twin" />
+                    </clinicalObservation>
+                </subjectOf2>
+                <!-- Marta has a relative: mother -->
+                <relative>
+                    <!-- the relative is a mother -->
+                    <code code="NMTH" codeSystemName="HL7 Family History Model" displayName="matural mother" />
+                    <!-- information about the person holding the "mother" relationship -->
+                    <relationshipHolder>
+                        <id extension="2" /><!-- mom's id is 2 -->
+                        <name formatted="Ma" />
+                        <administrativeGenderCode code="F" codeSystemName="[TBD]" displayName="female" />
+                        <birthTime value="09/10/1941" />
+                        <deceasedIndCode value="false" />
+                        <raceCode code="413582008" codeSystemName="SNOMED_CT" displayName="Asian" />
+                    </relationshipHolder>
+                </relative>
+                <!-- Marta has a relative: father -->
+                <relative>
+                    <!-- the relative is a father -->
+                    <code code="NFTH" codeSystemName="HL7 Family History Model" displayName="natural father" />
+                    <!-- information about the person holding the "father" relationship -->
+                    <relationshipHolder>
+                        <id extension="3" /><!-- dad's id is 3 -->
+                        <name formatted="Pa" />
+                        <administrativeGenderCode code="M" codeSystemName="[TBD]" displayName="male" />
+                        <birthTime value="09/26/1940" />
+                        <deceasedIndCode value="true" />
+                        <raceCode code="185984009" codeSystemName="SNOMED_CT" displayName="White" />
+                        <ethnicGroupCode code="414408004" codeSystemName="SNOMED_CT" displayName="Hispanic or Latino" />
+                        <!--  father is dead (true deceasedIndCode), so subjectOf1 indicates age of death -->
+                        <subjectOf1>
+                            <deceasedEstimatedAge>
+                                <code code="39016-1" codeSystemName="LOINC" displayName="Age at Death" />
+                                <value unit="year">
+                                    <low value="40" />
+                                    <high value="49" />
+                                </value>
+                            </deceasedEstimatedAge>
+                        </subjectOf1>
+                        <!--  information on father -->
+                        <subjectOf2>
+                            <clinicalObservation>
+                                <code code="38341003" codeSystemName="SNOMED_CT" displayName="Hypertension" />
+                                <subject>
+                                    <dataEstimatedAge>
+                                        <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                        <value value="26" unit="year" />
+                                    </dataEstimatedAge>
+                                </subject>
+                            </clinicalObservation>
+                            <!-- father's cause of death -->
+                            <clinicalObservation>
+                                <code code="38341003" codeSystemName="SNOMED_CT" displayName="Hypertension" />
+                                <sourceOf>
+                                    <code code="419620001" codeSystemName="SNOMED_CT" displayName="death" />
+                                </sourceOf>
+                            </clinicalObservation>
+                        </subjectOf2>
+                    </relationshipHolder>
+                </relative>
+                <!-- Marta has a relative: sister -->
+                <relative>
+                  <!-- the relative is a sister -->
+                    <code code="NSIS" codeSystemName="HL7 Family History Model" displayName="natural sister" />
+                    <!-- information about the person holding the "natural sister" relationship (relationshipHolder) -->
+                    <relationshipHolder>
+                        <id extension="4" /><!--  sister's id is 4 -->
+                        <name formatted="Sissy" />
+                        <administrativeGenderCode code="F" codeSystemName="[TBD]" displayName="female" />
+                        <birthTime value="07/11/1974" />
+                        <deceasedIndCode value="false" />
+                        <multipleBirthIndicator value="true" />
+                        <raceCode code="185984009" codeSystemName="SNOMED_CT" displayName="White" />
+                        <ethnicGroupCode code="414408004" codeSystemName="SNOMED_CT" displayName="Hispanic or Latino" />
+                        <!--  information on sister -->
+                        <subjectOf2>
+                            <!-- sister is an identical twin (see multiple birth indicator above) -->
+                            <clinicalObservation>
+                                <code code="313415001" codeSystemName="SNOMED_CT" displayName="Identical Twin" />
+                            </clinicalObservation>
+                        </subjectOf2>
+                    </relationshipHolder>
+                </relative>
+                <!-- Marta has a relative: paternal aunt -->
+                <relative>
+                  <!-- the relative is a paternal aunt -->
+                    <code code="PAUNT" codeSystemName="HL7 Family History Model" displayName="paternal aunt" />
+                    <!-- information about the person holding the "paternal aunt" relationship (relationshipHolder) -->
+                    <relationshipHolder>
+                        <id extension="5" /><!-- aunt's id is 5 -->
+                        <name formatted="Aunt Bettina" />
+                        <administrativeGenderCode code="F" codeSystemName="[TBD]" displayName="female" />
+                        <birthTime value="09/26/1943" />
+                        <deceasedIndCode value="true" />
+                        <raceCode code="185984009" codeSystemName="SNOMED_CT" displayName="White" />
+                        <ethnicGroupCode code="414408004" codeSystemName="SNOMED_CT" displayName="Hispanic or Latino" />
+                        <!--  aunt is dead (true deceasedIndCode), so subjectOf1 indicates age of death -->
+                        <subjectOf1>
+                            <deceasedEstimatedAge>
+                            <code code="39016-1" codeSystemName="LOINC" displayName="Age at Death" />
+                                <value unit="year">
+                                    <low value="30" />
+                                    <high value="39" />
+                                </value>
+                            </deceasedEstimatedAge>
+                        </subjectOf1>
+                        <!--  information about aunt -->
+                        <subjectOf2>
+                            <!--  aunt's disease information -->
+                            <clinicalObservation>
+                                <!--  hypertension -->
+                                <code code="38341003" codeSystemName="SNOMED_CT" displayName="Hypertension" />
+                                <subject>
+                                    <!--  age of diagnosis -->
+                                    <dataEstimatedAge>
+                                        <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                        <value unit="year">
+                                            <low value="20" />
+                                            <high value="29" />
+                                        </value>
+                                    </dataEstimatedAge>
+                                </subject>
+                            </clinicalObservation>
+                            <!--  aunt was adopted -->
+                            <clinicalObservation>
+                                <code code="160496001" codeSystemName="SNOMED_CT" displayName="adopted" />
+                            </clinicalObservation>
+                            <!-- aunt's cause of death -->
+                            <clinicalObservation>
+                                <code code="38341003" codeSystemName="SNOMED_CT" displayName="Hypertension" />
+                                <sourceOf>
+                                    <code code="419620001" codeSystemName="SNOMED_CT" displayName="death" />
+                                </sourceOf>
+                            </clinicalObservation>
+                        </subjectOf2>
+                    </relationshipHolder>
+                </relative>
+                <!-- Marta has a relative: cousin -->
+                <relative>
+                    <!-- the relative is a cousin -->
+                    <code code="PCOUSN" codeSystemName="HL7 Family History Model" displayName="paternal cousin" />
+                    <!-- information about the person holding the "paternal cousin" relationship -->
+                    <relationshipHolder>
+                        <id extension="6" /><!-- cousin's id is 6 -->
+                        <name formatted="Cousin Betty" />
+                        <administrativeGenderCode code="F" codeSystemName="[TBD]" displayName="female" />
+                        <birthTime value="05/22/1968" />
+                        <deceasedIndCode value="false" />
+                        <raceCode code="185984009" codeSystemName="SNOMED_CT" displayName="White" />
+                        <ethnicGroupCode code="414408004" codeSystemName="SNOMED_CT" displayName="Hispanic or Latino" />
+                        <!--  cousin has a relative -->
+                        <relative>
+                            <!--  cousin's relative is a mother -->
+                            <code code="NMTH" codeSystemName="HL7 Family History Model" displayName="natural mother" />
+                            <!--  information about the person holding the "mother" relationship -->
+                            <relationshipHolder>
+                                <!--  id of the person who is the cousin's mother (aunt bettina, id 5) -->
+                                <id extension="5" />
+                            </relationshipHolder>
+                        </relative>
+                    </relationshipHolder>
+                </relative>
+            </patientPerson>
+        </patient>
+    </subject>
+</FamilyHistory>

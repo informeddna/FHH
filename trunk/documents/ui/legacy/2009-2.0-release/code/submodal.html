@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Submodal Template</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="styles/fhh.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body style="background-color: #666666;">
+
+<div class="submodalContainer">
+	<!-- BEGIN INCLUDE = submodalTitle -->
+	<table border="0" cellpadding="0" cellspacing="0" class="submodalTitlebarTable">
+		<tr>
+			<td class="submodalTitleTd"><h1>ME <!-- IF NAME != null display "Name(Relationship)". ELSE Name = null DISPLAY "Relationship" --></h1></td>
+			<td class="submodalTitleTdBtn"><a href="#"><img src="images/btn_help19x21r.gif" alt="Help with this Panel" /></a> <a href="#"><img src="images/btn_close17x21.gif" alt="Close Panel" /></a></td>
+		</tr>
+	</table>
+	<!-- END INCLUDE = submodalTitle -->
+	<!-- BEGIN ACCORDIAN SECTION = PERSONAL INFO -->
+	<div class="accordianContainer" id="personalInfo">
+		<!--IF visibility of <div class="accodianContent" id="pi*"> = Visible - set class on <div id="piTitle"> to class="accordianTitlebarOpened". ELSE visibilty of <div class="accodianContent" id="pi*"> = Hidden - set class on <div id="piTitle"> to class="accordianTitlebarClosed". -->
+		<div class="accordianTitlebarOpened" id="piTitle">
+			<h2><a>Personal Information</a></h2> <span class="showHideText">(<a>click to hide</a>)</span>
+		</div>
+		
+		<!--%@ IF first-time entry - display <div class="accodianContent" id="pi">.  ELSE IF return-entry - hide <div class="accordianContent" id="pi">. %-->
+		<!--%@ IF visibility = Visible AND user clicks to Hide Personal Info - hide <div class="accodianContent" id="pi">.  ELSE visibility = Hidden AND user clicks to Show Personal Info - display <div class="accodianContent" id="pi">. %-->
+		<div class="accordianContent" id="pi">
+			<p><span class="required">*</span>Indicates required information.</p>
+			<table cellpadding="0" cellspacing="0" class="form" summary="Enter personal information.">
+				
+				<!--%@ IF user = Proband display <tbody id="basicInfoProband">.  ELSE user != Proband display <tbody id="basicInfoRelative">. %-->
+				<!-- BEGIN BASIC INFO FOR PROBAND -->
+				<tbody id="basicInfoProband">
+					<tr>
+						<th><label>Name</label>:</th>
+						<td><input name="name" type="text" size="50" /></td>
+					</tr>
+					<tr>
+						<th><label><span class="required">*</span>Gender</label>:</th>
+						<td><input name="gender" type="radio" value="Male" /><label>Male</label> &nbsp;&nbsp;<input name="gender" type="radio" value="Female" /><label>Female</label></td>
+					</tr>
+					<!-- NOTE: The following is an example of an inline error message with a highlight class on the <tr> and message <div> above the form field. -->
+					<!--%@ IF required field = null - set class on <tr> to "highlight" AND display error message within <div class="error"> above the form field as shown. %-->
+					<tr class="highlight">
+						<th><label><span class="required">*</span>Date of Birth</label>:</th>
+						<td><div class="error">* You must enter a date of birth in order to continue.</div><input name="dob" type="text" size="20" /> <span class="grey">(Enter date as MM/DD/YYYY)</span></td>
+					</tr>
+					<tr>
+						<th><label>Were you born a twin?</label></th>
+						<td><input name="twin" type="radio" value="Identical" /><label>Yes - Identical (Same)</label> &nbsp;&nbsp;<input name="twin" type="radio" value="Fraternal" /><label>Yes - Not Identical (Fraternal)</label> &nbsp;&nbsp;<input name="twin" type="radio" value="No" /><label>No</label></td>
+					</tr>
+					<tr>
+						<th><label>Are you Adopted?</label></th>
+						<td><input name="adopted" type="radio" value="Yes" /><label>Yes</label> &nbsp;&nbsp;<input name="adopted" type="radio" value="No" /><label>No</label></td>
+					</tr>
+					<tr>
+						<th>Height:</th>
+						<td><input name="heightFeet" type="text" size="6" /> <label>Feet</label> &nbsp;&nbsp;<input name="heightInches" type="text" size="6" /> <label>Inches</label></td>
+					</tr>
+					<tr>
+						<th><label>Weight</label>:</th>
+						<td><input name="weight" type="text" size="6" /> <span>lbs.</span></td>
+					</tr>
+				</tbody>
+				<!-- END BASIC INFO FOR PROBAND -->
+				
+				<!--%@ IF user = Proband display <tbody id="basicInfoProband">.  ELSE user != Proband display <tbody id="basicInfoRelative">. %-->
+				<!-- BEGIN BASIC INFO FOR RELATIVE -->
+				<tbody id="basicInfoRelative">
+					<tr>
+						<th><label><span class="required">*</span>Name</label>:</th>
+						<td><input name="name" type="text" size="50" /></td>
+					</tr>
+					<tr>
+						<th><label><span class="required">*</span>Relationship to Me</label>:</th>
+						<td><select name="relationship"></select></td>
+					</tr>
+					<tr>
+						<th><label><span class="required">*</span>Gender</label>:</th>
+						<td><input name="gender" type="radio" value="Male" /><label>Male</label> &nbsp;&nbsp;<input name="gender" type="radio" value="Female" /><label>Female</label></td>
+					</tr>
+					<tr>
+						<th><label>Living?</label></th>
+						<td>
+							<input name="living" type="radio" value="Yes" /><label>Yes</label> &nbsp;&nbsp;
+							<input name="living" type="radio" value="No" /><label>No</label> &nbsp;&nbsp;<input name="living" type="radio" value="Don't Know" /><label>Don't Know</label><br />
+								<!--%@ IF living = Yes - display the following... %-->
+								<div class="p">Enter either the date of birth or current age.</div>
+								<table class="subOptions">
+									<tr>
+										<th><input name="livingYes" type="radio" value="Date of Birth" /> <label>Date of Birth</label>:</th>
+										<td><input name="dob" type="text" size="20" /> <span class="grey">(Enter date as MM/DD/YYYY)</span></td>
+									</tr>
+									<tr>
+										<th><input name="livingYes" type="radio" value="Current Age" /> <label>Current Age</label>:</th>
+										<td><input name="name" type="text" size="5" /></td>
+									</tr>
+								</table>
+								<!--%@ ELSE living = No - display the following... %-->
+								<table class="subOptions">
+									<tr>
+										<th><label>Age at Death</label>:</th>
+										<td><select name="ageAtDeath"></select></td>
+									</tr>
+									<tr>
+										<th><label>Cause of Death</label>:</th>
+										<td><select name="causeOfDeath"></select></td>
+									</tr>
+								</table>
+						</td>
+					</tr>
+					<tr>
+						<th><label>Was this family member born a twin?</label></th>
+						<td><input name="twin" type="radio" value="Identical" /><label>Yes - Identical (Same)</label> &nbsp;&nbsp;<input name="twin" type="radio" value="Fraternal" /><label>Yes - Not Identical (Fraternal)</label> &nbsp;&nbsp;<input name="twin" type="radio" value="No" /><label>No</label></td>
+					</tr>
+					<tr>
+						<th><label>Was this family member adopted?</label></th>
+						<td><input name="adopted" type="radio" value="Yes" /><label>Yes</label> &nbsp;&nbsp;<input name="adopted" type="radio" value="No" /><label>No</label></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="colspan">
+							<!--%@ IF <tbody id="raceEthnicity"> visibility = hidden - display "Show information...". %-->
+							<a href="#">Show information for Race and Ethnicity</a>
+							<!--%@  ELSE <tbody id="raceEthnicity"> visibility = visible - display "Hide information...".  %-->
+							<a href="#">Hide information for Race and Ethnicity</a>
+						</td>
+					</tr>
+				</tbody>
+				<!-- END BASIC INFO FOR RELATIVE -->
+			</table>
+		</div>
+	</div>
+	<!-- END ACCORDIAN SECTION = PERSONAL INFO -->
+	<!-- BEGIN ACCORDIAN SECTION = HEALTH INFO -->
+	<div class="accordianContainer" id="healthInfo">
+		<!-- IF accordian is open set class="accordianTitlebarOpened". ELSE accordian is closed set class="accordianTitlebarClosed". -->
+		<div class="accordianTitlebarOpened" id="hiTitle">
+			<h2><a>Health Information</a></h2> <span class="showHideText">(<a>click to show</a>)</span>
+		</div>
+		<!--%@ IF first-time entry - display the following <div class="accodianContent" id="hi">.  ELSE IF return-entry - display the following <div class="accordianContent" id="hi">. %-->
+		<!--%@ IF visibility = Visible AND user clicks to Hide Personal Info - hide <div class="accodianContent" id="hi">.  ELSE visibility = Hidden AND user clicks to Show Personal Info - display <div class="accodianContent" id="hi">. %-->
+		<div class="accordianContent" id="hi">
+			<p>Select the diseases and conditions as well as what age the disease came. If a disease or condition is not on the list, select "Other - Add New" to search or add a new one to the list.</p>
+			<div class="formBox">
+			<table border="0" cellpadding="0" cellspacing="0" class="form" summary="Enter health information." >
+				<tbody>
+					<tr>
+						<th><label>Disease or Condition</label>:</th>
+						<td><select name="diseaseCondition"></select></td>
+					</tr>
+					<!--%@ IF Disease/Condition has associated sub-options - display the following <tr>.  ELSE do not display. %-->
+					<tr>
+						<th><label>Please Specify</label>:</th>
+						<td><select name="pleaseSpecify"></select></td>
+					</tr>
+					<!--%@ IF user selects option=Other - Add New - display the following <tr>.  ELSE do not display. %-->
+					<tr>
+						<th><label>Add New</label>:</th>
+						<td><input name="addNew" type="text" size="100" /></td>
+					</tr>
+					<tr>
+						<th><label>Age at Diagnosis</label>:</th>
+						<td><select name="ageAtDiagnosis"></select></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td><input name="" type="button" value="Add To List" />  <input name="Cancel" type="button" value="Cancel" /></td>
+					</tr>
+				</tbody>
+			</table>
+			</div>
+			<table cellpadding="0" cellspacing="0" class="dataListing">
+				<tr>
+					<th>Disease/Condition</th>
+					<th>Age at Diagnosis</th>
+					<th>Remove</th>
+				</tr>
+				<tr>
+					<td>SAMPLE TEXT</td>
+					<td>SAMPLE TEXT</td>
+					<td class="action"><a href="#">Remove</a></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<!-- END ACCORDIAN SECTION = HEALTH INFO -->
+	<!-- BEGIN ACCORDIAN SECTION = FAMILY BKGD INFO -->
+	<div class="accordianContainer" id="familyBkgd">
+		<!--IF visibility of <div class="accodianContent" id="pi*"> = Visible - set class on <div id="piTitle"> to class="accordianTitlebarOpened". ELSE visibilty of <div class="accodianContent" id="pi*"> = Hidden - set class on <div id="piTitle"> to class="accordianTitlebarClosed". -->
+		<div class="accordianTitlebarOpened" id="fbTitle">
+			<h2><a>Family Background Information</a></h2> <span class="showHideText">(<a>click to hide</a>)</span>
+		</div>
+		<!--%@ IF visibility = Visible AND user clicks to Hide Personal Info - hide <div class="accodianContent" id="pi">.  ELSE visibility = Hidden AND user clicks to Show Personal Info - display <div class="accodianContent" id="pi">. %-->
+		<div class="accordianContent" id="fb">
+			<table cellpadding="0" cellspacing="0" class="form" summary="Enter family backgroung information.">
+				<tbody id="consanguinity">
+					<tr>
+						<td colspan="2" class="colspan"><label class="bold">Are your biological parents related to each other in any way other than marriage?</label> <input name="adopted" type="radio" value="Yes" /><label>Yes</label> &nbsp;&nbsp;<input name="adopted" type="radio" value="No" /><label>No</label><br /><br /></td>
+					</tr>
+				</tbody>
+				<!-- BEGIN RACE / ETHNICITY INFO -->
+				<tbody id="raceEthnicity">
+					<tr class="raceEthnicity">
+						<th>Race:</th>
+						<td>
+							<input name="race" type="checkbox" value="" /> <label>American Indian/Alaska Native</label><br />
+							<input name="race" type="checkbox" value="" /> <label>Asian</label><br />
+								<table class="raceEthnicitySubOptions">
+									<tr>
+										<td><input name="race" type="checkbox" value="" /> <label>Asian</label></td>
+										<td><input name="race" type="checkbox" value="" /> <label>Asian</label></td>
+										<td><input name="race" type="checkbox" value="" /> <label>Asian</label></td>
+									</tr>
+								</table>
+							<input name="race" type="checkbox" value="" /> <label>Black/African American</label><br />
+							<input name="race" type="checkbox" value="" /> <label>Native Hawaiin/Other Pacific Islander</label><br />
+							<input name="race" type="checkbox" value="" /> <label>White</label><br />
+							<input name="race" type="checkbox" value="" /> <label>Other/Unknown/Prefer Not to Answer</label>
+						</td>
+					</tr>
+					<!--%@ IF Proband - display the following <tr>. ELSE Relative -  hide the following <tr> until user clicks to display it.  %-->
+					<tr class="raceEthnicity">
+						<th>Ethnicity:</th>
+						<td>
+							<input name="ethnicity" type="checkbox" value="" /> <label>Hispanic/Latino</label><br />
+								<table class="raceEthnicitySubOptions">
+									<tr>
+										<td><input name="race" type="checkbox" value="" /> <label>Hispanic/Latino</label></td>
+										<td><input name="race" type="checkbox" value="" /> <label>Hispanic/Latino</label></td>
+										<td><input name="race" type="checkbox" value="" /> <label>Hispanic/Latino</label></td>
+									</tr>
+								</table>
+							<input name="ethnicity" type="checkbox" value="" /> <label>Not Hispanic/Latino</label><br />
+							<input name="ethnicity" type="checkbox" value="" /> <label>Ashkenazi Jew</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#">Why are we asking this?</a><br />
+							<input name="ethnicity" type="checkbox" value="" /> <label>Native Hawaiin/Other Pacific Islander</label><br />
+							<input name="ethnicity" type="checkbox" value="" /> <label>White</label><br />
+							<input name="ethnicity" type="checkbox" value="" /> <label>Unknown/Prefer Not to Answer</label>
+						</td>
+					</tr>
+				</tbody>
+				<!-- END RACE / ETHNICITY INFO -->
+			</table>
+		</div>
+	</div>
+	<!-- END ACCORDIAN SECTION = FAMILY BKGD INFO -->
+			
+			
+	<!-- BEGIN INCLUDE = SAVE CANCEL BUTTONS -->
+	<div class="buttonContainer">
+		<input name="Save" type="button" value="Save Information" /> <input name="Cancel" type="button" value="Cancel" />
+	</div>
+	<!-- END INCLUDE = SAVE CANCEL BUTTONS -->
+</div>
+
+
+</body>
+</html>

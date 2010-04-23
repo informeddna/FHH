@@ -1,0 +1,11 @@
+<profiles>
+    <profile>
+        <id>local</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <properties>
+            <jboss.home>C:/dev/app_servers/jboss-4.0.5.GA</jboss.home>
+        </properties>
+    </profile>
+</profiles>
