@@ -1,0 +1,2 @@
+The latest disease lists are being
+ maintained in the EA tool in the Domain Model

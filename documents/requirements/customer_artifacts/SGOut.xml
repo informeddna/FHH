@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FamilyHistory classCode="OBS" moodCode="EVN">
+  <id extension="C:\hl7\Version12\FamilyHistoryTranslator\data\myFamilyHistory.htm" />
+  <code code="10157-6" codeSystemName="LOINC" displayName="HISTORY OF FAMILY MEMBER DISEASE" />
+  <text>This file came from SGTranslator</text>
+  <effectiveTime value="1/7/2007" />
+  <methodCode displayName="Surgeon Genreal's web-site" />
+  <subject typeCode="SBJ">
+    <patient classCode="PAT">
+      <patientPerson>
+        <id extension="self" />
+        <name formatted="Eve Everywoman" />
+        <administrativeGenderCode code="F" />
+        <deceasedInd code="false" />
+        <relative>
+          <code code="NMTH" />
+          <relationshipHolder>
+            <id extension="mother" />
+            <name formatted="Mary" />
+            <administrativeGenderCode code="F" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C04.588.180" codeSystemName="MeSH" displayName="Breast Neoplasms" originalText="BreastCancer" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="30" />
+                    <high value="39" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+        <relative>
+          <code code="NFTH" />
+          <relationshipHolder>
+            <id extension="father" />
+            <name formatted="Frank" />
+            <administrativeGenderCode code="M" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C04.588.274.476.411.307" codeSystemName="MeSH" displayName="Colorectal Neoplasms" originalText="ColonCancer" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="40" />
+                    <high value="49" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+        <relative>
+          <code code="MGRMTH" />
+          <relationshipHolder>
+            <id extension="maternalGrandmother" />
+            <name formatted="Margaret" />
+            <administrativeGenderCode code="F" />
+            <deceasedInd code="true" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="183.0" codeSystemName="ICD-9" displayName="Malignant Neoplasm Ovary" originalText="OvarianCancer" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="30" />
+                    <high value="39" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+        <relative>
+          <code code="MGRFTH" />
+          <relationshipHolder>
+            <id extension="maternalGrandfather" />
+            <name formatted="William" />
+            <administrativeGenderCode code="M" />
+            <deceasedInd code="true" />
+          </relationshipHolder>
+        </relative>
+        <relative>
+          <code code="PGRMTH" />
+          <relationshipHolder>
+            <id extension="paternalGrandmother" />
+            <name formatted="Susan" />
+            <administrativeGenderCode code="F" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+        </relative>
+        <relative>
+          <code code="PGRFTH" />
+          <relationshipHolder>
+            <id extension="paternalGrandfather" />
+            <name formatted="Alex" />
+            <administrativeGenderCode code="M" />
+            <deceasedInd code="true" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C04.588.274.476.411.307" codeSystemName="MeSH" displayName="Colorectal Neoplasms" originalText="ColonCancer" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="40" />
+                    <high value="49" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C14.280" codeSystemName="MeSH" displayName="Heart Diseases" originalText="Coronary" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="50" />
+                    <high value="59" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+        <relative>
+          <code code="DAU" />
+          <relationshipHolder>
+            <id extension="daughter1" />
+            <name formatted="Donna" />
+            <administrativeGenderCode code="F" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C04.588.180" codeSystemName="MeSH" displayName="Breast Neoplasms" originalText="BreastCancer" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="20" />
+                    <high value="29" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+        <relative>
+          <code code="SIS" />
+          <relationshipHolder>
+            <id extension="sister1" />
+            <name formatted="Susan" />
+            <administrativeGenderCode code="F" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C04.588.180" codeSystemName="MeSH" displayName="Breast Neoplasms" originalText="BreastCancer" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="50" />
+                    <high value="59" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+        <relative>
+          <code code="SIS" />
+          <relationshipHolder>
+            <id extension="sister2" />
+            <name formatted="Janet" />
+            <administrativeGenderCode code="F" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+        </relative>
+        <relative>
+          <code code="BRO" />
+          <relationshipHolder>
+            <id extension="brother1" />
+            <name formatted="David" />
+            <administrativeGenderCode code="M" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+        </relative>
+        <relative>
+          <code code="PUNCLE" />
+          <relationshipHolder>
+            <id extension="fathersBrother1" />
+            <name formatted="Eric" />
+            <administrativeGenderCode code="M" />
+            <deceasedInd code="true" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C14.280" codeSystemName="MeSH" displayName="Heart Diseases" originalText="Coronary" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="50" />
+                    <high value="59" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+        <relative>
+          <code code="PUNCLE" />
+          <relationshipHolder>
+            <id extension="fathersBrother2" />
+            <name formatted="Stan" />
+            <administrativeGenderCode code="M" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C04.588.274.476.411.307" codeSystemName="MeSH" displayName="Colorectal Neoplasms" originalText="ColonCancer" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="50" />
+                    <high value="59" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+        <relative>
+          <code code="MAUNT" />
+          <relationshipHolder>
+            <id extension="mothersSister1" />
+            <name formatted="Tharesa" />
+            <administrativeGenderCode code="F" />
+            <deceasedInd code="false" />
+          </relationshipHolder>
+          <subjectOf2>
+            <clinicalObservation>
+              <code code="C04.588.180" codeSystemName="MeSH" displayName="Breast Neoplasms" originalText="BreastCancer" />
+              <subject>
+                <dataEstimatedAge>
+                  <code code="397659008" displayName="Age" codeSystemName="SNOMED CT" />
+                  <value>
+                    <low value="30" />
+                    <high value="39" />
+                  </value>
+                </dataEstimatedAge>
+              </subject>
+            </clinicalObservation>
+          </subjectOf2>
+        </relative>
+      </patientPerson>
+      <subjectOf1>
+        <livingEstimatedAge>
+          <code code="21611-9" displayName="ESTIMATED AGE" codeSystemName="LOINC" />
+          <value value="55" unit="year" />
+        </livingEstimatedAge>
+      </subjectOf1>
+    </patient>
+  </subject>
+</FamilyHistory>

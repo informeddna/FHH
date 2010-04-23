@@ -1,0 +1,45 @@
+<settings>
+	<profiles>
+		<profile>
+			<id>bda</id>
+			<properties>
+				<!-- used in maven build process -->
+				<jboss.home>@jboss.home@</jboss.home>
+				<schema.file>@db.fhh.file.name@</schema.file>
+				<hbm2ddl.drop.table>@db.fhh.generate.drop@</hbm2ddl.drop.table>
+				<hbm2ddl.create.table>@db.fhh.generate.create@</hbm2ddl.create.table>
+
+				<!-- Maven uses these properties to maniuplate files, we are inserting tokens so that they can be de-tokenized by the install:jboss:fhh-ear:re-create target -->
+				<!-- fhh-ds.xml -->
+				<database.url.prefix>jdbc:mysql://%%database.server%%:%%database.port%%/</database.url.prefix>
+				<database.name>%%database.name%%</database.name>
+				<jdbc.username>%%database.user%%</jdbc.username>
+				<jdbc.password>%%database.password%%</jdbc.password>
+				<!-- security-config.xml -->
+
+				<jdbc.driverClassName>%%database.driver%%</jdbc.driverClassName>
+				<!-- fhh-log4j.xml -->
+				<log.level.nci-commons>%%app.log.level%%</log.level.nci-commons>
+				<log.level.po>%%app.log.level%%</log.level.po>
+				<log.level.default>%%app.log.level.default%%</log.level.default>
+				
+				<!-- jndi.properties -->
+				<jboss.naming.port>%%jboss.server.jndi.port%%</jboss.naming.port>
+                
+                <!-- SMM: Preliminary: used to drive Selenium tests 
+                <jboss.port>@jboss.server.port@</jboss.port>
+                <test.selenium.server.port>@selenium.proxy.port@</test.selenium.server.port>
+                <test.selenium.server.debug>true</test.selenium.server.debug>        
+                <test.selenium.browser>@selenium.browser@</test.selenium.browser>		
+                -->		
+                 <cobertura.check.haltOnFailure>false</cobertura.check.haltOnFailure>
+                 <maven.test.skip>true</maven.test.skip>
+                 <pmd.skip>true</pmd.skip>
+                 <checkstyle.skip>true</checkstyle.skip>
+			</properties>
+		</profile>
+	</profiles>
+	<activeProfiles>
+		<activeProfile>bda</activeProfile>
+	</activeProfiles>
+</settings>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>My Family Health History</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="styles/fhh.css" rel="stylesheet" type="text/css" />
+
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+</head>
+<body  onLoad="MM_preloadImages('images/icon_myFamily_over.gif','images/icon_saveHistory_over.gif','images/icon_viewReport_over.gif','../images/icon_getHelp_over.gif')">
+
+<div class="mainContainer"> 
+  <!-- BEGIN INCLUDE - header -->
+	<div class="headerContainer">
+		<table border="0" cellpadding="0" cellspacing="0" class="bannerTable">
+			<tr>
+				<td class="bannerTdTitle"><img src="images/banner_subpage.jpg" alt="My Family Health Portrait - A tool from the U.S. Surgeon General" class="fhhBannerTitle" /></td>
+				<td class="bannerTdPhotos"><img src="images/photos_subpage.jpg" alt="Collection of family photos from diverse families." class="fhhBannerPhotos" /></td>
+			</tr>
+		</table>
+		<table border="0" cellpadding="0" cellspacing="0" class="mainNavTable">
+			<tr>
+				<td class="mainNavTd"><a href="home.html">Home</a><a href="familyHistory.html">My Family History</a><a href="reindex.html">Recenter Family History</a><a href="viewReport.html">View History Report</a></td>
+			  <td class="utilNavTd"><a href="#">Get Help</a><a href="#">En Espanol</a></td>
+			</tr>
+		</table>
+	</div>
+  <!-- END INCLUDE - header -->
+	
+  <!-- BEGIN CONTENT -->
+  <div class="contentContainer">
+		<h1>My Family Health History</h1>
+		<!--%@ IF Create New History - display the following Create New content %-->
+		<h2>Create New Family History</h2>
+		<p>To begin, click <span class="bold">"START WITH ME"</span> below. You can add other family members and enter information for your mother and father later.</p>
+		<!--%@ ELSE Open Saved History File or after Save History File - display the following Update content %-->
+		<h2>Update My Family History</h2>
+		<p>[insert content here]</p>
+		
+        <hr />
+		<div class="buttonContainer"><a href="" class="button">Add Another Family Member</a> <a href="" class="button">Save Family History</a></div>
+		
+        <!-- BEGIN INCLUDE - treeNav -->
+        <!--
+		<div class="outlineBox">[insert tree navigation]</div>
+        -->
+        <!-- END INCLUDE - treeNav -->
+        
+		<!-- BEGIN INCLUDE - familyTable -->
+		<table border="0" cellpadding="0" cellspacing="0" class="dataListing" summary="This table lists the members of your family and groups them based on how they are related to you and which side of the family they are on.  You may add, update or remove family members from the links within the table.">
+			<colgroup span="3" />
+			<colgroup span="3" width="0*" class="action" />
+			<thead>
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col" abbr="Relationship">Relationship to Me</th>
+					<th scope="col" abbr="Connection">Family Connection</th>
+					<th scope="col" abbr="Add">Add History</th>
+					<th scope="col" abbr="Update">Update History</th>
+					<th scope="col" abbr="Remove">Remove Relative</th>
+				</tr>
+			</thead>
+			<!--% ITERATE the following <tbody> for each section of the family navigation table %-->
+			<tbody>
+				<tr>
+					<td class="sectionHead" colspan="6" scope="colgroup">
+						<!--% IF section = My Family display the following text %-->
+						My Family 
+						<!--% ELSE section = Father's side of Family - display the following text %-->
+						My Father's Side of the Family 
+						<!--% ELSE section = Mother's side of Family - display the following text %-->
+						My Mother's Side of the Family 
+					</td>
+				</tr>
+				<!--% IF Relationship = Self - display the following row %-->
+				<tr class="proband">
+					<td scope="row">Me</td>
+					<td>Self</td>
+					<td>Self</td>
+					<td class="action">&nbsp;</td>
+					<td class="action"><a href=""><img src="images/icon_edit.gif" alt="Update History" title="Update History" /></a></td>
+					<td class="action">&nbsp;</td>
+				</tr>
+				<!--% ELSE Relationship != Self - display the following row %-->
+				<tr class="relative">
+					<td scope="row">Name</td>
+					<td>Relationship</td>
+					<td>Connection</td>
+					<td class="action">
+						<!--% IF only data for Relationship to Me & Family Connection exist - display the following Add icon or text link %-->
+						<a href=""><img src="images/icon_add.gif" alt="Add History" title="Add History" /></a>
+						<!--% ELSE display a non-breaking space - &nbsp; %-->&nbsp;
+					</td>
+					<td class="action">
+						<!--% IF data other than Relationship to Me & Family Connection exist - display the following Update icon or text link %-->
+						<a href=""><img src="images/icon_edit.gif" alt="Update History" title="Update History" /></a>
+						<!--% ELSE display a non-breaking space - &nbsp; %-->&nbsp;
+					</td>
+					<td class="action">
+						<!--% IF Relationship to Me != Self - display the following Remove icon or text link %-->
+						<a href=""><img src="images/icon_trash.gif" alt="Remove Relative" title="Remove Relative" /></a>
+						<!--% ELSE display a non-breaking space - &nbsp; %-->&nbsp;
+					</td>
+				</tr>
+			</tbody>
+			<!--% END ITERATE %-->
+		</table>
+		<!-- END INCLUDE - familyTable -->
+        <div class="buttonContainer"><a href="" class="button">Add Another Family Member</a> <a href="" class="button">Save Family History</a></div>
+        <hr />
+	</div>
+  <!-- END CONTENT -->
+	
+	<!-- BEGIN INCLUDE - footer -->
+	<table border="0" cellpadding="0" cellspacing="0" class="footerTable"> 
+		<tr>
+			<td class="footerTdLinks">
+				<a href="#">Help</a> | <a href="#">Glossary</a> | <a href="#">FAQs</a> | <a href="#">Accessibility</a> | <a href="#">Privacy &amp; Security Policy</a> | <a href="#">About This Site</a> | <a href="#">Contact Us</a> | <a href="#">Site Updates</a>
+			</td>
+			<td class="footerTdLogos">
+				<img src="images/logo_hhs.gif" alt="HHS Logo" />&nbsp;&nbsp;<img src="images/logo_phs.gif" alt="PHS Logo" />
+			</td>
+		</tr>
+	</table>
+  <!-- END INCLUDE - footer -->
+</div>
+</body>
+</html>

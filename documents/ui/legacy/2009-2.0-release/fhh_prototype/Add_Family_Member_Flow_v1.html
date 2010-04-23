@@ -1,0 +1,365 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta http-equiv="imagetoolbar" content="no"><link href="Resources/axurerppage.css" type="text/css" rel="stylesheet"></HEAD><BODY>
+<script type="text/javascript">
+function InitializeSubmenu(submenucontainerid, tablecellroid, tablecellid, fname) { 
+var s = "";
+s = s + "function " + fname + "() { ";
+s = s + "document.getElementById(submenucontainerid).style.visibility='';";
+s = s + "BringToFront(submenucontainerid);";
+s = s + "}";
+if ((index = navigator.userAgent.indexOf("MSIE")) >= 0)
+s = s + "document.getElementById('" + tablecellid + "').attachEvent(\"onmouseover\", " + fname + ");";
+else
+s = s + "document.getElementById('" + tablecellid + "').addEventListener(\"mouseover\", " + fname + ", true);";
+s = s + "document.getElementById(tablecellroid).onclick = function() {";
+s = s + "if( document.createEvent ) {";
+s = s + "var evObj = document.createEvent('MouseEvents');";
+s = s + "evObj.initEvent( 'click', true, false );";
+s = s + "document.getElementById(tablecellid).dispatchEvent(evObj);";
+s = s + "} else if( document.createEventObject ) {";
+s = s + "document.getElementById(tablecellid).fireEvent('onclick');";
+s = s + "}";
+s = s + "}";
+eval(s);
+}
+</script>
+
+<DIV id=u0 style="position:absolute; left:10px; top:20px; width:940px; height:144px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u0_rtf><span style=" font-family:'Arial'; color:#000000; font-size:13px;"><u><b>CURRENT FHH PROTOTYPE FLOW - ADD FAMILY MEMBER (v1)</b></u><br><br><b>USE CASE FLOW:</b><br>1. In the current FHH prototype flow the user begins by clicking &quot;Add Family Member&quot; on the My Family History page.<br>2. The system displays the submodal with a form to add an individual family member. <br>3. The user selects the family member they wish to add (based on that person's relationship to the user/proband).&nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -- IF the user selects a family member other than Brother, Sister, Son, or Daughter the system displays fields to determine the specific relationship to the user/proband, such as Side of Family and/or which family member this person is directly related to from those they have already entered into their history.</span></DIV></DIV>
+<DIV id=ou1 style="position:absolute; left:50px; top:220px; width:141px; height:171px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:149px; height:179px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u1.png',sizingMethod='scale');
+"><img style="width:149px; height:179px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u1.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u1container style="position:absolute; left:50px; top:220px; width:141px; height:171px;; overflow:visible;">
+
+<DIV id=u2 style="position:absolute; left:2px; top:2px; width:136px; height:32px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u2_rtf><div style="text-align:center"><span style=" color:#000000; font-size:13px;">My Family History</span></div></DIV></DIV>
+</DIV>
+<IMG id=u1 src="Resources/transparent.gif" style="position:absolute; left:50px; top:220px; width:140px; height:170px"  >
+
+<DIV id=ou3 style="position:absolute; left:60px; top:358px; width:121px; height:26px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:129px; height:34px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u3.png',sizingMethod='scale');
+"><img style="width:129px; height:34px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u3.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u3container style="position:absolute; left:60px; top:358px; width:121px; height:26px;; overflow:visible;">
+
+<DIV id=u4 style="position:absolute; left:2px; top:5px; width:116px; height:15px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u4_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:12px;">Add Family Member</span></div></DIV></DIV>
+</DIV>
+<IMG id=u3 src="Resources/transparent.gif" style="position:absolute; left:60px; top:358px; width:120px; height:25px"  >
+
+<DIV id=ou5 style="position:absolute; left:270px; top:220px; width:141px; height:171px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:149px; height:179px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u1.png',sizingMethod='scale');
+"><img style="width:149px; height:179px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u1.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u5container style="position:absolute; left:270px; top:220px; width:141px; height:171px;; overflow:visible;">
+
+<DIV id=u6 style="position:absolute; left:2px; top:2px; width:136px; height:32px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u6_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:13px;">SUBMODAL<br>- Add Family Member -</span></div></DIV></DIV>
+</DIV>
+<IMG id=u5 src="Resources/transparent.gif" style="position:absolute; left:270px; top:220px; width:140px; height:170px"  >
+
+<DIV id=ou7 style="position:absolute; left:280px; top:355px; width:121px; height:26px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:129px; height:34px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u3.png',sizingMethod='scale');
+"><img style="width:129px; height:34px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u3.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u7container style="position:absolute; left:280px; top:355px; width:121px; height:26px;; overflow:visible;">
+
+<DIV id=u8 style="position:absolute; left:2px; top:5px; width:116px; height:15px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u8_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:12px;">Add Family Member</span></div></DIV></DIV>
+</DIV>
+<IMG id=u7 src="Resources/transparent.gif" style="position:absolute; left:280px; top:355px; width:120px; height:25px"  >
+
+<DIV id=ou9 style="position:absolute; left:310px; top:270px; width:621px; height:221px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:629px; height:229px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u9.png',sizingMethod='scale');
+"><img style="width:629px; height:229px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u9.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u9container style="position:absolute; left:310px; top:270px; width:621px; height:221px;; overflow:visible;">
+
+<DIV id=u10 style="position:absolute; left:2px; top:102px; width:616px; height:16px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u10_rtf>&nbsp;</DIV></DIV>
+</DIV>
+<IMG id=u9 src="Resources/transparent.gif" style="position:absolute; left:310px; top:270px; width:620px; height:220px"  >
+
+<DIV id=ou11 style="position:absolute; left:311px; top:271px; width:619px; height:21px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:627px; height:29px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u11.png',sizingMethod='scale');
+"><img style="width:627px; height:29px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u11.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u11container style="position:absolute; left:311px; top:271px; width:619px; height:21px;; overflow:visible;">
+
+<DIV id=u12 style="position:absolute; left:2px; top:1px; width:614px; height:18px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u12_rtf><span style=" color:#000000; font-size:15px;"><b> </b></span><b><span style=" font-family:'Arial'; color:#000000; font-size:15px;">ADD FAMILY MEMBER</b></span></DIV></DIV>
+</DIV>
+<IMG id=u11 src="Resources/transparent.gif" style="position:absolute; left:311px; top:271px; width:618px; height:20px"  >
+
+<span style="position:absolute; left:311px; top:291px; width:621px; height:5px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u13.png',sizingMethod='scale');
+"><img style="width:621px; height:5px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u13.png" border="0" alt=""></span>
+
+<IMG id=u13 src="Resources/transparent.gif" style="position:absolute; left:311px; top:290.5px; width:618px; height:2px">
+
+<DIV id=u14 style="position:absolute; left:320px; top:300px; width:600px; height:15px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u14_rtf><span style=" font-family:'Arial'; color:#000000; font-size:12px;"><b>Who would you like to add to your history?</b></span></DIV></DIV>
+<DIV id=u15 style="; position:absolute; left:320px; top:355px; width:601px; height:26px;; overflow:hidden">
+<DIV id=pd0u15 style="position:absolute; left:0px; top:0px; width:1px; height:1px; ;">
+<DIV id=u16 style="position:absolute; left:0px; top:5px; width:100px; height:15px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u16_rtf><span style=" color:#CC0000; font-size:12px;"><b>*</b></span><b><span style=" color:#000000; font-size:12px;">Side of Family:</b></span></DIV></DIV>
+<DIV id=u17container style="position:absolute; left:100px; top:5px; width:110px; height:15px; ; ; text-align: left " >
+<DIV id=u18 style="position:absolute; left:16px; top:0px; width:92px; height:15px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u18_rtf><span style=" font-family:'Arial'; color:#000000; font-size:12px;">Mother's side</span></DIV></DIV>
+</DIV>
+<DIV style="position:absolute; left:100px; top:5px; width:110px; height:15px; ; ; text-align: left " ><INPUT id=u17 name="groupBirthSexMe" style="position:absolute; left:-3px; top:-2px;" type=radio value=radio  ></DIV>
+<DIV id=u19container style="position:absolute; left:218px; top:5px; width:102px; height:15px; ; ; text-align: left " >
+<DIV id=u20 style="position:absolute; left:16px; top:0px; width:84px; height:15px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u20_rtf><span style=" font-family:'Arial'; color:#000000; font-size:12px;">Father's side</span></DIV></DIV>
+</DIV>
+<DIV style="position:absolute; left:218px; top:5px; width:102px; height:15px; ; ; text-align: left " ><INPUT id=u19 name="groupBirthSexMe" style="position:absolute; left:-3px; top:-2px;" type=radio value=radio  ></DIV>
+</DIV>
+</DIV>
+<DIV id=u21 style="position:absolute; left:320px; top:331.5px; width:120px; height:15px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u21_rtf><span style=" font-family:'Arial'; color:#CC0000; font-size:12px;"><b>*</b></span><b><span style=" font-family:'Arial'; font-size:12px;">Relationship to me:</b></span></DIV></DIV>
+<SELECT id=u22  style="position:absolute; left:450px; top:328px; width:240px; height:22px; ; background-color:#FFFFFF; text-align: left ; font-family:'Arial'; font-size: 12px; color:#000000; font-style:normal; font-weight:normal; text-decoration:none" >
+<OPTION  value="Mother">Mother</OPTION>
+<OPTION  value="Father">Father</OPTION>
+<OPTION  value="Daughter">Daughter</OPTION>
+<OPTION  value="Son">Son</OPTION>
+<OPTION  value="Sister">Sister</OPTION>
+<OPTION  value="Brother">Brother</OPTION>
+<OPTION  value="Grandmother">Grandmother</OPTION>
+<OPTION  value="Grandfather">Grandfather</OPTION>
+<OPTION  value="Granddaughter">Granddaughter</OPTION>
+<OPTION  value="Grandson">Grandson</OPTION>
+<OPTION  value="Aunt">Aunt</OPTION>
+<OPTION  value="Uncle">Uncle</OPTION>
+<OPTION  value="Cousin">Cousin</OPTION>
+<OPTION  value="Niece">Niece</OPTION>
+<OPTION  value="Nephew">Nephew</OPTION>
+</SELECT>
+
+<DIV id=u23 style="; position:absolute; left:320px; top:420px; width:601px; height:61px;; overflow:hidden">
+<DIV id=pd0u23 style="position:absolute; left:0px; top:0px; width:1px; height:1px; ;">
+<script type="text/javascript">
+    var textRolloverJsonu25 = {};
+</script>
+
+<DIV id=ru24 style="position:absolute; left:280px; top:20px; width:171px; height:31px;; overflow:visible; visibility:hidden;">
+
+<span style="position:absolute; left:-3px; top:-3px; width:179px; height:39px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/ru24.png',sizingMethod='scale');
+"><img style="width:179px; height:39px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/ru24.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=ou24 style="position:absolute; left:280px; top:20px; width:171px; height:31px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:179px; height:39px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u24.png',sizingMethod='scale');
+"><img style="width:179px; height:39px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u24.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u24container style="position:absolute; left:280px; top:20px; width:171px; height:31px;; overflow:visible;">
+
+<DIV id=u25 style="position:absolute; left:2px; top:7px; width:166px; height:16px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u25_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:13px;">Add Family Member</span></div></DIV></DIV>
+</DIV>
+<IMG id=u24 src="Resources/transparent.gif" style="position:absolute; left:280px; top:20px; width:170px; height:30px" onmouseover="SwapOut('u24', 'u25', textRolloverJsonu25,false)" onmouseout="SwapBack('u24' , 'u25')" >
+
+<script type="text/javascript">
+    var textRolloverJsonu27 = {};
+</script>
+
+<DIV id=ru26 style="position:absolute; left:470px; top:20px; width:101px; height:31px;; overflow:visible; visibility:hidden;">
+
+<span style="position:absolute; left:-3px; top:-3px; width:109px; height:39px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/ru26.png',sizingMethod='scale');
+"><img style="width:109px; height:39px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/ru26.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=ou26 style="position:absolute; left:470px; top:20px; width:101px; height:31px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:109px; height:39px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u26.png',sizingMethod='scale');
+"><img style="width:109px; height:39px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u26.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u26container style="position:absolute; left:470px; top:20px; width:101px; height:31px;; overflow:visible;">
+
+<DIV id=u27 style="position:absolute; left:2px; top:7px; width:96px; height:16px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u27_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:13px;">Cancel</span></div></DIV></DIV>
+</DIV>
+<IMG id=u26 src="Resources/transparent.gif" style="position:absolute; left:470px; top:20px; width:100px; height:30px" onmouseover="SwapOut('u26', 'u27', textRolloverJsonu27,false)" onmouseout="SwapBack('u26' , 'u27')" >
+
+<span style="position:absolute; left:0px; top:4px; width:603px; height:5px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u28.png',sizingMethod='scale');
+"><img style="width:603px; height:5px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u28.png" border="0" alt=""></span>
+
+<IMG id=u28 src="Resources/transparent.gif" style="position:absolute; left:0px; top:3.5px; width:600px; height:2px">
+
+</DIV>
+</DIV>
+<DIV id=ou29 style="position:absolute; left:901px; top:271.5px; width:21px; height:19px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:29px; height:27px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u29.png',sizingMethod='scale');
+"><img style="width:29px; height:27px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u29.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u29container style="position:absolute; left:901px; top:271.5px; width:21px; height:19px;; overflow:visible;">
+
+<DIV id=u30 style="position:absolute; left:2px; top:1px; width:16px; height:16px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u30_rtf><div style="text-align:center"><span style=" color:#FFFFFF; font-size:13px;"><b> x</b></span></div></DIV></DIV>
+</DIV>
+<IMG id=u29 src="Resources/transparent.gif" style="position:absolute; left:901px; top:271.5px; width:20px; height:18px"  title="Close Window">
+
+<DIV id=ou31 style="position:absolute; left:875px; top:271.5px; width:21px; height:19px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:29px; height:27px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u31.png',sizingMethod='scale');
+"><img style="width:29px; height:27px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u31.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u31container style="position:absolute; left:875px; top:271.5px; width:21px; height:19px;; overflow:visible;">
+
+<DIV id=u32 style="position:absolute; left:2px; top:1px; width:16px; height:16px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u32_rtf><div style="text-align:center"><span style=" color:#FFFFFF; font-size:13px;"><b>?</b></span></div></DIV></DIV>
+</DIV>
+<IMG id=u31 src="Resources/transparent.gif" style="position:absolute; left:875px; top:271.5px; width:20px; height:18px"  title="Show Instructions">
+
+<DIV id=u33 style="; position:absolute; left:320px; top:382px; width:601px; height:29px;; overflow:hidden">
+<DIV id=pd0u33 style="position:absolute; left:0px; top:0px; width:1px; height:1px; ;">
+<DIV id=u34 style="position:absolute; left:0px; top:6.5px; width:300px; height:15px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u34_rtf><span style=" font-family:'Arial'; color:#CC0000; font-size:12px;"><b>*</b></span><b><span style=" font-family:'Arial'; font-size:12px;">In my family tree this relative is directly related to: </b></span></DIV></DIV>
+<SELECT id=u35  style="position:absolute; left:300px; top:3px; width:220px; height:22px; ; background-color:#FFFFFF; text-align: left ; font-family:'Arial'; font-size: 12px; color:#000000; font-style:normal; font-weight:normal; text-decoration:none" >
+<OPTION  value="Name of person already in tree">Name of person already in tree</OPTION>
+</SELECT>
+
+</DIV>
+</DIV>
+<DIV id=ou36 style="position:absolute; left:270px; top:540px; width:141px; height:171px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:149px; height:179px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u1.png',sizingMethod='scale');
+"><img style="width:149px; height:179px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u1.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u36container style="position:absolute; left:270px; top:540px; width:141px; height:171px;; overflow:visible;">
+
+<DIV id=u37 style="position:absolute; left:2px; top:2px; width:136px; height:32px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u37_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:13px;">SUBMODAL<br>- Edit Family Member -</span></div></DIV></DIV>
+</DIV>
+<IMG id=u36 src="Resources/transparent.gif" style="position:absolute; left:270px; top:540px; width:140px; height:170px"  >
+
+<DIV id=ou38 style="position:absolute; left:280px; top:675px; width:121px; height:26px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:129px; height:34px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u3.png',sizingMethod='scale');
+"><img style="width:129px; height:34px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u3.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u38container style="position:absolute; left:280px; top:675px; width:121px; height:26px;; overflow:visible;">
+
+<DIV id=u39 style="position:absolute; left:2px; top:5px; width:116px; height:15px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u39_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:12px;">Save</span></div></DIV></DIV>
+</DIV>
+<IMG id=u38 src="Resources/transparent.gif" style="position:absolute; left:280px; top:675px; width:120px; height:25px"  >
+
+<DIV id=ou40 style="position:absolute; left:600px; top:440px; width:171px; height:31px;; overflow:visible">
+
+<span style="position:absolute; left:-3px; top:-3px; width:179px; height:39px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u40.png',sizingMethod='scale');
+"><img style="width:179px; height:39px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u40.png" border="0" alt=""></span>
+
+</DIV>
+<DIV id=u40container style="position:absolute; left:600px; top:440px; width:171px; height:31px;; overflow:visible;">
+
+<DIV id=u41 style="position:absolute; left:2px; top:7px; width:166px; height:16px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u41_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:13px;">Add Family Member</span></div></DIV></DIV>
+</DIV>
+<IMG id=u40 src="Resources/transparent.gif" style="position:absolute; left:600px; top:440px; width:170px; height:30px"  >
+
+<span style="position:absolute; left:176px; top:360.5px; width:54px; height:20px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u42c0.png',sizingMethod='scale');
+"><img style="width:57px; height:23px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u42c0.png" border="0" alt=""></span>
+
+<span style="position:absolute; left:210px; top:295px; width:20px; height:85.5px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u42c1.png',sizingMethod='scale');
+"><img style="width:23px; height:88.5px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u42c1.png" border="0" alt=""></span>
+
+<span style="position:absolute; left:210px; top:295px; width:64px; height:20px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u42c2.png',sizingMethod='scale');
+"><img style="width:67px; height:23px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u42c2.png" border="0" alt=""></span>
+
+<DIV id=u42container style="position:absolute; left:180px; top:370.5px; width:1px; height:1px;; overflow:visible">
+
+<DIV id=u43 style="position:absolute; left:-10px; top:-45.75px; width:100px; height:16px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u43_rtf>&nbsp;</DIV></DIV>
+</DIV>
+<span style="position:absolute; left:675px; top:466px; width:20px; height:169px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u44c0.png',sizingMethod='scale');
+"><img style="width:23px; height:172px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u44c0.png" border="0" alt=""></span>
+
+<span style="position:absolute; left:406px; top:615px; width:289px; height:20px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u44c1.png',sizingMethod='scale');
+"><img style="width:292px; height:23px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u44c1.png" border="0" alt=""></span>
+
+<DIV id=u44container style="position:absolute; left:685px; top:470px; width:1px; height:1px;; overflow:visible">
+
+<DIV id=u45 style="position:absolute; left:-110px; top:147px; width:100px; height:16px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u45_rtf>&nbsp;</DIV></DIV>
+</DIV>
+<span style="position:absolute; left:110px; top:677.5px; width:174px; height:20px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u46c0.png',sizingMethod='scale');
+"><img style="width:177px; height:23px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u46c0.png" border="0" alt=""></span>
+
+<span style="position:absolute; left:110px; top:386px; width:20px; height:311.5px; ;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Add_Family_Member_Flow_v1_files/u46c1.png',sizingMethod='scale');
+"><img style="width:23px; height:314.5px; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" 
+src="Add_Family_Member_Flow_v1_files/u46c1.png" border="0" alt=""></span>
+
+<DIV id=u46container style="position:absolute; left:280px; top:687.5px; width:1px; height:1px;; overflow:visible">
+
+<DIV id=u47 style="position:absolute; left:-210px; top:-92.75px; width:100px; height:48px; ; ; text-align: center ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u47_rtf><div style="text-align:center"><span style=" font-family:'Arial'; color:#000000; font-size:13px;">updates tree nav with new family member</span></div></DIV></DIV>
+</DIV>
+<DIV id=u48 style="position:absolute; left:10px; top:760px; width:940px; height:272px; ; ; text-align: left ; font-family:Arial; text-align:left; word-wrap:break-word;" >
+<DIV id=u48_rtf><span style=" color:#000000; font-size:13px;"><u><b>PROS &amp; CONS</b></u><br><br><b>PROS: </b> <br>&nbsp; -- connections between family members is forced.&nbsp; no &quot;floaters&quot; allowed.<br>&nbsp; -- simple, straight-forward entry form <br>&nbsp; -- 3 clicks from start to finish with the new family member's personal profile &amp; health history entered.<br><br><b>CONS:</b> <br>&nbsp; -- family members are added one at a time, thus could be time-consuming for users with large family histories<br>&nbsp; -- forces user to enter at least Living/Deceased information under family member's personal profile<br>&nbsp; -- does not force users to declare total number of immediate family members (siblings, children, grand parents), thus allows for gaps within the overall family history.<br>&nbsp; -- does not allow user to add a family members with a designation of &quot;history unknown&quot;, which would prevent gaps in the overall family history.<br><br><br><br>.</span></DIV></DIV><SCRIPT src="Resources/axurerp_pagescript.js"></SCRIPT>
+<SCRIPT src="Add_Family_Member_Flow_v1_files/axurerp_pagespecificscript.js"></SCRIPT></BODY></HTML>

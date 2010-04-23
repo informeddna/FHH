@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Save My Family History</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="styles/fhh.css" rel="stylesheet" type="text/css" />
+
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+</head>
+<body  onLoad="MM_preloadImages('images/icon_myFamily_over.gif','images/icon_saveHistory_over.gif','images/icon_viewReport_over.gif','../images/icon_getHelp_over.gif')">
+
+<div class="mainContainer"> 
+  <!-- BEGIN INCLUDE - header -->
+	<div class="headerContainer">
+		<table border="0" cellpadding="0" cellspacing="0" class="bannerTable">
+			<tr>
+				<td class="bannerTdTitle"><img src="images/banner_subpage.jpg" alt="My Family Health Portrait - A tool from the U.S. Surgeon General" class="fhhBannerTitle" /></td>
+				<td class="bannerTdPhotos"><img src="images/photos_subpage.jpg" alt="Collection of family photos from diverse families." class="fhhBannerPhotos" /></td>
+			</tr>
+		</table>
+		<table border="0" cellpadding="0" cellspacing="0" class="mainNavTable">
+			<tr>
+				<td class="mainNavTd"><a href="home.html">Home</a><a href="familyHistory.html">My Family History</a><a href="reindex.html">Recenter Family History</a><a href="viewReport.html">View History Report</a></td>
+			  <td class="utilNavTd"><a href="#">Get Help</a><a href="#">En Espanol</a></td>
+			</tr>
+		</table>
+	</div>
+  <!-- END INCLUDE - header -->
+	
+  <!-- BEGIN CONTENT -->
+  <div class="contentContainer">
+		<h1>Recenter My Family History on another Family Member</h1>
+		<p>[DRAFT] You may make any relative be the center person of the Health History. You can then add relatives to create a new family health history without having to start from the very beginning.</li>
+		</ul>
+		<div class="formBox">
+			<table cellpadding="0" cellspacing="0" summary="Personal information form" class="form">
+				<tbody>
+					<tr>
+						<th><label>Recenter on Family Member</label>:</th>
+						<td>
+                        	<select name="relative">
+                            	<option>--- Select Family Member ---</option>
+                        	</select>
+							<!--%@ IF relative != Self - display the following preview buttons %-->
+							<div class="dynamicPanel">
+								<div class="p">[DRAFT] You can see the changes in a family tree diagram by choosing the 'Preview History' button.  The changes will not be made until you click on the 'Recenter and Save History' button. This will replace the current Family Health History. Only family members that are a direct blood relative will display.</div>
+								<div><input name="submit" type="button" value="Preview History" /></div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="buttonContainer"><input name="submit" type="button" value="Recenter & Save History" /> <input name="cancel" type="button" value="Cancel" /></div>
+	</div>
+  <!-- END CONTENT -->
+	
+	<!-- BEGIN INCLUDE - footer -->
+	<table border="0" cellpadding="0" cellspacing="0" class="footerTable"> 
+		<tr>
+			<td class="footerTdLinks">
+				<a href="#">Help</a> | <a href="#">Glossary</a> | <a href="#">FAQs</a> | <a href="#">Accessibility</a> | <a href="#">Privacy &amp; Security Policy</a> | <a href="#">About This Site</a> | <a href="#">Contact Us</a> | <a href="#">Site Updates</a>
+			</td>
+			<td class="footerTdLogos">
+				<img src="images/logo_hhs.gif" alt="HHS Logo" />&nbsp;&nbsp;<img src="images/logo_phs.gif" alt="PHS Logo" />
+			</td>
+		</tr>
+	</table>
+  <!-- END INCLUDE - footer -->
+</div>
+</body>
+</html>
