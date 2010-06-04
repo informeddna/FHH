@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -38,74 +38,77 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
-import gov.hhs.fhh.data.Gender;
-import gov.hhs.fhh.data.LivingStatus;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeBranch;
 import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.TwinStatus;
-import gov.hhs.fhh.data.Weight;
-import gov.hhs.fhh.data.WeightUnit;
 import gov.hhs.fhh.data.util.DiseaseUtils;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
+import gov.hhs.fhh.web.TestProperties;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.SerializationUtils;
+import org.junit.Assert;
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
  * 
  */
 public class FamilyHistoryActionTest extends AbstractFhhWebTest {
-	private final FamilyHistoryAction action = new FamilyHistoryAction();
+    private final FamilyHistoryAction action = new FamilyHistoryAction();
     private final String DUMMY_NAME = "John Doe";
-    private final String DUMMY_KEY = "80000000";
+    public static final String DUMMY_KEY = "80000000";
     private final Gender DUMMY_GENDER = Gender.MALE;
     private final GregorianCalendar DUMMY_DATE = new GregorianCalendar(1970, 9, 7, 0, 0, 0);
     private final String SUCCESS = "success";
-    private final String IMPORT_COMPLETE = "importComplete";
+    public static final String IMPORT_COMPLETE = "importComplete";
     private final String IMPORT_FAILED = "input";
-    private final String BASIC_IMPORT_TEST = "/Basic_Test_FamilyHistory.xml";
+    public static final String BASIC_IMPORT_TEST = "/Basic_Test_FamilyHistory.xml";
     private final String BASIC_TEST_NAME = "Basic Test";
     private final String BASIC_TEST_ETHNICITY = "Hispanic or Latino";
     private final String BASIC_TEST_RACE = "American Indian or Alaska Native";
     private final String BASIC_TEST_DISEASE = "DisplayName7";
     private final Weight BASIC_TEST_WEIGHT = new Weight(180, WeightUnit.METRIC);
     private final GregorianCalendar BASIC_TEST_DOB = new GregorianCalendar(1983, 8, 7, 0, 0, 0);
-    
+
     private final String BASIC_RELATIVE_NAME = "Basic Relative";
     private final String BASIC_RELATIVE_CODE = "NMTH";
     private final String BASIC_RELATIVE_ETHNICITY = "Hispanic or Latino";
     private final String BASIC_RELATIVE_RACE = "Asian";
     private final String BASIC_RELATIVE_DISEASE = "DisplayName18";
     private final String BASIC_RELATIVE_BIRTH_TIME = "09/07/1938";
-    
+
     private final String BASIC_RELATIVE2_CODE = "NFTH";
     private final String BASIC_RELATIVE2_GENDER = "male";
     private final String BASIC_RELATIVE2_BIRTH_TIME = "1953";
-    
+
     private final String DECEASED_RELATIVE_NAME = "PUNCLE Name";
     private final String DECEASED_RELATIVE_CODE = "PUNCLE";
     private final String DECEASED_RELATIVE_GENDER = "male";
     private final String DECEASED_RELATIVE_DISEASE = "DisplayName18";
-    private final String DECEASED_RELATIVE_COD = "DisplayName16";
-    
+
     private final String INCOMPLETE_RELATIVE_CODE = "MAUNT";
-    
+
     private final String FAMILY_HISTORY_ACTION = "familyHistory";
-    private final String REMOVE_AUNT_ID = "2";
-    private final String REMOVE_SON_ID = "0";
-    
+
     private final String BASIC_HTM_TEST = "/Basic_HTM_Test.htm";
     private final String BASIC_HTM_NAME = "My Name";
     private final String HTM_NEW_DISEASE = "COD Disease 1";
@@ -113,62 +116,58 @@ public class FamilyHistoryActionTest extends AbstractFhhWebTest {
     private final String HTM_ADD_DISEASE2 = "additionalDisease2";
     private final String HTM_FAMILY_DISEASE1 = "otherDisease1";
     private final String HTM_FAMILY_DISEASE2 = "Cancer";
-    private final Long HTM_FAMILY_DISEASE2_ID = 63L;
-    
-   
-    
-	
-	@Test
+
+    @Test
     public void testStartAndPrepare() throws Exception {
-	    action.prepare();
-	    
-	    assertEquals(SUCCESS, action.start());
-	    
-	    Person p = action.getPerson();
+        action.prepare();
+
+        assertEquals(SUCCESS, action.start());
+
+        Person p = action.getPerson();
         p.setName(DUMMY_NAME);
-        
+
         p.setDateOfBirth(DUMMY_DATE.getTime());
         p.setWeight(BASIC_TEST_WEIGHT);
         p.setGender(DUMMY_GENDER);
-	    
-		action.prepare();
-		assertEquals(DUMMY_NAME, action.getPerson().getName());
+
+        action.prepare();
+        assertEquals(DUMMY_NAME, action.getPerson().getName());
         assertEquals(DUMMY_DATE.getTime(), action.getPerson().getDateOfBirth());
         assertEquals(BASIC_TEST_WEIGHT, action.getPerson().getWeight());
         assertEquals(DUMMY_GENDER.getDisplayName(), action.getPerson().getGender().getDisplayName());
     }
-	
-	@Test
+
+    @Test
     public void testFamilyHistoryAction() {
-	    assertEquals(SUCCESS, action.familyHistory());
-	}
-	
-	@Test
-    public void testFamilyHistoryDetailAction() {
-	    assertEquals(SUCCESS, action.familyHistoryDetail());
+        assertEquals(SUCCESS, action.familyHistory());
     }
-	
-	@Test
+
+    @Test
+    public void testFamilyHistoryDetailAction() {
+        assertEquals(SUCCESS, action.familyHistoryDetail());
+    }
+
+    @Test
     public void testImportFamilyHistory() {
         assertEquals(SUCCESS, action.importFamilyHistory());
     }
-	
-	@Test
+
+    @Test
     public void testgetAndSetRelativeBranch() {
-	    Person p = new Person();
+        Person p = new Person();
         RelativeBranch b = new RelativeBranch(p);
         action.setRelativeBranch(b);
         assertEquals(b, action.getRelativeBranch());
     }
-	
-	@Test
+
+    @Test
     public void testImportXmlFile() {
         FhhHttpSessionUtil.getSession().setAttribute(DUMMY_KEY, new Person());
         FhhHttpSessionUtil.getSession().setAttribute(FhhHttpSessionUtil.ROOT_KEY, DUMMY_KEY);
         action.setImportedFile(new File(this.getClass().getResource(BASIC_IMPORT_TEST).getPath()));
-        
+
         assertEquals(IMPORT_COMPLETE, action.importXmlFile());
-        
+
         Person importedPerson = (Person) FhhHttpSessionUtil.getSession().getAttribute(DUMMY_KEY);
         assertSame(importedPerson, action.getPerson());
         assertEquals(BASIC_TEST_NAME, importedPerson.getName());
@@ -179,9 +178,8 @@ public class FamilyHistoryActionTest extends AbstractFhhWebTest {
         assertEquals(BASIC_TEST_DISEASE, importedPerson.getObservations().get(0).getDisease().getDisplayName());
         assertEquals(BASIC_TEST_WEIGHT.getValue(), importedPerson.getWeight().getValue());
         assertEquals(BASIC_TEST_WEIGHT.getUnit(), importedPerson.getWeight().getUnit());
-        assertEquals(AgeRange.ADOLESCENCE, importedPerson.getObservations().get(0).getAgeRange());
-        assertTrue(importedPerson.isCompletedForm());
-        
+        assertEquals(AgeRangeEnum.ADOLESCENCE, importedPerson.getObservations().get(0).getAgeRange());
+
         // Check attributes of living relative
         Relative livingRelative = importedPerson.getRelatives().get(0);
         assertEquals(BASIC_RELATIVE_NAME, livingRelative.getName());
@@ -190,271 +188,314 @@ public class FamilyHistoryActionTest extends AbstractFhhWebTest {
         assertEquals(BASIC_RELATIVE_ETHNICITY, livingRelative.getEthnicities().get(0).getDisplayName());
         assertEquals(BASIC_RELATIVE_RACE, livingRelative.getRaces().get(0).getDisplayName());
         assertEquals(BASIC_RELATIVE_BIRTH_TIME, livingRelative.getBirthTime());
-        assertEquals(BASIC_RELATIVE_DISEASE, livingRelative.getObservations()
-                .get(0).getDisease().getDisplayName());
-        assertEquals(AgeRange.FORTIES, livingRelative.getObservations()
-                .get(0).getAgeRange());
-        assertTrue(livingRelative.isCompletedForm());
-        
+        assertEquals(BASIC_RELATIVE_DISEASE, livingRelative.getObservations().get(0).getDisease().getDisplayName());
+        assertEquals(AgeRangeEnum.FORTIES, livingRelative.getObservations().get(0).getAgeRange());
+
         // Check attributes of living relative with year specified and
         // some empty attributes
         Relative livingRelative2 = importedPerson.getRelatives().get(1);
         assertEquals(BASIC_RELATIVE2_CODE, livingRelative2.getCode());
         assertEquals(BASIC_RELATIVE2_GENDER, livingRelative2.getGender().getDisplayName());
         assertEquals(BASIC_RELATIVE2_BIRTH_TIME, livingRelative2.getBirthTime());
-        assertFalse(livingRelative2.isCompletedForm());
-        
+
         // Check attributes of deceased relative
         Relative deceasedRelative = importedPerson.getRelatives().get(2);
         assertEquals(DECEASED_RELATIVE_NAME, deceasedRelative.getName());
         assertEquals(DECEASED_RELATIVE_CODE, deceasedRelative.getCode());
         assertEquals(DECEASED_RELATIVE_GENDER, deceasedRelative.getGender().getDisplayName());
-        assertEquals(DECEASED_RELATIVE_DISEASE, deceasedRelative.getObservations()
-                .get(0).getDisease().getDisplayName());
-        assertEquals(AgeRange.FIFTIES, deceasedRelative.getObservations()
-                .get(0).getAgeRange());
-        assertEquals(DECEASED_RELATIVE_COD, deceasedRelative.getCauseOfDeath().getDisplayName());
-        assertEquals(AgeRange.SIXTIES, deceasedRelative.getAgeAtDeath());
-        assertFalse(deceasedRelative.isCompletedForm());
-        
+        assertEquals(DECEASED_RELATIVE_DISEASE, deceasedRelative.getObservations().get(0).getDisease().getDisplayName());
+        assertEquals(AgeRangeEnum.FIFTIES, deceasedRelative.getObservations().get(0).getAgeRange());
+        assertEquals(DECEASED_RELATIVE_DISEASE, deceasedRelative.getCauseOfDeath().getDisplayName());
+        assertEquals(AgeRangeEnum.FIFTIES, deceasedRelative.getAgeAtDeath());
+
         // Check attributes of living relative with year specified and
         // some empty attributes
         Relative incompleteFormRelative = importedPerson.getRelatives().get(3);
         assertEquals(INCOMPLETE_RELATIVE_CODE, incompleteFormRelative.getCode());
-        assertFalse(incompleteFormRelative.isCompletedForm());
-        
+
         // Check that pcousin's father is puncle
         Relative pcousin = importedPerson.getRelatives().get(4);
         assertEquals(pcousin.getFather(), deceasedRelative);
-        
+
         // Check that hbro's mother is NMTH
         Relative hbro = importedPerson.getRelatives().get(5);
         assertEquals(hbro.getMother(), livingRelative);
-        
-    
+
         action.setImportedFile(null);
         assertEquals(IMPORT_FAILED, action.importXmlFile());
     }
 
-	@Test
+    @Test
     public void testImportHtmFile() {
         FhhHttpSessionUtil.getSession().setAttribute(DUMMY_KEY, new Person());
         FhhHttpSessionUtil.getSession().setAttribute(FhhHttpSessionUtil.ROOT_KEY, DUMMY_KEY);
         action.setImportedFile(new File(this.getClass().getResource(BASIC_HTM_TEST).getPath()));
-        
+
         assertEquals(IMPORT_COMPLETE, action.importXmlFile());
-        
+
         Person importedPerson = (Person) FhhHttpSessionUtil.getSession().getAttribute(DUMMY_KEY);
         assertSame(importedPerson, action.getPerson());
-        
+
         checkAttributes(importedPerson, BASIC_HTM_NAME, Gender.MALE, TwinStatus.IDENTICAL, true);
-        
+
         // Check attributes of relatives
-        List<Relative> relatives = importedPerson.getRelatives();
-        checkRelativeAttributes(relatives.get(0), "Mother Name", Gender.FEMALE, TwinStatus.IDENTICAL,
-                false, RelativeCode.NMTH, null, LivingStatus.YES, null);
-        checkRelativeAttributes(relatives.get(1), "Maternal Grandmother Name", Gender.FEMALE, TwinStatus.NO,
-                true, RelativeCode.MGRMTH, null, LivingStatus.NO, null);
-        checkRelativeAttributes(relatives.get(2), "Maternal Grandfather Name", Gender.MALE, TwinStatus.NO,
-                false, RelativeCode.MGRFTH, null, LivingStatus.UNKNOWN, null);
-        checkRelativeAttributes(relatives.get(3), "Father Name", Gender.MALE, TwinStatus.IDENTICAL,
-                true, RelativeCode.NFTH, null, LivingStatus.YES, null);
-        checkRelativeAttributes(relatives.get(4), "Paternal Grandmother Name", Gender.FEMALE, TwinStatus.NO,
-                false, RelativeCode.PGRMTH, null, LivingStatus.NO, null);
-        checkRelativeAttributes(relatives.get(5), "Paternal Grandfather Name", Gender.MALE, TwinStatus.NO,
-                true, RelativeCode.PGRFTH, null, LivingStatus.NO, AgeRange.SIXTIES);
-        
-        checkRelativeAttributes(relatives.get(6), "dauter1 Name", Gender.FEMALE, TwinStatus.NO,
-                false, RelativeCode.DAU, null, LivingStatus.UNKNOWN, null);
-        checkRelativeAttributes(relatives.get(7), "dauter2 Name", Gender.FEMALE, TwinStatus.NO,
-                true, RelativeCode.DAU, null, LivingStatus.YES, null);
-        checkRelativeAttributes(relatives.get(8), "son1 Name", Gender.MALE, TwinStatus.NO,
-                false, RelativeCode.SON, null, LivingStatus.NO, null);
-        checkRelativeAttributes(relatives.get(9), "son2 Name", Gender.MALE, TwinStatus.NO,
-                true, RelativeCode.SON, null, LivingStatus.UNKNOWN, null);
-        checkRelativeAttributes(relatives.get(10), "sister1 Name", Gender.FEMALE, TwinStatus.NO,
-                false, RelativeCode.NSIS, null, null, null);
-        checkRelativeAttributes(relatives.get(11), "sister2 Name", Gender.FEMALE, TwinStatus.NO,
-                true, RelativeCode.NSIS, null, null, null);
-        checkRelativeAttributes(relatives.get(12), "brother1 Name", Gender.MALE, null,
-                false, RelativeCode.NBRO, null, null, null);
-        checkRelativeAttributes(relatives.get(13), "brother2 Name", Gender.MALE, null,
-                true, RelativeCode.NBRO, null, null, null);
-        checkRelativeAttributes(relatives.get(14), "halfSister1 Name", Gender.FEMALE, TwinStatus.NO,
-                false, RelativeCode.HSIS, relatives.get(0), LivingStatus.NO, null);
-        checkRelativeAttributes(relatives.get(15), "halfSister2 Name", Gender.FEMALE, TwinStatus.NO,
-                true, RelativeCode.HSIS, relatives.get(3), LivingStatus.YES, null);
-        checkRelativeAttributes(relatives.get(16), "halfBrother1 Name", Gender.MALE, TwinStatus.NO,
-                false, RelativeCode.HBRO, relatives.get(0), LivingStatus.YES, null);
-        checkRelativeAttributes(relatives.get(17), "halfBrother2 Name", Gender.MALE, TwinStatus.NO,
-                true, RelativeCode.HBRO, relatives.get(3), LivingStatus.YES, null);
-        checkRelativeAttributes(relatives.get(18), "fathersSister1 Name", Gender.FEMALE, TwinStatus.NO,
-                false, RelativeCode.PAUNT, null, LivingStatus.YES, null);
-        checkRelativeAttributes(relatives.get(19), "fathersSister2 Name", Gender.FEMALE, TwinStatus.NO,
-                true, RelativeCode.PAUNT, null, null, null);
-        checkRelativeAttributes(relatives.get(20), "fathersBrother1 Name", Gender.MALE, null,
-                false, RelativeCode.PUNCLE, null, null, null);
-        checkRelativeAttributes(relatives.get(21), "fathersBrother2 Name", Gender.MALE, null,
-                true, RelativeCode.PUNCLE, null, null, null);
-        checkRelativeAttributes(relatives.get(22), "mothersSister1 Name", Gender.FEMALE, null,
-                false, RelativeCode.MAUNT, null, null, null);
-        checkRelativeAttributes(relatives.get(23), "mothersSister2 Name", Gender.FEMALE, null,
-                true, RelativeCode.MAUNT, null, null, null);
-        checkRelativeAttributes(relatives.get(24), "mothersBrother1 Name", Gender.MALE, TwinStatus.NO,
-                false, RelativeCode.MUNCLE, null, null, null);
-        checkRelativeAttributes(relatives.get(25), "mothersBrother2 Name", Gender.MALE, TwinStatus.NO,
-                true, RelativeCode.MUNCLE, null, null, null);
-        checkRelativeAttributes(relatives.get(26), "niece1 Name", Gender.FEMALE, TwinStatus.NO,
-                false, RelativeCode.NIECE, relatives.get(12), null, null);
-        checkRelativeAttributes(relatives.get(27), "niece2 Name", Gender.FEMALE, TwinStatus.NO,
-                true, RelativeCode.NIECE, relatives.get(10), null, null);
-        checkRelativeAttributes(relatives.get(28), "nephew1 Name", Gender.MALE, TwinStatus.NO,
-                false, RelativeCode.NEPHEW, relatives.get(13), null, null);
-        checkRelativeAttributes(relatives.get(29), "nephew2 Name", Gender.MALE, TwinStatus.NO,
-                true, RelativeCode.NEPHEW, relatives.get(11), null, null);
-        checkRelativeAttributes(relatives.get(30), "femaleCousin1 Name", Gender.FEMALE, TwinStatus.NO,
-                false, RelativeCode.PCOUSN, relatives.get(20), null, null);
-        checkRelativeAttributes(relatives.get(31), "femaleCousin2 Name", Gender.FEMALE, TwinStatus.NO,
-                true, RelativeCode.PCOUSN, relatives.get(18), null, null);
-        checkRelativeAttributes(relatives.get(32), "maleCousin1 Name", Gender.MALE, TwinStatus.NO,
-                false, RelativeCode.MCOUSN, relatives.get(24), null, null);
-        checkRelativeAttributes(relatives.get(33), "maleCousin2 Name", Gender.MALE, TwinStatus.NO,
-                true, RelativeCode.MCOUSN, relatives.get(22), null, null);
-        
+        Map<String, Relative> relatives = new HashMap<String, Relative>();
+        for (Relative currRelative : importedPerson.getRelatives()) {
+            relatives.put(currRelative.getName(), currRelative);
+        }
+
+        checkRelativeAttributes(relatives, "Mother Name", Gender.FEMALE, TwinStatus.IDENTICAL, false,
+                RelativeCode.NMTH, relatives.get("Maternal Grandfather Name"), LivingStatus.YES, null);
+        checkRelativeAttributes(relatives, "Maternal Grandmother Name", Gender.FEMALE, TwinStatus.NO, true,
+                RelativeCode.MGRMTH, null, LivingStatus.NO, null);
+        checkRelativeAttributes(relatives, "Maternal Grandfather Name", Gender.MALE, TwinStatus.NO, false,
+                RelativeCode.MGRFTH, null, LivingStatus.UNKNOWN, null);
+        checkRelativeAttributes(relatives, "Father Name", Gender.MALE, TwinStatus.IDENTICAL, true, RelativeCode.NFTH,
+                relatives.get("Paternal Grandfather Name"), LivingStatus.YES, null);
+        checkRelativeAttributes(relatives, "Paternal Grandmother Name", Gender.FEMALE, TwinStatus.NO, false,
+                RelativeCode.PGRMTH, null, LivingStatus.NO, null);
+        checkRelativeAttributes(relatives, "Paternal Grandfather Name", Gender.MALE, TwinStatus.NO, true,
+                RelativeCode.PGRFTH, null, LivingStatus.NO, AgeRangeEnum.SIXTIES);
+
+        checkRelativeAttributes(relatives, "dauter1 Name", Gender.FEMALE, TwinStatus.NO, false, RelativeCode.DAU, null,
+                LivingStatus.UNKNOWN, null);
+        checkRelativeAttributes(relatives, "dauter2 Name", Gender.FEMALE, TwinStatus.NO, true, RelativeCode.DAU, null,
+                LivingStatus.YES, null);
+        checkRelativeAttributes(relatives, "son1 Name", Gender.MALE, TwinStatus.NO, false, RelativeCode.SON, null,
+                LivingStatus.NO, null);
+        checkRelativeAttributes(relatives, "son2 Name", Gender.MALE, TwinStatus.NO, true, RelativeCode.SON, null,
+                LivingStatus.UNKNOWN, null);
+        checkRelativeAttributes(relatives, "sister1 Name", Gender.FEMALE, TwinStatus.NO, false, RelativeCode.NSIS,
+                relatives.get("Mother Name"), null, null);
+        checkRelativeAttributes(relatives, "sister2 Name", Gender.FEMALE, TwinStatus.NO, true, RelativeCode.NSIS,
+                relatives.get("Mother Name"), null, null);
+        checkRelativeAttributes(relatives, "brother1 Name", Gender.MALE, null, false, RelativeCode.NBRO, relatives
+                .get("Mother Name"), null, null);
+        checkRelativeAttributes(relatives, "brother2 Name", Gender.MALE, null, true, RelativeCode.NBRO, relatives
+                .get("Mother Name"), null, null);
+        checkRelativeAttributes(relatives, "halfSister1 Name", Gender.FEMALE, TwinStatus.NO, false, RelativeCode.HSIS,
+                relatives.get("Mother Name"), LivingStatus.NO, null);
+        checkRelativeAttributes(relatives, "halfSister2 Name", Gender.FEMALE, TwinStatus.NO, true, RelativeCode.HSIS,
+                relatives.get("Father Name"), LivingStatus.YES, null);
+        checkRelativeAttributes(relatives, "halfBrother1 Name", Gender.MALE, TwinStatus.NO, false, RelativeCode.HBRO,
+                relatives.get("Mother Name"), LivingStatus.YES, null);
+        checkRelativeAttributes(relatives, "halfBrother2 Name", Gender.MALE, TwinStatus.NO, true, RelativeCode.HBRO,
+                relatives.get("Father Name"), LivingStatus.YES, null);
+        checkRelativeAttributes(relatives, "fathersSister1 Name", Gender.FEMALE, TwinStatus.NO, false,
+                RelativeCode.PAUNT, relatives.get("Paternal Grandfather Name"), LivingStatus.YES, null);
+        checkRelativeAttributes(relatives, "fathersSister2 Name", Gender.FEMALE, TwinStatus.NO, true,
+                RelativeCode.PAUNT, relatives.get("Paternal Grandfather Name"), null, null);
+        checkRelativeAttributes(relatives, "fathersBrother1 Name", Gender.MALE, null, false, RelativeCode.PUNCLE,
+                relatives.get("Paternal Grandfather Name"), null, null);
+        checkRelativeAttributes(relatives, "fathersBrother2 Name", Gender.MALE, null, true, RelativeCode.PUNCLE,
+                relatives.get("Paternal Grandfather Name"), null, null);
+        checkRelativeAttributes(relatives, "mothersSister1 Name", Gender.FEMALE, null, false, RelativeCode.MAUNT,
+                relatives.get("Maternal Grandfather Name"), null, null);
+        checkRelativeAttributes(relatives, "mothersSister2 Name", Gender.FEMALE, null, true, RelativeCode.MAUNT,
+                relatives.get("Maternal Grandfather Name"), null, null);
+        checkRelativeAttributes(relatives, "mothersBrother1 Name", Gender.MALE, TwinStatus.NO, false,
+                RelativeCode.MUNCLE, relatives.get("Maternal Grandfather Name"), null, null);
+        checkRelativeAttributes(relatives, "mothersBrother2 Name", Gender.MALE, TwinStatus.NO, true,
+                RelativeCode.MUNCLE, relatives.get("Maternal Grandfather Name"), null, null);
+        checkRelativeAttributes(relatives, "niece1 Name", Gender.FEMALE, TwinStatus.NO, false, RelativeCode.NIECE,
+                relatives.get("brother1 Name"), null, null);
+        checkRelativeAttributes(relatives, "niece2 Name", Gender.FEMALE, TwinStatus.NO, true, RelativeCode.NIECE,
+                relatives.get("sister1 Name"), null, null);
+        checkRelativeAttributes(relatives, "nephew1 Name", Gender.MALE, TwinStatus.NO, false, RelativeCode.NEPHEW,
+                relatives.get("brother2 Name"), null, null);
+        checkRelativeAttributes(relatives, "nephew2 Name", Gender.MALE, TwinStatus.NO, true, RelativeCode.NEPHEW,
+                relatives.get("sister2 Name"), null, null);
+        checkRelativeAttributes(relatives, "femaleCousin1 Name", Gender.FEMALE, TwinStatus.NO, false,
+                RelativeCode.PCOUSN, relatives.get("fathersBrother1 Name"), null, null);
+        checkRelativeAttributes(relatives, "femaleCousin2 Name", Gender.FEMALE, TwinStatus.NO, true,
+                RelativeCode.PCOUSN, relatives.get("fathersSister1 Name"), null, null);
+        checkRelativeAttributes(relatives, "maleCousin1 Name", Gender.MALE, TwinStatus.NO, false, RelativeCode.MCOUSN,
+                relatives.get("mothersBrother1 Name"), null, null);
+        checkRelativeAttributes(relatives, "maleCousin2 Name", Gender.MALE, TwinStatus.NO, true, RelativeCode.MCOUSN,
+                relatives.get("mothersSister1 Name"), null, null);
+
         Map<String, Disease> userEnteredDiseases = FhhHttpSessionUtil.getUserEnteredDiseases();
         assertNull("User entered diseases are not null", userEnteredDiseases);
-        
+
     }
-	
-	private void checkAttributes(Person p, String name, Gender gender, TwinStatus twinStatus,
-	        boolean hasObservations) {
-	    List<ClinicalObservation> obs = p.getObservations();
-	    // In our import test the first of each relative has observations while the 2nd has none
-	    if (hasObservations) {
-	        // Test the 6 fixed diseases the legacy system handles
-	        assertTrue(obs.get(0).getDisease().getId() == DiseaseUtils.HEART_DISEASE_ID);
-	        assertEquals(AgeRange.INFANCY, obs.get(0).getAgeRange());
-	        assertTrue(obs.get(1).getDisease().getId() == DiseaseUtils.STROKE_ID);
-	        assertEquals(AgeRange.ADOLESCENCE, obs.get(1).getAgeRange());
-	        assertTrue(obs.get(2).getDisease().getId() == DiseaseUtils.DIABETES_ID);
-	        assertEquals(AgeRange.TWENTIES, obs.get(2).getAgeRange());
-	        // Diabetes should be set as an unmatched condition since legacy import did not collect Diabetes type
-	        // FHH defaults to Type 2 Diabetes, the most common, and displays a message to the user.
-	        assertTrue(obs.get(2).isUnmatchedCondition());
-	        assertTrue(obs.get(3).getDisease().getId() == DiseaseUtils.COLON_CANCER_ID);
-	        assertEquals(AgeRange.THIRTIES, obs.get(3).getAgeRange());
-	        assertTrue(obs.get(4).getDisease().getId() == DiseaseUtils.BREAST_CANCER_ID);
-	        assertEquals(AgeRange.UNKNOWN, obs.get(4).getAgeRange());
-	        int i = 5;
-	        if (Gender.FEMALE.equals(gender)) {
-	            assertTrue(obs.get(i).getDisease().getId() == DiseaseUtils.OVARIAN_CANCER_ID);
-	            assertEquals(AgeRange.UNKNOWN, obs.get(i).getAgeRange());
-	            i++;
-	        }
-	        // Test additional diseases entered for each individual relative
-	        assertTrue(obs.get(i).getDisease().getId() == DiseaseUtils.OTHER_DISEASE_ID);
-	        assertEquals(HTM_ADD_DISEASE1, obs.get(i).getDisease().getOriginalText());
-            assertEquals(AgeRange.INFANCY, obs.get(i).getAgeRange());
-            assertTrue(obs.get(i).isUnmatchedCondition());
-            
-            i++;
-            assertTrue(obs.get(i).getDisease().getId() == DiseaseUtils.OTHER_DISEASE_ID);
-            assertEquals(AgeRange.UNKNOWN, obs.get(i).getAgeRange());
-            assertEquals(HTM_ADD_DISEASE2, obs.get(i).getDisease().getOriginalText());
-            assertTrue(obs.get(i).isUnmatchedCondition());
-            
+
+    private void checkAttributes(Person p, String name, Gender gender, TwinStatus twinStatus, boolean hasObservations) {
+        List<ClinicalObservation> obs = p.getObservations();
+        // In our import test the first of each relative has observations while the 2nd has none
+        if (hasObservations) {
+            Map<String, ClinicalObservation> codeToObsMap = new HashMap<String, ClinicalObservation>();
+            for (ClinicalObservation currObs : obs) {
+                if (currObs.getDisease().getCode() != null) {
+                    codeToObsMap.put(currObs.getDisease().getCode(), currObs);
+                } else {
+                    codeToObsMap.put(currObs.getDisease().getOriginalText(), currObs);
+                }
+
+            }
+
+            // Test the 6 fixed diseases the legacy system handles
+            ClinicalObservation currObservation = codeToObsMap.get(DiseaseUtils.HEART_DISEASE_CODE);
+            assertEquals(currObservation.getDisease().getCode(), DiseaseUtils.HEART_DISEASE_CODE);
+            assertEquals(AgeRangeEnum.INFANCY, currObservation.getAgeRange());
+
+            currObservation = codeToObsMap.get(DiseaseUtils.STROKE_CODE);
+            assertTrue(currObservation.getDisease().getCode() == DiseaseUtils.STROKE_CODE);
+            assertEquals(AgeRangeEnum.ADOLESCENCE, currObservation.getAgeRange());
+
+            currObservation = codeToObsMap.get(DiseaseUtils.DIABETES_CODE);
+            assertTrue(currObservation.getDisease().getCode() == DiseaseUtils.DIABETES_CODE);
+            assertEquals(AgeRangeEnum.TWENTIES, currObservation.getAgeRange());
+            // Diabetes should be set as an unmatched condition since legacy import did not collect Diabetes type
+            // FHH defaults to Type 2 Diabetes, the most common, and displays a message to the user.
+            assertTrue(currObservation.isUnmatchedCondition());
+
+            currObservation = codeToObsMap.get(DiseaseUtils.COLON_CANCER_CODE);
+            assertTrue(currObservation.getDisease().getCode() == DiseaseUtils.COLON_CANCER_CODE);
+            assertEquals(AgeRangeEnum.THIRTIES, currObservation.getAgeRange());
+
+            currObservation = codeToObsMap.get(DiseaseUtils.BREAST_CANCER_CODE);
+            assertTrue(currObservation.getDisease().getCode() == DiseaseUtils.BREAST_CANCER_CODE);
+            assertEquals(AgeRangeEnum.UNKNOWN, currObservation.getAgeRange());
+
+            if (Gender.FEMALE.equals(gender)) {
+                currObservation = codeToObsMap.get(DiseaseUtils.OVARIAN_CANCER_CODE);
+                assertTrue(currObservation.getDisease().getCode() == DiseaseUtils.OVARIAN_CANCER_CODE);
+                assertEquals(AgeRangeEnum.UNKNOWN, currObservation.getAgeRange());
+            }
+            // Test additional diseases entered for each individual relative
+            currObservation = codeToObsMap.get(HTM_ADD_DISEASE1);
+            assertNull(currObservation.getDisease().getCode());
+            assertEquals(HTM_ADD_DISEASE1, currObservation.getDisease().getOriginalText());
+            assertEquals(AgeRangeEnum.INFANCY, currObservation.getAgeRange());
+            assertTrue(currObservation.isUnmatchedCondition());
+
+            currObservation = codeToObsMap.get(HTM_ADD_DISEASE2);
+            assertNull(currObservation.getDisease().getCode());
+            assertEquals(AgeRangeEnum.UNKNOWN, currObservation.getAgeRange());
+            assertEquals(HTM_ADD_DISEASE2, currObservation.getDisease().getOriginalText());
+            assertTrue(currObservation.isUnmatchedCondition());
+
             // Test additional disease added for the entire family
-            i++;
-            assertTrue(obs.get(i).getDisease().getId() == DiseaseUtils.OTHER_DISEASE_ID);
-            assertEquals(AgeRange.INFANCY, obs.get(i).getAgeRange());
-            assertEquals(HTM_FAMILY_DISEASE1, obs.get(i).getDisease().getOriginalText());
-            assertTrue(obs.get(i).isUnmatchedCondition());
-            
+            currObservation = codeToObsMap.get(HTM_FAMILY_DISEASE1);
+            assertNull(currObservation.getDisease().getCode());
+            assertEquals(AgeRangeEnum.INFANCY, currObservation.getAgeRange());
+            assertEquals(HTM_FAMILY_DISEASE1, currObservation.getDisease().getOriginalText());
+            assertTrue(currObservation.isUnmatchedCondition());
+
             // Test additional disease added for the entire family
-            i++;
-            assertTrue(obs.get(i).getDisease().getId() == DiseaseUtils.OTHER_DISEASE_ID);
-            assertEquals(AgeRange.UNKNOWN, obs.get(i).getAgeRange());
-            assertEquals(HTM_FAMILY_DISEASE2, obs.get(i).getDisease().getOriginalText());
-            assertTrue(obs.get(i).isUnmatchedCondition());
-	    } else {
-	        assertEquals(0, obs.size());
-	    }
-        
+            currObservation = codeToObsMap.get(HTM_FAMILY_DISEASE2);
+            assertNull(currObservation.getDisease().getCode());
+            assertEquals(AgeRangeEnum.UNKNOWN, currObservation.getAgeRange());
+            assertEquals(HTM_FAMILY_DISEASE2, currObservation.getDisease().getOriginalText());
+            assertTrue(currObservation.isUnmatchedCondition());
+        } else {
+            assertEquals(0, obs.size());
+        }
+
         assertEquals(name, p.getName());
         assertEquals(gender, p.getGender());
-        if (twinStatus == null) {
-            assertNull(p.getTwinStatus());
+        if (twinStatus != null) {
+            assertEquals(twinStatus, p.getTwinStatus());
         }
-        assertEquals(twinStatus, p.getTwinStatus());
-	}
-	
-	private void checkRelativeAttributes(Relative r, String name, Gender gender, TwinStatus twinStatus,
-            boolean hasObservations, RelativeCode code, Relative parent, LivingStatus livingStatus, AgeRange ageOfDeath) {
-	    checkAttributes(r, name, gender, twinStatus, hasObservations);
-	    if (parent == null) {
-	        assertNull(r.getMother());
-	        assertNull(r.getFather());
-	    } else if (parent.getCodeEnum().isMale()) {
-	        assertSame(parent, r.getFather());
-	    } else {
-	        assertSame(parent, r.getMother());
-	    }
-	    assertEquals(code.toString(), r.getCode());
-	    
-	    if (livingStatus != null) {
-	        assertTrue(livingStatus.toString().equals(r.getLivingStatus()));
-	    } else {
-	        assertNull(r.getLivingStatus());
-	    }
-	    if (ageOfDeath != null) {
-	        assertTrue(AgeRange.SIXTIES.equals(ageOfDeath));
-	        r.getCauseOfDeath().getOriginalText().equals(HTM_NEW_DISEASE);
-	    }
-	}
-	
-	private void checkAdditionalDiseasesInSession() {
-	    Map<String, Disease> userEnteredDiseases = FhhHttpSessionUtil.getUserEnteredDiseases();
-	    assertTrue(userEnteredDiseases.containsKey(HTM_ADD_DISEASE1));
-	    assertTrue(userEnteredDiseases.containsKey(HTM_ADD_DISEASE2));
-	    assertTrue(userEnteredDiseases.containsKey(HTM_FAMILY_DISEASE1));
-	}
-	
-	
+    }
 
-	@Test
+    private void checkRelativeAttributes(Map<String, Relative> relatives, String name, Gender gender,
+            TwinStatus twinStatus, boolean hasObservations, RelativeCode code, Relative parent,
+            LivingStatus livingStatus, AgeRangeEnum ageOfDeath) {
+        Relative r = relatives.get(name);
+        checkAttributes(r, name, gender, twinStatus, hasObservations);
+        if (parent == null) {
+            assertNull(r.getMother());
+            assertNull(r.getFather());
+        } else if (parent.getCodeEnum().isMale()) {
+            assertSame(parent, r.getFather());
+        } else {
+            assertSame(parent, r.getMother());
+        }
+        assertEquals(code.toString(), r.getCode());
+
+        if (livingStatus != null) {
+            assertTrue(livingStatus.toString().equals(r.getLivingStatus()));
+        } else {
+            assertNull(r.getLivingStatus());
+        }
+        if (ageOfDeath != null) {
+            assertTrue(AgeRangeEnum.SIXTIES.equals(ageOfDeath));
+            r.getCauseOfDeath().getOriginalText().equals(HTM_NEW_DISEASE);
+        }
+    }
+
+    private void checkAdditionalDiseasesInSession() {
+        Map<String, Disease> userEnteredDiseases = FhhHttpSessionUtil.getUserEnteredDiseases();
+        assertTrue(userEnteredDiseases.containsKey(HTM_ADD_DISEASE1));
+        assertTrue(userEnteredDiseases.containsKey(HTM_ADD_DISEASE2));
+        assertTrue(userEnteredDiseases.containsKey(HTM_FAMILY_DISEASE1));
+    }
+
+    @Test
     public void testRemoveRelative() {
-	    Person p = new Person();
-	    action.setPerson(p);
-	    Relative son = new Relative();
+        Person p = new Person();
+        action.setPerson(p);
+        Relative son = new Relative();
         Relative grandson = new Relative();
         Relative aunt = new Relative();
         Relative cousin = new Relative();
+        Relative unrelatedRelative = new Relative();
         grandson.setFather(son);
         cousin.setMother(aunt);
-        son.setCode(RelativeCode.SON.toString());
+        son.setCodeEnum(RelativeCode.SON);
         p.getRelatives().add(son);
-        grandson.setCode(RelativeCode.GRNSON.toString());
+        grandson.setCodeEnum(RelativeCode.GRNSON);
         p.getRelatives().add(grandson);
-        aunt.setCode(RelativeCode.AUNT.toString());
+        aunt.setCodeEnum(RelativeCode.AUNT);
         p.getRelatives().add(aunt);
-        cousin.setCode(RelativeCode.COUSN.toString());
+        cousin.setCodeEnum(RelativeCode.COUSN);
         p.getRelatives().add(cousin);
-	    
-	    // Test remove relative for case where relative removed is female (Mother) with descendants
-	    action.setRemoveRelativeId(REMOVE_AUNT_ID);
-	    assertEquals(REMOVE_AUNT_ID, action.getRemoveRelativeId());
-	    assertEquals(FAMILY_HISTORY_ACTION, action.removeRelative());
-	    
-	    assertEquals(2, p.getRelatives().size());
-	    assertFalse(p.getRelatives().contains(aunt));
-	    assertFalse(p.getRelatives().contains(cousin));
-	    
-	    // Test remove relative for case where relative removed is male (Father) with descendants
-	    action.setRemoveRelativeId(REMOVE_SON_ID);
+        p.getUnrelatedRelatives().add(unrelatedRelative);
+
+        // Test remove relative for case where relative removed is female (Mother) with descendants
+        action.setRemoveRelativeId(aunt.getUuid().toString());
+        assertEquals(aunt.getUuid().toString(), action.getRemoveRelativeId());
         assertEquals(FAMILY_HISTORY_ACTION, action.removeRelative());
-        
+
+        assertEquals(2, p.getRelatives().size());
+        assertFalse(p.getRelatives().contains(aunt));
+        assertFalse(p.getRelatives().contains(cousin));
+
+        // Test remove relative for case where relative removed is male (Father) with descendants
+        action.setRemoveRelativeId(son.getUuid().toString());
+        assertEquals(FAMILY_HISTORY_ACTION, action.removeRelative());
+
         assertEquals(0, p.getRelatives().size());
         assertFalse(p.getRelatives().contains(son));
         assertFalse(p.getRelatives().contains(grandson));
-	}
+        
+        action.setRemoveRelativeId(unrelatedRelative.getUuid().toString());
+        assertEquals(unrelatedRelative.getUuid().toString(), action.getRemoveRelativeId());
+        assertEquals(FAMILY_HISTORY_ACTION, action.removeRelative());
+
+        Assert.assertNull(p.getRelative(unrelatedRelative.getUuid()));
+    }
+
+    @Test
+    public void testLoadAndSerialize() throws Exception {
+        FhhHttpSessionUtil.getSession().setAttribute(DUMMY_KEY, new Person());
+        FhhHttpSessionUtil.getSession().setAttribute(FhhHttpSessionUtil.ROOT_KEY, DUMMY_KEY);
+        action.setImportedFile(new File(this.getClass().getResource(BASIC_IMPORT_TEST).getPath()));
+
+        assertEquals(IMPORT_COMPLETE, action.importXmlFile());
+        Person person = action.getPerson();
+        byte[] serializedPerson = SerializationUtils.serialize(person);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(
+                    new File(TestProperties.getWebBaseDir() + "/target" + BASIC_IMPORT_TEST + ".ser"));
+            fos.write(serializedPerson);
+        } finally {
+            if (fos != null) {
+                IOUtils.closeQuietly(fos);
+            }
+        }
+    }
 }

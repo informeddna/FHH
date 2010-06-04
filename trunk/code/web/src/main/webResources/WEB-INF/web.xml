@@ -27,6 +27,14 @@
 
     <!-- Filters -->
     <filter>
+        <filter-name>sessionFixationFilter</filter-name>
+        <filter-class>gov.hhs.fhh.web.filter.SessionFixationProtectionFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>sessionFixationMigrationFilter</filter-name>
+        <filter-class>gov.hhs.fhh.web.filter.SessionFixationMigrateSessionProtectionFilter</filter-class>
+    </filter>
+    <filter>
         <filter-name>usernameFilter</filter-name>
         <filter-class>com.fiveamsolutions.nci.commons.web.filter.UsernameFilter</filter-class>
     </filter>
@@ -46,7 +54,27 @@
         <filter-name>action2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
     </filter>
+    <filter>
+        <filter-name>mshvMagic</filter-name>
+        <filter-class>gov.hhs.fhh.web.filter.MSHealthVaultFilter</filter-class>
+    </filter>
 
+    <filter-mapping>
+        <filter-name>mshvMagic</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>sessionFixationFilter</filter-name>
+        <url-pattern>*.action</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>sessionFixationMigrationFilter</filter-name>
+        <url-pattern>/home.action</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>usernameFilter</filter-name>
         <url-pattern>*.action</url-pattern>
@@ -101,7 +129,7 @@
             <url-pattern>/protected/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>glassboxuser</role-name>
+            <role-name>mfhpuser</role-name>
         </auth-constraint>
     </security-constraint>
 
@@ -114,7 +142,7 @@
     </login-config>
 
     <security-role>
-        <description>glassboxuser</description>
-        <role-name>glassboxuser</role-name>
+        <description>mfhpuser</description>
+        <role-name>mfhpuser</role-name>
     </security-role>
 </web-app>

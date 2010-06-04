@@ -18,7 +18,6 @@ PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
         <property name="hibernate.cache.provider_class">net.sf.ehcache.hibernate.SingletonEhCacheProvider</property>
         <property name="hibernate.cache.use_query_cache">true</property>        
 
-        <mapping class="gov.hhs.fhh.data.Gender" />
         <mapping class="gov.hhs.fhh.data.Race" />
         <mapping class="gov.hhs.fhh.data.AsianRaceType" />
         <mapping class="gov.hhs.fhh.data.NativeHawaiianRaceType" />

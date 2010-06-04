@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -38,27 +38,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.Disease;
-import gov.hhs.fhh.data.Gender;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.data.util.DiseaseUtils;
-import gov.hhs.fhh.data.util.FormatUtils;
+import gov.hhs.fhh.data.util.PersonUtils;
+import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
-import gov.hhs.fhh.web.util.FhhUtils;
+import gov.hhs.fhh.web.util.RelativeToRelateTo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
 
 /**
  * @author bpickeral
@@ -76,16 +79,11 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
     private final Disease DUMMY_DISEASE = new Disease();
     private final Disease DUMMY_DISEASE2 = new Disease();
     private final String DUMMY_DISEASE_VALUE = "current";
-    private final String DUMMY_ID0 = "0";
-    private final String DUMMY_ID1 = "1";
-    private final String DUMMY_ID2 = "2";
-    private final String DUMMY_ID3 = "3";
-    private final String DUMMY_ID4 = "4";
     private final String DUMMY_NAME = "name";
     private final String LIVING_RELATIVE_DOB_STR = "09/07/1968";
     private final GregorianCalendar LIVING_RELATIVE_DOB = new GregorianCalendar(1968, 8, 7, 0, 0, 0);
     private final Integer LIVING_RELATIVE2_YEAR = 1968;
-    private final String DUMMY_CODE = RelativeCode.MAUNT.toString();
+    private final RelativeCode DUMMY_CODE = RelativeCode.MAUNT;
     private final Integer FIFTY = 50;
     private static final String DUMMY_DISEASE_ORG_TEXT = "User entered disease";
     private static final String OTHER_DISEASE = "Other Disease type";
@@ -95,7 +93,9 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
     @Test
     public void testPrepare() {
         DUMMY_DISEASE.setId((long) 1);
+        DUMMY_DISEASE.setCode(DiseaseUtils.BREAST_CANCER_CODE);
         DUMMY_DISEASE2.setId((long) 2);
+        DUMMY_DISEASE2.setCode(DiseaseUtils.COLON_CANCER_CODE);
 
         Person p = new Person();
         
@@ -110,59 +110,58 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         // Load Deceased Relative
         Relative deceasedRelative = new Relative();
         deceasedRelative.setCauseOfDeath(DUMMY_DISEASE);
-        deceasedRelative.setAgeAtDeath(AgeRange.FORTIES);
-        deceasedRelative.setCode(RelativeCode.AUNT.toString());
+        deceasedRelative.setAgeAtDeath(AgeRangeEnum.FORTIES);
+        deceasedRelative.setCodeEnum(RelativeCode.AUNT);
         p.getRelatives().add(deceasedRelative);
-        action.setRelativeId(DUMMY_ID0);
-        assertEquals(DUMMY_ID0, action.getRelativeId());
+        action.setRelativeId(deceasedRelative.getUuid().toString());
+        assertEquals(deceasedRelative.getUuid().toString(), action.getRelativeId());
 
         action.prepare();
         assertEquals(DUMMY_DISEASE, action.getCauseOfDeath());
         assertFalse(action.isCodSubTypesExist());
         assertEquals(Gender.FEMALE, deceasedRelative.getGender());
         assertNull(action.getSelectedCODSubType());
-        assertEquals(DiseaseUtils.generateDiseaaseTableId(DUMMY_DISEASE, AgeRange.FORTIES), action.getLastAddedCOD());
+        assertEquals(DiseaseUtils.generateDiseaaseTableId(DUMMY_DISEASE, AgeRangeEnum.FORTIES), action.getLastAddedCOD());
 
         // Load Deceased Relative sub disease
         Relative deceasedRelative2 = new Relative();
         DUMMY_DISEASE2.setParent(DUMMY_DISEASE);
         deceasedRelative2.setCauseOfDeath(DUMMY_DISEASE2);
-        deceasedRelative2.setAgeAtDeath(AgeRange.FORTIES);
-        deceasedRelative2.setCode(RelativeCode.MCOUSN.toString());
+        deceasedRelative2.setAgeAtDeath(AgeRangeEnum.FORTIES);
+        deceasedRelative2.setCodeEnum(RelativeCode.MCOUSN);
         p.getRelatives().add(deceasedRelative2);
-        action.setRelativeId(DUMMY_ID1);
+        action.setRelativeId(deceasedRelative2.getUuid().toString());
 
         action.prepare();
         assertEquals(DUMMY_DISEASE, action.getCauseOfDeath());
         assertEquals(DUMMY_DISEASE2, action.getSelectedCODSubType());
         assertNull(deceasedRelative2.getGender());
-        assertEquals(DiseaseUtils.generateDiseaaseTableId(DUMMY_DISEASE2, AgeRange.FORTIES), action.getLastAddedCOD());
+        assertEquals(DiseaseUtils.generateDiseaaseTableId(DUMMY_DISEASE2, AgeRangeEnum.FORTIES), action.getLastAddedCOD());
         assertTrue(action.isCodSubTypesExist());
 
         // Load Deceased Relative with "Other" as cause of death
         DUMMY_DISEASE.setOriginalText(DUMMY_DISEASE_ORG_TEXT);
-        DUMMY_DISEASE.setId(DiseaseUtils.OTHER_DISEASE_ID);
-        DUMMY_DISEASE.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        DUMMY_DISEASE.setCode(null);
         Relative deceasedRelativeOther = new Relative();
         deceasedRelativeOther.setCauseOfDeath(DUMMY_DISEASE);
-        deceasedRelativeOther.setAgeAtDeath(AgeRange.ADOLESCENCE);
-        deceasedRelativeOther.setCode(RelativeCode.MUNCLE.toString());
+        deceasedRelativeOther.setAgeAtDeath(AgeRangeEnum.ADOLESCENCE);
+        deceasedRelativeOther.setCodeEnum(RelativeCode.MUNCLE);
         p.getRelatives().add(deceasedRelativeOther);
-        action.setRelativeId(DUMMY_ID2);
+        action.setRelativeId(deceasedRelativeOther.getUuid().toString());
 
         action.prepare();
         assertEquals(DUMMY_DISEASE, action.getCauseOfDeath());
         assertEquals(DUMMY_DISEASE_ORG_TEXT, action.getOtherCOD());
         assertEquals(Gender.MALE, deceasedRelativeOther.getGender());
-        assertEquals(DiseaseUtils.generateDiseaaseTableId(DUMMY_DISEASE, AgeRange.ADOLESCENCE), action.getLastAddedCOD());
+        assertEquals(DiseaseUtils.generateDiseaaseTableId(DUMMY_DISEASE, AgeRangeEnum.ADOLESCENCE), action.getLastAddedCOD());
         assertFalse(action.isCodSubTypesExist());
 
         // Load living relative with DOB set
         Relative livingRelative = new Relative();
         livingRelative.setBirthTime(LIVING_RELATIVE_DOB_STR);
-        livingRelative.setCode(RelativeCode.MUNCLE.toString());
+        livingRelative.setCodeEnum(RelativeCode.MUNCLE);
         p.getRelatives().add(livingRelative);
-        action.setRelativeId(DUMMY_ID3);
+        action.setRelativeId(livingRelative.getUuid().toString());
 
         action.prepare();
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
@@ -171,10 +170,10 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         // Load living relative with birth year set
         Relative livingRelative2 = new Relative();
         livingRelative2.setBirthTime(LIVING_RELATIVE2_YEAR.toString());
-        livingRelative2.setCode(RelativeCode.MUNCLE.toString());
+        livingRelative2.setCodeEnum(RelativeCode.MUNCLE);
         livingRelative2.setGender(Gender.FEMALE);
         p.getRelatives().add(livingRelative2);
-        action.setRelativeId(DUMMY_ID4);
+        action.setRelativeId(livingRelative2.getUuid().toString());
 
         action.prepare();
         GregorianCalendar calendar = new GregorianCalendar();
@@ -187,23 +186,26 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
     public void testSubmitRelative() {
         // Test for disease with app display not null
         DUMMY_DISEASE.setId((long) 1);
+        DUMMY_DISEASE.setCode(DiseaseUtils.BREAST_CANCER_CODE);
         DUMMY_DISEASE2.setId((long) 2);
+        DUMMY_DISEASE2.setCode(DiseaseUtils.COLON_CANCER_CODE);
         DUMMY_DISEASE2.setDisplayName("");
 
         // Test adding living relative with age set
         action.setPerson(new Person());
+        FhhUtils.addRequiredRelativesToTree(action.getPerson());
         action.setRelative(new Relative());
         action.getRelative().setGender(Gender.MALE);
-        action.setSelectedCode(DUMMY_CODE);
+        action.setSelectedCode(DUMMY_CODE.name());
         action.setRelativeAge(String.valueOf(FIFTY));
-        assertEquals(DUMMY_CODE, action.getSelectedCode());
+        assertEquals(DUMMY_CODE.name(), action.getSelectedCode());
         assertEquals(FIFTY.toString(), action.getRelativeAge());
         // Test unmatched condition should be set to false after submit
         action.getRelative().setUnmatchedCondition(true);
 
         assertEquals(SUBMIT_ACTION, action.submitRelative());
-        Relative currRelative = action.getPerson().getRelatives().get(0);
-        assertEquals(DUMMY_CODE, currRelative.getCode());
+        Relative currRelative = action.getPerson().getRelatives().get(6);
+        assertEquals(DUMMY_CODE, currRelative.getCodeEnum());
         GregorianCalendar calendar = new GregorianCalendar();
         assertEquals(currRelative.getBirthTime(),
                 Integer.toString(calendar.get(Calendar.YEAR) - Integer.valueOf(FIFTY)));
@@ -216,24 +218,24 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         action.getRelative().setGender(Gender.MALE);
         action.setDateOfBirthString(LIVING_RELATIVE_DOB_STR);
         // Estimated age should be overwritten
-        action.getRelative().setEstimatedAgeRange(AgeRange.FIFTIES);
+        action.getRelative().setEstimatedAgeRange(AgeRangeEnum.FIFTIES);
         action.setRelativeAge(String.valueOf(FIFTY));
         assertEquals(SUBMIT_ACTION, action.submitRelative());
 
-        currRelative = action.getPerson().getRelatives().get(1);
+        currRelative = action.getPerson().getRelatives().get(7);
         assertEquals(LIVING_RELATIVE_DOB_STR, currRelative.getBirthTime());
         assertNull(action.getRelative().getEstimatedAgeRange());
         
         // Test adding living relative with estimated age set
         action.setRelative(new Relative());
         action.getRelative().setGender(Gender.MALE);
-        action.getRelative().setEstimatedAgeRange(AgeRange.FIFTIES);
+        action.getRelative().setEstimatedAgeRange(AgeRangeEnum.FIFTIES);
         action.setDateOfBirthString(null);
         action.setRelativeAge(null);
         assertEquals(SUBMIT_ACTION, action.submitRelative());
 
-        currRelative = action.getPerson().getRelatives().get(2);
-        assertEquals(AgeRange.FIFTIES, currRelative.getEstimatedAgeRange());
+        currRelative = action.getPerson().getRelatives().get(8);
+        assertEquals(AgeRangeEnum.FIFTIES, currRelative.getEstimatedAgeRange());
 
         // Test adding deceased relative
         action.setRelative(new Relative());
@@ -244,7 +246,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         assertEquals(DUMMY_DISEASE, action.getCauseOfDeath());
 
         assertEquals(SUBMIT_ACTION, action.submitRelative());
-        currRelative = action.getPerson().getRelatives().get(3);
+        currRelative = action.getPerson().getRelatives().get(9);
         assertNull(currRelative.getBirthTime());
         assertEquals(DUMMY_DISEASE, currRelative.getCauseOfDeath());
 
@@ -252,14 +254,14 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         action.setRelative(new Relative());
         action.getRelative().setGender(Gender.MALE);
         DUMMY_DISEASE.setDisplayName(OTHER_DISEASE);
-        DUMMY_DISEASE.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        DUMMY_DISEASE.setCode(null);
         action.setCauseOfDeath(DUMMY_DISEASE);
         action.setOtherCOD(DUMMY_DISEASE_ORG_TEXT);
         assertEquals(DUMMY_DISEASE_ORG_TEXT, action.getOtherCOD());
 
         assertEquals(SUBMIT_ACTION, action.submitRelative());
         assertTrue(FhhHttpSessionUtil.getUserEnteredDiseases().containsKey(DUMMY_DISEASE_ORG_TEXT));
-        currRelative = action.getPerson().getRelatives().get(4);
+        currRelative = action.getPerson().getRelatives().get(10);
         assertEquals(currRelative.getCauseOfDeath().getOriginalText(), DUMMY_DISEASE_ORG_TEXT);
 
         // Test adding a deceased relative with COD sub type
@@ -273,23 +275,24 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         assertTrue(action.isCodSubTypesExist());
 
         assertEquals(SUBMIT_ACTION, action.submitRelative());
-        currRelative = action.getPerson().getRelatives().get(5);
+        currRelative = action.getPerson().getRelatives().get(11);
         assertEquals(DUMMY_DISEASE2, currRelative.getCauseOfDeath());
 
         // Test edit relative
-        action.setRelativeId(DUMMY_ID0);
+        action.setRelativeId(action.getRelative().getUuid().toString());
         assertEquals(SUBMIT_ACTION, action.submitRelative());
-        assertEquals(6, action.getPerson().getRelatives().size());
+        assertEquals(12, action.getPerson().getRelatives().size());
     }
     
     @Test
     public void testSubmitRelativeValidation() {
         DUMMY_DISEASE.setId((long) 1);
+        DUMMY_DISEASE.setCode(DUMMY_DISEASE_VALUE);
         
         // Test adding a deceased relative with invalid DOB
         action.setRelative(new Relative());
         action.setPerson(new Person());
-        action.setSelectedCode(DUMMY_CODE);
+        action.setSelectedCode(DUMMY_CODE.name());
         action.getRelative().setGender(Gender.MALE);
         action.setDateOfBirthString("invalid");
         
@@ -314,24 +317,23 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         Person p = new Person();
         action.setPerson(p);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(0).setCode(RelativeCode.MAUNT.toString());
+        p.getRelatives().get(0).setCodeEnum(RelativeCode.MAUNT);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(1).setCode(RelativeCode.NSIS.toString());
+        p.getRelatives().get(1).setCodeEnum(RelativeCode.NSIS);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(2).setCode(RelativeCode.HSIS.toString());
+        p.getRelatives().get(2).setCodeEnum(RelativeCode.HSIS);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(3).setCode(RelativeCode.DAU.toString());
+        p.getRelatives().get(3).setCodeEnum(RelativeCode.DAU);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(4).setCode(RelativeCode.NMTH.toString());
+        p.getRelatives().get(4).setCodeEnum(RelativeCode.NMTH);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(5).setCode(RelativeCode.MUNCLE.toString());
+        p.getRelatives().get(5).setCodeEnum(RelativeCode.MUNCLE);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(6).setCode(RelativeCode.NBRO.toString());
+        p.getRelatives().get(6).setCodeEnum(RelativeCode.NBRO);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(7).setCode(RelativeCode.HBRO.toString());
+        p.getRelatives().get(7).setCodeEnum(RelativeCode.HBRO);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(8).setCode(RelativeCode.SON.toString());
-
+        p.getRelatives().get(8).setCodeEnum(RelativeCode.SON);
 
         // Test setting relative parent
         testSetRelativeForCode(p, 0, true);
@@ -345,20 +347,6 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         testSetRelativeForCode(p, 8, false);
 
         action.setSelectedParentIndex(null);
-
-        // Test setting roots parent
-        action.setRelative(new Relative());
-        action.getRelative().setGender(Gender.MALE);
-        action.setSelectedCode(RelativeCode.NMTH.toString());
-        assertEquals(SUBMIT_ACTION, action.submitRelative());
-        assertEquals(action.getRelative(), action.getPerson().getMother());
-
-        action.setRelative(new Relative());
-        action.getRelative().setGender(Gender.MALE);
-        action.setSelectedCode(RelativeCode.NFTH.toString());
-        assertEquals(SUBMIT_ACTION, action.submitRelative());
-        assertEquals(action.getRelative(), action.getPerson().getFather());
-
     }
     /**
      * Helper method for testSetRelativeParent.
@@ -370,7 +358,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         Relative rel = new Relative();
         rel.setGender(Gender.MALE);
         action.setRelative(rel);
-        action.setSelectedParentIndex(i);
+        action.setSelectedParentIndex(p.getRelatives().get(i).getUuid().toString());
         assertEquals(SUBMIT_ACTION, action.submitRelative());
         if (maternal) {
             assertEquals(p.getRelatives().get(i), rel.getMother());
@@ -406,25 +394,26 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         p = new Person();
         action.setPerson(p);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(0).setCode(RelativeCode.MAUNT.toString());
+        p.getRelatives().get(0).setCodeEnum(RelativeCode.MAUNT);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(1).setCode(RelativeCode.MUNCLE.toString());
+        p.getRelatives().get(1).setCodeEnum(RelativeCode.MUNCLE);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(2).setCode(RelativeCode.PAUNT.toString());
-
+        p.getRelatives().get(2).setCodeEnum(RelativeCode.PAUNT);
+        
         action.setSelectedCode(RelativeCode.COUSN.toString());
-        action.setSelectedParentIndex(0);
-        assertEquals(0, action.getSelectedParentIndex().intValue());
+        action.setSelectedParentIndex(p.getRelatives().get(0).getUuid().toString());
+        assertNotNull(action.getPerson().getRelative(UUID.fromString(action.getSelectedParentIndex())));
+        assertEquals(p.getRelatives().get(0).getUuid().toString(), action.getSelectedParentIndex());
         assertEquals(SUCCESS, action.addPerson());
         assertEquals(RelativeCode.MCOUSN.toString(), action.getSelectedCode());
 
         action.setSelectedCode(RelativeCode.COUSN.toString());
-        action.setSelectedParentIndex(1);
+        action.setSelectedParentIndex(p.getRelatives().get(1).getUuid().toString());
         assertEquals(SUCCESS, action.addPerson());
         assertEquals(RelativeCode.MCOUSN.toString(), action.getSelectedCode());
 
         action.setSelectedCode(RelativeCode.COUSN.toString());
-        action.setSelectedParentIndex(2);
+        action.setSelectedParentIndex(p.getRelatives().get(2).getUuid().toString());
         assertEquals(SUCCESS, action.addPerson());
         assertEquals(RelativeCode.PCOUSN.toString(), action.getSelectedCode());
     }
@@ -433,7 +422,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         Person p = new Person();
         action.setPerson(p);
         p.getRelatives().add(new Relative());
-        p.getRelatives().get(0).setCode(RelativeCode.MAUNT.toString());
+        p.getRelatives().get(0).setCodeEnum(RelativeCode.MAUNT);
         p.getRelatives().add(new Relative());
         
         // Test add person when parent is not selected
@@ -506,10 +495,10 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
 
         // Test case where maunt exists, also test for when 2 relatives of the same
         // type exist (branch coverage)
-        relative.setCode(RelativeCode.MAUNT.toString());
+        relative.setCodeEnum(RelativeCode.MAUNT);
         p.getRelatives().add(relative);
         relative = new Relative();
-        relative.setCode(RelativeCode.MAUNT.toString());
+        relative.setCodeEnum(RelativeCode.MAUNT);
         p.getRelatives().add(relative);
         action.setExistingRelativeCodes(FhhUtils.getExistingCodes(p.getRelatives()));
         assertEquals(1, action.getExistingRelativeCodes().size());
@@ -592,7 +581,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
     private void addAndTestSingleCode(Person p, RelativeCode code) {
         Relative relative = new Relative();
         p.getRelatives().clear();
-        relative.setCode(code.toString());
+        relative.setCodeEnum(code);
         p.getRelatives().add(relative);
         action.setExistingRelativeCodes(FhhUtils.getExistingCodes(p.getRelatives()));
     }
@@ -730,10 +719,8 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         List<Relative> parents = new ArrayList<Relative>();
         parents.add(new Relative());
         parents.get(0).setName(DUMMY_NAME);
-        parents.get(0).setId(0L);
         parents.add(new Relative());
-        parents.get(1).setCode(RelativeCode.NMTH.toString());
-        parents.get(1).setId(1L);
+        parents.get(1).setCodeEnum(RelativeCode.NMTH);
         action.setParents(parents);
         assertEquals(2, action.getParents().size());
         assertNotNull(action.getParentsAsXml());
@@ -747,7 +734,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         action.getRelative().setGender(Gender.MALE);
         action.setSelectedCode(RelativeCode.NMTH.toString());
         DUMMY_DISEASE.setDisplayName(OTHER_DISEASE);
-        DUMMY_DISEASE.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        DUMMY_DISEASE.setCode(null);
         action.setCauseOfDeath(DUMMY_DISEASE);
         action.setOtherCOD(DUMMY_DISEASE_ORG_TEXT);
         assertEquals(DUMMY_DISEASE_ORG_TEXT, action.getOtherCOD());
@@ -762,7 +749,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         action.getRelative().setGender(Gender.MALE);
         action.setSelectedCode(RelativeCode.NMTH.toString());
         DUMMY_DISEASE.setDisplayName(OTHER_DISEASE);
-        DUMMY_DISEASE.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        DUMMY_DISEASE.setCode(null);
         action.setCauseOfDeath(DUMMY_DISEASE);
         action.setOtherCOD(DUMMY_DISEASE_ORG_TEXT);
         
@@ -781,7 +768,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         action.getRelative().setGender(Gender.MALE);
         action.setSelectedCode(RelativeCode.NMTH.toString());
         DUMMY_DISEASE.setDisplayName(OTHER_DISEASE);
-        DUMMY_DISEASE.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        DUMMY_DISEASE.setCode(null);
         action.setCauseOfDeath(DUMMY_DISEASE);
         action.setOtherCOD(DUMMY_DISEASE_ORG_TEXT);
         assertEquals(DUMMY_DISEASE_ORG_TEXT, action.getOtherCOD());
@@ -793,7 +780,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         action.setRelative(new Relative());
         action.setSelectedCode(RelativeCode.NMTH.toString());
         DUMMY_DISEASE.setDisplayName(OTHER_DISEASE);
-        DUMMY_DISEASE.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        DUMMY_DISEASE.setCode(null);
         action.setCauseOfDeath(DUMMY_DISEASE);
         action.setOtherCOD("");
         
@@ -805,6 +792,179 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
         
     }
     
+    
+    @Test
+    public void testRelateUnrelatedRelativePgrfthMale(){
+        Person p = new Person();
+        FhhUtils.addRequiredRelativesToTree(p);
+        Relative unrelatedRelative = new Relative();
+        unrelatedRelative.setCodeEnum(RelativeCode.UNKNWN);
+        p.getUnrelatedRelatives().add(unrelatedRelative);
+
+        action.setPerson(p);
+        action.setRelative(unrelatedRelative);
+        action.getRelative().setGender(Gender.MALE);
+        action.setSelectedCode(DUMMY_CODE.name());
+        action.setRelativeAge(String.valueOf(FIFTY));
+        action.setRelativeToSetAsParentUuid(p.getRelativeOfType(RelativeCode.PGRFTH).getUuid().toString());
+
+        List<RelativeToRelateTo> potentialParents = action.getRelativesToRelateTo();
+        //if its an unknown person all default relatives and yourself can be parents, so 7
+        Assert.assertEquals(7, potentialParents.size());
+        
+        assertEquals(SUBMIT_ACTION, action.submitRelative());
+        Assert.assertTrue(p.getRelatives().contains(unrelatedRelative));
+        Assert.assertEquals(RelativeCode.PUNCLE, unrelatedRelative.getCodeEnum());
+        Assert.assertFalse(p.getUnrelatedRelatives().contains(unrelatedRelative));
+    }
+    
+    @Test
+    public void testRelateUnrelatedRelativePgrfthFemale(){
+        Person p = new Person();
+        FhhUtils.addRequiredRelativesToTree(p);
+        Relative unrelatedRelative = new Relative();
+        unrelatedRelative.setCodeEnum(RelativeCode.AUNT);
+        p.getUnrelatedRelatives().add(unrelatedRelative);
+
+        action.setPerson(p);
+        action.setRelative(unrelatedRelative);
+        action.getRelative().setGender(Gender.FEMALE);
+        action.setSelectedCode(DUMMY_CODE.name());
+        action.setRelativeAge(String.valueOf(FIFTY));
+        action.setRelativeToSetAsParentUuid(p.getRelativeOfType(RelativeCode.PGRFTH).getUuid().toString());
+        
+        List<RelativeToRelateTo> potentialParents = action.getRelativesToRelateTo();
+        //if its an aunt all grandparents are potential parens, so 4
+        Assert.assertEquals(4, potentialParents.size());
+        for (RelativeToRelateTo relativeToRelateTo : potentialParents) {
+            Assert.assertTrue(RelativeCode.AUNT.getPossibleParents().contains(
+                    ((Relative) relativeToRelateTo.getRelative()).getCodeEnum()));
+        }
+
+        assertEquals(SUBMIT_ACTION, action.submitRelative());
+        Assert.assertTrue(p.getRelatives().contains(unrelatedRelative));
+        Assert.assertEquals(RelativeCode.PAUNT, unrelatedRelative.getCodeEnum());
+        Assert.assertFalse(p.getUnrelatedRelatives().contains(unrelatedRelative));
+    }
+    
+    @Test
+    public void testRelateUnrelatedRelativePgrmthFemale(){
+        Person p = new Person();
+        FhhUtils.addRequiredRelativesToTree(p);
+        Relative unrelatedRelative = new Relative();
+        unrelatedRelative.setCodeEnum(RelativeCode.AUNT);
+        p.getUnrelatedRelatives().add(unrelatedRelative);
+
+        action.setPerson(p);
+        action.setRelative(unrelatedRelative);
+        action.getRelative().setGender(Gender.FEMALE);
+        action.setSelectedCode(DUMMY_CODE.name());
+        action.setRelativeAge(String.valueOf(FIFTY));
+        action.setRelativeToSetAsParentUuid(p.getRelativeOfType(RelativeCode.PGRMTH).getUuid().toString());
+
+        List<RelativeToRelateTo> potentialParents = action.getRelativesToRelateTo();
+        //if its an aunt all grandparents are potential parens, so 4
+        Assert.assertEquals(4, potentialParents.size());
+        for (RelativeToRelateTo relativeToRelateTo : potentialParents) {
+            Assert.assertTrue(RelativeCode.AUNT.getPossibleParents().contains(
+                    ((Relative) relativeToRelateTo.getRelative()).getCodeEnum()));
+        }
+        
+        assertEquals(SUBMIT_ACTION, action.submitRelative());
+        Assert.assertTrue(p.getRelatives().contains(unrelatedRelative));
+        Assert.assertEquals(RelativeCode.PAUNT, unrelatedRelative.getCodeEnum());
+        Assert.assertFalse(p.getUnrelatedRelatives().contains(unrelatedRelative));
+    }
+    
+    @Test
+    public void testRelateUnrelatedRelativeMgrfthFemale(){
+        Person p = new Person();
+        FhhUtils.addRequiredRelativesToTree(p);
+        Relative unrelatedRelative = new Relative();
+        unrelatedRelative.setCodeEnum(RelativeCode.AUNT);
+        p.getUnrelatedRelatives().add(unrelatedRelative);
+
+        action.setPerson(p);
+        action.setRelative(unrelatedRelative);
+        action.getRelative().setGender(Gender.FEMALE);
+        action.setSelectedCode(DUMMY_CODE.name());
+        action.setRelativeAge(String.valueOf(FIFTY));
+        action.setRelativeToSetAsParentUuid(p.getRelativeOfType(RelativeCode.MGRFTH).getUuid().toString());
+
+        List<RelativeToRelateTo> potentialParents = action.getRelativesToRelateTo();
+        //if its an aunt all grandparents are potential parens, so 4
+        Assert.assertEquals(4, potentialParents.size());
+        for (RelativeToRelateTo relativeToRelateTo : potentialParents) {
+            Assert.assertTrue(RelativeCode.AUNT.getPossibleParents().contains(
+                    ((Relative) relativeToRelateTo.getRelative()).getCodeEnum()));
+        }
+        
+        
+        assertEquals(SUBMIT_ACTION, action.submitRelative());
+        Assert.assertTrue(p.getRelatives().contains(unrelatedRelative));
+        Assert.assertEquals(RelativeCode.MAUNT, unrelatedRelative.getCodeEnum());
+        Assert.assertFalse(p.getUnrelatedRelatives().contains(unrelatedRelative));
+    }
+    
+    @Test
+    public void testRelateUnrelatedRelativePuncleFemale(){
+        Person p = new Person();
+        FhhUtils.addRequiredRelativesToTree(p);
+        Relative unrelatedRelative = new Relative();
+        unrelatedRelative.setCodeEnum(RelativeCode.COUSN);
+        p.getUnrelatedRelatives().add(unrelatedRelative);
+
+        PersonUtils.addRelative(p, RelativeCode.PUNCLE);
+        action.setPerson(p);
+        action.setRelative(unrelatedRelative);
+        action.getRelative().setGender(Gender.FEMALE);
+        action.setSelectedCode(DUMMY_CODE.name());
+        action.setRelativeAge(String.valueOf(FIFTY));
+        action.setRelativeToSetAsParentUuid(p.getRelativeOfType(RelativeCode.PUNCLE).getUuid().toString());
+
+        List<RelativeToRelateTo> potentialParents = action.getRelativesToRelateTo();
+        //if its a causin all aunts and uncles are potenstial parents, so 1
+        Assert.assertEquals(1, potentialParents.size());
+        for (RelativeToRelateTo relativeToRelateTo : potentialParents) {
+            Assert.assertTrue(RelativeCode.COUSN.getPossibleParents().contains(
+                    ((Relative) relativeToRelateTo.getRelative()).getCodeEnum()));
+        }
+        
+        assertEquals(SUBMIT_ACTION, action.submitRelative());
+        Assert.assertTrue(p.getRelatives().contains(unrelatedRelative));
+        Assert.assertEquals(RelativeCode.PCOUSN, unrelatedRelative.getCodeEnum());
+        Assert.assertFalse(p.getUnrelatedRelatives().contains(unrelatedRelative));
+    }
+    
+    @Test
+    public void testRelateUnrelatedRelativeMauntFemale(){
+        Person p = new Person();
+        FhhUtils.addRequiredRelativesToTree(p);
+        Relative unrelatedRelative = new Relative();
+        unrelatedRelative.setCodeEnum(RelativeCode.COUSN);
+        p.getUnrelatedRelatives().add(unrelatedRelative);
+
+        PersonUtils.addRelative(p, RelativeCode.MAUNT);
+        action.setPerson(p);
+        action.setRelative(unrelatedRelative);
+        action.getRelative().setGender(Gender.FEMALE);
+        action.setSelectedCode(DUMMY_CODE.name());
+        action.setRelativeAge(String.valueOf(FIFTY));
+        action.setRelativeToSetAsParentUuid(p.getRelativeOfType(RelativeCode.MAUNT).getUuid().toString());
+
+        List<RelativeToRelateTo> potentialParents = action.getRelativesToRelateTo();
+        //if its a causin all aunts and uncles are potenstial parents, so 1
+        Assert.assertEquals(1, potentialParents.size());
+        for (RelativeToRelateTo relativeToRelateTo : potentialParents) {
+            Assert.assertTrue(RelativeCode.COUSN.getPossibleParents().contains(
+                    ((Relative) relativeToRelateTo.getRelative()).getCodeEnum()));
+        }
+        
+        assertEquals(SUBMIT_ACTION, action.submitRelative());
+        Assert.assertTrue(p.getRelatives().contains(unrelatedRelative));
+        Assert.assertEquals(RelativeCode.MCOUSN, unrelatedRelative.getCodeEnum());
+        Assert.assertFalse(p.getUnrelatedRelatives().contains(unrelatedRelative));
+    }
 
     /**
      * Helper function for restRetrieveParents
@@ -813,7 +973,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
      */
     private Relative addRelativeToPerson(Person p, RelativeCode code) {
         Relative rel = new Relative();
-        rel.setCode(code.toString());
+        rel.setCodeEnum(code);
         p.getRelatives().add(rel);
         return rel;
     }

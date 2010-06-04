@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,11 +33,19 @@
  */
 package gov.hhs.fhh.data;
 
-import gov.hhs.fhh.data.util.DataEstimatedAgeNode;
-import gov.hhs.fhh.data.util.RelationshipHolderNode;
-import gov.hhs.fhh.data.util.RelativeCodeNode;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
+import gov.hhs.fhh.model.mfhp.castor.RelationshipHolderNode;
+import gov.hhs.fhh.model.mfhp.castor.RelativeCodeNode;
 
+import java.util.Locale;
+import java.util.UUID;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode;
+import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
 
 /**
  * @author bpickeral
@@ -46,16 +54,16 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Relative extends Person {
     private static final long serialVersionUID = 1L;
     private static final boolean TRUE = true;
-    private String code;
+    private RelativeCode code;
     private String livingStatus;
     private Disease causeOfDeath;
-    private AgeRange ageAtDeath;
+    private AgeRangeEnum ageAtDeath;
     private String birthTime;
-    private AgeRange estimatedAgeRange;
+    private AgeRangeEnum estimatedAgeRange;
     // Used by castor when importing, mother and father may not exist at the time we get the
     // Ids, need to set Mother and father link after importing all relatives
-    private Long motherId;
-    private Long fatherId;
+    private UUID motherId;
+    private UUID fatherId;
 
     /**
      * Default constructor.
@@ -89,7 +97,7 @@ public class Relative extends Person {
      */
     public Relative(Person p) {
         super(p);
-        this.code = RelativeCode.SELF.toString();
+        this.code = RelativeCode.SELF;
     }
 
     /**
@@ -101,7 +109,7 @@ public class Relative extends Person {
     @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
     public Relative(Person p, RelativeCode r) {
         super(p);
-        code = r.toString();
+        code = r;
         if (p instanceof Relative) {
             this.livingStatus = ((Relative) p).getLivingStatus();
             this.causeOfDeath = ((Relative) p).getCauseOfDeath();
@@ -109,7 +117,7 @@ public class Relative extends Person {
             this.birthTime = ((Relative) p).getBirthTime();
             this.motherId = ((Relative) p).getMotherId();
             this.fatherId = ((Relative) p).getFatherId();
-        } 
+        }
     }
 
     /**
@@ -122,36 +130,57 @@ public class Relative extends Person {
     @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
     public Relative(Person p, RelativeCode r, boolean reindex) {
         super(p);
-        code = r.toString();
+        code = r;
         if (p instanceof Relative && reindex) {
             this.livingStatus = ((Relative) p).getLivingStatus();
             this.causeOfDeath = ((Relative) p).getCauseOfDeath();
             this.ageAtDeath = ((Relative) p).getAgeAtDeath();
             this.birthTime = ((Relative) p).getBirthTime();
-        } 
+        }
     }
 
     /**
      * @return the code
+     * @deprecated use getCodeEnum()
      */
     public String getCode() {
-        return code;
+        return (code != null) ? code.name() : null;
     }
 
     /**
      * @param code the code to set
+     * @deprecated use setCodeEnum(...)
      */
     public void setCode(String code) {
-        this.code = code;
+        setRelativeCode(code);
     }
-
+    
+    private void setRelativeCode(String value) {
+        if (value == null) {
+            this.code = null;
+        } else {
+            try {
+                this.code = RelativeCode.valueOf(value.toUpperCase(Locale.ENGLISH));
+            } catch (IllegalArgumentException e) {
+                this.code = null;
+            }
+        }
+    }
+    
     /**
      * @return the code enum
      */
     public RelativeCode getCodeEnum() {
-        return RelativeCode.getByValue(code);
+        return code;
     }
     
+    /**
+     * @param rc the RelativeCode value
+     */
+    public void setCodeEnum(RelativeCode rc) {
+        this.code = (rc != null) ? rc : null;
+    }
+
     /**
      * @return the living status enum
      */
@@ -176,18 +205,42 @@ public class Relative extends Person {
             node.getObservations().add(causeOfDeathObs);
         }
         // Set the parent node containing the id of the parent
-        Relative parentNode = null;
-        if (getMother() != null) {
-            parentNode = new Relative();
-            parentNode.setId(getMother().getId());
-            parentNode.setCode(RelativeCode.NMTH.toString());
-        } else if (getFather() != null) {
-            parentNode = new Relative();
-            parentNode.setId(getFather().getId());
-            parentNode.setCode(RelativeCode.NFTH.toString());
-        }
-        node.setParentNode(parentNode);
+        setProbandParent(node);
+        setMother(node);
+        setFather(node);
+        node.setUuid(getUuid());
+
         return node;
+    }
+
+    private void setMother(RelationshipHolderNode node) {
+        if (getMother() != null) {
+            node.getParentNodes().add(createParentNode(getMother().getUuid(), RelativeCode.NMTH));
+        }
+    }
+
+    private void setFather(RelationshipHolderNode node) {
+        if (getFather() != null) {
+            node.getParentNodes().add(createParentNode(getFather().getUuid(), RelativeCode.NFTH));
+        }
+    }
+
+    private Relative createParentNode(UUID id, RelativeCode relativeCode) {
+        Relative parentNode = new Relative();
+        parentNode.setUuid(id);
+        parentNode.setCodeEnum(relativeCode);
+        return parentNode;
+    }
+
+    private void setProbandParent(RelationshipHolderNode node) {
+        if (this.isChildOfProband()) {
+            if (getMotherId() != null) {
+                node.getParentNodes().add(createParentNode(getMotherId(), RelativeCode.NMTH));
+            }
+            if (getFatherId() != null) {
+                node.getParentNodes().add(createParentNode(getMotherId(), RelativeCode.NFTH));
+            }
+        }
     }
 
     /**
@@ -205,7 +258,7 @@ public class Relative extends Person {
             }
         }
 
-        setId(node.getId());
+        setUuid(node.getUuid());
         setName(node.getName());
         setDateOfBirth(node.getDateOfBirth());
         setGender(node.getGender());
@@ -219,7 +272,6 @@ public class Relative extends Person {
         setWeight(node.getWeight());
         setHeight(node.getHeight());
         setParentIds(node);
-        setCompletedForm(node.isCompletedForm());
         setEstimatedAgeRange(node.getEstimatedAgeRange());
 
         if (getBirthTime() != null || getEstimatedAgeRange() != null) {
@@ -233,16 +285,15 @@ public class Relative extends Person {
      * @param node RelationshipHolderNode containing parent's ID
      */
     private void setParentIds(RelationshipHolderNode node) {
-        Relative parentNode = node.getParentNode();
-        if (node.getParentNode() != null) {
-            if (RelativeCode.NMTH.toString().equals(parentNode.getCode())) {
-                setMotherId(parentNode.getId());
+        for (Relative currParent : node.getParentNodes()) {
+            if (RelativeCode.NMTH.toString().equals(currParent.getCode())) {
+                setMotherId(currParent.getUuid());
             } else {
-                setFatherId(parentNode.getId());
+                setFatherId(currParent.getUuid());
             }
         }
     }
-    
+
     /**
      * Returns boolean indicating if person can be removed from the family tree.
      * 
@@ -286,6 +337,8 @@ public class Relative extends Person {
     public String getDeceasedIndicator() {
         if (isDeceased()) {
             return TRUE_STRING;
+        } else if (getLivingStatus() != null && getLivingStatus().equals(LivingStatus.UNKNOWN.toString())) {
+            return getLivingStatus();
         }
         return null;
     }
@@ -298,22 +351,57 @@ public class Relative extends Person {
     public void setDeceasedIndicator(String indicator) {
         if (indicator.equals(TRUE_STRING)) {
             setLivingStatus(LivingStatus.NO.toString());
+        } else if (indicator.equals(LivingStatus.UNKNOWN.toString())) {
+            setLivingStatus(LivingStatus.UNKNOWN.toString());
         }
     }
-    
+
     /**
      * @return the DataEstimatedAgeNode
      */
     public DataEstimatedAgeNode getDataEstimatedAgeNode() {
-        return getEstimatedAgeRange() != null ? getEstimatedAgeRange().getAsDataEstimatedAgeNode() : null;
+        return getEstimatedAgeRange() != null ? getEstimatedAgeRange()
+                .getAsDataEstimatedAgeNode() : null;
     }
-    
+
     /**
      * Sets the ageRange based on the dataEstimatedAgeNode passed in.
+     * 
      * @param dataEstimatedAgeNode the dataEstimatedAgeNode to get the lowValue from.
      */
     public void setDataEstimatedAgeNode(DataEstimatedAgeNode dataEstimatedAgeNode) {
-        setEstimatedAgeRange(AgeRange.fromDataEstimatedAgeNode(dataEstimatedAgeNode));
+        setEstimatedAgeRange(AgeRangeEnum.fromDataEstimatedAgeNode(dataEstimatedAgeNode));
+    }
+    
+    /**
+     * Returns if the form has been completed for the Relative. Unfortunately, if the user saves without
+     * making any modification, we will have no way of telling that the user has completed the form.
+     * @return boolean indicating that form has been completed
+     */
+    public boolean isCompletedForm() {
+        if (isUnmatchedCondition()) {
+            return false;
+        }
+        return relativeModified();
+    }
+    
+    private boolean relativeModified() {
+        if (!StringUtils.isEmpty(getName())
+                || !StringUtils.isEmpty(getLivingStatus())
+                || racesOrEthnicitiesEntered()
+                || twinOrAdoptedEntered()
+                || !getObservations().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean racesOrEthnicitiesEntered() {
+        return !getRaces().isEmpty() || !getEthnicities().isEmpty();
+    }
+    
+    private boolean twinOrAdoptedEntered() {
+        return !TwinStatus.NO.equals(getTwinStatus()) || isAdopted();
     }
 
     /**
@@ -322,7 +410,7 @@ public class Relative extends Person {
      * @return the RelativeCodenode.
      */
     public RelativeCodeNode getRelativeCodeNode() {
-        return new RelativeCodeNode(code);
+        return new RelativeCodeNode(getCode());
     }
 
     /**
@@ -331,7 +419,7 @@ public class Relative extends Person {
      * @param node the RelativeCodeNode containing the code value
      */
     public void setRelativeCodeNode(RelativeCodeNode node) {
-        code = node.getCode();
+        setCode(node.getCode());
     }
 
     /**
@@ -379,28 +467,28 @@ public class Relative extends Person {
     /**
      * @return the motherId
      */
-    public Long getMotherId() {
+    public UUID getMotherId() {
         return motherId;
     }
 
     /**
      * @param motherId the motherId to set
      */
-    public void setMotherId(Long motherId) {
+    public void setMotherId(UUID motherId) {
         this.motherId = motherId;
     }
 
     /**
      * @return the fatherId
      */
-    public Long getFatherId() {
+    public UUID getFatherId() {
         return fatherId;
     }
 
     /**
      * @param fatherId the fatherId to set
      */
-    public void setFatherId(Long fatherId) {
+    public void setFatherId(UUID fatherId) {
         this.fatherId = fatherId;
     }
 
@@ -414,28 +502,36 @@ public class Relative extends Person {
     /**
      * @return the ageAtDeath
      */
-    public AgeRange getAgeAtDeath() {
+    public AgeRangeEnum getAgeAtDeath() {
         return ageAtDeath;
     }
 
     /**
      * @param ageAtDeath the ageAtDeath to set
      */
-    public void setAgeAtDeath(AgeRange ageAtDeath) {
+    public void setAgeAtDeath(AgeRangeEnum ageAtDeath) {
         this.ageAtDeath = ageAtDeath;
     }
 
     /**
      * @return the estimatedAgeRange
      */
-    public AgeRange getEstimatedAgeRange() {
+    public AgeRangeEnum getEstimatedAgeRange() {
         return estimatedAgeRange;
     }
 
     /**
      * @param estimatedAgeRange the estimatedAgeRange to set
      */
-    public void setEstimatedAgeRange(AgeRange estimatedAgeRange) {
+    public void setEstimatedAgeRange(AgeRangeEnum estimatedAgeRange) {
         this.estimatedAgeRange = estimatedAgeRange;
+    }
+
+    /**
+     * @return boolean specifying if Relative is a child of the proband.
+     */
+    public boolean isChildOfProband() {
+        return (RelativeCode.DAU.equals(this.getCodeEnum()) 
+                || RelativeCode.SON.equals(this.getCodeEnum()));
     }
 }

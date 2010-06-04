@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!--
+        This file was produced by the Family Health Portrait tool at http://familyhistory.hhs.gov. You should not
+        attempt to edit the file. Visit http://familyhistory.hhs.gov to upload the file for viewing and editing. The web
+        site also can provide a viewable and printable chart and diagram of the family health history.
+    -->
+<FamilyHistory classCode="OBS" moodCode="EVN" xmlns="urn:hl7-org:v3">
+    <id extention="gov.hhs.fhh:718163810183" />
+    <effectiveTime value="2010/02/08" />
+    <methodCode displayName="Surgeon General's Family Health History Tool" />
+    <subject typeCode="SBJ">
+        <patient classCode="PAT">
+            <patientPerson>
+                <administrativeGenderCode code="248153007" codeSystemName="SNOMED_CT"
+                    displayName="male" />
+                <subjectOf2>
+                    <clinicalObservation>
+                        <code id="16" originalText="&lt;body>test&lt;/body>" />
+                        <subject>
+                            <dataEstimatedAge>
+                                <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                <value unit="year">
+                                    <low value="30" />
+                                    <high value="39" />
+                                </value>
+                            </dataEstimatedAge>
+                        </subject>
+                    </clinicalObservation>
+                </subjectOf2>
+                <relative>
+                    <code code="NMTH" codeSystemName="HL7 Family History Model" displayName="Mother" />
+                    <relationshipHolder>
+                        <relative>
+                            <code code="NMTH" codeSystemName="HL7 Family History Model" displayName="Mother" />
+                            <relationshipHolder>
+                                <subjectOf2 />
+                                <id extention="f1f31d26-8bb7-479f-b644-d59531e558c7" />
+                            </relationshipHolder>
+                        </relative>
+                        <relative>
+                            <code code="NFTH" codeSystemName="HL7 Family History Model" displayName="Father" />
+                            <relationshipHolder>
+                                <subjectOf2 />
+                                <id extention="682ceac9-4c6e-4cb0-8577-c05fb8babf6e" />
+                            </relationshipHolder>
+                        </relative>
+                        <subjectOf2 />
+                        <id extention="7bc89072-9a56-40e2-9d61-f588e3149f06" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="NFTH" codeSystemName="HL7 Family History Model" displayName="Father" />
+                    <relationshipHolder>
+                        <relative>
+                            <code code="NMTH" codeSystemName="HL7 Family History Model" displayName="Mother" />
+                            <relationshipHolder>
+                                <subjectOf2 />
+                                <id extention="d59d1af3-e54f-4ca0-b8f8-f124a5716953" />
+                            </relationshipHolder>
+                        </relative>
+                        <relative>
+                            <code code="NFTH" codeSystemName="HL7 Family History Model" displayName="Father" />
+                            <relationshipHolder>
+                                <subjectOf2 />
+                                <id extention="2e5aa2ce-f8bb-4581-aac6-737ece62d555" />
+                            </relationshipHolder>
+                        </relative>
+                        <administrativeGenderCode code="248153007" codeSystemName="SNOMED_CT"
+                            displayName="male" />
+                        <subjectOf1>
+                            <deceasedEstimatedAge>
+                                <code code="39016-1" codeSystemName="LOINC" displayName="Age at Death" />
+                                <value unit="day">
+                                    <low value="29" />
+                                    <high value="729" />
+                                </value>
+                            </deceasedEstimatedAge>
+                        </subjectOf1>
+                        <subjectOf2>
+                            <clinicalObservation>
+                                <code id="16" originalText="&lt;body>test&lt;/body>"/>
+                                    <subject>
+                                        <dataEstimatedAge>
+                                            <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                            <value unit="day">
+                                                <low value="29" />
+                                                <high value="729" />
+                                            </value>
+                                        </dataEstimatedAge>
+                                    </subject>
+                            </clinicalObservation>
+                            <clinicalObservation>
+                                <code id="16" originalText="&lt;body>test&lt;/body>"/>
+                                    <sourceOf>
+                                        <code code="419620001" codeSystemName="SNOMED_CT" displayName="death" />
+                                    </sourceOf>
+                            </clinicalObservation>
+                        </subjectOf2>
+                        <id extention="6e833652-3fad-4ece-899c-21ee8c15b396" />
+                        <name formatted="&lt;body>test&lt;/body>"/>
+                            <deceasedIndCode value="true" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="MGRMTH" codeSystemName="HL7 Family History Model" displayName="Maternal Grandmother" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="f1f31d26-8bb7-479f-b644-d59531e558c7" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="MGRFTH" codeSystemName="HL7 Family History Model" displayName="Maternal Grandfather" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="682ceac9-4c6e-4cb0-8577-c05fb8babf6e" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="PGRMTH" codeSystemName="HL7 Family History Model" displayName="Paternal Grandmother" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="d59d1af3-e54f-4ca0-b8f8-f124a5716953" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="PGRFTH" codeSystemName="HL7 Family History Model" displayName="Paternal Grandfather" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="2e5aa2ce-f8bb-4581-aac6-737ece62d555" />
+                    </relationshipHolder>
+                </relative>
+                <id extention="70d92121-e3ed-4d67-a13e-92668584354f" />
+                <name formatted="&lt;body>test&lt;/body>
+                    "/>
+                    <birthTime value="01/01/1970" />
+            </patientPerson>
+        </patient>
+    </subject>
+</FamilyHistory>

@@ -8,23 +8,36 @@
 
 <html>
 <head>
-    <title><fmt:message key="errorPage.title" /></title>
+    <title><fmt:message key="errorPage.title"/></title>
 </head>
 
 <body id="error">
     <div id="page">
         <div id="content" class="clearfix">
             <div id="main">
-                <s:actionerror/>
-                <h1><fmt:message key="errorPage.heading" /></h1>
+                <h1><fmt:message key="errorPage.heading"/></h1>
                 <c:if test="${initParam['showErrorStackTraces'] == 'true'}">
-                    <% if (exception != null) { %>
-                        <pre><% exception.printStackTrace(new java.io.PrintWriter(out)); %></pre>
-                    <% } else if (request.getAttribute("javax.servlet.error.exception") != null) { %>
-                        <pre><% ((Exception)request.getAttribute("javax.servlet.error.exception"))
-                                               .printStackTrace(new java.io.PrintWriter(out)); %></pre>
-                    <% } else { %>
-                        <pre><s:property value="%{exceptionStack}"/></pre>
+                    <% 
+                        Exception globalException = (Exception) session.getAttribute("globalException");
+                        if (globalException != null) { 
+                    %>
+                    <pre>
+                    <% 
+                            java.io.PrintWriter pw = new java.io.PrintWriter(out);
+                            globalException.printStackTrace(pw); 
+                    %>
+                    </pre>
+                    <% 
+                        } else if (request.getAttribute("javax.servlet.error.exception") != null) { 
+                    %>
+                        <pre>
+                    <%  
+                            java.io.PrintWriter pw = new java.io.PrintWriter(out); 
+                            ((Exception)request.getAttribute("javax.servlet.error.exception"))
+                                                   .printStackTrace(new java.io.PrintWriter(pw)); 
+                    %>
+                        </pre>
+
                     <% } %>
                 </c:if>
             </div>

@@ -1,0 +1,46 @@
+    <profiles>
+        <profile>
+            <id>bda</id>
+            <properties>
+                <!-- used in maven build process -->
+                <jboss.home>@jboss.home@</jboss.home>
+                <schema.file>@db.mfhp.file.name@</schema.file>
+                <hbm2ddl.drop.table>@db.mfhp.generate.drop@</hbm2ddl.drop.table>
+                <hbm2ddl.create.table>@db.mfhp.generate.create@</hbm2ddl.create.table>
+
+                <!-- Maven uses these properties to maniuplate files, we are inserting tokens so that they can be de-tokenized by the install:jboss:bda-blueprints-webapp-ear:re-create target -->
+                <!-- fhh-ds.xml -->
+                <database.hostname>%%database.server%%</database.hostname>
+                <database.port>%%database.port%%</database.port>
+                <database.url.prefix>jdbc:mysql://%%database.server%%:%%database.port%%/</database.url.prefix>
+                <database.name>%%database.name%%</database.name>
+                <jdbc.username>%%database.user%%</jdbc.username>
+                <jdbc.password>%%database.password%%</jdbc.password>
+                <jdbc.driverClassName>%%database.driver%%</jdbc.driverClassName>
+                
+                <!-- jndi.properties -->
+                <jboss.naming.port>%%jboss.server.jndi.port%%</jboss.naming.port>
+                
+                <!-- jboss settings -->
+                <jboss.port>@jboss.web.port@</jboss.port>
+                <jboss.hostname>@jboss.server.hostname@</jboss.hostname>
+                <jboss.configuration>@jboss.server.name@</jboss.configuration>
+                
+                <!-- fhh-log4j.xml -->
+                <log.level.nci-commons>%%app.log.level%%</log.level.nci-commons>
+                <log.level.fhh>%%app.log.level%%</log.level.fhh>
+                <log.level.default>%%app.log.level.default%%</log.level.default>
+                
+                
+                <!-- MSHV Integration properties -->
+                <mshv.app.id>%%mshv.app.id%%</mshv.app.id>
+                <mshv.shell.url>%%mshv.shell.url%%</mshv.shell.url>
+                <mshv.keystore.filename>%%mshv.keystore.filename%%</mshv.keystore.filename>
+                <mshv.keystore.keyname>%%mshv.keystore.keyname%%</mshv.keystore.keyname>
+                <mshv.keystore.password>%%mshv.keystore.password%%</mshv.keystore.password>
+                
+                <show.mshv.ui>%%show.mshv.ui%%</show.mshv.ui>
+                <application.base.url>%%mfhp.application.base.url%%</application.base.url>
+            </properties>
+        </profile>
+    </profiles>

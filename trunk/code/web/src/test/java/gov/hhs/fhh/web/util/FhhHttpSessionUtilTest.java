@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,16 +34,18 @@
 
 package gov.hhs.fhh.web.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import gov.hhs.fhh.data.Person;
+import gov.hhs.fhh.web.data.ConnectionInfo;
+import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 
 import java.util.Date;
 
-import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.data.Weight;
-import gov.hhs.fhh.data.WeightUnit;
-import gov.hhs.fhh.web.test.AbstractFhhWebTest;
-
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
@@ -55,15 +57,19 @@ public class FhhHttpSessionUtilTest extends AbstractFhhWebTest {
 
     @Test
     public void testAddAttribute_Person() {
-        
-        
         Person p = new Person();
         p.setName(DUMMY_NAME);
         Date date = new Date();
         p.setDateOfBirth(date);
         p.setWeight(DUMMY_WEIGHT);
         
-        String result1 = FhhHttpSessionUtil.addUniqueAttribute(p);
+        String result1 = FhhHttpSessionUtil.storePersonInSession(p);
         assertSame(p, FhhHttpSessionUtil.getSession().getAttribute(result1));
+        
+        ConnectionInfo connectionInfo = new ConnectionInfo();
+        FhhHttpSessionUtil.setHVSession(connectionInfo);
+        assertSame(connectionInfo, FhhHttpSessionUtil.getHVSession());
+        
+        assertEquals(result1 + FhhHttpSessionUtil.HV_KEY, FhhHttpSessionUtil.getHealthvaultKey());
     }
 }

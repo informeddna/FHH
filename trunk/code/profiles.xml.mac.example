@@ -1,0 +1,23 @@
+<profilesXml>
+<profiles>
+    <profile>
+        <id>local</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <properties>
+            <jboss.home>/Applications/jboss-4.0.5.GA</jboss.home>
+            <jboss.configuration>fhh</jboss.configuration>
+            <showErrorStackTraces>true</showErrorStackTraces>
+            <log.level.fhh>DEBUG</log.level.fhh>
+            <log.level.default>DEBUG</log.level.default>
+            <mshv.keystore.filename>/Users/path/to/keystore-demo</mshv.keystore.filename>
+            <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>
+            <test.mshv.user.email>FHH.tester.ci@gmail.com</test.mshv.user.email>
+            <test.mshv.user.pw>fhht3sterci</test.mshv.user.pw>
+            <test.mshv.user.display.name>fhh testerci</test.mshv.user.display.name>
+            <show.mshv.ui>true</show.mshv.ui>
+	    </properties>
+    </profile>
+</profiles>
+</profilesXml>

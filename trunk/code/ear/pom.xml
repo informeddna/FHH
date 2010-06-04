@@ -2,7 +2,7 @@
     <parent>
         <artifactId>fhh</artifactId>
         <groupId>gov.hhs</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>2.4.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -10,20 +10,20 @@
     <name>fhh-ear</name>
     <packaging>ear</packaging>
     <url>../../ear/target/site</url>
-    
+
     <properties>
         <log.level.nci-commons>DEBUG</log.level.nci-commons>
         <log.level.fhh>DEBUG</log.level.fhh>
         <log.level.default>DEBUG</log.level.default>
-        
-        <ldap.host.url></ldap.host.url>
-        <ldap.searchable.base></ldap.searchable.base>
-        <ldap.user.id.label></ldap.user.id.label>
-        
+
+        <ldap.host.url />
+        <ldap.searchable.base />
+        <ldap.user.id.label />
+
         <test.selenium.server.port>60001</test.selenium.server.port>
-        <test.selenium.server.debug>true</test.selenium.server.debug>        
+        <test.selenium.server.debug>true</test.selenium.server.debug>
         <test.selenium.browser>*chrome</test.selenium.browser>
-        <selenium-maven-plugin.version>1.0-rc-1-SNAPSHOT</selenium-maven-plugin.version>
+        <selenium-maven-plugin.version>1.0</selenium-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -49,17 +49,53 @@
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
         </dependency>
+        <!-- Just for EAR -->
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>1.2.4</version>
-            <scope>compile</scope>
-        </dependency>         
-         <!-- Selenium -->
+            <scope>provided</scope>
+        </dependency>
         <dependency>
-            <groupId>org.openqa.selenium.client-drivers</groupId>
-            <artifactId>selenium-java-client-driver</artifactId>
-            <version>1.0-beta-1</version>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>selenium-maven-plugin</artifactId>
+            <version>${selenium-maven-plugin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -74,14 +110,8 @@
             <version>${jdbc.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.8</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-    
+
     <pluginRepositories>
         <pluginRepository>
             <id>openqa</id>
@@ -95,17 +125,17 @@
             </releases>
         </pluginRepository>
         <pluginRepository>
-                <id>codehaus snapshots</id>
-                <name>Codehaus Snapshots Repository</name>
-                <url>http://snapshots.repository.codehaus.org</url>
-                <snapshots>
-                </snapshots>
-                <releases>
-                    <enabled>false</enabled>
-                </releases>
+            <id>codehaus snapshots</id>
+            <name>Codehaus Snapshots Repository</name>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <snapshots>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
         </pluginRepository>
     </pluginRepositories>
-    
+
     <repositories>
         <repository>
             <id>openqa</id>
@@ -129,17 +159,98 @@
             </releases>
         </repository>
     </repositories>
-    
+
     <build>
         <finalName>fhh</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
+                <version>2.3.1</version>
                 <configuration>
                     <finalName>fhh</finalName>
                     <resourcesDir>target/classes</resourcesDir>
                     <modules>
+                        <jarModule>
+                            <groupId>org.jdom</groupId>
+                            <artifactId>jdom</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.lobobrowser</groupId>
+                            <artifactId>cobra</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.lobobrowser</groupId>
+                            <artifactId>js</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>xerces</groupId>
+                            <artifactId>xercesImpl</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>bouncycastle</groupId>
+                            <artifactId>bcmail-jdk14</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>bouncycastle</groupId>
+                            <artifactId>bcprov-jdk14</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>com.lowagie</groupId>
+                            <artifactId>itext</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>joda-time</groupId>
+                            <artifactId>joda-time</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>aopalliance</groupId>
+                            <artifactId>aopalliance</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>com.microsoft.hsg</groupId>
+                            <artifactId>hv-jaxb</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>com.microsoft.hsg</groupId>
+                            <artifactId>hv-sdk</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>com.google.code.guice</groupId>
+                            <artifactId>guice</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                         <jarModule>
+                            <groupId>commons-httpclient</groupId>
+                            <artifactId>commons-httpclient</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                         <jarModule>
+                            <groupId>com.fiveamsolutions.hl7.messaging</groupId>
+                            <artifactId>hl7-service</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                         <jarModule>
+                            <groupId>com.fiveamsolutions.hl7.messaging</groupId>
+                            <artifactId>hl7-service-client</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>com.fiveamsolutions</groupId>
+                            <artifactId>hl7-commons</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
                         <jarModule>
                             <groupId>com.fiveamsolutions</groupId>
                             <artifactId>nci-commons-core</artifactId>
@@ -149,11 +260,25 @@
                             <groupId>gov.nih.nci</groupId>
                             <artifactId>security</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
-                            <bundleFileName>security.jar</bundleFileName>
                         </jarModule>
                         <jarModule>
                             <groupId>commons-beanutils</groupId>
                             <artifactId>commons-beanutils</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>commons-codec</groupId>
+                            <artifactId>commons-codec</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>commons-collections</groupId>
+                            <artifactId>commons-collections</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>commons-io</groupId>
+                            <artifactId>commons-io</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
@@ -162,8 +287,8 @@
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <jarModule>
-                            <groupId>commons-collections</groupId>
-                            <artifactId>commons-collections</artifactId>
+                            <groupId>org.codehaus.castor</groupId>
+                            <artifactId>castor</artifactId>
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                         <ejbModule>
@@ -176,6 +301,28 @@
                             <contextRoot>/fhh-web</contextRoot>
                             <bundleFileName>fhh-web.war</bundleFileName>
                         </webModule>
+                        
+                        <jarModule>
+                            <groupId>net.sf.ehcache</groupId>
+                            <artifactId>ehcache</artifactId>
+                            <excluded>true</excluded>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>weka</groupId>
+                            <artifactId>weka</artifactId>
+                            <excluded>true</excluded>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>jfree</groupId>
+                            <artifactId>jfreechart</artifactId>
+                            <excluded>true</excluded>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>jfree</groupId>
+                            <artifactId>jcommon</artifactId>
+                            <excluded>true</excluded>
+                        </jarModule>
+
                     </modules>
                 </configuration>
             </plugin>
@@ -198,11 +345,11 @@
             </resource>
         </resources>
     </build>
-    
+
     <profiles>
         <profile>
             <id>ci</id>
-            <activation></activation>
+            <activation />
             <build>
                 <plugins>
                     <plugin>
@@ -239,8 +386,10 @@
                                 <phase>pre-integration-test</phase>
                                 <configuration>
                                     <tasks>
-                                        <property name="deployed.ear" value="${jboss.home}/server/${jboss.configuration}/deploy/fhh.ear"></property>
-                                        <delete file="${deployed.ear}" verbose="true"></delete>
+                                        <property name="deployed.ear" value="${jboss.home}/server/${jboss.configuration}/deploy/fhh.ear" />
+                                        <delete file="${deployed.ear}" verbose="true" />
+                                        <delete dir="${jboss.home}/server/${jboss.configuration}/work" />
+                                        <delete dir="${jboss.home}/server/${jboss.configuration}/tmp" />
                                         <echo>${deployed.ear}</echo>
                                     </tasks>
                                 </configuration>
@@ -253,8 +402,8 @@
                                 <phase>post-integration-test</phase>
                                 <configuration>
                                     <tasks>
-                                        <property name="deployed.ear" value="${jboss.home}/server/${jboss.configuration}/deploy/fhh.ear"></property>
-                                        <delete file="${deployed.ear}" verbose="true"></delete>
+                                        <property name="deployed.ear" value="${jboss.home}/server/${jboss.configuration}/deploy/fhh.ear" />
+                                        <delete file="${deployed.ear}" verbose="true" />
                                         <echo>${deployed.ear}</echo>
                                     </tasks>
                                 </configuration>
@@ -288,7 +437,7 @@
                                 </goals>
                             </execution>
                             <execution>
-                                <configuration></configuration>
+                                <configuration />
                                 <id>stop-container</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
@@ -300,6 +449,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                             <excludes>
+                                 <exclude>**/external/**</exclude>
+                             </excludes>
+                        </configuration>
                         <executions>
                             <execution>
                                 <phase>integration-test</phase>
@@ -323,6 +477,7 @@
                                     <background>true</background>
                                     <port>${test.selenium.server.port}</port>
                                     <debug>${test.selenium.server.debug}</debug>
+                                    <logOutput>true</logOutput>
                                 </configuration>
                             </execution>
                         </executions>
@@ -331,7 +486,10 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <!-- Skip the normal tests, we'll run them in the integration-test phase -->
+                            <!--
+                                Skip the normal tests, we'll run them in the integration-test
+                                phase
+                            -->
                             <skip>true</skip>
                         </configuration>
                         <executions>
@@ -342,6 +500,202 @@
                                 </goals>
                                 <configuration>
                                     <skip>false</skip>
+                                      <includes>
+                                        <include>**/selenium/*Test.java</include>
+                                      </includes>
+                                      <excludes>
+                                        <exclude>**/external/**</exclude>
+                                        <exclude>**/selenium/XSSFilterTest.java</exclude>
+                                      </excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                        <version>${selenium-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop-server</goal>
+                                </goals>
+                                <configuration>
+                                    <background>true</background>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+                <testResources>
+                    <testResource>
+                        <directory>src/test/resources</directory>
+                        <filtering>true</filtering>
+                    </testResource>
+                </testResources>
+            </build>
+        </profile>
+        <profile>
+            <id>ci-mshv</id>
+            <activation />
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compile-integration-tests</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>filter-integration-test-resources</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>testResources</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>undeploy-ear-before-start</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <property name="deployed.ear" value="${jboss.home}/server/${jboss.configuration}/deploy/fhh.ear" />
+                                        <delete file="${deployed.ear}" verbose="true" />
+                                        <delete dir="${jboss.home}/server/${jboss.configuration}/work" />
+                                        <delete dir="${jboss.home}/server/${jboss.configuration}/tmp" />
+                                        <echo>${deployed.ear}</echo>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>undeploy-ear</id>
+                                <phase>post-integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <property name="deployed.ear" value="${jboss.home}/server/${jboss.configuration}/deploy/fhh.ear" />
+                                        <delete file="${deployed.ear}" verbose="true" />
+                                        <echo>${deployed.ear}</echo>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <configuration>
+                            <wait>false</wait>
+                            <deployer>
+                                <deployables>
+                                    <deployable>
+                                        <pingURL>http://${jboss.hostname}:${jboss.port}/fhh-web/index.jsp</pingURL>
+                                        <location>${pom.basedir}/target/fhh.ear</location>
+                                    </deployable>
+                                </deployables>
+                            </deployer>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-container</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <configuration />
+                                <id>stop-container</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                             <excludes>
+                                 <exclude>**/external/**</exclude>
+                             </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                        <version>${selenium-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start-server</goal>
+                                </goals>
+                                <configuration>
+                                    <background>true</background>
+                                    <port>${test.selenium.server.port}</port>
+                                    <debug>${test.selenium.server.debug}</debug>
+                                    <logOutput>true</logOutput>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!--
+                                Skip the normal tests, we'll run them in the integration-test
+                                phase
+                            -->
+                            <skip>true</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                      <includes>
+                                        <include>**/mshv/*Test.java</include>
+                                      </includes>
+                                      <excludes>
+                                        <exclude>**/external/**</exclude>
+                                        <exclude>**/selenium/XSSFilterTest.java</exclude>
+                                      </excludes>
                                 </configuration>
                             </execution>
                         </executions>
@@ -413,6 +767,7 @@
                                 <goals>
                                     <goal>test</goal>
                                 </goals>
+                               
                             </execution>
                         </executions>
                     </plugin>
@@ -431,7 +786,9 @@
                                     <port>${test.selenium.server.port}</port>
                                     <debug>${test.selenium.server.debug}</debug>
                                     <logOutput>true</logOutput>
-                                    <!-- verifyBrowser>${test.selenium.server.verifyBrowser}</verifyBrowser-->
+                                    <!--
+                                        verifyBrowser>${test.selenium.server.verifyBrowser}</verifyBrowser
+-->
                                 </configuration>
                             </execution>
                         </executions>
@@ -440,8 +797,12 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <!-- Skip the normal tests, we'll run them in the integration-test phase -->
+                            <!--
+                                Skip the normal tests, we'll run them in the integration-test
+                                phase
+                            -->
                             <skip>true</skip>
+                           
                         </configuration>
                         <executions>
                             <execution>
@@ -451,6 +812,15 @@
                                 </goals>
                                 <configuration>
                                     <skip>false</skip>
+                                      <includes>
+                                        <include>**/selenium/*Test.java</include>
+                                        <include>**/selenium/mshv/*Test.java</include>
+                                      </includes>
+                                      <excludes>
+                                        <exclude>**/external/**</exclude>
+                                        <exclude>**/selenium/HealthVaultSaveTest.java</exclude>
+                                        <exclude>**/selenium/XSSFilterTest.java</exclude>
+                                      </excludes>
                                 </configuration>
                             </execution>
                         </executions>
@@ -479,6 +849,42 @@
                     </testResource>
                 </testResources>
             </build>
-        </profile>          
+        </profile>
+        <profile>
+        <id>external</id>
+        <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!--
+                                Skip the normal tests, we'll run them in the integration-test
+                                phase
+                            -->
+                            <skip>true</skip>
+                           
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                      <includes>
+                                        <include>**/selenium/external/**Test.java</include>
+                                      </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    </plugins>
+                   </build>
+        </profile>
     </profiles>
 </project>

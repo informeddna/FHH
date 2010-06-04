@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (ÒHHSÓ) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the ÒsoftwareÓ) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -45,8 +45,10 @@ import com.thoughtworks.selenium.SeleneseTestCase;
  *
  */
 public abstract class AbstractSeleniumTest extends SeleneseTestCase {
-    private static final int PAGE_TIMEOUT_SECONDS = 180;
-
+    private static final int PAGE_TIMEOUT_SECONDS = 60;
+    protected static int RECORD_TIMEOUT_SECONDS = 240;
+    
+    
     private static final Logger LOG = Logger.getLogger(AbstractSeleniumTest.class);
 
     @Override
@@ -55,13 +57,17 @@ public abstract class AbstractSeleniumTest extends SeleneseTestCase {
         String hostname = TestProperties.getServerHostname();
         int port = TestProperties.getServerPort();
         String browser = TestProperties.getSeleniumBrowser();
+        LOG.debug("about to run super.setUp on: " + hostname + ": " + port + " browser is: " + browser);
         if (port == 0) {
             super.setUp("http://" + hostname, browser);
         } else {
             super.setUp("http://" + hostname + ":" + port, browser);
 
         }
+        LOG.debug("Selenium port is: " + TestProperties.getSeleniumServerPort());
+
         selenium.setTimeout(toMillisecondsString(PAGE_TIMEOUT_SECONDS));
+        //selenium.setSpeed("100");
     }
 
     protected static String toMillisecondsString(long seconds) {
@@ -72,11 +78,33 @@ public abstract class AbstractSeleniumTest extends SeleneseTestCase {
         selenium.waitForPageToLoad(toMillisecondsString(PAGE_TIMEOUT_SECONDS));
     }
 
+    protected void waitForElementById(String id) { 
+        waitForElementById(id, PAGE_TIMEOUT_SECONDS); 
+    }
+    
     protected void waitForElementById(String id, int timeoutSeconds) {
         selenium.waitForCondition("selenium.browserbot.getCurrentWindow().document.getElementById('"
                 + id + "');", toMillisecondsString(timeoutSeconds));
     }
+    
+    protected void waitForText(String id) {
+        waitForText(id, Integer.valueOf(RECORD_TIMEOUT_SECONDS));
+    }
 
+   
+    protected void waitForText(String id, int waitTime) {
+        for (int second = 0;; second++) {
+            if (second >= Integer.valueOf(waitTime))
+                fail("timeout waiting for text " + id + ". Exceeded wait time (sec): " + waitTime);
+            try {
+                if (selenium.isTextPresent(id))
+                    break;
+            } catch (Exception e) {
+            }
+            pause(1000);
+        }
+    }
+    
     protected void waitForElementByXPath(String xpathExpression, int timeoutSeconds) {
         String cond = "var doc = selenium.browserbot.getCurrentWindow().document; "
                 + "doc.evaluate("
@@ -102,5 +130,54 @@ public abstract class AbstractSeleniumTest extends SeleneseTestCase {
     protected void clickAndWait(String linkOrButton) {
         selenium.click(linkOrButton);
         waitForPageToLoad();
+    }
+    
+    protected void clickAndWaitForText(String linkOrButton, String text) {
+        selenium.click(linkOrButton);
+        waitForText(text);
+    }
+    
+    protected void clickAndWaitForTextSubmodal(String linkOrButton, String text) {
+        selenium.click(linkOrButton);
+        waitForFrameAndSelectIt("popupFrame");
+        waitForText(text);
+    }
+    
+    protected void clickAndWaitForSubmodal(String linkOrButton) {
+        clickAndWait(linkOrButton);
+        waitForFrameAndSelectIt("popupFrame");
+    }
+    
+    protected void selectParentWindow() {
+        //selenium.selectWindow(null);
+        waitForFrameAndSelectIt("relative=parent");
+        selenium.windowFocus();
+    }
+
+    
+    protected void clickAndWaitForPopup(String linkOrButton, String windowId, String xpath) {
+        selenium.click(linkOrButton);
+        selenium.openWindow("", windowId);
+        selenium.selectWindow(windowId);
+        selenium.windowFocus();
+        waitForElementByXPath(xpath, PAGE_TIMEOUT_SECONDS);
+    }
+    
+    protected void waitForAjax() {
+    	selenium.waitForCondition( "selenium.browserbot.getCurrentWindow().Ajax.activeRequestCount == 0", "10000" );
+    }
+    
+    protected void waitForDiv(String divId) {
+        waitForDiv(divId, PAGE_TIMEOUT_SECONDS);
+    }
+
+    protected void waitForDiv(String divId, long timeoutSeconds) {
+        selenium.waitForCondition("element = selenium.browserbot.getCurrentWindow().document.getElementById('" + divId
+                + "'); element != null && element.style.display == 'none';", toMillisecondsString(timeoutSeconds));
+    }
+    
+    protected void waitForFrameAndSelectIt(String frameId) {
+        selenium.waitForFrameToLoad(frameId, PAGE_TIMEOUT_SECONDS * 1000 + "");
+        selenium.selectFrame(frameId);
     }
 }

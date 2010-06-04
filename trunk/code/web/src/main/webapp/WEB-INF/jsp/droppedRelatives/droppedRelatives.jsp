@@ -4,7 +4,7 @@
 <h1><fmt:message key="droppedRelatives.title"/></h1>
 <p><fmt:message key="droppedRelatives.text" /></p>
 <s:if test="fieldErrors['warningMessages'] != null">  
-    <ul>                   
+    <ul>
     <c:forEach items="${fieldErrors['warningMessages']}" var="warningMessage">
         <span class="errorMessage"><li>${warningMessage}</li></span><br />
     </c:forEach>

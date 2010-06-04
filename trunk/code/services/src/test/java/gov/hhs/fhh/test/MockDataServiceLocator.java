@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,9 +34,10 @@
 package gov.hhs.fhh.test;
 
 import gov.hhs.fhh.service.GenericServiceLocal;
+import gov.hhs.fhh.service.HealthVaultLocal;
+import gov.hhs.fhh.service.MessagingGatewayLocal;
 import gov.hhs.fhh.service.PersonServiceLocal;
 import gov.hhs.fhh.service.locator.ServiceLocator;
-import gov.hhs.fhh.test.PersonDataServiceStub;
 
 /**
  * @author Scott Miller
@@ -56,5 +57,15 @@ public class MockDataServiceLocator implements ServiceLocator {
      */
     public PersonServiceLocal getPersonService() {
         return new PersonDataServiceStub();
+    }
+
+    public MessagingGatewayLocal getMessageGatewayService() {
+        // TODO Auto-generated method stub
+        return new MessagingGatewayStub();
+    }
+
+    public HealthVaultLocal getHealthVault() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

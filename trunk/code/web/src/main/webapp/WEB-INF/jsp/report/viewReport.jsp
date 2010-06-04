@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/common/taglibs.jsp"%>
 <html>
 <head>
-    <title><fmt:message key="fhh.title"/></title>
+    <title><fmt:message key="menu.text.viewReport"/></title>
 	<script type="text/javascript">
     	<s:url value="/viewReport/viewReport.action" id="returnUrl" />
     	loadViewReportDetail = function() {
@@ -18,7 +18,7 @@
         <s:url value="/popup/getHelp/helpDetailsViewReport.action" id="helpUrl" />
         document.getElementById('navHelpUrl').onclick = function(){popupWindow('${helpUrl}');};
         document.getElementById('mainWarningRedirect').href = '${viewReportUrl}';
-        window.onload = activateNavAnchor("navViewDiagram");
+        window.onload = function() {activateNavAnchor("navViewDiagram");};
     </script>
     <div class="boxpad" id="viewReportDetail">
         <%@ include file="viewReportDetail.jsp" %>

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -38,20 +38,27 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
+import gov.hhs.fhh.model.mfhp.castor.RelationshipHolderNode;
+import gov.hhs.fhh.model.mfhp.castor.RelativeCodeNode;
+import gov.hhs.fhh.test.AbstractHibernateTestCase;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.hhs.fhh.data.util.AgeRangeFieldHandler;
-import gov.hhs.fhh.data.util.DataEstimatedAgeNode;
-import gov.hhs.fhh.data.util.DeceasedEstimatedAgeNode;
-import gov.hhs.fhh.data.util.RelationshipHolderNode;
-import gov.hhs.fhh.data.util.RelativeCodeNode;
-import gov.hhs.fhh.test.AbstractHibernateTestCase;
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer;
+import com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode;
+import com.fiveamsolutions.hl7.model.age.DeceasedEstimatedAgeNode;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
@@ -62,7 +69,7 @@ public class RelativeTest extends AbstractHibernateTestCase {
     private final String TRUE_STRING = "true";
     private final Weight DUMMY_WEIGHT = new Weight(180, WeightUnit.US);
     private final String DUMMY_NAME = "Name";
-    private final Long DUMMY_ID = 1L;
+    private final UUID DUMMY_ID = UUID.randomUUID();
     private final Gender DUMMY_GENDER = Gender.MALE;
     private final Disease DUMMY_DISEASE = new Disease();
     private final Ethnicity DUMMY_ETHNICITY = new Ethnicity();
@@ -71,78 +78,75 @@ public class RelativeTest extends AbstractHibernateTestCase {
     private final Relative DUMMY_RELATIVE = new Relative();
     private final Person DUMMY_PERSON = new Person();
     private final Date date = new Date();
-    private final String DUMMY_CODE = RelativeCode.MCOUSN.toString();
+    private final RelativeCode DUMMY_CODE = RelativeCode.MCOUSN;
     private final String DUMMY_YEAR = "1960";
     private final String DEAD_STATUS = LivingStatus.NO.toString();
     private final String ALIVE_STATUS = LivingStatus.YES.toString();
-    private final AgeRange DUMMY_AGE = AgeRange.FIFTIES;
+    private final AgeRangeEnum DUMMY_AGE = AgeRangeEnum.FIFTIES;
     
     
     @Before
     public void before() {
         DUMMY_RELATIVE.setName(DUMMY_NAME);
         DUMMY_RELATIVE.setWeight(DUMMY_WEIGHT);
-        DUMMY_RELATIVE.setId(DUMMY_ID);
+        DUMMY_RELATIVE.setUuid(DUMMY_ID);
         DUMMY_RELATIVE.setGender(DUMMY_GENDER);
         DUMMY_OBS.setDisease(DUMMY_DISEASE);
-        DUMMY_OBS.setAgeRange(AgeRange.THIRTIES);
-        List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
-        observations.add(DUMMY_OBS);
-        DUMMY_RELATIVE.setObservations(observations);
+        DUMMY_OBS.setAgeRange(AgeRangeEnum.THIRTIES);
+        DUMMY_RELATIVE.getObservations().add(DUMMY_OBS);
         DUMMY_RELATIVE.setEthnicities(new ArrayList<Ethnicity>());
         DUMMY_RELATIVE.getEthnicities().add(DUMMY_ETHNICITY);
         DUMMY_RELATIVE.setRaces(new ArrayList<Race>());
         DUMMY_RELATIVE.getRaces().add(DUMMY_RACE);
-        DUMMY_RELATIVE.setCode(DUMMY_CODE);
+        DUMMY_RELATIVE.setCodeEnum(DUMMY_CODE);
         DUMMY_RELATIVE.setAgeAtDeath(DUMMY_AGE);
         DUMMY_RELATIVE.setCauseOfDeath(DUMMY_DISEASE);
         DUMMY_RELATIVE.setLivingStatus(DEAD_STATUS);
         DUMMY_RELATIVE.setBirthTime(DUMMY_YEAR);
-        DUMMY_RELATIVE.setEstimatedAgeRange(AgeRange.FIFTIES);
+        DUMMY_RELATIVE.setEstimatedAgeRange(AgeRangeEnum.FIFTIES);
     }
     
     @Test
     public void testCreateRelative() {
-        assertEquals(DUMMY_ID, DUMMY_RELATIVE.getId());
+        assertEquals(DUMMY_ID, DUMMY_RELATIVE.getUuid());
         assertEquals(DUMMY_NAME, DUMMY_RELATIVE.getName());
         assertEquals(DUMMY_WEIGHT, DUMMY_RELATIVE.getWeight());
         assertEquals(DUMMY_GENDER, DUMMY_RELATIVE.getGender());
         assertEquals(DUMMY_DISEASE, DUMMY_RELATIVE.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, DUMMY_RELATIVE.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, DUMMY_RELATIVE.getObservations().get(0).getAgeRange());
         assertEquals(DUMMY_ETHNICITY, DUMMY_RELATIVE.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, DUMMY_RELATIVE.getRaces().get(0));
-        assertEquals(DUMMY_CODE, DUMMY_RELATIVE.getCode());
-        assertEquals(DUMMY_CODE, DUMMY_RELATIVE.getCodeEnum().toString());
+        assertEquals(DUMMY_CODE, DUMMY_RELATIVE.getCodeEnum());
         assertEquals(DUMMY_AGE, DUMMY_RELATIVE.getAgeAtDeath());
         assertEquals(DUMMY_DISEASE, DUMMY_RELATIVE.getCauseOfDeath());
         assertEquals(DEAD_STATUS, DUMMY_RELATIVE.getLivingStatus());
         assertEquals(DUMMY_YEAR, DUMMY_RELATIVE.getBirthTime());
-        assertEquals(AgeRange.FIFTIES, DUMMY_RELATIVE.getEstimatedAgeRange());
+        assertEquals(AgeRangeEnum.FIFTIES, DUMMY_RELATIVE.getEstimatedAgeRange());
         
         ClinicalObservation obs = new ClinicalObservation(DUMMY_OBS);
         assertEquals(DUMMY_DISEASE, obs.getDisease());
-        assertEquals(AgeRange.THIRTIES, obs.getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, obs.getAgeRange());
     }
     
     @Test
     public void testCopyRelative() {
         Relative copiedRelative = new Relative(DUMMY_RELATIVE);
         
-        assertEquals(DUMMY_ID, copiedRelative.getId());
+        assertEquals(DUMMY_ID, copiedRelative.getUuid());
         assertEquals(DUMMY_NAME, copiedRelative.getName());
         assertEquals(DUMMY_WEIGHT.getValue(), copiedRelative.getWeight().getValue());
         assertEquals(DUMMY_WEIGHT.getUnit(), copiedRelative.getWeight().getUnit());
         assertEquals(DUMMY_GENDER, copiedRelative.getGender());
         assertEquals(DUMMY_DISEASE, copiedRelative.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, copiedRelative.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, copiedRelative.getObservations().get(0).getAgeRange());
         assertEquals(DUMMY_ETHNICITY, copiedRelative.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, copiedRelative.getRaces().get(0));
-        assertEquals(DUMMY_CODE, copiedRelative.getCode());
+        assertEquals(DUMMY_CODE, copiedRelative.getCodeEnum());
         assertEquals(DUMMY_AGE, copiedRelative.getAgeAtDeath());
         assertEquals(DUMMY_DISEASE, copiedRelative.getCauseOfDeath());
         assertEquals(DEAD_STATUS, copiedRelative.getLivingStatus());
         assertEquals(DUMMY_YEAR, copiedRelative.getBirthTime());
-        assertEquals(AgeRange.FIFTIES, copiedRelative.getEstimatedAgeRange());
+        assertEquals(AgeRangeEnum.FIFTIES, copiedRelative.getEstimatedAgeRange());
     }
     
     @Test
@@ -150,10 +154,10 @@ public class RelativeTest extends AbstractHibernateTestCase {
         DUMMY_PERSON.setName(DUMMY_NAME);
         DUMMY_PERSON.setDateOfBirth(date);
         DUMMY_PERSON.setWeight(DUMMY_WEIGHT);
-        DUMMY_PERSON.setId(DUMMY_ID);
+        DUMMY_PERSON.setUuid(DUMMY_ID);
         DUMMY_PERSON.setGender(DUMMY_GENDER);
         DUMMY_OBS.setDisease(DUMMY_DISEASE);
-        DUMMY_OBS.setAgeRange(AgeRange.THIRTIES);
+        DUMMY_OBS.setAgeRange(AgeRangeEnum.THIRTIES);
         List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
         observations.add(DUMMY_OBS);
         DUMMY_PERSON.setObservations(observations);
@@ -164,14 +168,14 @@ public class RelativeTest extends AbstractHibernateTestCase {
         
         Relative copiedPerson = new Relative(DUMMY_PERSON);
         
-        assertEquals(DUMMY_ID, copiedPerson.getId());
+        assertEquals(DUMMY_ID, copiedPerson.getUuid());
         assertEquals(DUMMY_NAME, copiedPerson.getName());
         assertEquals(date.toString(), copiedPerson.getDateOfBirth().toString());
         assertEquals(DUMMY_WEIGHT.getValue(), copiedPerson.getWeight().getValue());
         assertEquals(DUMMY_WEIGHT.getUnit(), copiedPerson.getWeight().getUnit());
         assertEquals(DUMMY_GENDER, copiedPerson.getGender());
         assertEquals(DUMMY_DISEASE, copiedPerson.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, copiedPerson.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, copiedPerson.getObservations().get(0).getAgeRange());
         assertEquals(DUMMY_ETHNICITY, copiedPerson.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, copiedPerson.getRaces().get(0));
     }
@@ -185,21 +189,20 @@ public class RelativeTest extends AbstractHibernateTestCase {
         DUMMY_RELATIVE.setBirthTime(null);
         DUMMY_RELATIVE.setEstimatedAgeRange(null);
         node = DUMMY_RELATIVE.getRelationshipHolderNode();
-        assertEquals(DUMMY_ID, node.getId());
+        assertEquals(DUMMY_ID, node.getUuid());
         assertEquals(DUMMY_NAME, node.getName());
         assertEquals(DUMMY_WEIGHT.getValue(), node.getWeight().getValue());
         assertEquals(DUMMY_WEIGHT.getUnit(), node.getWeight().getUnit());
         assertEquals(DUMMY_GENDER, node.getGender());
         assertEquals(DUMMY_ETHNICITY, node.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, node.getRaces().get(0));
-        assertEquals(DUMMY_CODE, node.getCode());
-        assertEquals(DUMMY_CODE, node.getCodeEnum().toString());
+        assertEquals(DUMMY_CODE, node.getCodeEnum());
         assertEquals(DUMMY_AGE, node.getAgeAtDeath());
         assertEquals(DUMMY_DISEASE, node.getCauseOfDeath());
         assertEquals(DEAD_STATUS, node.getLivingStatus());
         assertNull(node.getBirthTime());
         assertEquals(DUMMY_DISEASE, node.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, node.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, node.getObservations().get(0).getAgeRange());
         
         // Check that cause of death Observation was added when
         // getRelationshipHolderNode is called
@@ -207,14 +210,14 @@ public class RelativeTest extends AbstractHibernateTestCase {
         assertEquals(TRUE, node.getObservations().get(1).isCauseOfDeath());
         
         DeceasedEstimatedAgeNode deceasedNode = node.getDeceasedEstimatedAgeNode();
-        AgeRangeFieldHandler handler = deceasedNode.getAgeRangeHandler();
+        AgeRangeFieldContainer handler = deceasedNode.getAgeRangeHandler();
         assertEquals(DUMMY_AGE.getUnit(), handler.getUnit());
         assertEquals(DUMMY_AGE.getLowValue(), handler.getLowValue());
         assertEquals(DUMMY_AGE.getHighValue(), handler.getHighValue());
         
         Relative rel = new Relative();
         rel.setRelationshipHolderNode(node);
-        assertEquals(DUMMY_ID, rel.getId());
+        assertEquals(DUMMY_ID, rel.getUuid());
         assertEquals(DUMMY_NAME, rel.getName());
         assertEquals(DUMMY_WEIGHT.getValue(), rel.getWeight().getValue());
         assertEquals(DUMMY_WEIGHT.getUnit(), rel.getWeight().getUnit());
@@ -222,7 +225,7 @@ public class RelativeTest extends AbstractHibernateTestCase {
         assertEquals(DUMMY_WEIGHT.getValue(), rel.getWeight().getValue());
         assertEquals(DUMMY_GENDER, rel.getGender());
         assertEquals(DUMMY_DISEASE, rel.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, rel.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, rel.getObservations().get(0).getAgeRange());
         assertEquals(DUMMY_ETHNICITY, rel.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, rel.getRaces().get(0));
         assertEquals(DUMMY_AGE, rel.getAgeAtDeath());
@@ -230,27 +233,27 @@ public class RelativeTest extends AbstractHibernateTestCase {
         assertEquals(DEAD_STATUS, rel.getLivingStatus());
         assertNull(rel.getBirthTime());
         assertEquals(DUMMY_DISEASE, rel.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, rel.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, rel.getObservations().get(0).getAgeRange());
         // Check that cause of death Observation is not in the relative observations
         assertEquals(1, rel.getObservations().size());
         
         // Test get and set DeceasedEstimatedAgeNode for type unknown
-        DUMMY_RELATIVE.setAgeAtDeath(AgeRange.UNKNOWN);
+        DUMMY_RELATIVE.setAgeAtDeath(AgeRangeEnum.UNKNOWN);
         node = DUMMY_RELATIVE.getRelationshipHolderNode();
         deceasedNode = node.getDeceasedEstimatedAgeNode();
-        assertEquals(AgeRange.UNKNOWN.getOriginalText(), deceasedNode.getCodeNode().getOriginalText());
+        assertEquals(AgeRangeEnum.UNKNOWN.getOriginalText(), deceasedNode.getCodeNode().getOriginalText());
         
         rel.setRelationshipHolderNode(node);
-        assertEquals(AgeRange.UNKNOWN, rel.getAgeAtDeath());
+        assertEquals(AgeRangeEnum.UNKNOWN, rel.getAgeAtDeath());
         
         // Test get and set DeceasedEstimatedAgeNode for type pre-birth
-        DUMMY_RELATIVE.setAgeAtDeath(AgeRange.PREBIRTH);
+        DUMMY_RELATIVE.setAgeAtDeath(AgeRangeEnum.PREBIRTH);
         node = DUMMY_RELATIVE.getRelationshipHolderNode();
         deceasedNode = node.getDeceasedEstimatedAgeNode();
-        assertEquals(AgeRange.PREBIRTH.getOriginalText(), deceasedNode.getCodeNode().getOriginalText());
+        assertEquals(AgeRangeEnum.PREBIRTH.getOriginalText(), deceasedNode.getCodeNode().getOriginalText());
         
         rel.setRelationshipHolderNode(node);
-        assertEquals(AgeRange.PREBIRTH, rel.getAgeAtDeath());
+        assertEquals(AgeRangeEnum.PREBIRTH, rel.getAgeAtDeath());
     }
     
     @Test
@@ -262,22 +265,21 @@ public class RelativeTest extends AbstractHibernateTestCase {
         DUMMY_RELATIVE.setAgeAtDeath(null);
         DUMMY_RELATIVE.setCauseOfDeath(null);
         DUMMY_RELATIVE.setLivingStatus(ALIVE_STATUS);
-        DUMMY_RELATIVE.setEstimatedAgeRange(AgeRange.FIFTIES);
+        DUMMY_RELATIVE.setEstimatedAgeRange(AgeRangeEnum.FIFTIES);
         node = DUMMY_RELATIVE.getRelationshipHolderNode();
-        assertEquals(DUMMY_ID, node.getId());
+        assertEquals(DUMMY_ID, node.getUuid());
         assertEquals(DUMMY_NAME, node.getName());
         assertEquals(DUMMY_WEIGHT.getValue(), node.getWeight().getValue());
         assertEquals(DUMMY_WEIGHT.getUnit(), node.getWeight().getUnit());
         assertEquals(DUMMY_GENDER, node.getGender());
         assertEquals(DUMMY_ETHNICITY, node.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, node.getRaces().get(0));
-        assertEquals(DUMMY_CODE, node.getCode());
-        assertEquals(DUMMY_CODE, node.getCodeEnum().toString());
+        assertEquals(DUMMY_CODE, node.getCodeEnum());
         assertEquals(ALIVE_STATUS, node.getLivingStatus());
         assertEquals(DUMMY_YEAR, node.getBirthTime());
         assertEquals(DUMMY_DISEASE, node.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, node.getObservations().get(0).getAgeRange());
-        assertEquals(AgeRange.FIFTIES, node.getEstimatedAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, node.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.FIFTIES, node.getEstimatedAgeRange());
         
         // Check that cause of death Observation was not added
         // getRelationshipHolderNode is called
@@ -288,20 +290,20 @@ public class RelativeTest extends AbstractHibernateTestCase {
         
         Relative rel = new Relative();
         rel.setRelationshipHolderNode(node);
-        assertEquals(DUMMY_ID, rel.getId());
+        assertEquals(DUMMY_ID, rel.getUuid());
         assertEquals(DUMMY_NAME, rel.getName());
         assertEquals(DUMMY_WEIGHT.getValue(), rel.getWeight().getValue());
         assertEquals(DUMMY_WEIGHT.getUnit(), rel.getWeight().getUnit());
         assertEquals(DUMMY_GENDER, rel.getGender());
         assertEquals(DUMMY_DISEASE, rel.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, rel.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, rel.getObservations().get(0).getAgeRange());
         assertEquals(DUMMY_ETHNICITY, rel.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, rel.getRaces().get(0));
         assertEquals(ALIVE_STATUS, rel.getLivingStatus());
         assertEquals(DUMMY_YEAR, rel.getBirthTime());
         assertEquals(DUMMY_DISEASE, rel.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, rel.getObservations().get(0).getAgeRange());
-        assertEquals(AgeRange.FIFTIES, rel.getEstimatedAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, rel.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.FIFTIES, rel.getEstimatedAgeRange());
     }
     
     @Test
@@ -310,11 +312,11 @@ public class RelativeTest extends AbstractHibernateTestCase {
         
         // Test get RelationshipHolderNode for mother
         Relative mother = new Relative();
-        mother.setId(DUMMY_ID);
+        mother.setUuid(DUMMY_ID);
         DUMMY_RELATIVE.setMother(mother);
         node = DUMMY_RELATIVE.getRelationshipHolderNode();
-        assertEquals(DUMMY_ID, node.getParentNode().getId());
-        assertEquals(RelativeCode.NMTH.toString(), node.getParentNode().getCode());
+        assertEquals(DUMMY_ID, node.getParentNodes().get(0).getUuid());
+        assertEquals(RelativeCode.NMTH.toString(), node.getParentNodes().get(0).getCode());
         
         // Test set RelationshipHolderNode for mother
         Relative rel = new Relative();
@@ -326,11 +328,11 @@ public class RelativeTest extends AbstractHibernateTestCase {
         
         // Test get RelationshipHolderNode for father
         Relative father = new Relative();
-        father.setId(DUMMY_ID);
+        father.setUuid(DUMMY_ID);
         DUMMY_RELATIVE.setFather(father);
         node = DUMMY_RELATIVE.getRelationshipHolderNode();
-        assertEquals(DUMMY_ID, node.getParentNode().getId());
-        assertEquals(RelativeCode.NFTH.toString(), node.getParentNode().getCode());
+        assertEquals(DUMMY_ID, node.getParentNodes().get(0).getUuid());
+        assertEquals(RelativeCode.NFTH.toString(), node.getParentNodes().get(0).getCode());
         
         // Test set RelationshipHolderNode for mother
         rel = new Relative();
@@ -357,7 +359,7 @@ public class RelativeTest extends AbstractHibernateTestCase {
         
         node = DUMMY_RELATIVE.getRelativeCodeNode();
         assertEquals(DUMMY_RELATIVE.getCode(), node.getCode());
-        assertEquals(RelativeCode.getByValue(DUMMY_CODE).getDisplayValue(), node.getDisplayName());
+        assertEquals(DUMMY_CODE.getDisplayValue(), node.getDisplayName());
         assertEquals(RelativeCodeNode.CODE_SYSTEM_NAME, node.getCodeSystemName());
         
         node.setCode(RelativeCode.GRMTH.toString());
@@ -377,6 +379,12 @@ public class RelativeTest extends AbstractHibernateTestCase {
         
         DUMMY_RELATIVE.setLivingStatus(LivingStatus.YES.toString());
         assertNull(DUMMY_RELATIVE.getDeceasedIndicator());
+        
+        DUMMY_RELATIVE.setLivingStatus(LivingStatus.UNKNOWN.toString());
+        assertEquals(LivingStatus.UNKNOWN.toString(), DUMMY_RELATIVE.getDeceasedIndicator());
+        
+        DUMMY_RELATIVE.setDeceasedIndicator(LivingStatus.UNKNOWN.toString());
+        assertEquals(LivingStatus.UNKNOWN.toString(), DUMMY_RELATIVE.getDeceasedIndicator());
     }
     
     @Test
@@ -391,25 +399,25 @@ public class RelativeTest extends AbstractHibernateTestCase {
     
     @Test
     public void testIsRemovable() {
-        DUMMY_RELATIVE.setCode(RelativeCode.PGRFTH.toString());
+        DUMMY_RELATIVE.setCodeEnum(RelativeCode.PGRFTH);
         assertFalse(DUMMY_RELATIVE.isRemovable());
         
-        DUMMY_RELATIVE.setCode(RelativeCode.PGRMTH.toString());
+        DUMMY_RELATIVE.setCodeEnum(RelativeCode.PGRMTH);
         assertFalse(DUMMY_RELATIVE.isRemovable());
         
-        DUMMY_RELATIVE.setCode(RelativeCode.MGRFTH.toString());
+        DUMMY_RELATIVE.setCodeEnum(RelativeCode.MGRFTH);
         assertFalse(DUMMY_RELATIVE.isRemovable());
         
-        DUMMY_RELATIVE.setCode(RelativeCode.MGRMTH.toString());
+        DUMMY_RELATIVE.setCodeEnum(RelativeCode.MGRMTH);
         assertFalse(DUMMY_RELATIVE.isRemovable());
         
-        DUMMY_RELATIVE.setCode(RelativeCode.NFTH.toString());
+        DUMMY_RELATIVE.setCodeEnum(RelativeCode.NFTH);
         assertFalse(DUMMY_RELATIVE.isRemovable());
         
-        DUMMY_RELATIVE.setCode(RelativeCode.NFTH.toString());
+        DUMMY_RELATIVE.setCodeEnum(RelativeCode.NFTH);
         assertFalse(DUMMY_RELATIVE.isRemovable());
         
-        DUMMY_RELATIVE.setCode(RelativeCode.NIECE.toString());
+        DUMMY_RELATIVE.setCodeEnum(RelativeCode.NIECE);
         assertTrue(DUMMY_RELATIVE.isRemovable());
     }
     
@@ -419,16 +427,73 @@ public class RelativeTest extends AbstractHibernateTestCase {
         Relative r = new Relative();
         assertNull(r.getDataEstimatedAgeNode());
         
-        r.setEstimatedAgeRange(AgeRange.FIFTIES);
-        assertNotNull(r.getDataEstimatedAgeNode().getAgeRangeHandler().getHighValue(), AgeRange.FIFTIES.getHighValue());
+        r.setEstimatedAgeRange(AgeRangeEnum.FIFTIES);
+        assertNotNull(r.getDataEstimatedAgeNode().getAgeRangeHandler().getHighValue(), AgeRangeEnum.FIFTIES.getHighValue());
     }
     
     @Test
     public void testSetDataEstimatedAgeNode() {
         Relative r = new Relative();
-        DataEstimatedAgeNode ageNode = new DataEstimatedAgeNode(AgeRange.FIFTIES.getUnit(), 
-                AgeRange.FIFTIES.getLowValue(), AgeRange.FIFTIES.getHighValue());
+        DataEstimatedAgeNode ageNode = new DataEstimatedAgeNode(AgeRangeEnum.FIFTIES.getUnit(), 
+                AgeRangeEnum.FIFTIES.getLowValue(), AgeRangeEnum.FIFTIES.getHighValue());
         r.setDataEstimatedAgeNode(ageNode);
-        assertEquals(AgeRange.FIFTIES, r.getEstimatedAgeRange());
+        assertEquals(AgeRangeEnum.FIFTIES, r.getEstimatedAgeRange());
+    }
+    
+    @Test
+    public void testIsCompletedForm() {
+        Relative r = new Relative();
+        assertFalse(r.isCompletedForm());
+
+        r.setName("name");
+        assertTrue(r.isCompletedForm());
+        
+        r = new Relative();
+        r.setLivingStatus(ALIVE_STATUS);
+        assertTrue(r.isCompletedForm());
+        
+        r = new Relative();
+        r.setTwinStatus(TwinStatus.FRATERNAL);
+        assertTrue(r.isCompletedForm());
+        
+        r = new Relative();
+        r.getEthnicities().add(DUMMY_ETHNICITY);
+        assertTrue(r.isCompletedForm());
+        
+        r = new Relative();
+        r.getRaces().add(DUMMY_RACE);
+        assertTrue(r.isCompletedForm());
+        
+        r = new Relative();
+        r.getObservations().add(DUMMY_OBS);
+        assertTrue(r.isCompletedForm());
+        
+        r.setUnmatchedCondition(true);
+        assertFalse(r.isCompletedForm());
+    }
+    
+    @Test
+    public void testSetCode() {
+        Relative relative = new Relative();
+        relative.setCode(null);
+        assertNull(relative.getCode());
+        assertNull(relative.getCodeEnum());
+        relative.setCode("junk");
+        assertNull(relative.getCode());
+        assertNull(relative.getCodeEnum());
+        relative.setCode(RelativeCode.AUNT.name().toLowerCase());
+        assertEquals(RelativeCode.AUNT.name(), relative.getCode());
+        assertEquals(RelativeCode.AUNT, relative.getCodeEnum());
+    }
+    
+    @Test
+    public void testSetCodeEnum() {
+        Relative relative = new Relative();
+        relative.setCodeEnum(null);
+        assertNull(relative.getCode());
+        assertNull(relative.getCodeEnum());
+        relative.setCodeEnum(RelativeCode.AUNT);
+        assertEquals(RelativeCode.AUNT, relative.getCodeEnum());
+        assertEquals(RelativeCode.AUNT.name(), relative.getCode());
     }
 }

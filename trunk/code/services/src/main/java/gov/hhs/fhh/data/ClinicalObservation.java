@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,37 +33,39 @@
  */
 package gov.hhs.fhh.data;
 
+import gov.hhs.fhh.model.mfhp.castor.ValueNode;
+
 import java.io.Serializable;
 
-import gov.hhs.fhh.data.util.CodeNode;
-import gov.hhs.fhh.data.util.DataEstimatedAgeNode;
-import gov.hhs.fhh.data.util.ValueNode;
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.age.CodeNode;
+import com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode;
 
 /**
  * @author bpickeral
- *
+ * 
  */
 public class ClinicalObservation implements Serializable {
     /**
      * Cause Of Death Code displayed in the XML.
      */
     public static final String COD_CODE = "419620001";
-    
+
     /**
      * COD Code System Name displayed in the XML.
      */
     public static final String COD_CODE_SYSTEM_NAME = "SNOMED_CT";
-    
+
     /**
      * COD Display Name displayed in the XML.
      */
     public static final String COD_DISPLAY_NAME = "death";
-    
+
     private static final long serialVersionUID = 1456L;
-    private AgeRange ageRange;
+    private AgeRangeEnum ageRangeEnum;
     private Disease disease;
-    //Only used when importing/exporting using Castor, otherwise cause of death
-    //is stored in Relative
+    // Only used when importing/exporting using Castor, otherwise cause of death
+    // is stored in Relative
     private boolean causeOfDeath;
     private CodeNode code;
     private ValueNode valueNode;
@@ -73,35 +75,38 @@ public class ClinicalObservation implements Serializable {
      * Default constructor.
      */
     public ClinicalObservation() {
-        //default constructor
+        // default constructor
     }
 
     /**
      * Copy constructor.
+     * 
      * @param c the Disease object to copy from.
      */
     public ClinicalObservation(ClinicalObservation c) {
-        this.ageRange = c.getAgeRange();
+        this.ageRangeEnum = c.getAgeRange();
         this.disease = c.getDisease();
     }
-    
+
     /**
      * @return the DataEstimatedAgeNode
      */
     public DataEstimatedAgeNode getDataEstimatedAgeNode() {
         return getAgeRange() != null ? getAgeRange().getAsDataEstimatedAgeNode() : null;
     }
-    
+
     /**
-     * Sets the ageRange based on the dataEstimatedAgeNode passed in.
+     * Sets the ageRangeEnum based on the dataEstimatedAgeNode passed in.
+     * 
      * @param dataEstimatedAgeNode the dataEstimatedAgeNode to get the lowValue from.
      */
     public void setDataEstimatedAgeNode(DataEstimatedAgeNode dataEstimatedAgeNode) {
-        setAgeRange(AgeRange.fromDataEstimatedAgeNode(dataEstimatedAgeNode));
+        setAgeRange(AgeRangeEnum.fromDataEstimatedAgeNode(dataEstimatedAgeNode));
     }
-    
+
     /**
      * Used only by Castor to display the code for the cause of death node.
+     * 
      * @return the CodeNode if the observation is the cause of death
      */
     public CodeNode getCODCodeNode() {
@@ -111,11 +116,11 @@ public class ClinicalObservation implements Serializable {
         }
         return codeNode;
     }
-    
+
     /**
-     * If the code node for cause of death is being parsed, set causeOfDeath.
-     * Only used when importing/exporting.
-     * @param codeNode the codeNode to get the  from.
+     * If the code node for cause of death is being parsed, set causeOfDeath. Only used when importing/exporting.
+     * 
+     * @param codeNode the codeNode to get the from.
      */
     public void setCODCodeNode(CodeNode codeNode) {
         setCauseOfDeath(true);
@@ -178,17 +183,17 @@ public class ClinicalObservation implements Serializable {
     }
 
     /**
-     * @return the ageRange
+     * @return the ageRangeEnum
      */
-    public AgeRange getAgeRange() {
-        return ageRange;
+    public AgeRangeEnum getAgeRange() {
+        return ageRangeEnum;
     }
 
     /**
-     * @param ageRange the ageRange to set
+     * @param ageRangeEnumParam the ageRangeEnum to set.
      */
-    public void setAgeRange(AgeRange ageRange) {
-        this.ageRange = ageRange;
+    public void setAgeRange(AgeRangeEnum ageRangeEnumParam) {
+        this.ageRangeEnum = ageRangeEnumParam;
     }
 
     /**

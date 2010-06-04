@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,13 +34,13 @@
 package gov.hhs.fhh.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
-import gov.hhs.fhh.test.util.PersonTestUtils;
+import gov.hhs.fhh.data.util.HL7ConversionUtils;
 import gov.hhs.fhh.test.util.RelativeBranchTestUtil;
 
 import java.text.DecimalFormat;
@@ -48,18 +48,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.hhs.fhh.data.util.ClinicalObservationsNode;
-import gov.hhs.fhh.data.util.CodeNode;
-import gov.hhs.fhh.data.util.FhhDataUtils;
-import gov.hhs.fhh.data.util.ValueNode;
-import gov.hhs.fhh.data.util.htmimport.HTMImportUtils;
-import gov.hhs.fhh.data.util.htmimport.HTMNode;
-import gov.hhs.fhh.data.util.htmimport.InputNode;
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.Height;
+import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
@@ -71,7 +71,7 @@ public class PersonTest {
     private final Weight DUMMY_WEIGHT = new Weight();
     private final Height DUMMY_HEIGHT = new Height();
     private final String DUMMY_NAME = "Name";
-    private final Long DUMMY_ID = 1L;
+    private final UUID DUMMY_ID = UUID.randomUUID();
     private final Gender DUMMY_GENDER = Gender.MALE;
     private final Ethnicity DUMMY_ETHNICITY = new Ethnicity();
     private final Race DUMMY_RACE = new Race();
@@ -79,27 +79,21 @@ public class PersonTest {
     private final Person p = new Person();
     private final Date date = new Date();
     private final Disease DUMMY_DISEASE = new Disease();
-    private final String DUMMY_DISEASE_CODE = "Code16";
-    private final String DUMMY_DISEASE_CSN = "CODE_SYS16";
-    private final String DUMMY_DISEASE_DISPLAY = "DisplayName16";
-    private final Long DUMMY_DISEASE_ID = 16L;
-    private final Long NOT_EXIST_DISEASE_ID = 116L;
-    private final String DUMMY_DISEASE_USER_DEFINED = "User entered disease";
 
     @Before
     public void before() {
         p.setName(DUMMY_NAME);
         p.setDateOfBirth(date);
-        p.setId(DUMMY_ID);
+        p.setUuid(DUMMY_ID);
         p.setGender(DUMMY_GENDER);
         DUMMY_OBS.setDisease(DUMMY_DISEASE);
-        DUMMY_OBS.setAgeRange(AgeRange.THIRTIES);
+        DUMMY_OBS.setAgeRange(AgeRangeEnum.THIRTIES);
         DUMMY_WEIGHT.setValue(180);
         DUMMY_WEIGHT.setUnit(WeightUnit.US);
         DUMMY_HEIGHT.setValue(60);
         p.setWeight(DUMMY_WEIGHT);
         p.setHeight(DUMMY_HEIGHT);
-        List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
+        final List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
         observations.add(DUMMY_OBS);
         p.setObservations(observations);
         p.setEthnicities(new ArrayList<Ethnicity>());
@@ -107,41 +101,37 @@ public class PersonTest {
         p.setRaces(new ArrayList<Race>());
         p.getRaces().add(DUMMY_RACE);
         p.setAdopted(TRUE);
-        p.setCompletedForm(TRUE);
-        p.setXmlFileSaved(TRUE);
     }
     
     @Test
     public void testCreatePerson() {
-        assertEquals(DUMMY_ID, p.getId());
+        assertEquals(DUMMY_ID, p.getUuid());
         assertEquals(DUMMY_NAME, p.getName());
         assertEquals(date.toString(), p.getDateOfBirth().toString());
         assertEquals(DUMMY_WEIGHT, p.getWeight());
         assertEquals(DUMMY_HEIGHT, p.getHeight());
         assertEquals(DUMMY_GENDER, p.getGender());
         assertEquals(DUMMY_DISEASE, p.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, p.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, p.getObservations().get(0).getAgeRange());
         assertEquals(DUMMY_ETHNICITY, p.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, p.getRaces().get(0));
         assertTrue(p.isAdopted());
-        assertTrue(p.isCompletedForm());
-        assertTrue(p.isXmlFileSaved());
         
-        ClinicalObservation obs = new ClinicalObservation(DUMMY_OBS);
+        final ClinicalObservation obs = new ClinicalObservation(DUMMY_OBS);
         assertEquals(DUMMY_DISEASE, obs.getDisease());
-        assertEquals(AgeRange.THIRTIES, obs.getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, obs.getAgeRange());
     }
     
     @Test
     public void testGetBmi() {
-        DecimalFormat bmiDecimalFormat = new DecimalFormat("0.0");
+        final DecimalFormat bmiDecimalFormat = new DecimalFormat("0.0");
         
         p.setWeight(DUMMY_WEIGHT);
-        double bmi = (DUMMY_WEIGHT.getValue() * 703.0) / (DUMMY_HEIGHT.getValue() * DUMMY_HEIGHT.getValue());
+        double bmi = DUMMY_WEIGHT.getValue() * 703.0 / (DUMMY_HEIGHT.getValue() * DUMMY_HEIGHT.getValue());
         assertEquals(bmiDecimalFormat.format(bmi), p.getBmi());
         
         p.getWeight().setUnit(WeightUnit.METRIC);
-        bmi = (DUMMY_WEIGHT.getValue() * 1.0)/(DUMMY_HEIGHT.getValue()*DUMMY_HEIGHT.getValue());
+        bmi = DUMMY_WEIGHT.getValue() * 1.0/(DUMMY_HEIGHT.getValue()*DUMMY_HEIGHT.getValue());
         assertEquals(bmiDecimalFormat.format(bmi), p.getBmi());
         
         p.setWeight(new Weight());
@@ -150,23 +140,23 @@ public class PersonTest {
     
     @Test
     public void testCopyPerson() {
-        Person copiedPerson = new Person(p);
+        final Person copiedPerson = new Person(p);
         
-        assertEquals(DUMMY_ID, copiedPerson.getId());
+        assertEquals(DUMMY_ID, copiedPerson.getUuid());
         assertEquals(DUMMY_NAME, copiedPerson.getName());
         assertEquals(date.toString(), copiedPerson.getDateOfBirth().toString());
         assertEquals(DUMMY_WEIGHT.getValue(), copiedPerson.getWeight().getValue());
         assertEquals(DUMMY_WEIGHT.getUnit(), copiedPerson.getWeight().getUnit());
         assertEquals(DUMMY_GENDER, copiedPerson.getGender());
         assertEquals(DUMMY_DISEASE, copiedPerson.getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, copiedPerson.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, copiedPerson.getObservations().get(0).getAgeRange());
         assertEquals(DUMMY_ETHNICITY, copiedPerson.getEthnicities().get(0));
         assertEquals(DUMMY_RACE, copiedPerson.getRaces().get(0));
     }
     
     @Test
     public void testGetAndSetRelatives() {
-        Relative r = new Relative(p);
+        final Relative r = new Relative(p);
         p.setRelatives(new ArrayList<Relative>());
         p.getRelatives().add(r);
         
@@ -178,22 +168,23 @@ public class PersonTest {
         p.getRelatives().addAll(RelativeBranchTestUtil.createNuclearRelatives());
         p.setMother(p.getRelativeOfType(RelativeCode.NMTH));
         p.setFather(p.getRelativeOfType(RelativeCode.NFTH));
-        Person centeredOnMother = p.recenterOn(0);
+        
+        final Person centeredOnMother = p.recenterOn(p.getRelatives().get(0).getUuid());
         assertEquals(3, centeredOnMother.getRelatives().size());
-        List<Relative> motherSons = centeredOnMother.getRelativesOfType(RelativeCode.SON);
+        final List<Relative> motherSons = centeredOnMother.getRelativesOfType(RelativeCode.SON);
         assertEquals(2, motherSons.size());
-        Relative motherDaughter = centeredOnMother.getRelativeOfType(RelativeCode.DAU);
+        final Relative motherDaughter = centeredOnMother.getRelativeOfType(RelativeCode.DAU);
         assertNotNull(motherDaughter);
         assertEquals("sister", motherDaughter.getName());
         // more mother testing
-        Person centeredOnFather = p.recenterOn(1);
+        final Person centeredOnFather = p.recenterOn(p.getRelatives().get(1).getUuid());
         assertEquals(3, centeredOnFather.getRelatives().size());
         // more father testing
-        Person centeredOnSister = p.recenterOn(2);
+        final Person centeredOnSister = p.recenterOn(p.getRelatives().get(2).getUuid());
         assertEquals(4, centeredOnSister.getRelatives().size());
         assertEquals("mother", centeredOnSister.getRelativeOfType(RelativeCode.NMTH).getName());
         assertEquals("father", centeredOnSister.getRelativeOfType(RelativeCode.NFTH).getName());                
-        Person centeredOnBrother = p.recenterOn(3);
+        final Person centeredOnBrother = p.recenterOn(p.getRelatives().get(3).getUuid());
         assertEquals(4, centeredOnBrother.getRelatives().size());
         assertEquals("mother", centeredOnBrother.getRelativeOfType(RelativeCode.NMTH).getName());
         assertEquals("father", centeredOnBrother.getRelativeOfType(RelativeCode.NFTH).getName());
@@ -210,7 +201,7 @@ public class PersonTest {
         p.setMother(p.getRelativeOfType(RelativeCode.NMTH));
         p.setFather(p.getRelativeOfType(RelativeCode.NFTH));
         
-        Person centeredOnMother = p.recenterOn(0);
+        final Person centeredOnMother = p.recenterOn(p.getRelatives().get(0).getUuid());
         assertRelativesMatch(centeredOnMother, Arrays.asList(createRelative("mgrmth", RelativeCode.NMTH), 
                 createRelative("mgrfth", RelativeCode.NFTH),
                 createRelative("maunt1", RelativeCode.NSIS),
@@ -235,7 +226,7 @@ public class PersonTest {
         assertEquals(centeredOnMother.getRelativeByName("mgrmth"), centeredOnMother.getMother());
         assertEquals(centeredOnMother.getRelativeByName("mgrfth"), centeredOnMother.getFather());
         // test that grandfather is dead
-        Relative mg = centeredOnMother.getRelativeByName("mgrfth");
+        final Relative mg = centeredOnMother.getRelativeByName("mgrfth");
         assertEquals(mg.getLivingStatus(), "NO");
 
         assertEquals(centeredOnMother.getRelativeByName("muncle2"), centeredOnMother.getRelativeByName("m2-kid1")
@@ -253,7 +244,7 @@ public class PersonTest {
         assertEquals(centeredOnMother.getRelativeByName("brother"), centeredOnMother.getRelativeByName("b1-kid")
                 .getFather());
         
-        Person centeredOnSister = p.recenterOn(2);
+        final Person centeredOnSister = p.recenterOn(p.getRelatives().get(2).getUuid());
         assertRelativesMatch(centeredOnSister, Arrays.asList(createRelative("mgrmth", RelativeCode.MGRMTH), 
                 createRelative("mgrfth", RelativeCode.MGRFTH),
                 createRelative("pgrfth", RelativeCode.PGRFTH),
@@ -332,7 +323,7 @@ public class PersonTest {
         assertEquals(centeredOnSister.getRelativeByName("Name"), centeredOnSister.getRelativeByName("dau2")
                 .getFather());
         
-        Person centeredOnPaunt = p.recenterOn(14);
+        final Person centeredOnPaunt = p.recenterOn(p.getRelatives().get(14).getUuid());
         assertRelativesMatch(centeredOnPaunt, Arrays.asList(createRelative("pgrmth", RelativeCode.NMTH), 
                 createRelative("pgrfth", RelativeCode.NFTH),
                 createRelative("father", RelativeCode.NBRO),
@@ -375,7 +366,7 @@ public class PersonTest {
         assertEquals(centeredOnPaunt.getRelativeByName("father"), centeredOnPaunt.getRelativeByName("brother")
                 .getFather());
         
-        Person centeredOnPgrandpa = p.recenterOn(35);
+        final Person centeredOnPgrandpa = p.recenterOn(p.getRelatives().get(35).getUuid());
         assertRelativesMatch(centeredOnPgrandpa, Arrays.asList(
                 createRelative("father", RelativeCode.SON),
                 createRelative("paunt1", RelativeCode.DAU),
@@ -419,7 +410,7 @@ public class PersonTest {
                 .getFather());
         
         
-        Person centeredOnPcuz = p.recenterOn(15);
+        final Person centeredOnPcuz = p.recenterOn(p.getRelatives().get(15).getUuid());
         assertRelativesMatch(centeredOnPcuz, Arrays.asList(createRelative("pgrmth", RelativeCode.MGRMTH), 
                 createRelative("pgrfth", RelativeCode.MGRFTH),
                 createRelative("father", RelativeCode.MUNCLE),
@@ -459,7 +450,7 @@ public class PersonTest {
         assertEquals(centeredOnPcuz.getRelativeByName("father"), centeredOnPcuz.getRelativeByName("Name")
                 .getFather());
 
-        Person centeredOnHalfSis = p.recenterOn(8);
+        final Person centeredOnHalfSis = p.recenterOn(p.getRelatives().get(8).getUuid());
         assertRelativesMatch(centeredOnHalfSis, Arrays.asList(createRelative("mgrmth", RelativeCode.MGRMTH), 
                 createRelative("mgrfth", RelativeCode.MGRFTH),
                 createRelative("mother", RelativeCode.NMTH),
@@ -507,7 +498,7 @@ public class PersonTest {
         assertEquals(centeredOnHalfSis.getRelativeByName("sister"), centeredOnHalfSis.getRelativeByName("s1-kid3")
                 .getMother());
 
-        Person centeredOnSon = p.recenterOn(36);
+        final Person centeredOnSon = p.recenterOn(p.getRelatives().get(36).getUuid());
         assertRelativesMatch(centeredOnSon, Arrays.asList(createRelative("father", RelativeCode.PGRFTH),
                 createRelative("mother", RelativeCode.PGRMTH),
                 createRelative("Name", RelativeCode.NFTH),
@@ -545,7 +536,7 @@ public class PersonTest {
         assertEquals(centeredOnSon.getRelativeByName("dau2"), centeredOnSon.getRelativeByName("dau2-dau")
                 .getMother());
         
-        Person centeredOnGrandson = p.recenterOn(37);
+        final Person centeredOnGrandson = p.recenterOn(p.getRelatives().get(37).getUuid());
         assertRelativesMatch(centeredOnGrandson, Arrays.asList(
                 createRelative("Name", RelativeCode.PGRFTH),
                 createRelative("dau1", RelativeCode.PAUNT),
@@ -560,7 +551,7 @@ public class PersonTest {
         assertEquals(centeredOnGrandson.getRelativeByName("dau2"), centeredOnGrandson.getRelativeByName("dau2-dau")
                 .getMother());
 
-        Person centeredOnNephew = p.recenterOn(3);
+        final Person centeredOnNephew = p.recenterOn(p.getRelatives().get(3).getUuid());
         assertRelativesMatch(centeredOnNephew, Arrays.asList(createRelative("father", RelativeCode.MGRFTH),
                 createRelative("mother", RelativeCode.MGRMTH),
                 createRelative("sister", RelativeCode.NMTH),
@@ -592,7 +583,7 @@ public class PersonTest {
         assertEquals(centeredOnNephew.getRelativeByName("Name"), centeredOnNephew.getRelativeByName("son")
                 .getFather());
 
-        Person centeredOnHalfNephew = p.recenterOn(9);
+        final Person centeredOnHalfNephew = p.recenterOn(p.getRelatives().get(9).getUuid());
         assertRelativesMatch(centeredOnHalfNephew, Arrays.asList(
                 createRelative("mother", RelativeCode.MGRMTH),
                 createRelative("sister", RelativeCode.MAUNT),
@@ -625,16 +616,16 @@ public class PersonTest {
 
     }
 
-    private void assertRelativesMatch(Person p, List<Relative> expRelatives) {
-        List<Relative> relatives = p.getRelatives();
+    private void assertRelativesMatch(final Person p, final List<Relative> expRelatives) {
+        final List<Relative> relatives = p.getRelatives();
         assertEquals(expRelatives.size(), relatives.size());
-        for (Relative expRelative : expRelatives) {
+        for (final Relative expRelative : expRelatives) {
             assertRelativeInList(expRelative, relatives);
         }
     }
     
-    private void assertRelativeInList(Relative expRelative, List<Relative> relatives) {
-        for (Relative relative : relatives) {
+    private void assertRelativeInList(final Relative expRelative, final List<Relative> relatives) {
+        for (final Relative relative : relatives) {
             if (expRelative.getName().equals(relative.getName()) && expRelative.getCodeEnum() == relative.getCodeEnum()) {
                 return;
             }
@@ -642,378 +633,41 @@ public class PersonTest {
         fail("Relative " + expRelative + " not in list");
     }
     
-    private Relative createRelative(String name, RelativeCode relCode) {
-        Relative rel = new Relative();
+    private Relative createRelative(final String name, final RelativeCode relCode) {
+        final Relative rel = new Relative();
         rel.setName(name);
-        rel.setCode(relCode.toString());
+        rel.setCodeEnum(relCode);
         return rel;
     }
 
     @Test
     public void testGetRaceIds() {
-        DUMMY_RACE.setId(DUMMY_ID);
-        assertEquals(p.getRaceIds().get(0), DUMMY_ID);
+        DUMMY_RACE.setId(1L);
+        assertEquals(p.getRaceIds().get(0), Long.valueOf(1L));
     }
     
     @Test
     public void testGetEthnicityIds() {
-        DUMMY_ETHNICITY.setId(DUMMY_ID);
-        assertEquals(p.getEthnicityIds().get(0), DUMMY_ID);
+        DUMMY_ETHNICITY.setId(1L);
+        assertEquals(p.getEthnicityIds().get(0), Long.valueOf(1L));
     }
     
-    @Test
-    public void testGetClinicalObservationsNode() {
-        p.setWeight(new Weight());
-        p.setHeight(new Height());
-        // Add disease
-        DUMMY_DISEASE.setCode(DUMMY_DISEASE_CODE);
-        DUMMY_DISEASE.setCodeSystemName(DUMMY_DISEASE_CSN);
-        DUMMY_DISEASE.setDisplayName(DUMMY_DISEASE_DISPLAY);
-        DUMMY_DISEASE.setId(DUMMY_DISEASE_ID);
-        DUMMY_DISEASE.setOriginalText(DUMMY_DISEASE_USER_DEFINED);
-        // Make sure Twin status is not stored if no is selected
-        p.setTwinStatus(TwinStatus.NO);
-        
-        // check disease observation
-        ClinicalObservationsNode observationsNode = p.getClinicalObservationsNode();
-        CodeNode codeNode = observationsNode.getObservations().get(0).getCode();
-        assertEquals(DUMMY_DISEASE_CODE, codeNode.getCode());
-        assertEquals(DUMMY_DISEASE_CSN, codeNode.getCodeSystemName());
-        assertEquals(DUMMY_DISEASE_DISPLAY, codeNode.getDisplayName());
-        assertEquals(DUMMY_DISEASE_ID, codeNode.getId());
-        assertEquals(DUMMY_DISEASE_USER_DEFINED, codeNode.getOriginalText());
-        
-        // Add adopted status
-        p.setAdopted(TRUE);
-        
-        //Add Weight
-        p.setWeight(DUMMY_WEIGHT);
-        
-        //Add Height
-        p.setHeight(DUMMY_HEIGHT);
-        
-        //Add Consanguinity
-        p.setConsanguinityFlag(TRUE);
-        
-        // check adopted observation
-        p.getObservations().clear();
-        observationsNode = p.getClinicalObservationsNode();
-        codeNode = observationsNode.getObservations().get(0).getCode();
-        assertEquals(ClinicalObservationCode.ADOPTED.getCode(), codeNode.getCode());
-        assertEquals(ClinicalObservationCode.ADOPTED.getCodeSystemName(), 
-                codeNode.getCodeSystemName());
-        assertEquals(ClinicalObservationCode.ADOPTED.getDisplayName(), 
-                codeNode.getDisplayName());
-        
-        // check weight observation
-        codeNode = observationsNode.getObservations().get(1).getCode();
-        assertEquals(DUMMY_WEIGHT.getValue().toString(), observationsNode.getObservations().get(1)
-                .getValueNode().getValue());
-        assertEquals(ClinicalObservationCode.WEIGHT.getCode(), codeNode.getCode());
-        assertEquals(ClinicalObservationCode.WEIGHT.getCodeSystemName(), 
-                codeNode.getCodeSystemName());
-        assertEquals(ClinicalObservationCode.WEIGHT.getDisplayName(), 
-                codeNode.getDisplayName());
-        
-        // check height observation
-        codeNode = observationsNode.getObservations().get(2).getCode();
-        assertEquals(DUMMY_HEIGHT.getValue().toString(), observationsNode.getObservations().get(2)
-                .getValueNode().getValue());
-        assertEquals(ClinicalObservationCode.HEIGHT.getCode(), codeNode.getCode());
-        assertEquals(ClinicalObservationCode.HEIGHT.getCodeSystemName(), 
-                codeNode.getCodeSystemName());
-        assertEquals(ClinicalObservationCode.HEIGHT.getDisplayName(), 
-                codeNode.getDisplayName());
-        
-        // check consanguinity observation
-        codeNode = observationsNode.getObservations().get(3).getCode();
-        assertEquals(ClinicalObservationCode.CONSANGUINITY_ORG_TEXT, codeNode.getOriginalText());
-        
-        p.getObservations().clear();
-        // Add twin status - fraternal
-        p.setTwinStatus(TwinStatus.FRATERNAL);
-        p.setAdopted(false);
-        
-        // check twin status - fraternal
-        observationsNode = p.getClinicalObservationsNode();
-        codeNode = observationsNode.getObservations().get(0).getCode();
-        assertEquals(TwinStatus.FRATERNAL.getCode(), codeNode.getCode());
-        assertEquals(TwinStatus.FRATERNAL.getCodeSystemName(), 
-                codeNode.getCodeSystemName());
-        assertEquals(TwinStatus.FRATERNAL.getDisplayName(), 
-                codeNode.getDisplayName());
-        
-        p.getObservations().clear();
-        // check twin status identical
-        p.setTwinStatus(TwinStatus.IDENTICAL);
-        observationsNode = p.getClinicalObservationsNode();
-        codeNode = observationsNode.getObservations().get(0).getCode();
-        assertEquals(TwinStatus.IDENTICAL.getCode(), codeNode.getCode());
-        assertEquals(TwinStatus.IDENTICAL.getCodeSystemName(), 
-                codeNode.getCodeSystemName());
-        assertEquals(TwinStatus.IDENTICAL.getDisplayName(), 
-                codeNode.getDisplayName());
-    }
     
-    @Test
-    public void testSetClinicalObservationsNode() {
-        Person person = new Person();
-        Map<Long, Disease> diseaseMap = FhhDataUtils.getIdToDiseaseMap();
-        assertTrue(diseaseMap.get(16L).getId().equals(16L));
-        // Test for user defined disease
-        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
-        CodeNode codeNode = new CodeNode();
-        codeNode.setCode(DUMMY_DISEASE_CODE);
-        codeNode.setCodeSystemName(DUMMY_DISEASE_CSN);
-        codeNode.setDisplayName(DUMMY_DISEASE_DISPLAY);
-        codeNode.setId(DUMMY_DISEASE_ID);
-        codeNode.setOriginalText(DUMMY_DISEASE_USER_DEFINED);
-        observationsNode.setObservations(new ArrayList<ClinicalObservation>());
-        observationsNode.getObservations().add(new ClinicalObservation());
-        observationsNode.getObservations().get(0).setCode(codeNode);
-        assertEquals(observationsNode.getObservations().get(0).getCode(), codeNode);
-        
-        // Test setClinicalObservationsNode for user defined disease
-        person.getObservations().clear();
-        person.setClinicalObservationsNode(observationsNode);
-        Disease disease = person.getObservations().get(0).getDisease();
-        assertEquals(DUMMY_DISEASE_USER_DEFINED, disease.getOriginalText());
-        assertEquals(DUMMY_DISEASE_ID, disease.getId());
-        
-        
-        // Test setClinicalObservationsNode for system defined disease
-        codeNode.setOriginalText(null);
-        person.setClinicalObservationsNode(observationsNode);
-        disease = person.getObservations().get(0).getDisease();
-        assertEquals(DUMMY_DISEASE_CODE, disease.getCode());
-        assertEquals(DUMMY_DISEASE_CSN, disease.getCodeSystemName());
-        assertEquals(DUMMY_DISEASE_DISPLAY, disease.getDisplayName());
-        assertEquals(DUMMY_DISEASE_ID, disease.getId());
-        assertNull(disease.getOriginalText());
-        
-        // Test setClinicalObservationsNode for non-existing system defined disease
-        codeNode.setId(NOT_EXIST_DISEASE_ID);
-        person.getObservations().clear();
-        person.setClinicalObservationsNode(observationsNode);
-        assertEquals(0, person.getObservations().size());
-        
-        // Test setClinicalObservationsNode for non-existing system defined disease with orig text
-        codeNode.setOriginalText(DUMMY_DISEASE_USER_DEFINED);
-        person.getObservations().clear();
-        person.setClinicalObservationsNode(observationsNode);
-        assertEquals(0, person.getObservations().size());
-        
-        // Test setClinicalObservationsNode for adopted
-        observationsNode.getObservations().clear();
-        observationsNode.getObservations().add(new ClinicalObservation());
-        observationsNode.getObservations().get(0).setCode(new CodeNode(
-                ClinicalObservationCode.ADOPTED.getCode(), 
-                ClinicalObservationCode.ADOPTED.getCodeSystemName(),
-                ClinicalObservationCode.ADOPTED.getDisplayName()));
-        person.setClinicalObservationsNode(observationsNode);
-        assertTrue(person.isAdopted());
-        
-        // Test setClinicalObservationsNode for weight
-        observationsNode.getObservations().clear();
-        observationsNode.getObservations().add(new ClinicalObservation());
-        observationsNode.getObservations().get(0).setCode(new CodeNode(
-                ClinicalObservationCode.WEIGHT.getCode(), 
-                ClinicalObservationCode.WEIGHT.getCodeSystemName(),
-                ClinicalObservationCode.WEIGHT.getDisplayName()));
-        ValueNode valueNode = new ValueNode();
-        observationsNode.getObservations().get(0).setValueNode(valueNode);
-        valueNode.setUnit(WeightUnit.US.getDisplayName());
-        valueNode.setValue(DUMMY_WEIGHT.getValue().toString());
-        assertEquals(WeightUnit.US.getDisplayName(), valueNode.getUnit());
-        assertEquals(DUMMY_WEIGHT.getValue().toString(), valueNode.getValue());
-        
-        person.setClinicalObservationsNode(observationsNode);
-        assertEquals(DUMMY_WEIGHT.getValue(), person.getWeight().getValue());
-        assertEquals(DUMMY_WEIGHT.getUnit(), person.getWeight().getUnit());
-        
-        // Test setClinicalObservationsNode for height
-        observationsNode.getObservations().clear();
-        observationsNode.getObservations().add(new ClinicalObservation());
-        observationsNode.getObservations().get(0).setCode(new CodeNode(
-                ClinicalObservationCode.HEIGHT.getCode(), 
-                ClinicalObservationCode.HEIGHT.getCodeSystemName(),
-                ClinicalObservationCode.HEIGHT.getDisplayName()));
-        valueNode = new ValueNode();
-        observationsNode.getObservations().get(0).setValueNode(valueNode);
-        valueNode.setUnit(DUMMY_HEIGHT.getUnit().getDisplayName());
-        valueNode.setValue(DUMMY_HEIGHT.getValue().toString());
-        
-        person.setClinicalObservationsNode(observationsNode);
-        assertEquals(DUMMY_HEIGHT.getValue(), person.getHeight().getValue());
-        assertEquals(DUMMY_HEIGHT.getUnit(), person.getHeight().getUnit());
-        
-        // Test setClinicalObservationsNode for twin - identical
-        observationsNode.getObservations().clear();
-        observationsNode.getObservations().add(new ClinicalObservation());
-        observationsNode.getObservations().get(0).setCode(new CodeNode(
-                TwinStatus.IDENTICAL.getCode(), 
-                TwinStatus.IDENTICAL.getCodeSystemName(),
-                TwinStatus.IDENTICAL.getDisplayName()));
-        person.setClinicalObservationsNode(observationsNode);
-        assertEquals(TwinStatus.IDENTICAL, person.getTwinStatus());
-        
-        // Test setClinicalObservationsNode for twin - fraternal
-        observationsNode.getObservations().clear();
-        observationsNode.getObservations().add(new ClinicalObservation());
-        observationsNode.getObservations().get(0).setCode(new CodeNode(
-                TwinStatus.FRATERNAL.getCode(), 
-                TwinStatus.FRATERNAL.getCodeSystemName(),
-                TwinStatus.FRATERNAL.getDisplayName()));
-        person.setClinicalObservationsNode(observationsNode);
-        assertEquals(TwinStatus.FRATERNAL, person.getTwinStatus());  
-        
-        // Test setClinicalObservationsNode for adopted
-        observationsNode.getObservations().clear();
-        observationsNode.getObservations().add(new ClinicalObservation());
-        observationsNode.getObservations().get(0).setCode(new CodeNode());
-        observationsNode.getObservations().get(0).getCode().setOriginalText(
-                ClinicalObservationCode.CONSANGUINITY_ORG_TEXT);
-        person.setClinicalObservationsNode(observationsNode);
-        assertTrue(person.isConsanguinityFlag());
-    }
     
     @Test
     public void testGetMultipleBirthIndicator() {
-        assertNull(p.getMultipleBirthIndicator());
+        assertNull(HL7ConversionUtils.createMultipleBirthIndicator(p));
         
         p.setTwinStatus(TwinStatus.FRATERNAL);
-        assertEquals(TRUE_STRING, p.getMultipleBirthIndicator());
+        assertEquals(TRUE_STRING, HL7ConversionUtils.createMultipleBirthIndicator(p));
         
         p.setTwinStatus(TwinStatus.NO);
-        assertNull(p.getMultipleBirthIndicator());
-    }
-    /**
-     * Note: An actual legacy htm import is tested in FamilyHistoryActionTest.  This test verifies the processing of
-     * HTM Nodes.
-     */
-    @Test
-    public void testSetHTMNode() {
-        // setHTMNode for fixed relatives (parents, grandparents)
-        p.getObservations().clear();
-        HTMNode node = new HTMNode();
-        List<InputNode> inputNodes = node.getInputNodes();
-        // add every attribute node for every relative
-        PersonTestUtils.addAttributeNodes(RelativeCode.SELF.getHtmValue(), inputNodes, true, null);
-        // Test that input node was set correctly
-        PersonTestUtils.checkInputNode(inputNodes.get(0));
-        
-        PersonTestUtils.addAttributeNodes(RelativeCode.NMTH.getHtmValue(), inputNodes, true, null);
-        PersonTestUtils.addAttributeNodes(RelativeCode.NFTH.getHtmValue(), inputNodes, false, null);
-        PersonTestUtils.addAttributeNodes(RelativeCode.MGRFTH.getHtmValue(), inputNodes, true, LivingStatus.YES);
-        PersonTestUtils.addAttributeNodes(RelativeCode.MGRMTH.getHtmValue(), inputNodes, false, LivingStatus.YES);
-        PersonTestUtils.addAttributeNodes(RelativeCode.PGRFTH.getHtmValue(), inputNodes, true, LivingStatus.NO);
-        PersonTestUtils.addAttributeNodes(RelativeCode.PGRMTH.getHtmValue(), inputNodes, false, LivingStatus.NO);
-        PersonTestUtils.addSelfAttributeNodes(inputNodes);
-        PersonTestUtils.addRelativeCountNodes(inputNodes);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.DAU.getHtmValue() + "1", 
-                RelativeCode.DAU.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED, LivingStatus.UNKNOWN);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.SON.getHtmValue() + "1", 
-                RelativeCode.SON.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED, null);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.NSIS.getHtmValue() + "1", 
-                RelativeCode.NSIS.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED, LivingStatus.YES);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.NBRO.getHtmValue() + "1", 
-                RelativeCode.NBRO.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED, LivingStatus.NO);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.HSIS.getHtmValue() + "1", 
-                RelativeCode.HSIS.getHtmValue() + "2", inputNodes, RelativeCode.NMTH.getHtmValue(), LivingStatus.UNKNOWN);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.HBRO.getHtmValue() + "1", 
-                RelativeCode.HBRO.getHtmValue() + "2", inputNodes, RelativeCode.NFTH.getHtmValue(), null);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.PAUNT.getHtmValue() + "1", 
-                RelativeCode.PAUNT.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED, LivingStatus.YES);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.PUNCLE.getHtmValue() + "1", 
-                RelativeCode.PUNCLE.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED, LivingStatus.NO);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.MAUNT.getHtmValue() + "1", 
-                RelativeCode.MAUNT.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED, LivingStatus.UNKNOWN);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.MUNCLE.getHtmValue() + "1", 
-                RelativeCode.MUNCLE.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED, null);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.NIECE.getHtmValue() + "1", 
-                RelativeCode.NIECE.getHtmValue() + "2", inputNodes, RelativeCode.MAUNT.getHtmValue() + "1", 
-                LivingStatus.YES);
-        PersonTestUtils.addAttributesForVariableRelatives(RelativeCode.NEPHEW.getHtmValue() + "1", 
-                RelativeCode.NEPHEW.getHtmValue() + "2", inputNodes, RelativeCode.PAUNT.getHtmValue() + "1", 
-                LivingStatus.NO);
-        PersonTestUtils.addAttributesForVariableRelatives("femaleCousin1", 
-                "femaleCousin2", inputNodes, RelativeCode.PUNCLE.getHtmValue() + "1", LivingStatus.UNKNOWN);
-        PersonTestUtils.addAttributesForVariableRelatives("maleCousin1", 
-                "maleCousin2", inputNodes, RelativeCode.MAUNT.getHtmValue() + "1", null);
-        PersonTestUtils.addFamilyAddConditions(inputNodes);
-        
-        p.setHtmNode(node);
-        PersonTestUtils.checkSelfAttributes(p, true);
-        PersonTestUtils.checkAttributes(p, true);
-        PersonTestUtils.checkObservations(p);
-        
-        boolean currTwinStatus = true;
-        // i used for alternating living statuses
-        int i = 0;
-        for (Relative relative : p.getRelatives()) {
-            PersonTestUtils.checkAttributes(relative, currTwinStatus);
-            PersonTestUtils.checkObservations(relative);
-            PersonTestUtils.checkRelativeAttributes(relative, i);
-            currTwinStatus = !currTwinStatus;
-            i++;
-        }
-        
-        // add blank attributes for every relative (no data present)
-        Person p2 = new Person();
-        node = new HTMNode();
-        inputNodes = node.getInputNodes();
-        PersonTestUtils.addBlankAttributeNodes(RelativeCode.SELF.getHtmValue(), inputNodes);
-        PersonTestUtils.addBlankAttributeNodes(RelativeCode.NMTH.getHtmValue(), inputNodes);
-        PersonTestUtils.addBlankAttributeNodes(RelativeCode.NFTH.getHtmValue(), inputNodes);
-        PersonTestUtils.addBlankAttributeNodes(RelativeCode.MGRFTH.getHtmValue(), inputNodes);
-        PersonTestUtils.addBlankAttributeNodes(RelativeCode.MGRMTH.getHtmValue(), inputNodes);
-        PersonTestUtils.addBlankAttributeNodes(RelativeCode.PGRFTH.getHtmValue(), inputNodes);
-        PersonTestUtils.addBlankAttributeNodes(RelativeCode.PGRMTH.getHtmValue(), inputNodes);
-        PersonTestUtils.addBlankSelfAttributeNodes(inputNodes);
-        PersonTestUtils.addRelativeCountNodes(inputNodes);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.DAU.getHtmValue() + "1", 
-                RelativeCode.DAU.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.SON.getHtmValue() + "1", 
-                RelativeCode.SON.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.NSIS.getHtmValue() + "1", 
-                RelativeCode.NSIS.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.NBRO.getHtmValue() + "1", 
-                RelativeCode.NBRO.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.HSIS.getHtmValue() + "1", 
-                RelativeCode.HSIS.getHtmValue() + "2", inputNodes, RelativeCode.NMTH.getHtmValue());
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.HBRO.getHtmValue() + "1", 
-                RelativeCode.HBRO.getHtmValue() + "2", inputNodes, RelativeCode.NFTH.getHtmValue());
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.PAUNT.getHtmValue() + "1", 
-                RelativeCode.PAUNT.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.PUNCLE.getHtmValue() + "1", 
-                RelativeCode.PUNCLE.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.MAUNT.getHtmValue() + "1", 
-                RelativeCode.MAUNT.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.MUNCLE.getHtmValue() + "1", 
-                RelativeCode.MUNCLE.getHtmValue() + "2", inputNodes, HTMImportUtils.CALCULATED);
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.NIECE.getHtmValue() + "1", 
-                RelativeCode.NIECE.getHtmValue() + "2", inputNodes, RelativeCode.MAUNT.getHtmValue() + "1");
-        PersonTestUtils.addBlankAttributeForVariableRelatives(RelativeCode.NEPHEW.getHtmValue() + "1", 
-                RelativeCode.NEPHEW.getHtmValue() + "2", inputNodes, RelativeCode.PAUNT.getHtmValue() + "1");
-        PersonTestUtils.addBlankAttributeForVariableRelatives("femaleCousin1", 
-                "femaleCousin2", inputNodes, RelativeCode.PUNCLE.getHtmValue() + "1");
-        PersonTestUtils.addBlankAttributeForVariableRelatives("maleCousin1", 
-                "maleCousin2", inputNodes, RelativeCode.MAUNT.getHtmValue() + "1");
-        PersonTestUtils.addBlankFamilyAddConditions(inputNodes);
-        
-        p2.setHtmNode(node);
-        PersonTestUtils.checkBlankAttributes(p2);
-        
-        for (Relative currRelative : p2.getRelatives()) {
-            PersonTestUtils.checkBlankAttributes(currRelative);
-            PersonTestUtils.checkRelativeBlankAttributes(currRelative);
-        }
-        
+        assertNull(HL7ConversionUtils.createMultipleBirthIndicator(p));
     }
     
     @Test
     public void testFamilyContainsUnmatchedCondition() {
-        Person p = new Person();
+        final Person p = new Person();
         p.getRelatives().add(new Relative());
         assertFalse(p.isFamilyContainsUnmatchedCondition());
         
@@ -1023,5 +677,42 @@ public class PersonTest {
         p.setUnmatchedCondition(false);
         p.getRelatives().get(0).setUnmatchedCondition(true);
         assertTrue(p.isFamilyContainsUnmatchedCondition());
+    }
+    
+    @Test
+    public void testIsCompletedForm() {
+        final Person p = new Person();
+        assertFalse(p.isCompletedForm());
+        p.setDateOfBirth(new Date());
+        assertTrue(p.isCompletedForm());
+    }
+    
+    @Test
+    public void testUnrelatedRelatives(){
+        final Person p = new Person();
+
+        final Relative relatedRelative = new Relative();
+        relatedRelative.setCodeEnum(RelativeCode.NMTH);
+        p.getRelatives().add(relatedRelative);
+
+        final Relative unrelatedRelative = new Relative();
+        unrelatedRelative.setCodeEnum(RelativeCode.NMTH);
+        p.getUnrelatedRelatives().add(unrelatedRelative);
+
+        Assert.assertNotNull(p.getRelative(relatedRelative.getUuid()));
+        Assert.assertNotNull(p.getRelative(unrelatedRelative.getUuid()));
+        
+        Assert.assertNotNull(p.getRelativeOfType(RelativeCode.NMTH));
+        Assert.assertNotNull(p.getRelativeOfType(RelativeCode.NMTH));
+    }
+    
+    @Test
+    public void testGenerateUuid() {
+        final Person p = new Person();
+        final UUID uuid = p.getUuid();
+        p.generateUuid();
+        final UUID regenUuid = p.getUuid();
+        Assert.assertNotSame("Regenerated UUID should be different from the original.", uuid, regenUuid);
+        Assert.assertFalse(uuid.equals(regenUuid));
     }
 }

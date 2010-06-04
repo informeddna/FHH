@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -37,6 +37,7 @@ import gov.hhs.fhh.data.AbstractCodeable;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Race;
+import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.service.PersonServiceLocal;
 
 import java.util.ArrayList;
@@ -135,24 +136,34 @@ public class PersonServiceStub implements PersonServiceLocal {
         for (int i = 0; i < 20; i++) {
             diseases.add((Disease) setupAC(i, new Disease()));
         }
-        diseases.add((Disease) setupAC(20, new Disease()));
-        diseases.add((Disease) setupAC(51, new Disease()));
-        diseases.add((Disease) setupAC(50, new Disease()));
-        diseases.add((Disease) setupAC(58, new Disease()));
-        diseases.add((Disease) setupAC(69, new Disease()));
+        diseases.get(7).setCode("38341003");
+        diseases.get(14).setCode(DiseaseUtils.STROKE_CODE);
+        diseases.get(18).setCode("44054006");
+        diseases.add((Disease) setupAC(20, new Disease(), DiseaseUtils.DIABETES_CODE));
+        diseases.add((Disease) setupAC(51, new Disease(), DiseaseUtils.COLON_CANCER_CODE));
+        diseases.add((Disease) setupAC(50, new Disease(), DiseaseUtils.BREAST_CANCER_CODE));
+        diseases.add((Disease) setupAC(58, new Disease(), DiseaseUtils.OVARIAN_CANCER_CODE));
+        diseases.add((Disease) setupAC(69, new Disease(), DiseaseUtils.HEART_DISEASE_CODE));
         return diseases;
     }
 
+    private AbstractCodeable setupAC(int i, AbstractCodeable codeable, String code) {
+        return setupAC(i, codeable, code, "CODE_SYS" + i);
+    }
+    
+    private AbstractCodeable setupAC(int i, AbstractCodeable codeable, String code, String codeSystemName) {
+        codeable.setCode(code);
+        codeable.setCodeSystemName(codeSystemName);
+        codeable.addDisplayString("en", "DisplayName" + i, null);
+        codeable.setAppDisplay("AppDisplay" + i);
+        return codeable;
+    }
+    
     /**
      * @param i gender code
      */
     private AbstractCodeable setupAC(int i, AbstractCodeable codeable) {
-        codeable.setCode("Code" + i);
-        codeable.setCodeSystemName("CODE_SYS" + i);
-        codeable.addDisplayString("en", "DisplayName" + i, null);
-        codeable.setId((long) i);
-        codeable.setAppDisplay("AppDisplay" + i);
-        return codeable;
+        return setupAC(i, codeable, "Code" + i);
     }
 
     /**
@@ -167,6 +178,22 @@ public class PersonServiceStub implements PersonServiceLocal {
      */
     public List<Disease> getDiseaseByName(String diseaseName) {
         List<Disease> diseases = new ArrayList<Disease>();
+        
+        if (diseaseName.equals("Unknown Cancer")) {
+            Disease disease = new Disease();
+            disease.setId(78L);
+            disease.setDisplayName("Unknown Cancer");
+            disease.setAppDisplay("Unknown Cancer");
+            disease.setOriginalText("Unknown Cancer");
+            diseases.add(disease);
+        }else if (diseaseName.endsWith("Kidney Nephrosis")){
+            Disease disease = new Disease();
+            disease.setId(44L);
+            disease.setDisplayName("Kidney Nephrosis");
+            disease.setAppDisplay("Kidney Nephrosis");
+            disease.setOriginalText("Kidney Nephrosis");
+            diseases.add(disease);
+        }
         return diseases;
     }
     
@@ -175,5 +202,37 @@ public class PersonServiceStub implements PersonServiceLocal {
         d.setAppDisplay(appDisplay);
         d.setDisplayName(displayName);
         return d;
+    }
+
+    public List<Ethnicity> getEthnicityByCodeAndCodeSystem(String code, String codeSystem) {
+        List<Ethnicity> retval = new ArrayList<Ethnicity>();
+        List<Ethnicity> ethnicities = new ArrayList<Ethnicity>();
+        for (int i = 0; i < 3; i++) {
+            ethnicities.add((Ethnicity) setupAC(i, new Ethnicity(), "Code" + i, "HL7"));
+        }
+
+        for (Ethnicity ethnicity : ethnicities) {
+            if (ethnicity.getCode().equals(code) && ethnicity.getCodeSystemName().equals(codeSystem)) {
+                retval.add(ethnicity);
+            }
+        }
+
+        return retval;
+    }
+
+    public List<Race> getRaceByCodeAndCodeSystem(String code, String codeSystem) {
+        List<Race> retval = new ArrayList<Race>();
+        List<Race> races = new ArrayList<Race>();
+        for (int i = 0; i < 3; i++) {
+            races.add((Race) setupAC(i, new Race(), "Code" + i, "HL7"));
+        }
+
+        for (Race race : races) {
+            if (race.getCode().equals(code) && race.getCodeSystemName().equals(codeSystem)) {
+                retval.add(race);
+            }
+        }
+
+        return retval;
     }
 }

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,25 +33,19 @@
  */
 package gov.hhs.fhh.web.action;
 
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
-import gov.hhs.fhh.data.Gender;
-import gov.hhs.fhh.data.Height;
-import gov.hhs.fhh.data.HeightUnit;
-import gov.hhs.fhh.data.LivingStatus;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.TwinStatus;
-import gov.hhs.fhh.data.WeightUnit;
 import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.data.util.FormatUtils;
 import gov.hhs.fhh.data.util.LabelValue;
-import gov.hhs.fhh.web.FhhRegistry;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
+import gov.hhs.fhh.service.locator.FhhRegistry;
+import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
-import gov.hhs.fhh.web.util.FhhUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -67,6 +61,12 @@ import org.ajaxtags.xml.AjaxXmlBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.Height;
+import com.fiveamsolutions.hl7.model.mfhp.HeightUnit;
+import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -77,7 +77,6 @@ import com.opensymphony.xwork2.Preparable;
 public class AddPersonAction extends AbstractFHHAction implements Preparable {
     private static final int INCHES_IN_A_FOOT = 12;
     private static final long serialVersionUID = 19278463L;
-    private static final boolean TRUE = true;
     private static final String SUBMIT_ACTION = "submit";
     private static final String FAMILY_TREE_ACTION = "addFamilyTree";
     private static final String OTHER_DISEASE = "Other Disease type";
@@ -93,7 +92,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     private List<Race> asianRaces = new ArrayList<Race>();
     private List<Race> hawaiianRaces = new ArrayList<Race>();
 
-    private List<AgeRange> ageOfDiagnosisList = new ArrayList<AgeRange>();
+    private List<AgeRangeEnum> ageOfDiagnosisList = new ArrayList<AgeRangeEnum>();
     private List<Disease> selectedDiseases = new ArrayList<Disease>();
     private List<String> otherDiseaseValues = new ArrayList<String>();
     private String currentDiseaseValue;
@@ -144,11 +143,11 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     protected void setupDiseasesAndAges(Person p) {
         if (!p.getObservations().isEmpty()) {
             setSelectedDiseases(new ArrayList<Disease>());
-            setAgeOfDiagnosisList(new ArrayList<AgeRange>());
+            setAgeOfDiagnosisList(new ArrayList<AgeRangeEnum>());
             for (ClinicalObservation obs : p.getObservations()) {
                 selectedDiseases.add(obs.getDisease());
                 ageOfDiagnosisList.add(obs.getAgeRange());
-                if (obs.getDisease().getId() == DiseaseUtils.OTHER_DISEASE_ID) {
+                if (obs.getDisease().isOther()) {
                     getOtherDiseaseValues().add(obs.getDisease().getOriginalText());
                 } else {
                     getOtherDiseaseValues().add("");
@@ -252,16 +251,14 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         }
         if (person.isUnmatchedCondition()) {
             person.setUnmatchedCondition(false);
-            person.setCompletedForm(true);
         }
         // Since information has been changed, the most recent version of the xml file has
         // not been saved.
         person.setXmlFileSaved(false);
-        if (person.isCompletedForm()) {
-            return SUBMIT_ACTION;
-        } else {
-            person.setCompletedForm(TRUE);
+        if (person.getRelatives().isEmpty()) {
             return FAMILY_TREE_ACTION;
+        } else {
+            return SUBMIT_ACTION;
         }
     }
     
@@ -304,7 +301,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         } else {
             Integer heightMetricInt = null;
             if (!StringUtils.isEmpty(heightMetric)) {
-                Integer.valueOf(heightMetric);
+                heightMetricInt = Integer.valueOf(heightMetric);
             }
             height = new Height(heightMetricInt, HeightUnit.METRIC);
         }
@@ -320,7 +317,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
         if (!selectedDiseases.isEmpty()) {
             int i = 0;
-            for (AgeRange age : getAgeOfDiagnosisList()) {
+            for (AgeRangeEnum age : getAgeOfDiagnosisList()) {
                 ClinicalObservation observation = new ClinicalObservation();
                 Disease currDisease = selectedDiseases.get(i);
                 observation.setAgeRange(age);
@@ -328,7 +325,8 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
                 // and did not select a user defined disease from the drop down (originalText not null).
                 if (currDisease.getDisplayName() != null && currDisease.getDisplayName().equals(OTHER_DISEASE)
                         && currDisease.getOriginalText() == null) {
-                    currDisease = DiseaseUtils.findOrCreateNewDisease(otherDiseaseValues.get(i));
+                    currDisease = DiseaseUtils.findOrCreateNewDisease(
+                            FormatUtils.performXSSFilter(otherDiseaseValues.get(i)));
                     FhhHttpSessionUtil.addUserEnteredDisease(currDisease);
                 }
                 observation.setDisease(currDisease);
@@ -374,6 +372,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         if (StringUtils.isNotBlank(currentDiseaseValue)) {
             this.diseaseSubTypes = FhhRegistry.getPersonService().getDiseaseSubTypes(
                     Long.parseLong(currentDiseaseValue));
+                    Collections.sort(this.diseaseSubTypes);
         }
         return "xmlDiseaseSubTypes";
     }
@@ -431,8 +430,8 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     /**
      * @return the age Range Enums
      */
-    public AgeRange[] getAgeRangeEnums() {
-        return AgeRange.values();
+    public AgeRangeEnum[] getAgeRangeEnums() {
+        return AgeRangeEnum.values();
     }
 
     /**
@@ -641,14 +640,14 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     /**
      * @return the ageOfDiagnosisList
      */
-    public List<AgeRange> getAgeOfDiagnosisList() {
+    public List<AgeRangeEnum> getAgeOfDiagnosisList() {
         return ageOfDiagnosisList;
     }
 
     /**
      * @param ageOfDiagnosisList the ageOfDiagnosisList to set
      */
-    public void setAgeOfDiagnosisList(List<AgeRange> ageOfDiagnosisList) {
+    public void setAgeOfDiagnosisList(List<AgeRangeEnum> ageOfDiagnosisList) {
         this.ageOfDiagnosisList = ageOfDiagnosisList;
     }
 

@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/common/taglibs.jsp"%>
 <%@ include file="/WEB-INF/jsp/help/helpHeader.jsp" %>
 
-<h1><fmt:message key="help.importFamilyHistory.title"/></h1>
+<h1><fmt:message key="help.importFamilyHistory.title"/></h1>    
 <p><fmt:message key="help.importFamilyHistory.text.p1"/></p>
 <p><fmt:message key="help.importFamilyHistory.text.p2"/></p>
 <ol>

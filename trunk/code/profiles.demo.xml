@@ -6,15 +6,30 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                 <jboss.home>/usr/local/jboss-4.0.5.GA-ejb3</jboss.home>
-                 <jboss.hostname>domu-143.5amsolutions.com</jboss.hostname>
-                 <jboss.configuration>default</jboss.configuration>
-                 <database.url.prefix>jdbc:mysql://domu-143.5amsolutions.com:3306/</database.url.prefix>
-                 <database.name>fhhdemo</database.name>
-                 <admin.db.username>root</admin.db.username>
-                 <admin.db.password>passw0rd</admin.db.password>
-                 <test.selenium.server.port>61004</test.selenium.server.port>
-                 <test.selenium.browser>*firefox /usr/lib64/firefox-1.5.0.12/firefox-bin</test.selenium.browser>
+                <jboss.home>/usr/local/jboss-4.0.5.GA-ejb3</jboss.home>
+                <jboss.hostname>domu-143.5amsolutions.com</jboss.hostname>
+                <jboss.configuration>default</jboss.configuration>
+                <database.url.prefix>jdbc:mysql://${jboss.hostname}:3306/</database.url.prefix>
+                <database.name>fhh</database.name>
+                <admin.db.username>root</admin.db.username>
+                <admin.db.password>passw0rd</admin.db.password>
+                <jdbc.username>fhh</jdbc.username>
+                <jdbc.password>fhh</jdbc.password>
+                <test.selenium.server.port>62001</test.selenium.server.port>
+                <test.selenium.browser>*firefox /usr/local/firefox-3.5.7/firefox-bin</test.selenium.browser>
+                <showErrorStackTraces>true</showErrorStackTraces>
+                <mshv.keystore.filename>/home/jboss405/keystore-demo</mshv.keystore.filename>
+<!--
+		<mshv.keystore.keyname>mfhp</mshv.keystore.keyname>
+		<mshv.keystore.password>5ams0lutions</mshv.keystore.password>
+-->
+            <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>		
+<mshv.shell.url>https://account.healthvault-ppe.com</mshv.shell.url>
+		<mshv.service.endpoint.url>https://platform.healthvault-ppe.com/platform/wildcat.ashx</mshv.service.endpoint.url>
+                <application.base.url>https://demo.5amsolutions.com/fhh-web/</application.base.url>
+                <test.mshv.user.email>FHH.tester.ci@gmail.com</test.mshv.user.email>
+                <test.mshv.user.pw>fhht3sterci</test.mshv.user.pw>
+                <test.mshv.user.display.name>fhh testerci</test.mshv.user.display.name>
             </properties>
         </profile>
     </profiles>

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,13 +34,13 @@
 package gov.hhs.fhh.web.test;
 
 import gov.hhs.fhh.data.util.FhhDataUtils;
-
-import gov.hhs.fhh.web.FhhRegistry;
+import gov.hhs.fhh.service.locator.FhhRegistry;
 
 import org.apache.struts2.ServletActionContext;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -66,8 +66,10 @@ public abstract class AbstractFhhWebTest {
     @Before
     public void initMockrequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
         request.setSession(new MockHttpSession());
         ServletActionContext.setRequest(request);
+        ServletActionContext.setResponse(response);
     }
 
     /**
@@ -83,6 +85,12 @@ public abstract class AbstractFhhWebTest {
      */
     protected MockHttpServletRequest getRequest() {
         return (MockHttpServletRequest) ServletActionContext.getRequest();
+    }
+    /**
+     * @return MockHttpServletRequest
+     */
+    protected MockHttpServletResponse getResponse() {
+        return (MockHttpServletResponse) ServletActionContext.getResponse();
     }
 
     /**

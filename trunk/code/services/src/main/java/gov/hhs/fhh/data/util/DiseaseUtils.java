@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,15 +33,16 @@
  */
 package gov.hhs.fhh.data.util;
 
+import gov.hhs.fhh.data.ClinicalObservation;
+import gov.hhs.fhh.data.Disease;
+import gov.hhs.fhh.data.Person;
+
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import gov.hhs.fhh.data.AgeRange;
-import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
-import gov.hhs.fhh.data.Person;
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
 
 /**
  * Class creates an abbreviation for a disease.
@@ -50,53 +51,40 @@ import gov.hhs.fhh.data.Person;
  */
 public class DiseaseUtils {
     /**
+     * 
+     */
+    private static final long USER_ENTERED_DISEASE_ID = 16L;
+    /**
      * Heart Disease id.
      */
-    public static final long HEART_DISEASE_ID = 69;
+    public static final String HEART_DISEASE_CODE = "56265001";
     /**
      * Stroke id.
      */
-    public static final long STROKE_ID = 14;
-    /**
-     * Other Disease (User entered) id.
-     */
-    public static final long OTHER_DISEASE_ID = 16;
+    public static final String STROKE_CODE = "116288000";
     /**
      * Type 2 Diabetes id.
      */
-    public static final long DIABETES_ID = 20;
+    public static final String DIABETES_CODE = "73211009";
     /**
      * Colon Cancer id.
      */
-    public static final long COLON_CANCER_ID = 51;
+    public static final String COLON_CANCER_CODE = "363406005";
     /**
      * Breast Cancer id.
      */
-    public static final long BREAST_CANCER_ID = 50;
+    public static final String BREAST_CANCER_CODE = "254837009";
     /**
      * Ovarian Cancer id.
      */
-    public static final long OVARIAN_CANCER_ID = 58;
+    public static final String OVARIAN_CANCER_CODE = "363443007";
+    
     /**
-     * Unknown English.
+     * Other Disease Display Name.
      */
-    public static final String UNKNOWN_EN = "Unknown";
-    /**
-     * Unknown Spanish.
-     */
-    public static final String UNKNOWN_ES = "Desconocida";
-    /**
-     * Unknown Disease English.
-     */
-    public static final String UNKNOWN_DISEASE_EN = "Unknown Disease";
-    /**
-     * Unknown Disease Spanish.
-     */
-    public static final String UNKNOWN_DISEASE_ES = "Enfermedad desconocida";
+    public static final String OTHER_DISEASE_DISPLAY = "Other Disease type";
     
     private static final int MAX_SIZE = 4;
-    
-    
 
     /**
      * Method creates the disease name to be displayed in reports. Displays user-entered term if one has been entered;
@@ -107,13 +95,16 @@ public class DiseaseUtils {
      */
     public static String getReportDisplay(Disease d) {
         String display = d.getAppDisplay();
+        if (display != null) {
+            return display;
+        }
         if (d.getCode() == null) {
             // no code means it is a user-entered disease
             display = d.getOriginalText();
         } else {
             if (d.getAppDisplay() != null && d.getOriginalText() != null) {
                 display = d.getOriginalText();
-            } 
+            }
         }
         return display;
     }
@@ -161,19 +152,9 @@ public class DiseaseUtils {
     public static boolean compareHighlightDisease(Disease mine, Disease highlight) {
         if (highlight == null) {
             return false;
+        } else {
+            return 0 == mine.compareTo(highlight);
         }
-        if (highlight.getId().equals(mine.getId())) {
-            if (highlight.isOther()) {
-                String myDisease = mine.getGeneratedAbbreviation();
-                String hightlighDisease = highlight.getGeneratedAbbreviation();
-                if (myDisease.equalsIgnoreCase(hightlighDisease)) {
-                    return true;
-                }
-            } else {
-                return true;
-            }
-        }   
-        return false;
     }
     
     /**
@@ -184,15 +165,12 @@ public class DiseaseUtils {
      * @return Disease existing disease or newly created disease of type 'Other'
      */
     public static Disease findOrCreateNewDisease(String diseaseName) {
-        // Replace 'Unknown' with 'Unknown Disease' since there are many sub-types containing 'Unknown' that are 
-        // returned by getDiseaseByName.  Replace Spanish characters with HTML codes for the DB search.
-        String diseaseSearchName = replaceSpanishCharactersWithHTML(handleUnknown(diseaseName));
         List<Disease> diseases = FhhDataUtils.getPersonService().getDiseaseByName(
-                diseaseSearchName);
+                replaceSpanishCharactersWithHTML(diseaseName));
         Disease disease = null;
         // If there are diseases that match the value of the user entered disease, find the appropriate match
         if (!diseases.isEmpty()) {
-            disease = matchAppropriateDisease(diseaseSearchName, diseases);
+            disease = matchAppropriateDisease(diseaseName, diseases);
         }
         
         // No matches were found, create a disease of type 'Other'
@@ -200,17 +178,6 @@ public class DiseaseUtils {
             disease = createOtherDiseaseType(diseaseName);
         }
         return disease;
-    }
-    
-    private static String handleUnknown(String disease) {
-        String returnString = disease;
-        if (disease.equalsIgnoreCase(UNKNOWN_EN)) {
-            returnString = UNKNOWN_DISEASE_EN;
-        }
-        if (disease.equalsIgnoreCase(UNKNOWN_ES)) {
-            returnString = UNKNOWN_DISEASE_ES;
-        }
-        return returnString;
     }
     
     /**
@@ -259,7 +226,8 @@ public class DiseaseUtils {
      * @return Disease new disease
      */
     public static Disease createOtherDiseaseType(String name) {
-        Disease disease = new Disease(FhhDataUtils.getIdToDiseaseMap().get(OTHER_DISEASE_ID));
+        Disease disease = new Disease();
+        disease.setId(USER_ENTERED_DISEASE_ID);
         disease.setOriginalText(name);
         disease.setAppDisplay(name);
         return disease;
@@ -282,15 +250,18 @@ public class DiseaseUtils {
      * Generates the row ID of the Disease added to the Disease table.  Used for removing the previous COD
      *  value when the COD is changed.
      * @param d <code>Disease</code> containing the Cause of Death
-     * @param ageAtDeath <code>AgeRange</code> age at death
-     * @return String ID of Disease + AgeRange + (Other Disease Value if Disease is of type Other)
+     * @param ageAtDeath <code>AgeRangeEnum</code> age at death
+     * @return String Code of Disease + AgeRangeEnum + (Other Disease Value if Disease is of type Other)
      */
-    public static String generateDiseaaseTableId(Disease d, AgeRange ageAtDeath) {
+    public static String generateDiseaaseTableId(Disease d, AgeRangeEnum ageAtDeath) {
         StringBuffer id = new StringBuffer();
         if (d != null && ageAtDeath != null) {
-            id.append(d.getId().toString());
+            boolean isOther = d.isOther();
+            if (!isOther && !StringUtils.isEmpty(d.getCode())) {
+                id.append(d.getCode().toString());
+            }
             id.append(ageAtDeath.toString());
-            if (d.isOther()) {
+            if (isOther) {
                 id.append(d.getOriginalText());
             }
         }

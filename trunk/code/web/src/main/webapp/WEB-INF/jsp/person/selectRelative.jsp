@@ -2,7 +2,7 @@
 <script type="text/javascript" language="javascript" src="<c:url value='/scripts/selectRelative.js'/>"></script>
 <script type="text/javascript">
     checkRelativeCode = function() {
-    	checkRelativeCodeAjax('${checkRelativeCode}');
+        checkRelativeCodeAjax('${checkRelativeCode}');
     }
 </script>
 <s:form action="/popup/selectRelative/addPerson.action" cssClass="form" method="post" id="relativeForm" theme="simple">
@@ -15,7 +15,7 @@
             <colgroup span="1" width="0*" />
             <tr>
                 <td class="accordianTitleTd">
-                	<h2><fmt:message key="selectRelative.accordian.titlebar"/></h2>
+                    <h2><fmt:message key="selectRelative.accordian.titlebar"/></h2>
                 </td>
                 <s:url value="/popup/getHelp/helpDetailsAddFamilyMember.action" id="helpUrl" />
                 <td class="accordianTitleTdBtn">
@@ -24,7 +24,7 @@
             </tr>
         </table>
         <div class="accordianContent" id="ri">
-			<h3><fmt:message key="person.relationship.helpText"/></h3>
+            <h3><fmt:message key="person.relationship.helpText"/></h3>
             <p><fmt:message key="person.relationship.helpText.p1"/></p>
             <table border="0" cellpadding="0" cellspacing="0" class="form" summary="<fmt:message key="form.addrel.table.summary"/>">
                 <%-- Select type of relative to add --%>
@@ -40,11 +40,11 @@
                             <option value=""><fmt:message key="person.select.relationship"/></option>
                             <c:forEach items="${relativeCodes}" var="currentItem" varStatus="status">
                                 <c:choose>
-			                        <c:when test="${!empty selectedCode && currentItem == selectedCode}">
-                                        <option selected="selected" value="${currentItem}"><fmt:message key="${currentItem.resourceKey}"/></option>
+                                    <c:when test="${!empty selectedCode && currentItem == selectedCode}">
+                                        <option selected="selected" value="${currentItem}"><fmt:message bundle="${der}" key="${currentItem.resourceKey}"/></option>
                                     </c:when>
                                     <c:otherwise>
-                                    <option value="${currentItem}"><fmt:message key="${currentItem.resourceKey}"/></option>
+                                    <option value="${currentItem}"><fmt:message bundle="${der}" key="${currentItem.resourceKey}"/></option>
                                     </c:otherwise>
                                 </c:choose>
                             </c:forEach>
@@ -62,18 +62,27 @@
                     </td>
                 </tr>
                 <%-- Select Maternal/Paternal Specifier --%>
-				<tr>
-					<th>
-						<div id="familyRelationTitleDiv" style="display: none">
-							<fmt:message key="person.familyRelation1"/>&nbsp;<span id="relationTextSpan"></span>&nbsp;<fmt:message key="person.familyRelation2"/>:
-						</div>
-					</th>
-					<td>
-						<div id="familyRelationDiv" style="display: none">
-                        	<s:select name="relationshipSpecifier" label="" id="relativeForm_relationshipSpecifier" list="relationshipSpecifiers" theme="simple" />
-						</div>
-					</td>
-				</tr>
+                <tr>
+                    <th>
+                        <div id="familyRelationTitleDiv" style="display: none">
+                            <fmt:message key="person.familyRelation1"/>&nbsp;<span id="relationTextSpan"></span>&nbsp;<fmt:message key="person.familyRelation2"/>:
+                        </div>
+                    </th>
+                    <td>
+                        <div id="familyRelationDiv" style="display: none">
+                            <s:select name="relationshipSpecifier" label="" id="relativeForm_relationshipSpecifier" list="relationshipSpecifiers" theme="simple" />
+                        </div>
+                    </td>
+                </tr>
+                
+               <tr errorfor="relativeForm_selectedCode">
+                    <td colspan="2" valign="top" align="center">
+                        <s:if test="fieldErrors['selectedCode'] != null">
+                            <span class="errorMessage">${fieldErrors['selectedCode'][0]}</span>
+                        </s:if>
+                    </td>
+                </tr>
+                
                 <%-- Error message for select Parent --%>
                 <tr errorfor="relativeForm_parent">
                     <td colspan="2" valign="top" align="center">
@@ -97,15 +106,16 @@
                         </div>
                     </td>
                 </tr>
-			</table>
-		</div>
-	</div>
-	<%-- END ACCORDION SECTION = ADD RELATIVE --%>
-	<div class="buttonContainer">
-		<s:submit cssClass="enableEnterSubmit"/>
-	</div>
+            </table>
+        </div>
+    </div>
+    <%-- END ACCORDION SECTION = ADD RELATIVE --%>
+    <div class="buttonContainer">
+        <a id="submitRelative" href="#" onclick="return $('relativeForm').submit();"><fmt:message key="button.save"/></a>
+        &nbsp;&nbsp;&nbsp;
+        <a id="cancelRelative" class="enableEnterSubmit" href="javascript:;" onclick="window.top.hidePopWin()"><fmt:message key="button.cancel"/></a>
 </div>
-<%-- Pass existingRelativeCodes via AJAX --%>	
+<%-- Pass existingRelativeCodes via AJAX --%>    
 <span style="display: none">
     <select id="existingRelativeCodes" name="existingRelativeCodes" multiple="true">
         <c:forEach items="${existingRelativeCodes}" var="currentItem">

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,13 +33,16 @@
  */
 package gov.hhs.fhh.data.util;
 
-import gov.hhs.fhh.data.RelativeCode;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.fiveamsolutions.nci.commons.util.NCICommonsUtils;
 
 /**
  * @author bpickeral
@@ -107,26 +110,34 @@ public final class FormatUtils {
     }
     
     /**
-     * Converts a legacy relative code (htmValue) to an FHH code.
-     * @param relative String to convert
-     * @return RelativeCode
+     * Checks a date string for valid date format (MM/DD/YYYY).  Does not allow lenient
+     * parsing (must be an actual Calendar date).
+     * @param date to check
+     * @return true/false representing validity of date
      */
-    public static RelativeCode convertLegacyCodeToRelativeCode(String relative) {
-        RelativeCode relativeCode = null;
-        for (RelativeCode currCode : RelativeCode.values()) {
-            if (currCode.getHtmValue() != null
-                && relative.startsWith(currCode.getHtmValue())) {
-                relativeCode = currCode;
-                break;
-            }
+    public static boolean checkDateFormat(String date) {
+        boolean isValid = true;
+        try {
+            SimpleDateFormat format = new SimpleDateFormat(FormatUtils.DATE_FORMAT_STRING, Locale.US);
+            format.setLenient(false);
+            format.parse(date);
+        } catch (Exception e) {
+            isValid = false;
         }
-        
-        // The legacy export has a female cousin and male cousin relative code.  Handle these codes separately
-        // since FHH only has paternal and maternal cousin codes.
-        if (relative.contains(RelativeCode.COUSN.getHtmValue())) {
-            relativeCode = RelativeCode.COUSN;
+        return isValid;
+    }
+    
+    /**
+     * Filters out '<' and '>' from a String replacing the values with html codes.  Calls NCICOmmonsUtils function,
+     * but also handles a null value.
+     * @param s String to format
+     * @return formatted String
+     */
+    public static String performXSSFilter(String s) {
+        if (StringUtils.isBlank(s)) {
+            return null;
+        } else {
+            return NCICommonsUtils.performXSSFilter(s);
         }
-        
-        return relativeCode;
     }
 }

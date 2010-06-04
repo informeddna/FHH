@@ -63,7 +63,9 @@
             
             <!-- BEGIN INCLUDE = SAVE CANCEL BUTTONS -->
             <div class="buttonContainer">
-                <s:submit key="button.report.update" cssClass="enableEnterSubmit"/>
+                <a id="submitReportOptions" href="#" onclick="return $('reportForm').submit();"><fmt:message key="button.report.update"/></a>
+                &nbsp;&nbsp;&nbsp;
+                <a id="cancelReport" href="javascript:;" onclick="window.top.hidePopWin()"><fmt:message key="button.cancel"/></a>
             </div>
             <!-- END INCLUDE = SAVE CANCEL BUTTONS -->
         </div>

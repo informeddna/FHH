@@ -5,6 +5,7 @@
     <head>
         <title><fmt:message key="fhh.title"/> - <decorator:title default="Welcome" /></title>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <META HTTP-EQUIV="Pragma" CONTENT="no-cache"/>
         <%@ include file="/WEB-INF/jsp/decorators/headIncludes.jsp" %>
         <link rel="address bar icon" href="<c:url value="/images/favicon.ico"/>" />
         <link rel="icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" />
@@ -17,6 +18,7 @@
                 <div class="clear" />
             </div>
         </div>
+        <!-- this does not need google analytics js, as they are in the footer -->
         <jsp:include page="/WEB-INF/jsp/common/footer.jsp"/>
     </body>
 </html>

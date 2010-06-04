@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,17 +33,18 @@
  */
 package gov.hhs.fhh.web.action;
 
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeBranch;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.data.RelativeReport;
+import gov.hhs.fhh.service.FhhWebException;
+import gov.hhs.fhh.service.util.PdfDataContainer;
+import gov.hhs.fhh.service.util.RelativeDraw;
+import gov.hhs.fhh.service.util.RelativePdfWriter;
+import gov.hhs.fhh.web.util.ActionSupportTextGetter;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
-import gov.hhs.fhh.web.util.PdfDataContainer;
-import gov.hhs.fhh.web.util.RelativeDraw;
-import gov.hhs.fhh.web.util.RelativePdfWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -61,6 +62,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
@@ -225,8 +227,8 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
     public InputStream getPdf() throws Exception {
         // return makeDiagram();
         try {
-            RelativeDraw selfDraw = new RelativeDraw(new Relative(this.person));
-            selfDraw.setCode(RelativeCode.SELF.toString());
+            RelativeDraw selfDraw = new RelativeDraw(new Relative(this.person), new ActionSupportTextGetter());
+            selfDraw.setCodeEnum(RelativeCode.SELF);
             selfDraw.setShowNames(this.isShowNames());
             if (getHighlightDisease() != null) {
                 selfDraw.setHighlightDisease(getHighlightDisease());
@@ -270,12 +272,12 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
      * Creates internationalized values for age ranges for use in the pdf.
      * @return Map of Age Ranges and internaltionalized values
      */
-    private Map<AgeRange, String> createIntlAgeRanges() {
-        Map<AgeRange, String> ageRanges = new HashMap<AgeRange, String>();
-        for (AgeRange a : AgeRange.values()) {
-            ageRanges.put(a, getText(a.getResourceKey()));
+    private Map<AgeRangeEnum, String> createIntlAgeRanges() {
+        Map<AgeRangeEnum, String> ageRangeEnums = new HashMap<AgeRangeEnum, String>();
+        for (AgeRangeEnum a : AgeRangeEnum.values()) {
+            ageRangeEnums.put(a, getText(a.getResourceKey()));
         }
-        return ageRanges;
+        return ageRangeEnums;
     }
 
     /**
@@ -304,27 +306,40 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
      * Sets the default pedigree diagram.
      * 
      * @return InputStream
-     * @throws Exception on error.
+     * @throws FhhWebException on error.
      */
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-    public InputStream makeDiagram() throws Exception {
-        try {
-            RelativeDraw selfDraw = new RelativeDraw(new Relative(this.person));
-            selfDraw.setCode(RelativeCode.SELF.toString());
-            selfDraw.setShowNames(this.isShowNames());
-            if (getHighlightDisease() != null) {
-                selfDraw.setHighlightDisease(getHighlightDisease());
-            }
-            return new ByteArrayInputStream(selfDraw.organizeFamilyTree(this.person));
-        } catch (Exception e) {
-            LOG.info("catching an exception!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            LOG.info(e.getMessage());
-            LOG.info(e.getCause().toString());
-            LOG.info(e.getStackTrace().toString());
-        }
-        return new ByteArrayInputStream("hello".getBytes());
+    public InputStream makeDiagram() throws FhhWebException {
+        return getDiagramForPerson(this.person, isShowNames(), getHighlightDisease());
     }
 
+    /**
+     * @param person - the person for the diagram.
+     * @param showNoNames - show names or not.
+     * @param highlightDisease - the disease to highlight.
+     * @return - the diagram image.
+     * @throws FhhWebException - in case of an error.
+     */
+    public static InputStream getDiagramForPerson(Person person, boolean showNoNames, Disease highlightDisease)
+            throws FhhWebException {
+        InputStream retval = null;
+
+        try {
+            RelativeDraw selfDraw = new RelativeDraw(new Relative(person), new ActionSupportTextGetter());
+            selfDraw.setCodeEnum(RelativeCode.SELF);
+            selfDraw.setShowNames(showNoNames);
+            if (highlightDisease != null) {
+                selfDraw.setHighlightDisease(highlightDisease);
+            }
+
+            retval = new ByteArrayInputStream(selfDraw.organizeFamilyTree(person));
+        } catch (Exception e) {
+            throw new FhhWebException(e);
+        }
+
+        return retval;
+    }
+    
     /**
      * @return the person
      */

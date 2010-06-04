@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!--
+        This file was produced by the Family Health Portrait tool at
+        http://familyhistory.hhs.gov. You should not attempt to edit the file.
+        Visit http://familyhistory.hhs.gov to upload the file for viewing and
+        editing. The web site also can provide a viewable and printable chart
+        and diagram of the family health history.
+    -->
+<FamilyHistory classCode="OBS" moodCode="EVN">
+    <id extention="gov.hhs.fhh:718163810183" />
+    <effectiveTime value="2009/07/22" />
+    <methodCode displayName="Surgeon General's Family Health History Tool" />
+    <subject typeCode="SBJ">
+        <patient classCode="PAT">
+            <patientPerson>
+                <administrativeGenderCode code="248153007"
+                    codeSystemName="SNOMED_CT" displayName="male" originalText="male" />
+                <ethnicGroupCode code="Code0" codeSystemName="HL7"
+                    displayName="DisplayName0" id="0" />
+                <raceCode code="Code0" codeSystemName="HL7"
+                    displayName="DisplayName0" id="0" />
+                <subjectOf2>
+                    <clinicalObservation>
+                        <code id="7" code="38341003" codeSystemName="SNOMED_CT"
+                            displayName="Hypertension" />
+                        <subject>
+                            <dataEstimatedAge>
+                                <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                <value unit="year">
+                                    <low value="10" />
+                                    <high value="19" />
+                                </value>
+                            </dataEstimatedAge>
+                        </subject>
+                    </clinicalObservation>
+                    <clinicalObservation>
+                        <code code="107647005" codeSystemName="SNOMED_CT"
+                            displayName="weight" />
+                        <value value="180" unit="kilogram" />
+                    </clinicalObservation>
+                </subjectOf2>
+                <relative>
+                    <code code="NMTH" codeSystemName="HL7 Family History Model"
+                        displayName="Mother" />
+                    <relationshipHolder>
+                        <administrativeGenderCode code="248152002"
+                            codeSystemName="SNOMED_CT" displayName="female" originalText="female" />
+                        <ethnicGroupCode code="2135-2" codeSystemName="HL7-TBD"
+                            displayName="Hispanic or Latino" />
+                        <ethnicGroupCode xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                            code="2184-0" codeSystemName="HL7" displayName="Dominican" id="6"
+                            xsi:type="hispanic-ethnicity-type" />
+                        <raceCode displayName="Asian" id="2" />
+                        <subjectOf2>
+                            <clinicalObservation>
+                                <code id="18" code="44054006" codeSystemName="SNOMED_CT"
+                                    displayName="Type 2 Diabetes" />
+                                <subject>
+                                    <dataEstimatedAge>
+                                        <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                        <value unit="year">
+                                            <low value="40" />
+                                            <high value="49" />
+                                        </value>
+                                    </dataEstimatedAge>
+                                </subject>
+                            </clinicalObservation>
+                        </subjectOf2>
+                        <id extention="0" />
+                        <name formatted="Basic Relative" />
+                        <birthTime value="09/07/1938" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="NFTH" codeSystemName="HL7 Family History Model"
+                        displayName="Father" />
+                    <relationshipHolder>
+                        <administrativeGenderCode code="248153007"
+                            codeSystemName="SNOMED_CT" displayName="male" />
+                        <subjectOf2 />
+                        <id extention="1" />
+                        <birthTime value="1953" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="PUNCLE" codeSystemName="HL7 Family History Model"
+                        displayName="Paternal Uncle" />
+                    <relationshipHolder>
+                        <ethnicGroupCode code="wrong" codeSystemName="wrong"
+                            displayName="unmatchabaleEthnicCode" />
+                        <raceCode code="1002-5" codeSystemName="HL7"
+                            displayName="American Indian or Alaska Native" />
+                        <administrativeGenderCode code="248153007"
+                            codeSystemName="SNOMED_CT" displayName="male" originalText="male" />
+                        <subjectOf1>
+                            <deceasedEstimatedAge>
+                                <code code="39016-1" codeSystemName="LOINC" displayName="Age at Death" />
+                                <value unit="year">
+                                    <low value="50" />
+                                    <high value="59" />
+                                </value>
+                            </deceasedEstimatedAge>
+                        </subjectOf1>
+                        <subjectOf2>
+                            <clinicalObservation>
+                                <code id="18" code="44054006" codeSystemName="SNOMED_CT"
+                                    displayName="Type 2 Diabetes" />
+                                <subject>
+                                    <dataEstimatedAge>
+                                        <code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age" />
+                                        <value unit="year">
+                                            <low value="50" />
+                                            <high value="59" />
+                                        </value>
+                                    </dataEstimatedAge>
+                                </subject>
+                            </clinicalObservation>
+                            <clinicalObservation>
+                                <code id="18" code="44054006" codeSystemName="SNOMED_CT"
+                                    displayName="Type 2 Diabetes" />
+                                <sourceOf>
+                                    <code code="419620001" codeSystemName="SNOMED_CT"
+                                        displayName="death" />
+                                </sourceOf>
+                            </clinicalObservation>
+                        </subjectOf2>
+                        <id extention="2" />
+                        <name formatted="PUNCLE Name" />
+                        <deceasedIndCode value="true" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="MAUNT" codeSystemName="HL7 Family History Model"
+                        displayName="Maternal Aunt" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="3" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="PCOUSN" codeSystemName="HL7 Family History Model"
+                        displayName="Paternal Cousin" />
+                    <relationshipHolder>
+                        <raceCode code="wrong" codeSystemName="wrong"
+                            displayName="Unmatchable race code" />
+                        <relative>
+                            <code code="NFTH" codeSystemName="HL7 Family History Model"
+                                displayName="Father" />
+                            <relationshipHolder>
+                                <subjectOf2 />
+                                <id extention="2" />
+                            </relationshipHolder>
+                        </relative>
+                        <administrativeGenderCode code="248153007"
+                            codeSystemName="SNOMED_CT" displayName="male" />
+                        <subjectOf2 />
+                        <id extention="4" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="HBRO" codeSystemName="HL7 Family History Model"
+                        displayName="Half Brother" />
+                    <relationshipHolder>
+                        <relative>
+                            <code code="NMTH" codeSystemName="HL7 Family History Model"
+                                displayName="Mother" />
+                            <relationshipHolder>
+                                <subjectOf2 />
+                                <id extention="0" />
+                            </relationshipHolder>
+                        </relative>
+                        <administrativeGenderCode code="248153007"
+                            codeSystemName="SNOMED_CT" displayName="male" />
+                        <subjectOf2 />
+                        <id extention="5" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="MGRMTH" codeSystemName="HL7 Family History Model"
+                        displayName="Maternal Grandmother" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="6" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="MGRFTH" codeSystemName="HL7 Family History Model"
+                        displayName="Maternal Grandfather" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="7" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="PGRMTH" codeSystemName="HL7 Family History Model"
+                        displayName="Paternal Grandmother" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="8" />
+                    </relationshipHolder>
+                </relative>
+                <relative>
+                    <code code="PGRFTH" codeSystemName="HL7 Family History Model"
+                        displayName="Paternal Grandfather" />
+                    <relationshipHolder>
+                        <subjectOf2 />
+                        <id extention="9" />
+                    </relationshipHolder>
+                </relative>
+                <name formatted="Basic Test" />
+                <birthTime value="09/07/1983" />
+            </patientPerson>
+        </patient>
+    </subject>
+</FamilyHistory>

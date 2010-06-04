@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,13 +33,7 @@
  */
 package gov.hhs.fhh.data;
 
-import gov.hhs.fhh.data.util.ClinicalObservationsNode;
-import gov.hhs.fhh.data.util.CodeNode;
-import gov.hhs.fhh.data.util.FhhDataUtils;
 import gov.hhs.fhh.data.util.PersonUtils;
-import gov.hhs.fhh.data.util.ValueNode;
-import gov.hhs.fhh.data.util.htmimport.HTMImportUtils;
-import gov.hhs.fhh.data.util.htmimport.HTMNode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,11 +41,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.hibernate.validator.Length;
+
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.Height;
+import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
 
 /**
  * @author Scott Miller
@@ -60,15 +59,13 @@ import org.hibernate.validator.Length;
 public class Person implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final int NAME_LENGTH = 255;
-    private static final boolean TRUE = true;
-    private static final boolean FALSE = false;
     
     /**
      * String representing true used by Castor.
      */
     protected static final String TRUE_STRING = "true";
 
-    private Long id;
+    private UUID uuid;
     private String name;
     private Date dateOfBirth;
     private Weight weight = new Weight();
@@ -81,9 +78,11 @@ public class Person implements Serializable {
     private List<Relative> relatives = new ArrayList<Relative>();
     // Form was filled out for relative. We set the originalText for gender if the form was not filled out in order
     // to set completedForm to false on import.
-    private boolean completedForm = false;
     private boolean unmatchedCondition = false;
     private List<Relative> htmImportDroppedRelatives = new ArrayList<Relative>();
+    
+    // this list will contain the unrelated relatives, possibly including the relatives in htmImportDroppedRelatives.
+    private final List<Relative> unrelatedRelatives = new ArrayList<Relative>();
 
     // Links to Mother and Father Relatives
     // Set for only Proband, cousins, grandchildren, half-Siblings, nieces, nephews
@@ -91,7 +90,7 @@ public class Person implements Serializable {
     private Relative mother;
 
     private boolean consanguinityFlag = false;
-    private TwinStatus twinStatus;
+    private TwinStatus twinStatus = TwinStatus.NO;
 
     private Set<Relative> descendants = new ListOrderedSet();
     
@@ -102,6 +101,7 @@ public class Person implements Serializable {
      */
     public Person() {
         super();
+        generateUuid();
     }
 
     /**
@@ -109,194 +109,22 @@ public class Person implements Serializable {
      * 
      * @param p the Person object to copy from.
      */
-    public Person(Person p) {
+    public Person(final Person p) {
         super();
-        this.id = p.getId();
-        this.name = p.getName();
-        this.dateOfBirth = p.getDateOfBirth();
-        this.weight = new Weight(p.getWeight().getValue(), p.getWeight().getUnit());
-        this.height = p.getHeight();
-        this.gender = p.getGender();
-        this.ethnicities = p.getEthnicities();
-        this.races = p.getRaces();
-        this.observations.addAll(p.getObservations());
-        this.adopted = p.isAdopted();
-        this.completedForm = p.isCompletedForm();
-        this.relatives.addAll(p.getRelatives());
-        this.twinStatus = p.getTwinStatus();
-        this.unmatchedCondition = p.isUnmatchedCondition();
-    }
-
-    /**
-     * Used by Castor to generate the Clinical Observation Node.
-     * 
-     * @return ClinicalObservationsNode
-     */
-    public ClinicalObservationsNode getClinicalObservationsNode() {
-        ClinicalObservationsNode node = new ClinicalObservationsNode();
-        for (ClinicalObservation currObservation : observations) {
-            Disease currDisease = currObservation.getDisease();
-            currObservation.setCode(new CodeNode(currDisease.getCode(), currDisease.getCodeSystemName(), currDisease
-                    .getDisplayName(), currDisease.getId(), currDisease.getOriginalText()));
-        }
-        node.getObservations().addAll(observations);
-        addAttributesAsObservations(node);
-        return node;
-    }
-
-    /**
-     * Add non-disease clinical observations to ClinicalObservationsNode.
-     * 
-     * @param node ClinicalObservationsNode to add observations
-     */
-    private void addAttributesAsObservations(ClinicalObservationsNode node) {
-        if (adopted) {
-            ClinicalObservation adoptedObs = new ClinicalObservation();
-            adoptedObs.setCode(new CodeNode(ClinicalObservationCode.ADOPTED));
-            node.getObservations().add(adoptedObs);
-        }
-        if (twinStatus != null && !TwinStatus.NO.equals(twinStatus)) {
-            ClinicalObservation twinStatusObs = new ClinicalObservation();
-            twinStatusObs.setCode(new CodeNode(twinStatus.getCode(), twinStatus.getCodeSystemName(), twinStatus
-                    .getDisplayName()));
-            node.getObservations().add(twinStatusObs);
-        }
-        addHeightAndWeightAsObservations(node);
-        if (consanguinityFlag) {
-            ClinicalObservation consanguinityObs = new ClinicalObservation();
-            consanguinityObs.setCode(new CodeNode());
-            consanguinityObs.getCode().setOriginalText(ClinicalObservationCode.CONSANGUINITY_ORG_TEXT);
-            node.getObservations().add(consanguinityObs);
-        }
-    }
-
-    private void addHeightAndWeightAsObservations(ClinicalObservationsNode node) {
-        if (weight.getValue() != null) {
-            ClinicalObservation weightObs = new ClinicalObservation();
-            weightObs.setCode(new CodeNode(ClinicalObservationCode.WEIGHT));
-            weightObs.setValueNode(new ValueNode(weight.getValue().toString(), weight.getUnit().getDisplayName()));
-            node.getObservations().add(weightObs);
-        }
-        if (height.getValue() != null) {
-            ClinicalObservation heightObs = new ClinicalObservation();
-            heightObs.setCode(new CodeNode(ClinicalObservationCode.HEIGHT));
-            heightObs.setValueNode(new ValueNode(height.getValue().toString(), height.getUnit().getDisplayName()));
-            node.getObservations().add(heightObs);
-        }
-    }
-
-    /**
-     * Used by Castor to set the Clinical Observation Node.
-     * 
-     * @param node ClinicalObservationsNode
-     */
-    public void setClinicalObservationsNode(ClinicalObservationsNode node) {
-        Map<Long, Disease> diseaseMap = FhhDataUtils.getIdToDiseaseMap();
-        for (ClinicalObservation currObservation : node.getObservations()) {
-            setupObservation(currObservation, diseaseMap);
-        }
-    }
-    
-    /**
-     * Used by Castor to set the Person Object from the data within the input nodes.
-     * 
-     * @param node node htm node containing attributes
-     */
-    public void setHtmNode(HTMNode node) {
-        // Store each set of input nodes associated with a single relative into an HTMNode
-        List<HTMNode> relativeNodes = HTMImportUtils.seperateFixedRelatives(node);
-        HTMNode remainingNodes = relativeNodes.get(HTMImportUtils.NUM_FIXED_RELATIVES);
-        
-        // Obtain the list of family additional conditions
-        List<Disease> familyAddCondtitions = HTMImportUtils.processFamilyAddConditions(
-                remainingNodes.getInputNodes().get(remainingNodes.getInputNodes().size() - 1));
-        
-        HTMImportUtils.processPersonAttributes(this, relativeNodes.get(0), familyAddCondtitions);
-        relativeNodes.remove(HTMImportUtils.NUM_FIXED_RELATIVES);
-        relativeNodes.remove(0);
-        
-        // Process Fixed relatives (parents, grandparents)
-        for (HTMNode currNode : relativeNodes) {
-            HTMImportUtils.processRelativeAttributes(this, currNode, familyAddCondtitions);
-        }
-        HTMImportUtils.processVariableRelativeNodes(this, remainingNodes, familyAddCondtitions);
-        PersonUtils.setRelativeIds(getRelatives());
-    }
-    
-    /**
-     * Dummy Method needed by Castor.
-     * @return new HTMNode
-     */
-    public HTMNode getHtmNode() {
-        return new HTMNode();
-    }
-
-    /**
-     * Stores information from clinicalObservation into the Person Object. Any information set must also be transfered
-     * to the Relative in setRelationshipHolderNode.
-     * 
-     * @param observation observation containing code
-     * @param diseaseMap map of ids to diseases
-     */
-    private void setupObservation(ClinicalObservation observation, Map<Long, Disease> diseaseMap) {
-        CodeNode currCode = observation.getCode();
-        if (currCode.getOriginalText() != null) {
-            setupObservationWithOriginalText(observation, diseaseMap);
-        } else if (currCode.getId() != null) {
-            Disease matchingDisease = diseaseMap.get(currCode.getId());
-            if (matchingDisease != null) {
-                observation.setDisease(matchingDisease);
-                observations.add(observation);
-            } 
-        } else {
-            setupObservationWithoutId(observation);
-        }
-    }
-
-    /**
-     * Function Stores information from a ClinicalObservation with original text (User entered diseases and
-     * consanguinity nodes).
-     * 
-     * @param observation observation containing code
-     * @param diseaseMap map of ids to diseases
-     */
-    private void setupObservationWithOriginalText(ClinicalObservation observation, Map<Long, Disease> diseaseMap) {
-        CodeNode currCode = observation.getCode();
-        if (currCode.getOriginalText().equals(ClinicalObservationCode.CONSANGUINITY_ORG_TEXT)) {
-            setConsanguinityFlag(TRUE);
-        } else {
-            Disease matchingDisease = diseaseMap.get(currCode.getId());
-            if (matchingDisease != null) {
-                Disease otherDisease = new Disease(diseaseMap.get(currCode.getId()));
-                otherDisease.setOriginalText(currCode.getOriginalText());
-                otherDisease.setAppDisplay(currCode.getOriginalText());
-                observation.setDisease(otherDisease);
-                observations.add(observation);
-            }
-        }
-    }
-
-    /**
-     * Stores information from clinicalObservation (without ID) into the Person Object. Any information set must also be
-     * transfered to the Relative in setRelationshipHolderNode.
-     * 
-     * @param currObservation observation containing code
-     */
-    private void setupObservationWithoutId(ClinicalObservation observation) {
-        String code = observation.getCode().getCode();
-        if (code.equals(ClinicalObservationCode.ADOPTED.getCode())) {
-            setAdopted(TRUE);
-        } else if (code.equals(ClinicalObservationCode.WEIGHT.getCode())) {
-            setWeight(new Weight(Integer.valueOf(observation.getValueNode().getValue()), 
-                    WeightUnit.fromUnit(observation.getValueNode().getUnit())));
-        } else if (code.equals(ClinicalObservationCode.HEIGHT.getCode())) {
-            setHeight(new Height(Integer.valueOf(observation.getValueNode().getValue()), 
-                    HeightUnit.fromUnit(observation.getValueNode().getUnit())));
-        } else if (code.equals(TwinStatus.IDENTICAL.getCode())) {
-            setTwinStatus(TwinStatus.IDENTICAL);
-        } else if (code.equals(TwinStatus.FRATERNAL.getCode())) {
-            setTwinStatus(TwinStatus.FRATERNAL);
-        }
+        uuid = p.getUuid();
+        name = p.getName();
+        dateOfBirth = p.getDateOfBirth();
+        weight = new Weight(p.getWeight().getValue(), p.getWeight().getUnit());
+        height = p.getHeight();
+        gender = p.getGender();
+        ethnicities = p.getEthnicities();
+        races = p.getRaces();
+        observations.addAll(p.getObservations());
+        adopted = p.isAdopted();
+        relatives.addAll(p.getRelatives());
+        twinStatus = p.getTwinStatus();
+        unmatchedCondition = p.isUnmatchedCondition();
+        unrelatedRelatives.addAll(p.getUnrelatedRelatives());
     }
 
     /**
@@ -310,46 +138,6 @@ public class Person implements Serializable {
             isTwin = true;
         }
         return isTwin;
-    }
-
-    /**
-     * Used by Castor to generate the deceased indicator node if the relative is deceased. Note: isDeceased should be
-     * used outside of Castor as this function returns null in the case that the relative is alive.
-     * 
-     * @return true string if person is deceased, otherwise null
-     */
-    public String getMultipleBirthIndicator() {
-        if (isTwin()) {
-            return TRUE_STRING;
-        }
-        return null;
-    }
-
-    /**
-     * Used for Castor serialization. Import uses the gender nodes original text value to find if the form was 
-     *  completed for a relative (Gender is only required attribute). Set originalText if form was not completed. 
-     *  If unmatched condition exists upon save, all unmatched conditions are validated (form completed).
-     * 
-     * @return the gender as a castor-serializable node.
-     */
-    public GenderNode getGenderNode() {
-        return getGender() != null ? getGender().getAsGenderNode(isCompletedForm() || isUnmatchedCondition()) : null;
-    }
-
-    /**
-     * Used for castor deserialization. Import uses the gender nodes original text value to find if the form was 
-     *  completed for a relative (Gender is only required attribute).
-     * 
-     * @param genderNode the representation of the gender obtained from the castor-deserialized XML.
-     */
-    public void setGenderNode(GenderNode genderNode) {
-        this.gender = Gender.fromGenderNode(genderNode);
-        // We store displayName as originalText if form was not completed for person
-        if (genderNode.getOriginalText() != null) {
-            this.setCompletedForm(TRUE);
-        } else {
-            this.setCompletedForm(FALSE);
-        }
     }
 
     /**
@@ -368,13 +156,7 @@ public class Person implements Serializable {
      * @return list of relatives of given type.
      */
     public List<Relative> getRelativesOfType(final RelativeCode relCode) {
-        List<Relative> rels = new ArrayList<Relative>();
-        for (Relative rel : this.relatives) {
-            if (rel.getCodeEnum() == relCode) {
-                rels.add(rel);
-            }
-        }
-        return rels;
+        return getRelativesOfType(relCode, getRelatives());
     }
 
     /**
@@ -382,7 +164,28 @@ public class Person implements Serializable {
      * @return the relative of given type, or null if no relatives of that type were found.
      */
     public Relative getRelativeOfType(final RelativeCode relCode) {
-        List<Relative> rels = getRelativesOfType(relCode);
+        return getRelativeOfType(relCode, getRelatives());
+    }
+
+    
+    /**
+     * @param relCode type of relatives to return
+     * @return list of relatives of given type.
+     */
+    public List<Relative> getUnrelatedRelativesOfType(final RelativeCode relCode) {
+        return getRelativesOfType(relCode, getUnrelatedRelatives());
+    }
+
+    /**
+     * @param relCode type of relative to return
+     * @return the relative of given type, or null if no relatives of that type were found.
+     */
+    public Relative getUnrelatedRelativeOfType(final RelativeCode relCode) {
+        return getRelativeOfType(relCode, getUnrelatedRelatives());
+    }
+    
+    private Relative getRelativeOfType(RelativeCode relCode, List<Relative> relativeListToSearch) {
+        final List<Relative> rels = getRelativesOfType(relCode, relativeListToSearch);
         if (rels.isEmpty()) {
             return null;
         }
@@ -392,28 +195,39 @@ public class Person implements Serializable {
         throw new IllegalArgumentException("More than one relative of type " + relCode);
     }
 
+    private List<Relative> getRelativesOfType(final RelativeCode relCode, List<Relative> relativeListToSearch) {
+        final List<Relative> rels = new ArrayList<Relative>();
+        for (final Relative rel : relativeListToSearch) {
+            if (rel.getCodeEnum() == relCode) {
+                rels.add(rel);
+            }
+        }
+        return rels;
+    }
+    
     /**
      * @param relName name of relative to return
      * @return the first relative with given name, or null if no relatives with that name found
      */
-    public Relative getRelativeByName(String relName) {
-        for (Relative rel : this.relatives) {
+    public Relative getRelativeByName(final String relName) {
+        for (final Relative rel : relatives) {
             if (rel.getName().equals(relName)) {
                 return rel;
             }
         }
         return null;
     }
+    
 
     /**
      * recenters the family history on the relative with given index.
      * 
-     * @param index index of relative on whom to recenter.
+     * @param id uuid of relative on whom to recenter.
      * @return the person on whom the history has been recentered, with a properly populated list of relatives.
      */
-    public Person recenterOn(int index) {
-        RelationshipGraph relGraph = new RelationshipGraph(this);
-        Relative centerRelative = this.relatives.get(index);
+    public Person recenterOn(final UUID id) {
+        final RelationshipGraph relGraph = new RelationshipGraph(this);
+        final Relative centerRelative = getRelative(id);
         return relGraph.centerOn(centerRelative);
     }
 
@@ -421,8 +235,8 @@ public class Person implements Serializable {
      * @return the list of race IDs
      */
     public List<Long> getRaceIds() {
-        List<Long> raceIds = new ArrayList<Long>();
-        for (Race currRace : races) {
+        final List<Long> raceIds = new ArrayList<Long>();
+        for (final Race currRace : races) {
             raceIds.add(currRace.getId());
         }
         return raceIds;
@@ -432,8 +246,8 @@ public class Person implements Serializable {
      * @return the list of race IDs
      */
     public List<Long> getEthnicityIds() {
-        List<Long> raceIds = new ArrayList<Long>();
-        for (Ethnicity currEthnicity : ethnicities) {
+        final List<Long> raceIds = new ArrayList<Long>();
+        for (final Ethnicity currEthnicity : ethnicities) {
             raceIds.add(currEthnicity.getId());
         }
         return raceIds;
@@ -444,14 +258,14 @@ public class Person implements Serializable {
      */
     public int getMyAge() {
         int age = 0;
-        if (this.getDateOfBirth() != null) {
-            GregorianCalendar currCal = new GregorianCalendar();
-            GregorianCalendar birthCal = new GregorianCalendar();
+        if (getDateOfBirth() != null) {
+            final GregorianCalendar currCal = new GregorianCalendar();
+            final GregorianCalendar birthCal = new GregorianCalendar();
             birthCal.setTime(getDateOfBirth());
             age = currCal.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
-            if ((birthCal.get(Calendar.MONTH) > currCal.get(Calendar.MONTH)) 
-                    || (birthCal.get(Calendar.MONTH) == birthCal.get(Calendar.MONTH)
-                            && birthCal.get(Calendar.DAY_OF_MONTH) > currCal.get(Calendar.DAY_OF_MONTH))) {
+            if (birthCal.get(Calendar.MONTH) > currCal.get(Calendar.MONTH) 
+                    || birthCal.get(Calendar.MONTH) == birthCal.get(Calendar.MONTH)
+                            && birthCal.get(Calendar.DAY_OF_MONTH) > currCal.get(Calendar.DAY_OF_MONTH)) {
                 age--;
             }
         }
@@ -468,12 +282,21 @@ public class Person implements Serializable {
         if (isUnmatchedCondition()) {
             unmatched = true;
         }
-        for (Relative currRelative : getRelatives()) {
+        for (final Relative currRelative : getRelatives()) {
             if (currRelative.isUnmatchedCondition()) {
                 unmatched = true;
             }
         }
         return unmatched;
+    }
+    
+    /**
+     * Returns if the form has been completed for the Proband.  DOB is a required field, if it has been stored,
+     * form has been completed.
+     * @return boolean indicating that form has been completed
+     */
+    public boolean isCompletedForm() {
+        return dateOfBirth != null;
     }
     
     /**
@@ -486,22 +309,8 @@ public class Person implements Serializable {
     /**
      * @param gender the gender to set
      */
-    public void setGender(Gender gender) {
+    public void setGender(final Gender gender) {
         this.gender = gender;
-    }
-    
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return this.id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
     }
 
     /**
@@ -509,13 +318,13 @@ public class Person implements Serializable {
      */
     @Length(max = NAME_LENGTH)
     public String getName() {
-        return this.name;
+        return name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -529,7 +338,7 @@ public class Person implements Serializable {
     /**
      * @param dateOfBirth the dateOfBirth to set
      */
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(final Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -543,7 +352,7 @@ public class Person implements Serializable {
     /**
      * @param adopted the adopted to set
      */
-    public void setAdopted(boolean adopted) {
+    public void setAdopted(final boolean adopted) {
         this.adopted = adopted;
     }
     
@@ -557,7 +366,7 @@ public class Person implements Serializable {
     /**
      * @param observations the observations to set
      */
-    public void setObservations(List<ClinicalObservation> observations) {
+    public void setObservations(final List<ClinicalObservation> observations) {
         this.observations = observations;
     }
 
@@ -571,22 +380,8 @@ public class Person implements Serializable {
     /**
      * @param relatives the relatives to set
      */
-    public void setRelatives(List<Relative> relatives) {
+    public void setRelatives(final List<Relative> relatives) {
         this.relatives = relatives;
-    }
-    
-    /**
-     * @return the completedForm
-     */
-    public boolean isCompletedForm() {
-        return completedForm;
-    }
-
-    /**
-     * @param completedForm the completedForm to set
-     */
-    public void setCompletedForm(boolean completedForm) {
-        this.completedForm = completedForm;
     }
 
     /**
@@ -599,7 +394,7 @@ public class Person implements Serializable {
     /**
      * @param father the father to set
      */
-    public void setFather(Relative father) {
+    public void setFather(final Relative father) {
         this.father = father;
     }
 
@@ -613,7 +408,7 @@ public class Person implements Serializable {
     /**
      * @param mother the mother to set
      */
-    public void setMother(Relative mother) {
+    public void setMother(final Relative mother) {
         this.mother = mother;
     }
 
@@ -627,7 +422,7 @@ public class Person implements Serializable {
     /**
      * @param descendants the descendants to set
      */
-    public void setDescendants(Set<Relative> descendants) {
+    public void setDescendants(final Set<Relative> descendants) {
         this.descendants = descendants;
     }
     
@@ -641,7 +436,7 @@ public class Person implements Serializable {
     /**
      * @param races the races to set
      */
-    public void setRaces(List<Race> races) {
+    public void setRaces(final List<Race> races) {
         this.races = races;
     }
     
@@ -655,7 +450,7 @@ public class Person implements Serializable {
     /**
      * @param ethnicities the ethnicities to set
      */
-    public void setEthnicities(List<Ethnicity> ethnicities) {
+    public void setEthnicities(final List<Ethnicity> ethnicities) {
         this.ethnicities = ethnicities;
     }
     
@@ -669,7 +464,7 @@ public class Person implements Serializable {
     /**
      * @param consanguinityFlag the consanguinityFlag to set
      */
-    public void setConsanguinityFlag(boolean consanguinityFlag) {
+    public void setConsanguinityFlag(final boolean consanguinityFlag) {
         this.consanguinityFlag = consanguinityFlag;
     }
 
@@ -683,7 +478,7 @@ public class Person implements Serializable {
     /**
      * @param twinStatus the twinStatus to set
      */
-    public void setTwinStatus(TwinStatus twinStatus) {
+    public void setTwinStatus(final TwinStatus twinStatus) {
         this.twinStatus = twinStatus;
     }
 
@@ -697,7 +492,7 @@ public class Person implements Serializable {
     /**
      * @param height the height to set
      */
-    public void setHeight(Height height) {
+    public void setHeight(final Height height) {
         this.height = height;
     }
 
@@ -711,7 +506,7 @@ public class Person implements Serializable {
     /**
      * @param unmatchedCondition the unmatchedCondition to set
      */
-    public void setUnmatchedCondition(boolean unmatchedCondition) {
+    public void setUnmatchedCondition(final boolean unmatchedCondition) {
         this.unmatchedCondition = unmatchedCondition;
     }
 
@@ -725,7 +520,7 @@ public class Person implements Serializable {
     /**
      * @param htmImportDroppedRelatives the htmImportDroppedRelatives to set
      */
-    public void setHtmImportDroppedRelatives(List<Relative> htmImportDroppedRelatives) {
+    public void setHtmImportDroppedRelatives(final List<Relative> htmImportDroppedRelatives) {
         this.htmImportDroppedRelatives = htmImportDroppedRelatives;
     }
 
@@ -739,7 +534,7 @@ public class Person implements Serializable {
     /**
      * @param weight the weight to set
      */
-    public void setWeight(Weight weight) {
+    public void setWeight(final Weight weight) {
         this.weight = weight;
     }
 
@@ -753,7 +548,54 @@ public class Person implements Serializable {
     /**
      * @param xmlFileSaved the xmlFileSaved to set
      */
-    public void setXmlFileSaved(boolean xmlFileSaved) {
+    public void setXmlFileSaved(final boolean xmlFileSaved) {
         this.xmlFileSaved = xmlFileSaved;
+    }
+
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(final UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    /**
+     * @return the uuid
+     */
+    public UUID getUuid() {
+        return uuid;
+    }
+    
+    /**
+     * Method generates a new UUID.
+     */
+    public final void generateUuid() {
+        uuid = UUID.randomUUID();
+    }
+
+    /**
+     * @param id UUID of the Relative
+     * @return relative if match is found in either related or unrelated relative lists, otherwise, null
+     */
+    public final Relative getRelative(final UUID id) {
+        for (final Relative r : relatives) {
+            if (id.equals(r.getUuid())) {
+                return r;
+            }
+        }
+        for (final Relative r : unrelatedRelatives) {
+            if (id.equals(r.getUuid())) {
+                return r;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return the unrelatedRelatives - the relatives that are not parents or children of any of the related relatives.
+     */
+    public List<Relative> getUnrelatedRelatives() {
+        return unrelatedRelatives;
     }
 }

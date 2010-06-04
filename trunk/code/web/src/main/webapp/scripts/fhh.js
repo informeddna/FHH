@@ -62,6 +62,13 @@ function submitDivOnReturn(e, addId) {
     }
 }
 
+function setFocusById(divId) {
+    var div = document.getElementById(divId);
+    if (div != null) {
+        div.focus();
+    }
+}
+
 function setFocusToFirstControl() {
     for (var f=0; f < document.forms.length; f++) {
         for(var i=0; i < document.forms[f].length; i++) {
@@ -85,12 +92,18 @@ function showFileSavedMessage() {
 	$('fileSavedDiv').style.display = 'block';
 }
 
-
 function saveAndDisplayMessage(saveXmlUrl, reindexFlag) {
 	saveXmlDocument(saveXmlUrl, reindexFlag);
 	showFileSavedMessage();
 	window.top.showFileSavedMessage();
 }
+
+function saveAndRedirect(saveXmlUrl, redirectUrl) {
+	saveXmlDocument(saveXmlUrl, false);
+	
+	saveXmlDocument(redirectUrl, false);
+}
+
 
 
 function saveXmlDocument(saveXmlUrl, reindexFlag) {
@@ -111,6 +124,39 @@ function saveXmlDocument(saveXmlUrl, reindexFlag) {
     $(form).remove();
     startLogoutTimer();
 }
+
+
+function saveXmlDocumentWithFileName(saveXmlUrl, reindexFlag) {
+    var form = document.createElement("form");
+    form.method="post";
+    form.style.display="none";
+    form.action = saveXmlUrl;
+
+    var fileNameValue = $('_fileName').value;
+    
+    alert(fileNameValue);
+    
+    var fileName = document.createElement("input");
+    fileName.type = "hidden";
+    fileName.name = "fileName";
+    fileName.value = fileNameValue;
+    form.appendChild(fileName);
+
+    document.body.appendChild(form);
+    if (reindexFlag) {
+        var relidValue = $F('relativeId');
+        var relid = document.createElement("input");
+        relid.type = "hidden";
+        relid.name="relativeId";
+        relid.value= relidValue;
+        form.appendChild(relid);
+    }
+    form.submit();
+    $(form).remove();
+    startLogoutTimer();
+}
+
+
 
 function previewPopup(previewUrl, reindexFlag) {
     var options = "resizable,scrollbars=1,height=480,width=640";
@@ -187,5 +233,8 @@ startLogoutTimer = function() {
 showLogoutWarning = function() {
     $('logoutWarningDiv').style.display = 'block';
     $('warningCountdownDisplay').update(remainingTime--);
+    if (remainingTime==0) {
+        logout();
+    }
     warningTimer = setTimeout('showLogoutWarning()', 1000);
 }

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -36,10 +36,8 @@ package gov.hhs.fhh.service;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.DisplayString;
 import gov.hhs.fhh.data.Ethnicity;
-import gov.hhs.fhh.data.Gender;
 import gov.hhs.fhh.data.Race;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -67,13 +65,6 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
     private static final String RACES_CACHE_REGION = "Races.cache.region";
     private static final String FROM = "from ";
     private static final String UNCHECKED = "unchecked";
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<Gender> getGenders() {
-        return Arrays.asList(Gender.values());
-    }
 
     /**
      * {@inheritDoc}
@@ -171,5 +162,27 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
         query.setParameter("diseaseName", '%' + diseaseName + '%');
         query.setParameter("parentDisease", '%' + "..." + '%');
         return query.list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public List<Ethnicity> getEthnicityByCodeAndCodeSystem(String code, String codeSystem) {
+        String query = FROM + Ethnicity.class.getName() + " where code = '" + code + "' AND codeSystemName = '"
+                + codeSystem + "'";
+        return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
+                ETHNICITIES_CACHE_REGION).list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public List<Race> getRaceByCodeAndCodeSystem(String code, String codeSystem) {
+        String query = FROM + Race.class.getName() + " where code = '" + code + "' AND codeSystemName = '"
+                + codeSystem + "'";
+        return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
+                RACES_CACHE_REGION).list();
     }
 }

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -35,12 +35,14 @@ package gov.hhs.fhh.data.util;
 
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.service.PersonServiceLocal;
-import gov.hhs.fhh.service.locator.JndiServiceLocator;
+import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.service.locator.ServiceLocator;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author bpickeral
@@ -48,14 +50,14 @@ import java.util.Map;
  */
 public final class FhhDataUtils {
     private static final FhhDataUtils FHH_DATA_UTILS = new FhhDataUtils();
-    private static Map<Long, Disease> idToDiseaseMap = new HashMap<Long, Disease>();
+    private static Map<String, Disease> codeToDiseaseMap = new HashMap<String, Disease>();
     private ServiceLocator serviceLocator;
 
     /**
      * Constructor for the singleton instance.
      */
     private FhhDataUtils() {
-        this.serviceLocator = new JndiServiceLocator();
+        this.serviceLocator = FhhRegistry.getInstance().getServiceLocator();
     }
     
     /**
@@ -74,17 +76,22 @@ public final class FhhDataUtils {
     }
     
     /**
-     * Returns a Map of Disease IDs to all diseases.
+     * Returns a Map of Disease SNOMED codes (String) to all diseases.
      * @return id to disease map
      */
-    public static Map<Long, Disease> getIdToDiseaseMap() {
-        if (idToDiseaseMap.isEmpty()) {
-            List<Disease> allDiseaseList = FhhDataUtils.getPersonService().getAllDiseases();
-            for (Disease currDisease : allDiseaseList) {
-                idToDiseaseMap.put(currDisease.getId(), currDisease);
+    public static Map<String, Disease> getCodeToDiseaseMap() {
+        if (codeToDiseaseMap.isEmpty()) {
+            generateCodeToDiseaseMap(FhhDataUtils.getPersonService().getAllDiseases());
+        }
+        return codeToDiseaseMap;
+    }
+    
+    private static void generateCodeToDiseaseMap(List<Disease> allDiseaseList) {
+        for (Disease currDisease : allDiseaseList) {
+            if (!StringUtils.isEmpty(currDisease.getCode())) {
+                codeToDiseaseMap.put(currDisease.getCode(), currDisease); 
             }
         }
-        return idToDiseaseMap;
     }
 
     /**

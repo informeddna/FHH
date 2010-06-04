@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -54,16 +54,13 @@ public class DiseaseTest {
         Disease d = new Disease();
         Disease d2 = new Disease();
         try {
-            d.compareTo(new LungDiseaseType());
+            d.compareTo(null);
             fail();
         } catch (Exception e) {
             // Expected
         }
         // Test comparing other disease types
-        d.setId(DiseaseUtils.OTHER_DISEASE_ID);
-        d2.setId(DiseaseUtils.OTHER_DISEASE_ID);
-        
-        assertTrue(d.compareTo(d2) == 1);
+        assertTrue(d.compareTo(d2) == 0);
         
         d.setOriginalText("a");
         assertTrue(d.compareTo(d2) == -1);
@@ -72,16 +69,16 @@ public class DiseaseTest {
         assertTrue(d.compareTo(d2) < 0);
         
         // Compare d is other, d2 is not
-        d2.setId(DiseaseUtils.COLON_CANCER_ID);
+        d2.setCode(DiseaseUtils.COLON_CANCER_CODE);
         assertTrue(d.compareTo(d2) == 1);
         
         // Compare d2 is other, d is not
-        d.setId(DiseaseUtils.COLON_CANCER_ID);
-        d2.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        d.setCode(DiseaseUtils.COLON_CANCER_CODE);
+        d2.setCode(null);
         assertTrue(d.compareTo(d2) == -1);
         
         // Compare 2 system diseases 
-        d.setId(DiseaseUtils.BREAST_CANCER_ID);
+        d.setCode(DiseaseUtils.COLON_CANCER_CODE);
         d.setAppDisplay("b");
         d2.setAppDisplay("c");
         assertTrue(d.compareTo(d2) < 0);
@@ -90,13 +87,10 @@ public class DiseaseTest {
     @Test
     public void testIsOther() {
         Disease d = new Disease();
-        assertFalse(d.isOther());
-        
-        d.setId(new Long(10));
-        assertFalse(d.isOther());
-        
-        d.setId(new Long(16));
         assertTrue(d.isOther());
+        
+        d.setCode(DiseaseUtils.BREAST_CANCER_CODE);
+        assertFalse(d.isOther());
     }
     
     @Test

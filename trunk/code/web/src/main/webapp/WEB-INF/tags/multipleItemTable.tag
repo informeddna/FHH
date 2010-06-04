@@ -18,6 +18,7 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setBundle basename="DataElementResources" var="der" scope="application"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="caarray" %>
@@ -122,7 +123,7 @@
                             </c:otherwise>
                         </c:choose>
                     </td>
-                    <td class="ageCol"><fmt:message key="${listField2[status.index].resourceKey}"/></td>
+                    <td class="ageCol"><fmt:message bundle="${der}" key="${listField2[status.index].resourceKey}"/></td>
                     <td class="actionCol buttonContainer"><a href="javascript://nop/" onclick="ItemSelectorUtils.removeItemFromList('${baseId}', '${currId}');"><fmt:message key="button.remove"/></a></td>
                 </tr>
             </c:forEach>
@@ -158,7 +159,7 @@
             <!-- Enter Other Disease -->
             <div class="healthHistoryTableSelect" id="otherDiseaseSpan" style="display: none">
                 <div class="moreoptionsrow">
-                    <input type="text" id="otherDisease" tabindex="17" />
+                    <input type="text" id="otherDisease" maxlength="40" tabindex="17" />
                 </div>
             </div>
         </td>
@@ -168,7 +169,7 @@
             <c:if test="${!empty listField}"><div class="healthHistoryTableSelect" id="ageAtDiagnosisSpan"></c:if>
                 <select id="SelectedAge" tabindex="18">
                 <option value=""><fmt:message key="person.select.ageOfDiagnosisList" /></option>
-                    <c:forEach var="item" items="${ageRangeEnums}"><option value="${item}"><fmt:message key="${item.resourceKey}"/></option></c:forEach>
+                    <c:forEach var="item" items="${ageRangeEnums}"><option value="${item}"><fmt:message bundle="${der}" key="${item.resourceKey}"/></option></c:forEach>
                 </select>
             </div>
         </td>

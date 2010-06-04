@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,33 +33,24 @@
  */
 package gov.hhs.fhh.web.util;
 
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.TwinStatus;
+import gov.hhs.fhh.service.util.RelativeDraw;
+import gov.hhs.fhh.service.util.RelativeDrawWrapper;
+import gov.hhs.fhh.web.TestProperties;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.awt.image.BufferedImage; //import com.sun.image.codec.jpeg.JPEGCodec;
-//import com.sun.image.codec.jpeg.JPEGImageEncoder;
-//import com.sun.image.codec.jpeg.ImageFormatException;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.io.IOException;
-import java.awt.Color;
+import java.util.List;
 
-import javax.swing.ImageIcon;
-
-import org.apache.commons.collections.set.ListOrderedSet;
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
 
 /**
  * @author lpower
@@ -67,23 +58,6 @@ import org.junit.Test;
  */
 public class RelativeDrawTest {
    
-    private RelativeDraw convertToRelativeDraw(Relative r) {
-        return (RelativeDraw) r;
-    }
-
-    private List<RelativeDraw> convertToRelativeDraw(List<Relative> relatives) {
-        List<RelativeDraw> r = new ArrayList<RelativeDraw>();
-        for (Relative myrel : relatives) {
-            RelativeDraw rd = new RelativeDraw(myrel);
-            r.add(rd);
-        }
-        return r;
-    }
-    @Test
-    public void testBasicFamily() throws Exception {
-        //Empty test
-    }
-/*
     @Test
     public void testBasicFamily() throws Exception {
 
@@ -97,13 +71,14 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NFTH));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         //selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicFamily");
     }
 
+    
     @Test
     public void testBasicFamilyNoNames() throws Exception {
 
@@ -117,8 +92,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(RelativeRelatedTestUtil.createPersonName("papa"), RelativeCode.NFTH));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
         selfDraw.setShowNames(false);
 
         //selfDraw.organizeFamilyTree(self);
@@ -140,8 +115,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NSIS));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicFamilySiblings");
@@ -166,8 +141,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NSIS));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicFamilyTwinSiblings");
@@ -195,8 +170,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NSIS));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicFamilyTwinSiblings2");
@@ -222,8 +197,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NSIS));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicFamilyTwinSibling");
@@ -247,8 +222,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NBRO));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         //selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicFamilyLotsaSiblings");
@@ -272,8 +247,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.MUNCLE));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         //selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicAuntsUncles");
@@ -301,8 +276,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.MUNCLE));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         //selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicAuntsUnclesMomTwin");
@@ -334,8 +309,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.MUNCLE));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         //selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicAuntsUnclesDadTwin");
@@ -355,8 +330,8 @@ public class RelativeDrawTest {
         rels.addAll(RelativeRelatedTestUtil.createSiblingsAndKids());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         //selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "basicNieceNephews");
@@ -376,8 +351,8 @@ public class RelativeDrawTest {
         rels.addAll(rels.size(), RelativeRelatedTestUtil.createAuntsUnclesCousins());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         selfDraw.organizeFamilyTree(self);
         //drawPicture(selfDraw, self, "bigFamily");
@@ -399,8 +374,8 @@ public class RelativeDrawTest {
         rels.addAll(rels.size(), RelativeRelatedTestUtil.createAuntsUnclesCousins());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         selfDraw.organizeFamilyTree(self);
 //        drawPicture(selfDraw, self, "halfSibs");
@@ -421,8 +396,8 @@ public class RelativeDrawTest {
         rels.addAll(rels.size(), RelativeRelatedTestUtil.createAuntsUnclesCousins());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
 //        selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "mondoFamily");
@@ -442,8 +417,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NFTH));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
 //        selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "auntUncleCousins");
@@ -464,8 +439,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NFTH));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
 //        selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "auntsUnclesCousins");
@@ -485,8 +460,8 @@ public class RelativeDrawTest {
         rels.addAll(RelativeRelatedTestUtil.createMyKidsGrandkids());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
 //        selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "bigFamily");
@@ -506,8 +481,8 @@ public class RelativeDrawTest {
         rels.addAll(RelativeRelatedTestUtil.createMyKidsGrandkids());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
 //        selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "probandGrandkids");
@@ -527,8 +502,8 @@ public class RelativeDrawTest {
         rels.addAll(RelativeRelatedTestUtil.createMyKidsGrandkidsTwins());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
 //        selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "probandGrandkidsTwins");
@@ -549,9 +524,9 @@ public class RelativeDrawTest {
         rels.addAll(RelativeRelatedTestUtil.createMyKidsGrandkids());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setShowNames(false);
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
 //        selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "probandGrandkidsNoNames");
@@ -568,8 +543,8 @@ public class RelativeDrawTest {
         rels.addAll(RelativeRelatedTestUtil.createAuntsUnclesCousinsWithPaternalTwin());
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         drawPicture(selfDraw, self, "withTwins");
     }
@@ -588,8 +563,8 @@ public class RelativeDrawTest {
         rels.addAll(rels.size(), RelativeRelatedTestUtil.createGrands());
         self.setRelatives(rels);
 
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         drawPicture(selfDraw, self, "ungenderedCousins");
     }
@@ -608,8 +583,8 @@ public class RelativeDrawTest {
         Disease d = new Disease();
         d.setOriginalText("Nannie Disease");
         ci.setDisease(d);
-        ci.setAgeRange(AgeRange.THIRTIES);
-        nannie.setAgeAtDeath(AgeRange.SIXTIES);
+        ci.setAgeRange(AgeRangeEnum.THIRTIES);
+        nannie.setAgeAtDeath(AgeRangeEnum.SIXTIES);
         nannie.setCauseOfDeath(d);
         nannie.getObservations().add(ci);
         rels.add(nannie);
@@ -630,8 +605,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.SON));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         selfDraw.organizeFamilyTree(self);
         //drawPicture(selfDraw, self, "mixed");
@@ -654,8 +629,8 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NFTH));
         self.setRelatives(rels);
         
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
-        selfDraw.setCode(RelativeCode.SELF.toString());
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
+        selfDraw.setCodeEnum(RelativeCode.SELF);
 
         //selfDraw.organizeFamilyTree(self);
         drawPicture(selfDraw, self, "diseasedNuclear");
@@ -681,7 +656,7 @@ public class RelativeDrawTest {
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.PGRMTH));
         rels.add(RelativeRelatedTestUtil.createRelative(new Person(), RelativeCode.NFTH));
         self.setRelatives(rels);
-        RelativeDraw selfDraw = new RelativeDraw(new Relative(self));
+        RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setHighlightDisease(d);
         
 //        selfDraw.organizeFamilyTree(self);
@@ -707,12 +682,12 @@ public class RelativeDrawTest {
     private void drawPicture(RelativeDraw proband, Person probandPerson, String fileName) throws Exception {
         FileOutputStream file = null;
         try {
-            /*
+            
              // to create test files, indicate the local location where the files should be placed - uncomment above
-            file = new FileOutputStream("/Users/lpower/fhh-dump/"+ fileName + ".png");
+            File img = new File(TestProperties.getWebBaseDir() + File.separator + "target" + File.separator + "img_" + fileName + ".png");
+            file = new FileOutputStream(img);
             file.write(proband.organizeFamilyTree(probandPerson));
             // uncomment below
-            */
         } catch (Exception e) {
             throw new Exception("Error generating test graphic: Unexpected IO exception " + "writing to file "
                     + "goForTest.png" + ", " + e.getMessage());

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -40,6 +40,8 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.MultiValueMap;
+
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
 
 /**
  * @author dkokotov
@@ -239,10 +241,7 @@ public class RelationshipGraph {
             addRelativesWithChildren(newProband, getSiblings(parent), RelativeCode.UNCLE, RelativeCode.AUNT,
                     RelativeCode.COUSN, RelativeCode.COUSN, maternal);
         }        
-        for (int i = 0; i < newProband.getRelatives().size(); i++) {
-            newProband.getRelatives().get(i).setId(Long.valueOf(i));
-        }
-        return newProband;        
+        return newProband;
     }
 
     @SuppressWarnings("unchecked")

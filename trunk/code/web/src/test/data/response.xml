@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP-ENV:Header/>
+	<SOAP-ENV:Body>
+		<FamilyHistory xmlns="urn:hl7-org:v3" classCode="OBS" moodCode="EVN">
+			<id extention="gov.hhs.fhh:718163810183"/>
+			<effectiveTime value="2009/11/15"/>
+			<methodCode displayName="Surgeon General's Family Health History Tool"/>
+			<subject typeCode="SBJ">
+				<patient classCode="PAT">
+					<patientPerson>
+						<administrativeGenderCode code="248153007" codeSystemName="SNOMED_CT" displayName="male" originalText="male"/>
+						<ethnicGroupCode code="2186-5" codeSystemName="HL7-TBD" displayName="Not Hispanic or Latino"/>
+						<raceCode code="2106-3" codeSystemName="HL7" displayName="White"/>
+						<subjectOf2>
+							<clinicalObservation>
+								<code code="363349007" codeSystemName="SNOMED_CT" displayName="Gastric Cancer" id="53"/>
+								<subject>
+									<dataEstimatedAge>
+										<code code="21611-9" codeSystemName="LOINC" displayName="Estimated Age"/>
+										<value unit="year">
+											<low value="20"/>
+											<high value="29"/>
+										</value>
+									</dataEstimatedAge>
+								</subject>
+							</clinicalObservation>
+						</subjectOf2>
+						<relative>
+							<code code="NMTH" codeSystemName="HL7 Family History Model" displayName="Mother"/>
+							<relationshipHolder>
+								<subjectOf2/>
+								<id extention="0"/>
+							</relationshipHolder>
+						</relative>
+						<relative>
+							<code code="NFTH" codeSystemName="HL7 Family History Model" displayName="Father"/>
+							<relationshipHolder>
+								<subjectOf2/>
+								<id extention="1"/>
+							</relationshipHolder>
+						</relative>
+						<relative>
+							<code code="MGRMTH" codeSystemName="HL7 Family History Model" displayName="Maternal Grandmother"/>
+							<relationshipHolder>
+								<subjectOf2/>
+								<id extention="2"/>
+							</relationshipHolder>
+						</relative>
+						<relative>
+							<code code="MGRFTH" codeSystemName="HL7 Family History Model" displayName="Maternal Grandfather"/>
+							<relationshipHolder>
+								<subjectOf2/>
+								<id extention="3"/>
+							</relationshipHolder>
+						</relative>
+						<relative>
+							<code code="PGRMTH" codeSystemName="HL7 Family History Model" displayName="Paternal Grandmother"/>
+							<relationshipHolder>
+								<subjectOf2/>
+								<id extention="4"/>
+							</relationshipHolder>
+						</relative>
+						<relative>
+							<code code="PGRFTH" codeSystemName="HL7 Family History Model" displayName="Paternal Grandfather"/>
+							<relationshipHolder>
+								<subjectOf2/>
+								<id extention="5"/>
+							</relationshipHolder>
+						</relative>
+						<name formatted="gastricself"/>
+						<birthTime value="12/22/1982"/>
+					</patientPerson>
+				</patient>
+			</subject>
+			<component2 xmlns="">
+				<pedigreeAnalysisResults classCode="OBS" code="" codeSystemName="SNOMED_CT" displayName="Colorectal Cancer" moodCode="RSK" originalText="Colorectal Cancer">
+					<component>
+						<analysisResult>
+							<code code="MSG" codeSystemName="HL7 Family History Model RA"/>
+							<value value="highUnder50.html"/>
+						</analysisResult>
+					</component>
+					<component>
+						<analysisResult>
+							<code code="PAT" codeSystemName="HL7 Family History Model RA"/>
+							<value value="pat/highUnder50.pdf"/>
+						</analysisResult>
+					</component>
+					<component>
+						<analysisResult>
+							<code code="PHY" codeSystemName="HL7 Family History Model RA"/>
+							<value value="phy/high.pdf"/>
+						</analysisResult>
+					</component>
+					<effectiveTime value="1258341016964"/>
+				</pedigreeAnalysisResults>
+			</component2>
+		</FamilyHistory>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

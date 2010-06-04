@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <preConditions>            
+        <dbms type="mysql" />                     
+    </preConditions>                                       
+    <changeSet id="1.0" author="smatyas">        
+        <comment>version 1.0 sql files</comment>
+        <sqlFile path="${db-install.run.dir}/mysql/mfhp-create-schema.sql" />
+        <sqlFile path="${db-install.run.dir}/mysql/extraCreateSchema.sql" />
+        <sqlFile path="${db-install.run.dir}/mysql/race.sql" />
+        <sqlFile path="${db-install.run.dir}/mysql/ethnicity.sql" />
+        <sqlFile path="${db-install.run.dir}/mysql/disease.sql" />
+    </changeSet>
+</databaseChangeLog>

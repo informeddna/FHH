@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,16 +34,22 @@
 package gov.hhs.fhh.test;
 
 
-import gov.hhs.fhh.data.util.FhhDataUtils;
+import gov.hhs.fhh.service.TestServiceLocator;
+import gov.hhs.fhh.service.locator.FhhRegistry;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collection;
 import java.util.List;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
@@ -71,7 +77,7 @@ public class AbstractHibernateTestCase {
     @Before
     public final void setUp() {
         transaction = HibernateUtil.getHibernateHelper().beginTransaction();
-        FhhDataUtils.getInstance().setServiceLocator(new MockDataServiceLocator());
+        FhhRegistry.getInstance().setServiceLocator(new MockDataServiceLocator());
     }
 
     /**
@@ -90,7 +96,7 @@ public class AbstractHibernateTestCase {
 
     @Before
     @SuppressWarnings("unchecked")
-    final public void initDbIfNeeded() throws HibernateException, SQLException {
+    final public void initDbIfNeeded() throws HibernateException, SQLException, IOException {
         Transaction tx = HibernateUtil.getHibernateHelper().beginTransaction();
         List<Long> counts = HibernateUtil.getCurrentSession().createQuery(
                 "select count(*) from " + Object.class.getName()).list();
@@ -104,6 +110,24 @@ public class AbstractHibernateTestCase {
             }
         }
         tx.commit();
+        tx = HibernateUtil.getHibernateHelper().beginTransaction();
+        Statement s = HibernateUtil.getCurrentSession().connection().createStatement();;
+        Collection<File> sqlFiles = FileUtils.listFiles(new File(TestProperties.getServicesBaseDir() + "/src/main/db/db-install/mysql/"), new String[]{"sql"}, false);
+        for (File sqlFile : sqlFiles) {
+            if (sqlFile.getAbsolutePath().contains("mfhp-create-schema.sql")) {
+                continue;
+            }
+            LOG.debug("Processing SQL for : " + sqlFile);
+            LineIterator lineIterator = FileUtils.lineIterator(sqlFile);
+            while(lineIterator.hasNext()) {
+                String sqlCmd = lineIterator.nextLine();
+                String hsqldbSqlCmd = sqlCmd.replaceAll("\\\\'", "''");
+//                LOG.debug(hsqldbSqlCmd);
+                s.execute(hsqldbSqlCmd);
+            }
+        }
+        tx.commit();
+        
     }
     
     @Before
@@ -112,5 +136,12 @@ public class AbstractHibernateTestCase {
             Cache cache = CacheManager.getInstance().getCache(cacheName);
             cache.removeAll();
         }
+    }
+    
+    /**
+     * @return the hibernate transaction
+     */
+    public Transaction getTransaction() {
+        return transaction;
     }
 }

@@ -21,10 +21,10 @@
    <!-- ================================= -->
 
    <!-- A time/date based rolling appender -->
-   <appender name="POFILE" class="org.jboss.logging.appender.DailyRollingFileAppender">
+   <appender name="FHHFILE" class="org.jboss.logging.appender.DailyRollingFileAppender">
       <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
       <param name="File" value="${jboss.server.log.dir}/fhh.log"/>
-      <param name="Append" value="false"/>
+      <param name="Append" value="true"/>
       <param name="BufferedIO" value="true"/>
       <param name="BufferSize" value="16000"/>
 
@@ -53,19 +53,20 @@
 
    <!-- Limit the org.apache category to INFO as its DEBUG is verbose -->
    <category name="gov.hhs.fhh">
-      <priority value="${log.level.fhh}"/>
+      <priority value="DEBUG"/>
    </category>
    <category name="com.fiveamsolutions.nci.commons">
       <priority value="${log.level.nci-commons}"/>
    </category>
+   
+   <category name="org.apache.axis"> <priority value="DEBUG"/></category>
 
    <!-- ======================= -->
    <!-- Setup the Root category -->
    <!-- ======================= -->
 
    <root>
-      <priority value="${log.level.default}" />   
-      <appender-ref ref="POFILE"/>
+      <appender-ref ref="FHHFILE"/>
    </root>
 
 </log4j:configuration>

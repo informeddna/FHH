@@ -6,6 +6,11 @@
         </activation>
         <properties>
             <jboss.home>C:/dev/app_servers/jboss-4.0.5.GA</jboss.home>
+            <showErrorStackTraces>true</showErrorStackTraces>
+            <mshv.keystore.filename>C:/path/to/keystore-demo</mshv.keystore.filename>
+            <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>
+            <mshv.user.email>FHH.tester.local@gmail.com</mshv.user.email>
+            <mshv.user.pw>fhht3sterlocal</mshv.user.pw>
         </properties>
     </profile>
 </profiles>

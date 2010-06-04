@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -37,12 +37,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.hhs.fhh.data.util.AgeRangeFieldHandler;
-import gov.hhs.fhh.data.util.CodeNode;
-import gov.hhs.fhh.data.util.DataEstimatedAgeNode;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer;
+import com.fiveamsolutions.hl7.model.age.CodeNode;
+import com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode;
 
 /**
  * @author bpickeral
@@ -53,12 +55,12 @@ public class ClinicalObservationTest {
     private static final boolean FALSE = false;
     private final ClinicalObservation DUMMY_OBS = new ClinicalObservation();
     private final Disease DUMMY_DISEASE = new Disease();
-    private final AgeRange DUMMY_AGE = AgeRange.FIFTIES;
+    private final AgeRangeEnum DUMMY_AGE = AgeRangeEnum.FIFTIES;
     
     @Before
     public void before() {
         DUMMY_OBS.setDisease(DUMMY_DISEASE);
-        DUMMY_OBS.setAgeRange(AgeRange.FIFTIES);
+        DUMMY_OBS.setAgeRange(AgeRangeEnum.FIFTIES);
     }
     
     @Test
@@ -72,7 +74,7 @@ public class ClinicalObservationTest {
     public void testGetDataEstimatedAgeNode() {
         DataEstimatedAgeNode estimatedAgeNode = DUMMY_OBS.getDataEstimatedAgeNode();
         
-        AgeRangeFieldHandler handler = estimatedAgeNode.getAgeRangeHandler();
+        AgeRangeFieldContainer handler = estimatedAgeNode.getAgeRangeHandler();
         assertEquals(DUMMY_AGE.getUnit(), handler.getUnit());
         assertEquals(DUMMY_AGE.getHighValue(), handler.getHighValue());
         assertEquals(DUMMY_AGE.getLowValue(), handler.getLowValue());
@@ -83,9 +85,9 @@ public class ClinicalObservationTest {
         assertEquals(DataEstimatedAgeNode.DISPLAY_NAME, code.getDisplayName());
         
         // Test getDataEstimatedAge for ageRange for age range with originalText
-        DUMMY_OBS.setAgeRange(AgeRange.UNKNOWN);
+        DUMMY_OBS.setAgeRange(AgeRangeEnum.UNKNOWN);
         estimatedAgeNode = DUMMY_OBS.getDataEstimatedAgeNode();
-        assertEquals(AgeRange.UNKNOWN.getOriginalText(), estimatedAgeNode.getCodeNode().getOriginalText());
+        assertEquals(AgeRangeEnum.UNKNOWN.getOriginalText(), estimatedAgeNode.getCodeNode().getOriginalText());
         
         // Test getDataEstimatedAge for a deceasedNode
         ClinicalObservation obs = new ClinicalObservation();
@@ -103,7 +105,7 @@ public class ClinicalObservationTest {
         obs.setDataEstimatedAgeNode(estimatedAgeNode);
         assertEquals(DUMMY_AGE, obs.getAgeRange());
         
-        AgeRangeFieldHandler handler = new AgeRangeFieldHandler();
+        AgeRangeFieldContainer handler = new AgeRangeFieldContainer();
         handler.setUnit(DUMMY_AGE.getUnit());
         handler.setLowValue(DUMMY_AGE.getLowValue());
         handler.setHighValue(DUMMY_AGE.getHighValue());
