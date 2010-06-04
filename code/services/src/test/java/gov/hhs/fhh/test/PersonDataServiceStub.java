@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -49,6 +49,8 @@ import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
  *
  */
 public class PersonDataServiceStub implements PersonServiceLocal {
+    
+    private static final String CODE_SYS = "CODE_SYS";
 
     /**
      * {@inheritDoc}
@@ -141,12 +143,16 @@ public class PersonDataServiceStub implements PersonServiceLocal {
     /**
      * @param i gender code
      */
-    private AbstractCodeable setupAC(int i, AbstractCodeable codeable) {
+    private AbstractCodeable setupAC(int i, AbstractCodeable codeable, String codeSystemName) {
         codeable.setCode("Code" + i);
-        codeable.setCodeSystemName("CODE_SYS" + i);
+        codeable.setCodeSystemName(codeSystemName);
         codeable.addDisplayString("en", "DisplayName" + i, null);
         codeable.setId((long) i);
         return codeable;
+    }
+    
+    private AbstractCodeable setupAC(int i, AbstractCodeable codeable) {
+        return setupAC(i, codeable, CODE_SYS + i);
     }
 
     /**
@@ -165,10 +171,17 @@ public class PersonDataServiceStub implements PersonServiceLocal {
             diseases.add(createDisease("one match", "one match"));
         } else if (diseaseName.equals("no match")) {
             // no diseases added
-        } else if(diseaseName.equals("Unknown Disease")) {
+        } else if (diseaseName.equals("Unknown Disease")) {
             diseases.add(createDisease("Unknown Disease", "Unknown Disease"));
-        } else if(diseaseName.equals("Enfermedad desconocida")) {
+        } else if (diseaseName.equals("Enfermedad desconocida")) {
             diseases.add(createDisease("Enfermedad desconocida", "Enfermedad desconocida"));
+        } else if (diseaseName.equals("Unknown Cancer")) {
+            Disease disease = new Disease();
+            disease.setId(78L);
+            disease.setDisplayName("Unknown Cancer");
+            disease.setAppDisplay("Unknown Cancer");
+            disease.setOriginalText("Unknown Cancer");
+            diseases.add(disease);
         } else {
             diseases.add(createDisease("diseaseX (More options)", "diseaseX (More options)"));
             diseases.add(createDisease("diseaseX subtype1", "diseaseX subtype1"));
@@ -180,8 +193,41 @@ public class PersonDataServiceStub implements PersonServiceLocal {
     
     private Disease createDisease(String appDisplay, String displayName) {
         Disease d = new Disease();
+        d.setId(0L);
         d.setAppDisplay(appDisplay);
         d.setDisplayName(displayName);
         return d;
+    }
+
+    public List<Ethnicity> getEthnicityByCodeAndCodeSystem(String code, String codeSystem) {
+        List<Ethnicity> retval = new ArrayList<Ethnicity>();
+        List<Ethnicity> ethnicities = new ArrayList<Ethnicity>();
+        for (int i = 0; i < 3; i++) {
+            ethnicities.add((Ethnicity) setupAC(i, new Ethnicity(), "HL7"));
+        }
+
+        for (Ethnicity ethnicity : ethnicities) {
+            if (ethnicity.getCode().equals(code) && ethnicity.getCodeSystemName().equals(codeSystem)) {
+                retval.add(ethnicity);
+            }
+        }
+
+        return retval;
+    }
+
+    public List<Race> getRaceByCodeAndCodeSystem(String code, String codeSystem) {
+        List<Race> retval = new ArrayList<Race>();
+        List<Race> races = new ArrayList<Race>();
+        for (int i = 0; i < 3; i++) {
+            races.add((Race) setupAC(i, new Race(), "HL7"));
+        }
+
+        for (Race race : races) {
+            if (race.getCode().equals(code) && race.getCodeSystemName().equals(codeSystem)) {
+                retval.add(race);
+            }
+        }
+
+        return retval;
     }
 }

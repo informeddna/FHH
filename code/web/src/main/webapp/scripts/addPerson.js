@@ -1,15 +1,16 @@
 
+//TODO: Consider merging clearUS() and clearMetric() into a single method 
 function clearUS() {
-	if ($('heightMetric').value.length > 0 ) {
-		$('heightUnit2').value = "";
-		$('heightUnit1').value = "";
-	}
+    if ($('heightMetric').value.length > 0 ) {
+        $('heightUnit2').value = "";
+        $('heightUnit1').value = "";
+    }
 }
 
 function clearMetric() {
-	if ($('heightUnit1').value.length + $('heightUnit2').value.length > 0 ) {
-		$('heightMetric').value = "";
-	}
+    if ($('heightUnit1').value.length + $('heightUnit2').value.length > 0 ) {
+        $('heightMetric').value = "";
+    }
 }
 
 function addPersonOnLoad() {
@@ -23,27 +24,27 @@ function addRelativeOnLoad() {
     ethnicityChanged('relative');
 }
 
+//TODO: METHOD COLLIDES WITH ItemSelectorUtils.js and ItemSelectorUtils.js is the last to load in addPerson.jsp so it will be used.
 function isOtherSelected(mySelection) {
+    //TODO: Very fragile
     var subSection = mySelection.substring(5,0);
+    //TODO: Magic numbers; introduce parameter or reference global
     var eq1 = "Other";
     var eq2 = "Otros";
-    var otherSelected = 0;
+    var otherSelected = 0; // why not false
     if (subSection == eq1 || subSection == eq2) {
-        otherSelected = 1;
+        otherSelected = 1; // why not true
     }
     return otherSelected;
 }
 
 function livingStatusChanged() {
-    var livingStatusYes = document.getElementById('personForm_relative_livingStatusYES');
-    var livingStatusNo = document.getElementById('personForm_relative_livingStatusNO');
-    if (livingStatusYes.checked) {
+    if ($('personForm_relative_livingStatusYES').checked) {
         disableNoSpan();
-        $('livingStatusYesSpan').style.display = 'block';
-    } else if (livingStatusNo.checked) {
+        $('livingStatusYesSpan').show();
+    } else if ($('personForm_relative_livingStatusNO').checked) {
         disableYesSpan();
-        $('livingStatusNoSpan').style.display = 'block';
-
+        $('livingStatusNoSpan').show();
     } else {
         disableNoSpan();
         disableYesSpan();
@@ -52,103 +53,98 @@ function livingStatusChanged() {
 
 function raceChanged() {
     // Show/Hide Asian Race Div
-    if (document.getElementById('selectedRaces-2').checked == true) {
-        document.getElementById('asianRaceDiv').style.display = 'block';
-        document.getElementById('asianRaceLabelDiv').style.display = 'block';
+    if ($('selectedRaces-2').checked == true) {
+        $('asianRaceDiv', 'asianRaceLabelDiv').invoke('show');
     } else {
-        document.getElementById('asianRaceDiv').style.display = 'none';
-        document.getElementById('asianRaceLabelDiv').style.display = 'none';
+        $('asianRaceDiv', 'asianRaceLabelDiv').invoke('hide');
     }
     // Show/Hide Hawaiian Race Div
-    if (document.getElementById('selectedRaces-4').checked == true) {
-        document.getElementById('hawaiianRaceDiv').style.display = 'block';
-        document.getElementById('hawaiianRaceLabelDiv').style.display = 'block';
+    if ($('selectedRaces-4').checked == true) {
+        $('hawaiianRaceDiv', 'hawaiianRaceLabelDiv').invoke('show');
     } else {
-        document.getElementById('hawaiianRaceDiv').style.display = 'none';
-        document.getElementById('hawaiianRaceLabelDiv').style.display = 'none';
+        $('hawaiianRaceDiv', 'hawaiianRaceLabelDiv').invoke('hide');
     }
 }
 
 function ethnicityChanged() {
     // Show/Hide Hispanic Ethnicity Div
-    if (document.getElementById('selectedEthnicities-1').checked == true) {
-        document.getElementById('hispanicEthnicityDiv').style.display = 'block';
-        document.getElementById('hispanicEthnicityLabelDiv').style.display = 'block';
+    if ($('selectedEthnicities-1').checked == true) {
+        $('hispanicEthnicityDiv', 'hispanicEthnicityLabelDiv').invoke('show');
     } else {
-        document.getElementById('hispanicEthnicityDiv').style.display = 'none';
-        document.getElementById('hispanicEthnicityLabelDiv').style.display = 'none';
+        $('hispanicEthnicityDiv', 'hispanicEthnicityLabelDiv').invoke('hide');
     }
 }
 
 function disableYesSpan() {
-    $('livingStatusYesSpan').style.display = 'none';
+    $('livingStatusYesSpan').hide();
     $('personForm_dateOfBirthString').value = "";
     $('personForm_relativeAge').value = "";
     $('personForm_relativeEstimatedAge').value = "";
 }
 
 function disableNoSpan() {
-	disableCODOther();
+    disableCODOther();
     disableCODSubType();
-    $('livingStatusNoSpan').style.display = 'none';
+    $('livingStatusNoSpan').hide();
     $('personForm_relative_ageAtDeath').selectedIndex = 0;
     $('personForm_causeOfDeath').selectedIndex = 0;
     $('personForm_selectedCODSubType').selectedIndex = 0;
 }
 
 function disableCODSubType() {
-    document.getElementById('codSubTypeSpan').style.display = 'none';
-    document.getElementById('codSubTypeLabelSpan').style.display = 'none';
-    document.getElementById('codSubTypesExist').value = false;
+    $('codSubTypeSpan', 'codSubTypeLabelSpan').invoke('hide');
+    $('codSubTypesExist').value = false;
 }
 
 function finishRetrieveSubType() {
-	var selectedDisease = document.getElementById('selectedDiseasesSelectedItem');
+    var selectedDisease = $('selectedDiseasesSelectedItem');
     var elementSelected = selectedDisease.options[selectedDisease.selectedIndex].text;
-	// Show or hide Age At Diagnosis + Add button
-    if (document.getElementById('selectedSubType').length == 1) {
-        document.getElementById('subTypeSpan').style.display = 'none';
+    // Show or hide Age At Diagnosis + Add button
+    //TODO: Why is this == 1 instead of < 2
+    if ($('selectedSubType').length == 1) {
+        $('subTypeSpan').hide();
         //User enters value for other disease type if Other is selected
         var otherSelected = isOtherSelected(elementSelected);
+        //TODO: Why is this value == 16? and == 1? Magic numbers? 
         if (selectedDisease.value == 16 && otherSelected == 1) {
-            document.getElementById('otherDiseaseSpan').style.display='block';
+            $('otherDiseaseSpan').show();
         } else {
-        	ItemSelectorUtils.disableOtherDisease();
+            ItemSelectorUtils.disableOtherDisease();
         }
     } else {
-        document.getElementById('subTypeSpan').style.display='block';
+        $('subTypeSpan').show();
         ItemSelectorUtils.disableOtherDisease();
     }
     if (elementSelected == DISEASE_NONE) {
-    	$('ageAtDiagnosisSpan').style.display = 'none';
-    	$('addDiseaseButtonSpan').style.display = 'none';
+        $('ageAtDiagnosisSpan', 'addDiseaseButtonSpan').invoke('hide');
     } else {
-    	$('ageAtDiagnosisSpan').style.display = 'block';
-    	$('addDiseaseButtonSpan').style.display = 'block';
+        $('ageAtDiagnosisSpan', 'addDiseaseButtonSpan').invoke('show');
     }
 }
 
 function codChanged() {
-	var selectedCOD = document.getElementById('personForm_causeOfDeath');
+    var selectedCOD = $('personForm_causeOfDeath');
     var elementSelected = selectedCOD.options[selectedCOD.selectedIndex].text;
     var otherSelected = isOtherSelected(elementSelected);
+    //TODO: Why is this value == 16? and != 1? Magic numbers? 
     if (selectedCOD.value == 16  && otherSelected != 1) {
-        document.getElementById('otherCOD').value = elementSelected;
+        $('otherCOD').value = elementSelected;
     } 
     
-	ItemSelectorUtils.addCODToList('selectedDiseases', 'selectedDiseases', 'true', 'en');
+    //TODO: Why is the locale always 'en' ? Introduce parameter?
+    ItemSelectorUtils.addCODToList('selectedDiseases', 'selectedDiseases', 'true', 'en');
 }
 
 function finishRetrieveCODSubType() {
-    if (document.getElementById('personForm_selectedCODSubType').length == 1) {
+    if ($('personForm_selectedCODSubType').length == 1) {
         disableCODSubType();
-        var selectedCOD = document.getElementById('personForm_causeOfDeath');
+        var selectedCOD = $('personForm_causeOfDeath');
         var elementSelected = selectedCOD.options[selectedCOD.selectedIndex].text;
         var otherSelected = isOtherSelected(elementSelected);
         // User enters value for other disease type if Other is selected
+        //TODO: Why is this value == 16? and == 1? Magic number? 
         if (selectedCOD.value == 16 && otherSelected == 1) {
-            document.getElementById('codOtherSpan').style.display='block';
-            document.getElementById('codOtherLabelSpan').style.display='block';
+            $('codOtherSpan', 'codOtherLabelSpan').invoke('show');
         } else {
             disableCODOther();
             // Add COD as Disease/Condition - no children
@@ -158,24 +154,44 @@ function finishRetrieveCODSubType() {
     // COD sub types exist
     } else {
         //Enable COD subType
-        document.getElementById('codSubTypeSpan').style.display='block';
-        document.getElementById('codSubTypeLabelSpan').style.display='block';
-        document.getElementById('codSubTypesExist').value = true;
+        $('codSubTypeSpan', 'codSubTypeLabelSpan').invoke('show');
+        $('codSubTypesExist').value = true;
         //Disable COD other
         disableCODOther();
     }
 }
 
 function disableCODOther() {
-	document.getElementById('otherCOD').value = "";
-    document.getElementById('codOtherSpan').style.display='none';
-    document.getElementById('codOtherLabelSpan').style.display='none';
+    $('otherCOD').value = "";
+    $('codOtherSpan', 'codOtherLabelSpan').invoke('hide');
 }
 
 function showStyle(objDivID) {
-    document.getElementById(objDivID).className = "accordianTitlebarOpened";
+    $(objDivID).className = "accordianTitlebarOpened";
 }
 
 function hideStyle(objDivID)  {
-    document.getElementById(objDivID).className = "accordianTitlebarClosed";
+    $(objDivID).className = "accordianTitlebarClosed";
+}
+
+function validateAndSubmit(message) {
+    if ($('selectedDiseasesSelectedItem').value != '') {
+        alert(message);
+    } else {
+        $('personForm').submit();
+    }
+}
+
+function relativeToRelateToSelected(showHalfSiblingCheckbox){
+	if(showHalfSiblingCheckbox != null){
+		if(showHalfSiblingCheckbox == true || showHalfSiblingCheckbox == 'true'){
+			document.getElementById('halfSiblingCheckDiv').style.display = "";
+		}else{
+			document.getElementById('halfSiblingCheckDiv').style.display = "none";
+			document.getElementById('personForm_relativeToSetAsParentHalfSiblingStatus').checked = false;
+		}
+	}else{
+		document.getElementById('halfSiblingCheckDiv').style.display = "none";
+		document.getElementById('personForm_relativeToSetAsParentHalfSiblingStatus').checked = false;
+	}
 }

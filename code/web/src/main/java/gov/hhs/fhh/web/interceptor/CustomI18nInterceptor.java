@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,6 +33,8 @@
  */
 package gov.hhs.fhh.web.interceptor;
 
+import java.util.Locale;
+
 import gov.hhs.fhh.service.util.CurrentLanguageHolder;
 
 import com.opensymphony.xwork2.ActionInvocation;
@@ -44,14 +46,23 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
  * @author Steve Lustbader
  */
 public class CustomI18nInterceptor extends AbstractInterceptor {
+    private static final String SPANISH = "es";
+    
 
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public String intercept(ActionInvocation invocation) throws Exception {
-        CurrentLanguageHolder.setCurrentLanguage(
-                invocation.getInvocationContext().getLocale().getLanguage());
+        // We should only except 'en' and 'es' as locales, otherwise a phishing vulnerability exists.
+        Locale locale = invocation.getInvocationContext().getLocale();
+        if (locale.equals(Locale.ENGLISH) || locale.equals(new Locale(SPANISH, "", ""))) {
+            CurrentLanguageHolder.setCurrentLanguage(locale.getLanguage());
+        } else {
+            locale = Locale.ENGLISH;
+            invocation.getInvocationContext().setLocale(locale);
+            CurrentLanguageHolder.setCurrentLanguage(locale.getLanguage());
+        }
         return invocation.invoke();
     }
 

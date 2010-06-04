@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,133 +34,85 @@
 package gov.hhs.fhh.service;
 
 import static org.junit.Assert.assertEquals;
-import gov.hhs.fhh.data.AsianRaceType;
-import gov.hhs.fhh.data.AsianRaceType;
-import gov.hhs.fhh.data.AsianRaceType;
-import gov.hhs.fhh.data.DiabetesDiseaseType;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
-import gov.hhs.fhh.data.Gender;
-import gov.hhs.fhh.data.HispanicEthnicityType;
-import gov.hhs.fhh.data.NativeHawaiianRaceType;
 import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.test.AbstractHibernateTestCase;
-import gov.hhs.fhh.test.util.ServiceTestUtil;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
-
-
 
 /**
  * @author bpickeral
- 
  */
 public class PersonServiceBeanTest extends AbstractHibernateTestCase {
-    @Test
-    public void testGetGenders() {
-        List<Gender> genders = new PersonServiceBean().getGenders();
-        assertEquals(2, genders.size());
-    }
-    
+    private static final Logger LOG = Logger.getLogger(AbstractHibernateTestCase.class);
+    private PersonServiceBean personServiceBean = new PersonServiceBean();
+
     @Test
     public void testGetRaces() {
-        Race r = new Race();
-        ServiceTestUtil.create(r);
-        Long id = ServiceTestUtil.saveGetId(r);
-        ServiceTestUtil.flushAndClear();
-        
-        List<Race> races = new PersonServiceBean().getRaces();
-        ServiceTestUtil.verify(id, races.get(0));
-        assertEquals(1, races.size());
+        List<Race> races = personServiceBean.getRaces();
+        assertEquals(5, races.size());
+
+        List<Race> matchingRaces = personServiceBean.getRaceByCodeAndCodeSystem("2106-3", "HL7");
+        assertEquals(1, matchingRaces.size());
+        assertEquals("White", matchingRaces.get(0).getOriginalText());
     }
-    
+
     @Test
     public void testGetAsianRaces() {
-        AsianRaceType r = new AsianRaceType();
-        ServiceTestUtil.create(r);
-        Long id = ServiceTestUtil.saveGetId(r);
-        ServiceTestUtil.flushAndClear();
-        
-        List<Race> races = new PersonServiceBean().getAsianRaces();
-        ServiceTestUtil.verify(id, races.get(0));
-        assertEquals(1, races.size());
+        List<Race> races = personServiceBean.getAsianRaces();
+        assertEquals(8, races.size());
+
+        List<Race> matchingRaces = personServiceBean.getRaceByCodeAndCodeSystem("2039-6", "HL7");
+        assertEquals(1, matchingRaces.size());
+        assertEquals("Japanese", matchingRaces.get(0).getOriginalText());
     }
-    
+
     @Test
     public void testGetHawaiianRaces() {
-        NativeHawaiianRaceType r = new NativeHawaiianRaceType();
-        ServiceTestUtil.create(r);
-        Long id = ServiceTestUtil.saveGetId(r);
-        ServiceTestUtil.flushAndClear();
-        
-        List<Race> races = new PersonServiceBean().getHawaiianRaces();
-        ServiceTestUtil.verify(id, races.get(0));
-        assertEquals(1, races.size());
+        List<Race> races = personServiceBean.getHawaiianRaces();
+        assertEquals(5, races.size());
+
+        List<Race> matchingRaces = personServiceBean.getRaceByCodeAndCodeSystem("2079-2", "HL7");
+        assertEquals(1, matchingRaces.size());
+        assertEquals("Native Hawaiian", matchingRaces.get(0).getOriginalText());
     }
-    
+
     @Test
     public void testGetEthnicities() {
-        Ethnicity e = new Ethnicity();
-        ServiceTestUtil.create(e);
-        Long id = ServiceTestUtil.saveGetId(e);
-        ServiceTestUtil.flushAndClear();
-        
-        List<Ethnicity> ethnicities = new PersonServiceBean().getEthnicities();
-        ServiceTestUtil.verify(id, ethnicities.get(0));
-        assertEquals(1, ethnicities.size());
+        List<Ethnicity> e = personServiceBean.getEthnicities();
+        assertEquals(3, e.size());
+
     }
-    
+
     @Test
     public void testGetHispanicEthnicities() {
-        HispanicEthnicityType e = new HispanicEthnicityType();
-        ServiceTestUtil.create(e);
-        Long id = ServiceTestUtil.saveGetId(e);
-        ServiceTestUtil.flushAndClear();
-        
-        List<Ethnicity> ethnicities = new PersonServiceBean().getHispanicEthnicities();
-        ServiceTestUtil.verify(id, ethnicities.get(0));
-        assertEquals(1, ethnicities.size());
+        List<Ethnicity> matchingEthnicities = personServiceBean.getEthnicityByCodeAndCodeSystem("2182-4", "HL7");
+        assertEquals(1, matchingEthnicities.size());
+        assertEquals("Cuban", matchingEthnicities.get(0).getOriginalText());
     }
-    
+
     @Test
     public void testGetDiseases() {
-        Disease d = new Disease();
-        ServiceTestUtil.create(d);
-        Long id = ServiceTestUtil.saveGetId(d);
-        ServiceTestUtil.flushAndClear();
-        
-        List<Disease> diseases = new PersonServiceBean().getDiseases();
-        ServiceTestUtil.verify(id, diseases.get(0));
-        assertEquals(1, diseases.size());
+        List<Disease> diseases = personServiceBean.getDiseases();
+        assertEquals(17, diseases.size());
     }
-    
+
     @Test
     public void testAllGetDiseases() {
-        Disease d = new Disease();
-        ServiceTestUtil.create(d);
-        Long id = ServiceTestUtil.saveGetId(d);
-        ServiceTestUtil.flushAndClear();
-        
-        List<Disease> diseases = new PersonServiceBean().getAllDiseases();
-        ServiceTestUtil.verify(id, diseases.get(0));
-        assertEquals(1, diseases.size());
+        List<Disease> diseases = personServiceBean.getAllDiseases();
+        for (Disease disease : diseases) {
+            LOG.debug(disease.getId());
+        }
+        assertEquals(89, diseases.size());
     }
-    
+
     @Test
     public void testGetDiseaseSubTypes() {
-        Disease d = new Disease();
-        ServiceTestUtil.create(d);
-        ServiceTestUtil.saveGetId(d);
-        DiabetesDiseaseType type = new DiabetesDiseaseType();
-        type.setParent(d);
-        ServiceTestUtil.create(type);
-        Long typeId = ServiceTestUtil.saveGetId(type);
-        ServiceTestUtil.flushAndClear();
-        
-        List<Disease> diseases = new PersonServiceBean().getDiseaseSubTypes(d.getId());
-        ServiceTestUtil.verify(typeId, diseases.get(0));
-        assertEquals(1, diseases.size());
+        List<Disease> diseases = personServiceBean.getDiseaseSubTypes(new Long(12));
+        assertEquals(15, diseases.size());
     }
 }

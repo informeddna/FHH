@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,22 +34,24 @@
 package gov.hhs.fhh.test.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.hhs.fhh.data.AgeRange;
-import gov.hhs.fhh.data.Gender;
-import gov.hhs.fhh.data.HeightUnit;
-import gov.hhs.fhh.data.LivingStatus;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
-import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.TwinStatus;
-import gov.hhs.fhh.data.WeightUnit;
 import gov.hhs.fhh.data.util.FormatUtils;
-import gov.hhs.fhh.data.util.htmimport.HTMImportUtils;
-import gov.hhs.fhh.data.util.htmimport.InputNode;
+import gov.hhs.fhh.data.util.htmimport.HTMImporter;
+import gov.hhs.fhh.data.util.htmimport.HTMRelationship;
+import gov.hhs.fhh.htm.InputNode;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
 
-import java.util.List;
+import java.util.Map;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.HeightUnit;
+import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
@@ -57,7 +59,6 @@ import java.util.List;
  */
 public class PersonTestUtils {
     private static final String HTM_DUMMY_VALUE = "dummy value";
-    private static final String HTM_SELF_NAME = "self name";
     
     private static final String HTM_YES = "Yes";
     private static final String HTM_NO = "No";
@@ -91,16 +92,14 @@ public class PersonTestUtils {
     private static final String LABEL_ADD_CONDITION1 = "Addit1";
     private static final String LABEL_ADD_CONDITION2 = "Addit2";
     private static final String LABEL_FAM_ADD_DISEASE = "additionalDisease";
+    private static final String LABEL_RANDOM = "fileName";
     
     private static final String SELF_WEIGHT = "190";
     private static final String SELF_HEIGHT = "72";
     private static final String SELF_AGE = "55";
     
-    private static final String RELATIVE_PER_TYPE = "2";
-    private static final int NUM_VARIABLE_RELATIVES = 14;
-    
-    public static void checkAttributes(Person p, boolean isTwin) {
-        assertEquals(HTM_SELF_NAME, p.getName());
+    public static void checkAttributes(Person p, boolean isTwin, String name) {
+        assertEquals(name, p.getName());
         assertEquals(Gender.MALE, p.getGender());
         assertTrue(p.isUnmatchedCondition());
         if (isTwin) {
@@ -117,30 +116,31 @@ public class PersonTestUtils {
         assertEquals(p.getHeight().getUnit(), HeightUnit.US);
         assertEquals(FormatUtils.format(p.getDateOfBirth()), 
                 FormatUtils.format(FormatUtils.convertAgeToDOB(Integer.valueOf(SELF_AGE))));
-        checkAttributes(p, isTwin);
+        checkAttributes(p, isTwin, HTMRelationship.SELF.getRelationship());
     }
     
     public static void checkObservations(Person p) {
         assertEquals(10, p.getObservations().size());
-        assertEquals(AgeRange.INFANCY, p.getObservations().get(0).getAgeRange());
-        assertEquals(AgeRange.ADOLESCENCE, p.getObservations().get(1).getAgeRange());
-        assertEquals(AgeRange.TWENTIES, p.getObservations().get(2).getAgeRange());
-        assertEquals(AgeRange.THIRTIES, p.getObservations().get(3).getAgeRange());
-        assertEquals(AgeRange.SIXTIES, p.getObservations().get(4).getAgeRange());
-        assertEquals(AgeRange.UNKNOWN, p.getObservations().get(5).getAgeRange());
+        assertEquals(AgeRangeEnum.INFANCY, p.getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.ADOLESCENCE, p.getObservations().get(1).getAgeRange());
+        assertEquals(AgeRangeEnum.TWENTIES, p.getObservations().get(2).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, p.getObservations().get(3).getAgeRange());
+        assertEquals(AgeRangeEnum.SIXTIES, p.getObservations().get(4).getAgeRange());
+        assertEquals(AgeRangeEnum.UNKNOWN, p.getObservations().get(5).getAgeRange());
         
-        assertEquals(AgeRange.THIRTIES, p.getObservations().get(6).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, p.getObservations().get(6).getAgeRange());
         assertEquals(HTM_ADD_DISEASE1, p.getObservations().get(6).getDisease().getOriginalText());
         assertTrue(p.getObservations().get(6).isUnmatchedCondition());
-        assertEquals(AgeRange.UNKNOWN, p.getObservations().get(7).getAgeRange());
+        assertEquals(AgeRangeEnum.UNKNOWN, p.getObservations().get(7).getAgeRange());
         assertEquals(HTM_ADD_DISEASE2, p.getObservations().get(7).getDisease().getOriginalText());
         assertTrue(p.getObservations().get(7).isUnmatchedCondition());
         
-        assertEquals(AgeRange.SIXTIES, p.getObservations().get(8).getAgeRange());
-        assertEquals(HTM_FAM_ADD_DISEASE1, p.getObservations().get(8).getDisease().getOriginalText());
+        assertNotNull(p.getObservations().get(8).getAgeRange());
+        assertNotNull(p.getObservations().get(8).getDisease().getOriginalText());
         assertTrue(p.getObservations().get(8).isUnmatchedCondition());
-        assertEquals(AgeRange.UNKNOWN, p.getObservations().get(9).getAgeRange());
-        assertEquals(HTM_FAM_ADD_DISEASE2, p.getObservations().get(9).getDisease().getOriginalText());
+        
+        assertNotNull(p.getObservations().get(9).getAgeRange());
+        assertNotNull(p.getObservations().get(9).getDisease().getOriginalText());
         assertTrue(p.getObservations().get(9).isUnmatchedCondition());
     }
     public static void checkRelativeAttributes(Relative relative, int i) {
@@ -150,7 +150,7 @@ public class PersonTestUtils {
             assertTrue(LivingStatus.YES.toString().equals(relative.getLivingStatus()));
         } else if (i % 8 < 6) {
             assertTrue(LivingStatus.NO.toString().equals(relative.getLivingStatus()));
-            assertTrue(AgeRange.FIFTIES.equals(relative.getAgeAtDeath()));
+            assertTrue(AgeRangeEnum.FIFTIES.equals(relative.getAgeAtDeath()));
             assertEquals(HTM_NEW_COD, relative.getCauseOfDeath().getOriginalText());
         } else if (i % 8 < 8) {
             assertTrue(LivingStatus.UNKNOWN.toString().equals(relative.getLivingStatus()));
@@ -160,7 +160,7 @@ public class PersonTestUtils {
     public static void checkBlankAttributes(Person p) {
         assertNull(p.getName());
         assertNull(p.getGender());
-        assertNull(p.getTwinStatus());
+       // assertNull(p.getTwinStatus());
         assertNull(p.getDateOfBirth());
         
         assertEquals(0, p.getObservations().size());
@@ -172,268 +172,245 @@ public class PersonTestUtils {
         assertNull(r.getLivingStatus());
     }
     
-    public static void addAttributeNodes(String prependingId, List<InputNode> inputNodes, boolean isTwin,
+    public static void addAttributeNodes(String prependingId, Map<String, InputNode> inputNodes, boolean isTwin,
             LivingStatus livingStatus) {
-        inputNodes.add(createInputNode(prependingId + LABEL_NAME, HTM_SELF_NAME, HTM_DUMMY_VALUE));
+        createInputNode(prependingId + LABEL_NAME, prependingId, inputNodes);
         if (livingStatus != null) {
-            inputNodes.add(createInputNode(prependingId + LABEL_STILL_LIVING, livingStatus.getHtmValue(), 
-                    HTM_DUMMY_VALUE)); 
+            createInputNode(prependingId + LABEL_STILL_LIVING, livingStatus.getHtmValue(), inputNodes); 
         } else {
-            inputNodes.add(createInputNode(prependingId + LABEL_STILL_LIVING, HTM_BLANK, 
-                    HTM_DUMMY_VALUE)); 
+            createInputNode(prependingId + LABEL_STILL_LIVING, HTM_BLANK, inputNodes); 
         }
         
-        inputNodes.add(createInputNode(prependingId + LABEL_GENDER, Gender.MALE.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_DISEASES, HTM_ADD_DISEASES, 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_PARENT, HTMImportUtils.CALCULATED, HTM_DUMMY_VALUE));
+        createInputNode(prependingId + LABEL_GENDER, Gender.MALE.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_ADD_DISEASES, HTM_ADD_DISEASES, inputNodes);
+        createInputNode(prependingId + LABEL_PARENT, HTMImporter.CALCULATED, inputNodes);
         if (livingStatus != null && LivingStatus.NO.equals(livingStatus)) {
-            inputNodes.add(createInputNode(prependingId + LABEL_AOD, "50", HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_AOD, "50", inputNodes);
         } else {
-            inputNodes.add(createInputNode(prependingId + LABEL_AOD, HTM_DUMMY_VALUE, HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_AOD, HTM_DUMMY_VALUE, inputNodes);
         }
         
         if (isTwin) {
-            inputNodes.add(createInputNode(prependingId + LABEL_TWIN, HTM_YES, HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_TWIN, HTM_YES, inputNodes);
         } else {
-            inputNodes.add(createInputNode(prependingId + LABEL_TWIN, HTM_NO, HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_TWIN, HTM_NO, inputNodes);
         }
         
         if (livingStatus != null && LivingStatus.NO.equals(livingStatus)) {
-            inputNodes.add(createInputNode(prependingId + LABEL_COD, HTM_NEW_COD, HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_COD, HTM_NEW_COD, inputNodes);
         } else {
-            inputNodes.add(createInputNode(prependingId + LABEL_COD, HTM_DUMMY_VALUE, HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_COD, HTM_DUMMY_VALUE, inputNodes);
         }
         
-        inputNodes.add(createInputNode(prependingId + LABEL_CORONARY, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_CORONARY + LABEL_ONSET, AgeRange.INFANCY.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STROKE, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STROKE + LABEL_ONSET, AgeRange.ADOLESCENCE.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_DIABETES, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_DIABETES + LABEL_ONSET, AgeRange.TWENTIES.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COLON_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COLON_CANCER + LABEL_ONSET, 
-                AgeRange.THIRTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_BREAST_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_BREAST_CANCER + LABEL_ONSET, 
-                AgeRange.SIXTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_OVARIAN_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_OVARIAN_CANCER + LABEL_ONSET, 
-                HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_CONDITION1, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_CONDITION1 + LABEL_ONSET, 
-                AgeRange.SIXTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_CONDITION2, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_CONDITION2 + LABEL_ONSET, HTM_BLANK, 
-                HTM_DUMMY_VALUE));
+        createInputNode(prependingId + LABEL_CORONARY, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_CORONARY + LABEL_ONSET, AgeRangeEnum.INFANCY.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_STROKE, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_STROKE + LABEL_ONSET, AgeRangeEnum.ADOLESCENCE.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_DIABETES, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_DIABETES + LABEL_ONSET, AgeRangeEnum.TWENTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_COLON_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_COLON_CANCER + LABEL_ONSET, 
+                AgeRangeEnum.THIRTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_BREAST_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_BREAST_CANCER + LABEL_ONSET, 
+                AgeRangeEnum.SIXTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_OVARIAN_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_OVARIAN_CANCER + LABEL_ONSET, 
+                HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_ADD_CONDITION1, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_ADD_CONDITION1 + LABEL_ONSET, 
+                AgeRangeEnum.SIXTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_ADD_CONDITION2, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_ADD_CONDITION2 + LABEL_ONSET, HTM_BLANK, inputNodes);
     }
     
     public static void addAttributesForVariableRelatives(String prependingId, String prependingId2, 
-            List<InputNode> inputNodes, String parent, LivingStatus livingStatus) {
-        inputNodes.add(createInputNode(prependingId + LABEL_NAME, HTM_SELF_NAME, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_NAME, HTM_SELF_NAME, HTM_DUMMY_VALUE));
+            Map<String, InputNode> inputNodes, String parent, LivingStatus livingStatus) {
+        createInputNode(prependingId + LABEL_NAME, prependingId, inputNodes);
+        createInputNode(prependingId2 + LABEL_NAME, prependingId2, inputNodes);
         if (livingStatus != null) {
-            inputNodes.add(createInputNode(prependingId + LABEL_STILL_LIVING, livingStatus.getHtmValue(), 
-                    HTM_DUMMY_VALUE));
-            inputNodes.add(createInputNode(prependingId2 + LABEL_STILL_LIVING, livingStatus.getHtmValue(), 
-                    HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_STILL_LIVING, livingStatus.getHtmValue(), inputNodes);
+            createInputNode(prependingId2 + LABEL_STILL_LIVING, livingStatus.getHtmValue(), inputNodes);
         } else {
-            inputNodes.add(createInputNode(prependingId + LABEL_STILL_LIVING, HTM_BLANK, 
-                    HTM_DUMMY_VALUE));
-            inputNodes.add(createInputNode(prependingId2 + LABEL_STILL_LIVING, HTM_BLANK, 
-                    HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_STILL_LIVING, HTM_BLANK, inputNodes);
+            createInputNode(prependingId2 + LABEL_STILL_LIVING, HTM_BLANK, inputNodes);
         }
         
-        inputNodes.add(createInputNode(prependingId + LABEL_GENDER, Gender.MALE.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_GENDER, Gender.MALE.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_DISEASES, HTM_ADD_DISEASES, 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_ADD_DISEASES, HTM_ADD_DISEASES, 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_PARENT, parent, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_PARENT, parent, HTM_DUMMY_VALUE));
+        createInputNode(prependingId + LABEL_GENDER, Gender.MALE.getHtmValue(), inputNodes);
+        createInputNode(prependingId2 + LABEL_GENDER, Gender.MALE.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_ADD_DISEASES, HTM_ADD_DISEASES, inputNodes);
+        createInputNode(prependingId2 + LABEL_ADD_DISEASES, HTM_ADD_DISEASES, inputNodes);
+        createInputNode(prependingId + LABEL_PARENT, parent, inputNodes);
+        createInputNode(prependingId2 + LABEL_PARENT, parent, inputNodes);
         // The different age range values are tested in AgeRangeTest
         if (livingStatus != null && LivingStatus.NO.equals(livingStatus)) {
-            inputNodes.add(createInputNode(prependingId + LABEL_AOD, "50", HTM_DUMMY_VALUE));
-            inputNodes.add(createInputNode(prependingId2 + LABEL_AOD, "50", HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_AOD, "50", inputNodes);
+            createInputNode(prependingId2 + LABEL_AOD, "50", inputNodes);
         } else {
-            inputNodes.add(createInputNode(prependingId + LABEL_AOD, HTM_BLANK, HTM_DUMMY_VALUE));
-            inputNodes.add(createInputNode(prependingId2 + LABEL_AOD, HTM_BLANK, HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_AOD, HTM_BLANK, inputNodes);
+            createInputNode(prependingId2 + LABEL_AOD, HTM_BLANK, inputNodes);
         }
         
-        inputNodes.add(createInputNode(prependingId + LABEL_TWIN, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_TWIN, HTM_NO, HTM_DUMMY_VALUE));
+        createInputNode(prependingId + LABEL_TWIN, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_TWIN, HTM_NO, inputNodes);
         if (livingStatus != null && LivingStatus.NO.equals(livingStatus)) {
-            inputNodes.add(createInputNode(prependingId + LABEL_COD, HTM_NEW_COD, HTM_DUMMY_VALUE));
-            inputNodes.add(createInputNode(prependingId2 + LABEL_COD, HTM_NEW_COD, HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_COD, HTM_NEW_COD, inputNodes);
+            createInputNode(prependingId2 + LABEL_COD, HTM_NEW_COD, inputNodes);
         } else {
-            inputNodes.add(createInputNode(prependingId + LABEL_COD, HTM_DUMMY_VALUE, HTM_DUMMY_VALUE));
-            inputNodes.add(createInputNode(prependingId2 + LABEL_COD, HTM_DUMMY_VALUE, HTM_DUMMY_VALUE));
+            createInputNode(prependingId + LABEL_COD, HTM_DUMMY_VALUE, inputNodes);
+            createInputNode(prependingId2 + LABEL_COD, HTM_DUMMY_VALUE, inputNodes);
         }
         
-        inputNodes.add(createInputNode(prependingId + LABEL_CORONARY, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_CORONARY + LABEL_ONSET, AgeRange.INFANCY.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_CORONARY, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_CORONARY + LABEL_ONSET, AgeRange.INFANCY.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STROKE, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STROKE + LABEL_ONSET, AgeRange.ADOLESCENCE.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_STROKE, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_STROKE + LABEL_ONSET, AgeRange.ADOLESCENCE.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_DIABETES, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_DIABETES + LABEL_ONSET, AgeRange.TWENTIES.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_DIABETES, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_DIABETES + LABEL_ONSET, AgeRange.TWENTIES.getHtmValue(), 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COLON_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COLON_CANCER + LABEL_ONSET, 
-                AgeRange.THIRTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_COLON_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_COLON_CANCER + LABEL_ONSET, 
-                AgeRange.THIRTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_BREAST_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_BREAST_CANCER + LABEL_ONSET, 
-                AgeRange.SIXTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_BREAST_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_BREAST_CANCER + LABEL_ONSET, 
-                AgeRange.SIXTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_OVARIAN_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_OVARIAN_CANCER + LABEL_ONSET, 
-                HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_OVARIAN_CANCER, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_OVARIAN_CANCER + LABEL_ONSET, 
-                HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_CONDITION1, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_CONDITION1 + LABEL_ONSET, 
-                AgeRange.SIXTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_ADD_CONDITION1, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_ADD_CONDITION1 + LABEL_ONSET, 
-                AgeRange.SIXTIES.getHtmValue(), HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_CONDITION2, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_CONDITION2 + LABEL_ONSET, HTM_BLANK, 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_ADD_CONDITION2, HTM_YES, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_ADD_CONDITION2 + LABEL_ONSET, HTM_BLANK, 
-                HTM_DUMMY_VALUE));
+        createInputNode(prependingId + LABEL_CORONARY, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_CORONARY + LABEL_ONSET, AgeRangeEnum.INFANCY.getHtmValue(), inputNodes);
+        createInputNode(prependingId2 + LABEL_CORONARY, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_CORONARY + LABEL_ONSET, AgeRangeEnum.INFANCY.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_STROKE, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_STROKE + LABEL_ONSET, AgeRangeEnum.ADOLESCENCE.getHtmValue(), inputNodes);
+        createInputNode(prependingId2 + LABEL_STROKE, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_STROKE + LABEL_ONSET, AgeRangeEnum.ADOLESCENCE.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_DIABETES, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_DIABETES + LABEL_ONSET, AgeRangeEnum.TWENTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId2 + LABEL_DIABETES, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_DIABETES + LABEL_ONSET, AgeRangeEnum.TWENTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_COLON_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_COLON_CANCER + LABEL_ONSET, 
+                AgeRangeEnum.THIRTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId2 + LABEL_COLON_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_COLON_CANCER + LABEL_ONSET, 
+                AgeRangeEnum.THIRTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_BREAST_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_BREAST_CANCER + LABEL_ONSET, 
+                AgeRangeEnum.SIXTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId2 + LABEL_BREAST_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_BREAST_CANCER + LABEL_ONSET, 
+                AgeRangeEnum.SIXTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_OVARIAN_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_OVARIAN_CANCER + LABEL_ONSET, 
+                HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_OVARIAN_CANCER, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_OVARIAN_CANCER + LABEL_ONSET, 
+                HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_ADD_CONDITION1, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_ADD_CONDITION1 + LABEL_ONSET, 
+                AgeRangeEnum.SIXTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId2 + LABEL_ADD_CONDITION1, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_ADD_CONDITION1 + LABEL_ONSET, 
+                AgeRangeEnum.SIXTIES.getHtmValue(), inputNodes);
+        createInputNode(prependingId + LABEL_ADD_CONDITION2, HTM_YES, inputNodes);
+        createInputNode(prependingId + LABEL_ADD_CONDITION2 + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_ADD_CONDITION2, HTM_YES, inputNodes);
+        createInputNode(prependingId2 + LABEL_ADD_CONDITION2 + LABEL_ONSET, HTM_BLANK, inputNodes);
     }
     
-    public static void addBlankAttributeNodes(String prependingId, List<InputNode> inputNodes) {
-        inputNodes.add(createInputNode(prependingId + LABEL_NAME, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STILL_LIVING, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_GENDER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_DISEASES, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_PARENT, HTMImportUtils.CALCULATED, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_AOD, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_TWIN, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COD, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_CORONARY, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_CORONARY + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STROKE, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STROKE + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_DIABETES, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_DIABETES + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COLON_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COLON_CANCER + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_BREAST_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_BREAST_CANCER + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_OVARIAN_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_OVARIAN_CANCER + LABEL_ONSET, HTM_BLANK, 
-                HTM_DUMMY_VALUE));
+    public static void addBlankAttributeNodes(String prependingId, Map<String, InputNode> inputNodes) {
+        createInputNode(prependingId + LABEL_NAME, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_STILL_LIVING, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_GENDER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_ADD_DISEASES, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_PARENT, HTMImporter.CALCULATED, inputNodes);
+        createInputNode(prependingId + LABEL_AOD, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_TWIN, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_COD, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_CORONARY, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_CORONARY + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_STROKE, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_STROKE + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_DIABETES, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_DIABETES + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_COLON_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_COLON_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_BREAST_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_BREAST_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_OVARIAN_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_OVARIAN_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
     }
     
     public static void addBlankAttributeForVariableRelatives(String prependingId, String prependingId2, 
-            List<InputNode> inputNodes, String parent) {
-        inputNodes.add(createInputNode(prependingId + LABEL_NAME, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_NAME, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STILL_LIVING, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_STILL_LIVING, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_GENDER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_GENDER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_ADD_DISEASES, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_ADD_DISEASES, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_PARENT, parent, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_PARENT, parent, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_AOD, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_AOD, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_TWIN, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_TWIN, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COD, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_COD, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_CORONARY, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_CORONARY + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_CORONARY, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_CORONARY + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STROKE, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_STROKE + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_STROKE, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_STROKE + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_DIABETES, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_DIABETES + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_DIABETES, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_DIABETES + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COLON_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_COLON_CANCER + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_COLON_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_COLON_CANCER + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_BREAST_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_BREAST_CANCER + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_BREAST_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_BREAST_CANCER + LABEL_ONSET, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_OVARIAN_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId + LABEL_OVARIAN_CANCER + LABEL_ONSET, HTM_BLANK, 
-                HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_OVARIAN_CANCER, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(prependingId2 + LABEL_OVARIAN_CANCER + LABEL_ONSET, HTM_BLANK, 
-                HTM_DUMMY_VALUE));
+            Map<String, InputNode> inputNodes, String parent) {
+        createInputNode(prependingId + LABEL_NAME, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_NAME, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_STILL_LIVING, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_STILL_LIVING, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_GENDER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_GENDER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_ADD_DISEASES, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_ADD_DISEASES, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_PARENT, parent, inputNodes);
+        createInputNode(prependingId2 + LABEL_PARENT, parent, inputNodes);
+        createInputNode(prependingId + LABEL_AOD, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_AOD, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_TWIN, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_TWIN, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_COD, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_COD, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_CORONARY, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_CORONARY + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_CORONARY, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_CORONARY + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_STROKE, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_STROKE + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_STROKE, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_STROKE + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_DIABETES, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_DIABETES + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_DIABETES, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_DIABETES + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_COLON_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_COLON_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_COLON_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_COLON_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_BREAST_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_BREAST_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_BREAST_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_BREAST_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_OVARIAN_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId + LABEL_OVARIAN_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_OVARIAN_CANCER, HTM_BLANK, inputNodes);
+        createInputNode(prependingId2 + LABEL_OVARIAN_CANCER + LABEL_ONSET, HTM_BLANK, inputNodes);
     }
     
-    public static void addSelfAttributeNodes(List<InputNode> inputNodes) {
-        inputNodes.add(createInputNode(RelativeCode.SELF.getHtmValue() + LABEL_WEIGHT, SELF_WEIGHT, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(RelativeCode.SELF.getHtmValue() + LABEL_HEIGHT, SELF_HEIGHT, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(RelativeCode.SELF.getHtmValue() + LABEL_AGE, SELF_AGE, HTM_DUMMY_VALUE));
+    public static void addSelfAttributeNodes(Map<String, InputNode> inputNodes) {
+        createInputNode(HTMRelationship.SELF.getRelationship() + LABEL_WEIGHT, SELF_WEIGHT, inputNodes);
+        createInputNode(HTMRelationship.SELF.getRelationship() + LABEL_HEIGHT, SELF_HEIGHT, inputNodes);
+        createInputNode(HTMRelationship.SELF.getRelationship() + LABEL_AGE, SELF_AGE, inputNodes);
     }
     
-    public static void addBlankSelfAttributeNodes(List<InputNode> inputNodes) {
-        inputNodes.add(createInputNode(RelativeCode.SELF.getHtmValue() + LABEL_WEIGHT, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(RelativeCode.SELF.getHtmValue() + LABEL_HEIGHT, HTM_BLANK, HTM_DUMMY_VALUE));
-        inputNodes.add(createInputNode(RelativeCode.SELF.getHtmValue() + LABEL_AGE, HTM_BLANK, HTM_DUMMY_VALUE));
+    public static void addBlankSelfAttributeNodes(Map<String, InputNode> inputNodes) {
+        createInputNode(HTMRelationship.SELF.getRelationship() + LABEL_WEIGHT, HTM_BLANK, inputNodes);
+        createInputNode(HTMRelationship.SELF.getRelationship() + LABEL_HEIGHT, HTM_BLANK, inputNodes);
+        createInputNode(HTMRelationship.SELF.getRelationship() + LABEL_AGE, HTM_BLANK, inputNodes);
     }
     
-    public static void addRelativeCountNodes(List<InputNode> inputNodes) {
-        // Add Counts for the 14 types of relatives (node name should not matter)
-        for (int i=0; i < NUM_VARIABLE_RELATIVES; i++) {
-            inputNodes.add(createInputNode(HTM_DUMMY_VALUE, RELATIVE_PER_TYPE, HTM_DUMMY_VALUE));
-        }
-    }
-    
-    public static InputNode createInputNode(String name, String value, String type) {
+    public static void createInputNode(String name, String value, Map<String, InputNode> inputNodes) {
         InputNode node = new InputNode();
         node.setName(name);
         node.setValue(value);
-        node.setType(type);
-        return node;
+        inputNodes.put(name, node);
     }
     
     public static void checkInputNode(InputNode node) {
-        assertEquals(RelativeCode.SELF.getHtmValue() + LABEL_NAME, node.getName());
-        assertEquals(HTM_SELF_NAME, node.getValue());
-        assertEquals(HTM_DUMMY_VALUE, node.getType());
+        assertEquals(HTMRelationship.SELF.getRelationship() + LABEL_NAME, node.getName());
+        assertEquals(HTMRelationship.SELF.getRelationship(), node.getValue());
     }
     
-    public static void addFamilyAddConditions(List<InputNode> inputNodes) {
-        inputNodes.add(createInputNode(LABEL_FAM_ADD_DISEASE, HTM_FAM_ADD_DISEASES, 
-                HTM_DUMMY_VALUE));
+    public static void addFamilyAddConditions(Map<String, InputNode> inputNodes) {
+        createInputNode(LABEL_FAM_ADD_DISEASE, HTM_FAM_ADD_DISEASES, inputNodes);
     }
     
-    public static void addBlankFamilyAddConditions(List<InputNode> inputNodes) {
-        inputNodes.add(createInputNode(LABEL_FAM_ADD_DISEASE, HTM_BLANK, 
-                HTM_DUMMY_VALUE));
+    public static void addRandomNodes(Map<String, InputNode> inputNodes) {
+        createInputNode(LABEL_RANDOM, LABEL_RANDOM, inputNodes);
+    }
+    
+    public static void addBlankFamilyAddConditions(Map<String, InputNode> inputNodes) {
+        createInputNode(LABEL_FAM_ADD_DISEASE, HTM_BLANK, inputNodes);
+    }
+    
+    public static void addNumRelativeNodes(Map<String, InputNode> inputNodes) {
+        for (HTMRelationship currRelationship : HTMRelationship.values()) {
+            if (currRelationship.isVariableRelative()) {
+                createInputNode(currRelationship.getRelationship(), "2", inputNodes);
+            }
+        }
     }
 }

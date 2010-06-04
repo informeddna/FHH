@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -38,20 +38,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
-import gov.hhs.fhh.data.Gender;
-import gov.hhs.fhh.data.Height;
-import gov.hhs.fhh.data.HeightUnit;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
-import gov.hhs.fhh.data.Weight;
-import gov.hhs.fhh.data.WeightUnit;
 import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.data.util.FormatUtils;
-import gov.hhs.fhh.web.FhhRegistry;
+import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
@@ -62,6 +56,13 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.Height;
+import com.fiveamsolutions.hl7.model.mfhp.HeightUnit;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
@@ -95,9 +96,9 @@ public class AddPersonActionTest extends AbstractFhhWebTest {
 	@Test
     public void testPrepare() throws Exception {
 	    DUMMY_DISEASE2.setDisplayName(OTHER_DISEASE);
-	    DUMMY_DISEASE2.setId(DiseaseUtils.DIABETES_ID);
-	    DUMMY_DISEASE.setId(DiseaseUtils.OTHER_DISEASE_ID);
-	    DUMMY_DISEASE.setOriginalText(DUMMY_DISEASE2_ORG_TEXT);
+        DUMMY_DISEASE2.setCode(DiseaseUtils.DIABETES_CODE);
+        DUMMY_DISEASE.setCode(null);
+        DUMMY_DISEASE.setOriginalText(DUMMY_DISEASE2_ORG_TEXT);
 
 	    // Test prepare with no person set in session
 	    assertNull(action.getPerson());
@@ -137,13 +138,13 @@ public class AddPersonActionTest extends AbstractFhhWebTest {
         ClinicalObservation obs2 = new ClinicalObservation();
         ClinicalObservation obs3 = new ClinicalObservation();
         obs.setDisease(DUMMY_DISEASE);
-        obs.setAgeRange(AgeRange.THIRTIES);
+        obs.setAgeRange(AgeRangeEnum.THIRTIES);
         // Set one of the conditions as an unrecognized condition from legacy import
         obs2.setDisease(DUMMY_DISEASE2);
-        obs2.setAgeRange(AgeRange.FIFTIES);
+        obs2.setAgeRange(AgeRangeEnum.FIFTIES);
         obs2.setUnmatchedCondition(true);
         obs3.setDisease(DUMMY_DISEASE);
-        obs3.setAgeRange(AgeRange.FIFTIES);
+        obs3.setAgeRange(AgeRangeEnum.FIFTIES);
         obs3.setUnmatchedCondition(true);
         p.setUnmatchedCondition(true);
         observations.add(obs);
@@ -157,9 +158,9 @@ public class AddPersonActionTest extends AbstractFhhWebTest {
 
         // Check Disease values
         assertEquals(DUMMY_DISEASE, action.getPerson().getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, action.getPerson().getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, action.getPerson().getObservations().get(0).getAgeRange());
         assertEquals(DUMMY_DISEASE2, action.getPerson().getObservations().get(1).getDisease());
-        assertEquals(AgeRange.FIFTIES, action.getPerson().getObservations().get(1).getAgeRange());
+        assertEquals(AgeRangeEnum.FIFTIES, action.getPerson().getObservations().get(1).getAgeRange());
         // Check other disease values
         assertEquals(DUMMY_DISEASE2_ORG_TEXT, action.getOtherDiseaseValues().get(0));
         assertEquals(NOT_OTHER_DISEASE, action.getOtherDiseaseValues().get(1));
@@ -184,12 +185,11 @@ public class AddPersonActionTest extends AbstractFhhWebTest {
 	    action.setPerson(new Person());
 	    action.getPerson().setGender(DUMMY_GENDER);
 	    action.setDateOfBirthString(DOB_STRING);
-	    action.getPerson().setCompletedForm(TRUE);
 	    action.getPerson().setGender(DUMMY_GENDER);
 	    SimpleDateFormat format = new SimpleDateFormat(FormatUtils.DATE_FORMAT_STRING, Locale.US);
         format.setLenient(false);
 	    
-	    assertEquals(SUBMIT_ACTION, action.submitPerson());
+	    assertEquals(FAMILY_TREE_ACTION, action.submitPerson());
 	    assertEquals(format.parse(DOB_STRING), action.getPerson().getDateOfBirth());
         
         // Test submit with no age set (action errors should exist)
@@ -223,8 +223,7 @@ public class AddPersonActionTest extends AbstractFhhWebTest {
 	    // Set unmatched legacy condition to true, submit should set it to false
         action.getPerson().setUnmatchedCondition(TRUE);
 
-	    action.getPerson().setCompletedForm(false);
-	    assertEquals(SUBMIT_ACTION, action.submitPerson());
+	    assertEquals(FAMILY_TREE_ACTION, action.submitPerson());
 	    assertFalse(action.getPerson().isUnmatchedCondition());
 
 	    action.setPerson(new Person());
@@ -240,16 +239,16 @@ public class AddPersonActionTest extends AbstractFhhWebTest {
 	    action.getSelectedDiseases().add(DUMMY_DISEASE2);
 	    action.getOtherDiseaseValues().add(DUMMY_DISEASE_VALUE);
 
-	    action.setAgeOfDiagnosisList(new ArrayList<AgeRange>());
-	    action.getAgeOfDiagnosisList().add(AgeRange.THIRTIES);
-	    action.getAgeOfDiagnosisList().add(AgeRange.FIFTIES);
+	    action.setAgeOfDiagnosisList(new ArrayList<AgeRangeEnum>());
+	    action.getAgeOfDiagnosisList().add(AgeRangeEnum.THIRTIES);
+	    action.getAgeOfDiagnosisList().add(AgeRangeEnum.FIFTIES);
 
         assertEquals(FAMILY_TREE_ACTION, action.submitPerson());
         assertEquals(DUMMY_DISEASE, action.getPerson().getObservations().get(0).getDisease());
-        assertEquals(AgeRange.THIRTIES, action.getPerson().getObservations().get(0).getAgeRange());
+        assertEquals(AgeRangeEnum.THIRTIES, action.getPerson().getObservations().get(0).getAgeRange());
         // New Disease with original text set
         assertEquals(DUMMY_DISEASE_VALUE, action.getPerson().getObservations().get(1).getDisease().getOriginalText());
-        assertEquals(AgeRange.FIFTIES, action.getPerson().getObservations().get(1).getAgeRange());
+        assertEquals(AgeRangeEnum.FIFTIES, action.getPerson().getObservations().get(1).getAgeRange());
         assertTrue(FhhHttpSessionUtil.getUserEnteredDiseases().containsKey(DUMMY_DISEASE_VALUE));
     }
 	
@@ -272,7 +271,7 @@ public class AddPersonActionTest extends AbstractFhhWebTest {
 
 	@Test
     public void testGetAgeRangeEnums() {
-	    assertEquals(AgeRange.values()[0], action.getAgeRangeEnums()[0]);
+	    assertEquals(AgeRangeEnum.values()[0], action.getAgeRangeEnums()[0]);
 	}
 
 	@Test

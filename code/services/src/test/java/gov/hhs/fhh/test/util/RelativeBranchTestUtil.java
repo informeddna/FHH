@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,16 +33,18 @@
  */
 package gov.hhs.fhh.test.util;
 
-import gov.hhs.fhh.data.Gender;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.Weight;
-import gov.hhs.fhh.data.WeightUnit;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author lpower
@@ -57,6 +59,7 @@ public class RelativeBranchTestUtil {
     public static Relative createRelative(Person p, RelativeCode rc) {
         Relative r = new Relative(p,rc);
         r.setLivingStatus("true");
+        r.setUuid(UUID.randomUUID());
         return r;
     }
 
@@ -66,6 +69,7 @@ public class RelativeBranchTestUtil {
     public static Person createPerson() {
         Person p = new Person();
         p.setName("Name");
+        p.setUuid(UUID.randomUUID());
         return makePersonAttributes(p);
     }
 

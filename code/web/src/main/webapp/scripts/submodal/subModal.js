@@ -194,7 +194,7 @@ function calculateMaxPopupWidth() {
 	var tmp = Math.floor(getViewportWidth()*gWidthRatio);
 //	var desiredWidth = (getPopupFrameContentWidth() > 0 && getPopupFrameContentWidth() < tmp) ? desiredWidth =  getPopupFrameContentWidth() : desiredWidth = tmp;
 	var desiredWidth = tmp;
-	var min = 640;
+	var min = 850;
 	var width = (desiredWidth > min) ? width = desiredWidth: width = min; 
 	if (width > 1000) {
 		width = 1000;
@@ -241,7 +241,6 @@ function centerPopWin(width, height) {
 		
 		gPopupContainer.style.top = (scTop + ((fullHeight - (height+titleBarHeight)) / 2)) + "px";
 		gPopupContainer.style.left =  (scLeft + ((fullWidth - width) / 2)) + "px";
-		//alert(fullWidth + " " + width + " " + gPopupContainer.style.left);
 	}
 }
 addEvent(window, "resize", centerPopWin);
@@ -302,6 +301,33 @@ function hidePopWin(callReturnFunc) {
 		displaySelectBoxes();
 	}
 	document.getElementById("popupTitle").innerHTML = '';
+}
+
+function redirectPage(urlLoc) {
+    window.location = urlLoc;
+}
+
+function hidePopWinRedirect(urlLoc) {
+    gPopupIsShown = false;
+    var theBody = document.getElementsByTagName("BODY")[0];
+    theBody.style.overflow = "";
+    restoreTabIndexes();
+    if (gPopupMask == null) {
+        return;
+    }
+    gPopupMask.style.display = "none";
+    gPopupContainer.style.display = "none";
+        // Set the return code to run in a timeout.
+        // Was having issues using with an Ajax.Request();
+        gReturnVal = urlLoc;
+        gReturnFunc = redirectPage;
+        window.setTimeout('gReturnFunc(gReturnVal);', 1);
+    gPopFrame.src = gDefaultPage;
+    // display all select boxes
+    if (gHideSelects == true) {
+        displaySelectBoxes();
+    }
+    document.getElementById("popupTitle").innerHTML = '';
 }
 
 /**
@@ -382,3 +408,6 @@ function displaySelectBoxes() {
     x[i].style.visibility = "visible";
   }
 }
+
+  
+  

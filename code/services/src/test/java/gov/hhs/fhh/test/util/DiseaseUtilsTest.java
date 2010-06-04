@@ -86,7 +86,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
@@ -95,6 +94,8 @@ import gov.hhs.fhh.data.util.SpanishCharacter;
 import gov.hhs.fhh.test.AbstractHibernateTestCase;
 
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
 
 /**
  * @author bpickeral
@@ -105,7 +106,7 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
     private String EXACT_MATCH_APP_DISPLAY = "diseaseX subtype1";
     private String ONE_MATCH = "one match";
     private String NO_MATCH = "no match";
-    private long DISEASE_ID = 1L;
+    private String DISEASE_CODE = "code";
     private String USER_ENTERED = "User Entered";
     
     @Test
@@ -136,13 +137,16 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
     @Test 
     public void testHighlightingDisease() {
         Disease d1 = new Disease();
-        d1.setId(DiseaseUtils.COLON_CANCER_ID);
+        d1.setCode(DiseaseUtils.COLON_CANCER_CODE);
+        d1.setAppDisplay("c");
         
         Disease d2 = new Disease();
-        d2.setId(DiseaseUtils.DIABETES_ID);
+        d2.setCode(DiseaseUtils.DIABETES_CODE);
+        d2.setAppDisplay("d");
         
         Disease d3 = new Disease();
-        d3.setId(DiseaseUtils.DIABETES_ID);
+        d3.setCode(DiseaseUtils.DIABETES_CODE);
+        d3.setAppDisplay("d");
         
         assertFalse("two known diseases are the same when they aren't",DiseaseUtils.compareHighlightDisease(d1, d2));
         
@@ -167,7 +171,7 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
         Person p = new Person();
         Disease d = new Disease();
         obs.setDisease(d);
-        d.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        d.setCode(null);
         // Test type other
         DiseaseUtils.setMatchedOrUnmatched(p, obs);
         assertTrue(p.isUnmatchedCondition());
@@ -178,7 +182,7 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
         p = new Person();
         d = new Disease();
         obs.setDisease(d);
-        d.setId(DiseaseUtils.COLON_CANCER_ID);
+        d.setCode(DiseaseUtils.COLON_CANCER_CODE);
         DiseaseUtils.setMatchedOrUnmatched(p, obs);
         assertFalse(p.isUnmatchedCondition());
         assertFalse(obs.isUnmatchedCondition());
@@ -187,25 +191,17 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
     @Test
     public void generateDiseaaseTableId() {
         Disease d = null;
-        assertEquals("", DiseaseUtils.generateDiseaaseTableId(d, AgeRange.ADOLESCENCE));
+        assertEquals("", DiseaseUtils.generateDiseaaseTableId(d, AgeRangeEnum.ADOLESCENCE));
         
         d = new Disease();
-        d.setId(DISEASE_ID);
+        d.setCode(DISEASE_CODE);
         assertEquals("", DiseaseUtils.generateDiseaaseTableId(d, null));
-        assertEquals(String.valueOf(DISEASE_ID) + AgeRange.THIRTIES.toString(), 
-                DiseaseUtils.generateDiseaaseTableId(d, AgeRange.THIRTIES));
+        assertEquals(String.valueOf(DISEASE_CODE) + AgeRangeEnum.THIRTIES.toString(), 
+                DiseaseUtils.generateDiseaaseTableId(d, AgeRangeEnum.THIRTIES));
         
-        d.setId(DiseaseUtils.OTHER_DISEASE_ID);
+        d.setCode(null);
         d.setOriginalText(USER_ENTERED);
-        assertEquals(String.valueOf(DiseaseUtils.OTHER_DISEASE_ID) + AgeRange.THIRTIES.toString() + USER_ENTERED, 
-                DiseaseUtils.generateDiseaaseTableId(d, AgeRange.THIRTIES));
-    }
-    
-    @Test
-    public void testfindOrCreateNewDiseaseUnknown() {
-        assertEquals(DiseaseUtils.UNKNOWN_DISEASE_EN, 
-                DiseaseUtils.findOrCreateNewDisease(DiseaseUtils.UNKNOWN_EN).getAppDisplay());
-        assertEquals(DiseaseUtils.UNKNOWN_DISEASE_ES, 
-                DiseaseUtils.findOrCreateNewDisease(DiseaseUtils.UNKNOWN_ES).getAppDisplay());
+        assertEquals(AgeRangeEnum.THIRTIES.toString() + USER_ENTERED, 
+                DiseaseUtils.generateDiseaaseTableId(d, AgeRangeEnum.THIRTIES));
     }
 }

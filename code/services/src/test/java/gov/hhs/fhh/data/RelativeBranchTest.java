@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,7 +34,6 @@
 package gov.hhs.fhh.data;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.test.AbstractHibernateTestCase;
 import gov.hhs.fhh.test.util.RelativeRelatedTestUtil;
 
@@ -42,11 +41,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.collections.set.ListOrderedSet;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
 
 /**
  * @author lpower
@@ -54,7 +55,7 @@ import org.junit.Test;
  */
 public class RelativeBranchTest extends AbstractHibernateTestCase {
     private final String DUMMY_NAME = "Proband";
-    private final Long DUMMY_ID = 1L;
+    private final UUID DUMMY_ID = UUID.randomUUID();
     private final Gender DUMMY_GENDER = Gender.MALE;
     private final Person p = new Person();
     private final Date date = new Date();
@@ -66,7 +67,7 @@ public class RelativeBranchTest extends AbstractHibernateTestCase {
     public void before() {
         p.setName(DUMMY_NAME);
         p.setDateOfBirth(date);
-        p.setId(DUMMY_ID);
+        p.setUuid(DUMMY_ID);
     }
     
     @Test

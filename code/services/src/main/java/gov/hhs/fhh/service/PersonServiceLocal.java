@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -104,4 +104,20 @@ public interface PersonServiceLocal extends GenericServiceLocal {
      * @return the list of diseases containing String name
      */
     List<Disease> getDiseaseByName(String diseaseName);
+    
+    
+    /**
+     * @param code - the ethnicity code.
+     * @param codeSystem - the code system name of the ethnicity code.
+     * @return - the list of ethnicities matching the code and code systemname.
+     */
+    List<Ethnicity> getEthnicityByCodeAndCodeSystem(String code, String codeSystem);
+    
+    
+    /**
+     * @param code - the race code.
+     * @param codeSystem - the code system name of the race code.
+     * @return - the list of races matching the code and code system name.
+     */
+    List<Race> getRaceByCodeAndCodeSystem(String code, String codeSystem);
 }

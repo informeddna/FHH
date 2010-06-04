@@ -10,11 +10,18 @@
                  <jboss.hostname>domu-145.5amsolutions.com</jboss.hostname>
                  <jboss.configuration>default</jboss.configuration>
                  <database.url.prefix>jdbc:mysql://domu-145.5amsolutions.com:3306/</database.url.prefix>
-				 <database.name>fhhdev</database.name>
-				 <admin.db.username>root</admin.db.username>
-				 <admin.db.password>passw0rd</admin.db.password>
-				 <test.selenium.server.port>61002</test.selenium.server.port>
-                 <test.selenium.browser>*firefox /usr/lib64/firefox-1.5.0.12/firefox-bin</test.selenium.browser>
+                 <database.name>fhhdev</database.name>
+                 <admin.db.username>root</admin.db.username>
+                 <admin.db.password>passw0rd</admin.db.password>
+                 <test.selenium.server.port>61002</test.selenium.server.port>
+                 <test.selenium.browser>*firefox /usr/local/firefox-3.5.6/firefox-bin</test.selenium.browser>
+                 <showErrorStackTraces>true</showErrorStackTraces>
+                 <mshv.keystore.filename>/home/jboss405/keystore-demo</mshv.keystore.filename>
+                 <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>
+                 <application.base.url>http://domu-145.5amsolutions.com:8080/fhh-web/</application.base.url>
+                 <test.mshv.user.email>FHH.tester.dev@gmail.com</test.mshv.user.email>
+                 <test.mshv.user.pw>fhht3sterdev</test.mshv.user.pw>
+                 <test.mshv.user.display.name>fhh testerdev</test.mshv.user.display.name>
             </properties>
         </profile>
     </profiles>

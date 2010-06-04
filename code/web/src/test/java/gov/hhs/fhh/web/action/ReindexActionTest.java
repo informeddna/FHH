@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -37,6 +37,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import gov.hhs.fhh.data.ClinicalObservation;
+import gov.hhs.fhh.data.Disease;
+import gov.hhs.fhh.data.Ethnicity;
+import gov.hhs.fhh.data.Person;
+import gov.hhs.fhh.data.Race;
+import gov.hhs.fhh.data.Relative;
+import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.util.HL7ConversionUtils;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
+import gov.hhs.fhh.model.mfhp.castor.FhhCastorUtils;
+import gov.hhs.fhh.web.test.AbstractFhhWebTest;
+import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+import gov.hhs.fhh.xml.PatientPerson;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -44,37 +57,27 @@ import java.util.GregorianCalendar;
 
 import org.junit.Test;
 
-import gov.hhs.fhh.data.AgeRange;
-import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
-import gov.hhs.fhh.data.Ethnicity;
-import gov.hhs.fhh.data.Gender;
-import gov.hhs.fhh.data.LivingStatus;
-import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.data.Race;
-import gov.hhs.fhh.data.Relative;
-import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.Weight;
-import gov.hhs.fhh.data.WeightUnit;
-import gov.hhs.fhh.web.test.AbstractFhhWebTest;
-import gov.hhs.fhh.web.util.FhhCastorUtils;
-import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
- *
+ * 
  */
 public class ReindexActionTest extends AbstractFhhWebTest {
     private final ReindexAction action = new ReindexAction();
-    
+
     private final String MIN_HEX = "80000000";
-    private final String MAPPING_FILE = "/mapping.xml";
-    private final String DEFAULT_FILE_NAME = "My_FamilyHistory.xml";
+    private final String EXTENSION = ".xml";
+    private final String DEFAULT_FILE_NAME = "My_FamilyHistory" + EXTENSION;
+    private final String CUSTOM_FILE_NAME = "custom name";
     private final String DOWNLOAD_FILE_ACTION = "downloadXMLFile";
     private final String BASIC_TEST_ETHNICITY = "Hispanic of Latino";
     private final String BASIC_TEST_RACE = "American Indian or Alaska Native";
     private final String BASIC_TEST_DISEASE = "DisplayName7";
-    private final Long BASIC_TEST_DISEASE_ID = 7L;
+    private final String BASIC_TEST_DISEASE_CODE = "38341003";
     private final String DECEASED_STATUS = LivingStatus.NO.getResourceKey();
     private final Weight DUMMY_WEIGHT = new Weight(180, WeightUnit.US);;
     private final GregorianCalendar DUMMY_DATE = new GregorianCalendar(1970, 9, 7, 0, 0, 0);
@@ -86,35 +89,28 @@ public class ReindexActionTest extends AbstractFhhWebTest {
     private final Ethnicity DUMMY_ETHNICITY3 = new Ethnicity();
     private final Race DUMMY_RACE = new Race();
     private final Race DUMMY_RACE2 = new Race();
-    private final AgeRange DUMMY_AGE = AgeRange.FIFTIES;
-    
+    private final AgeRangeEnum DUMMY_AGE = AgeRangeEnum.FIFTIES;
+
     private final ClinicalObservation DUMMY_CLINICAL_OBSERVATION = new ClinicalObservation();
     private final ClinicalObservation DUMMY_CLINICAL_OBSERVATION2 = new ClinicalObservation();
     private final String BASIC_RELATIVE_NAME = "Basic Relative";
-    private final String BASIC_RELATIVE_CODE = "NMTH";
+    private final RelativeCode BASIC_RELATIVE_CODE = RelativeCode.NMTH;
     private final String BASIC_RELATIVE_ETHNICITY = "Hispanic of Latino";
     private final String BASIC_RELATIVE_ETHNICITY2 = "Dominican";
     private final String BASIC_RELATIVE_RACE = "Asian";
     private final String BASIC_RELATIVE_DISEASE = "DisplayName18";
     private final Long BASIC_RELATIVE_DISEASE_ID = 18L;
-    
-    private final Long DECEASED_RELATIVE_ID = 0L;
-    
+    private final String BASIC_RELATIVE_DISEASE_CODE = "44054006";
+
     private final String MAUNT_NAME = "maunt name";
     private final String MAUNT_FILE_NAME = "maunt_name_FamilyHistory.xml";
-    
-    // IDS used for testing save
-    private final Long MAUNT_RELATIVE_ID = 1L;
-    private final Long PUNCLE_RELATIVE_ID = 2L;
-    private final Long MCOUSN_RELATIVE_ID = 3L;
-    private final Long PCOUSN_RELATIVE_ID = 4L;
-    
+
     @Test
     public void testPrepare() {
         // Test prepare with no person set in session
         action.prepare();
         assertNull(action.getPerson());
-        
+
         Person p = new Person();
         FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, p);
         FhhHttpSessionUtil.getSession().setAttribute(FhhHttpSessionUtil.ROOT_KEY, MIN_HEX);
@@ -122,7 +118,7 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         action.prepare();
         assertEquals(p, action.getPerson());
     }
-    
+
     @Test
     public void testSaveXmlDocument() throws Exception {
         // Set Person attributes
@@ -132,8 +128,8 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         DUMMY_ETHNICITY.setDisplayName(BASIC_TEST_ETHNICITY);
         DUMMY_RACE.setDisplayName(BASIC_TEST_RACE);
         DUMMY_DISEASE.setDisplayName(BASIC_TEST_DISEASE);
-        DUMMY_DISEASE.setId(BASIC_TEST_DISEASE_ID);
-        DUMMY_CLINICAL_OBSERVATION.setAgeRange(AgeRange.TWENTIES);
+        DUMMY_DISEASE.setCode(BASIC_TEST_DISEASE_CODE);
+        DUMMY_CLINICAL_OBSERVATION.setAgeRange(AgeRangeEnum.TWENTIES);
         DUMMY_CLINICAL_OBSERVATION.setDisease(DUMMY_DISEASE);
         p.setDateOfBirth(DUMMY_DATE.getTime());
         p.setWeight(DUMMY_WEIGHT);
@@ -144,7 +140,7 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         p.getRaces().add(DUMMY_RACE);
         p.setObservations(new ArrayList<ClinicalObservation>());
         p.getObservations().add(DUMMY_CLINICAL_OBSERVATION);
-        
+
         // Add Deceased relative
         Relative deseasedRelative = new Relative();
         DUMMY_ETHNICITY2.setDisplayName(BASIC_RELATIVE_ETHNICITY);
@@ -152,11 +148,11 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         DUMMY_RACE2.setDisplayName(BASIC_RELATIVE_RACE);
         DUMMY_DISEASE2.setDisplayName(BASIC_RELATIVE_DISEASE);
         DUMMY_DISEASE2.setId(BASIC_RELATIVE_DISEASE_ID);
-        DUMMY_CLINICAL_OBSERVATION2.setAgeRange(AgeRange.FORTIES);
+        DUMMY_DISEASE2.setCode(BASIC_RELATIVE_DISEASE_CODE);
+        DUMMY_CLINICAL_OBSERVATION2.setAgeRange(AgeRangeEnum.FORTIES);
         DUMMY_CLINICAL_OBSERVATION2.setDisease(DUMMY_DISEASE2);
-        deseasedRelative.setId(DECEASED_RELATIVE_ID);
         deseasedRelative.setName(BASIC_RELATIVE_NAME);
-        deseasedRelative.setCode(BASIC_RELATIVE_CODE);
+        deseasedRelative.setCodeEnum(BASIC_RELATIVE_CODE);
         deseasedRelative.setGender(DUMMY_GENDER);
         deseasedRelative.setEthnicities(new ArrayList<Ethnicity>());
         deseasedRelative.getEthnicities().add(DUMMY_ETHNICITY2);
@@ -171,45 +167,39 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         p.setRelatives(new ArrayList<Relative>());
         p.getRelatives().add(deseasedRelative);
         p.setMother(deseasedRelative);
-        
-        
+
         // Add Maternal Aunt
         Relative maunt = new Relative();
         maunt.setName(MAUNT_NAME);
-        maunt.setId(MAUNT_RELATIVE_ID);
         maunt.setGender(Gender.FEMALE);
-        maunt.setCode(RelativeCode.MAUNT.toString());
+        maunt.setCodeEnum(RelativeCode.MAUNT);
         p.getRelatives().add(maunt);
 
         // Add Paternal Uncle
         Relative puncle = new Relative();
-        puncle.setId(PUNCLE_RELATIVE_ID);
         puncle.setGender(Gender.MALE);
-        puncle.setCode(RelativeCode.PUNCLE.toString());
+        puncle.setCodeEnum(RelativeCode.PUNCLE);
         p.getRelatives().add(puncle);
-        
+
         // Add Maternal Cousin
         Relative mcousin = new Relative();
-        mcousin.setId(MCOUSN_RELATIVE_ID);
-        mcousin.setCode(RelativeCode.MCOUSN.toString());
+        mcousin.setCodeEnum(RelativeCode.MCOUSN);
         mcousin.setGender(Gender.FEMALE);
         mcousin.setMother(maunt);
         p.getRelatives().add(mcousin);
-        
+
         // Add Paternal Cousin
         Relative pcousin = new Relative();
-        pcousin.setId(PCOUSN_RELATIVE_ID);
-        pcousin.setCode(RelativeCode.PCOUSN.toString());
+        pcousin.setCodeEnum(RelativeCode.PCOUSN);
         pcousin.setGender(Gender.MALE);
         pcousin.setFather(puncle);
         p.getRelatives().add(pcousin);
 
         // Add Dad
         Relative dad = new Relative();
-        dad.setId(123L);
         dad.setGender(Gender.MALE);
         dad.setName("dad");
-        dad.setCode(RelativeCode.NFTH.toString());
+        dad.setCodeEnum(RelativeCode.NFTH);
         p.getRelatives().add(dad);
         p.setFather(dad);
 
@@ -219,90 +209,88 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         assertTrue(p.isXmlFileSaved());
         assertEquals(DEFAULT_FILE_NAME, action.getFileName());
         String xmlFileString = FhhCastorUtils.getInputStreamAsString(input);
-        Person unmarshalledPerson = new Person();
-        
-        unmarshalledPerson = (Person) FhhCastorUtils.unmarshallXMLFile(xmlFileString, 
-                this.getClass().getResource(MAPPING_FILE).getPath(), unmarshalledPerson);
-        
+        PatientPerson patientPerson = new PatientPerson();
+
+        patientPerson = (PatientPerson) FhhCastorUtils.unmarshallXMLFile(xmlFileString, patientPerson);
+
+        Person unmarshalledPerson = HL7ConversionUtils.person(patientPerson);
+
         // Check Person attributes
         assertNull(unmarshalledPerson.getName());
         assertEquals(DUMMY_DATE.getTime(), unmarshalledPerson.getDateOfBirth());
         assertEquals(DUMMY_GENDER.getDisplayName(), unmarshalledPerson.getGender().getDisplayName());
         assertEquals(DUMMY_ETHNICITY.getDisplayName(), unmarshalledPerson.getEthnicities().get(0).getDisplayName());
         assertEquals(DUMMY_RACE.getDisplayName(), unmarshalledPerson.getRaces().get(0).getDisplayName());
-        assertEquals(DUMMY_DISEASE.getDisplayName(), unmarshalledPerson.getObservations()
-                .get(0).getDisease().getDisplayName());
-        assertEquals(AgeRange.TWENTIES, unmarshalledPerson.getObservations()
-                .get(0).getAgeRange());
-        
+        assertEquals(DUMMY_DISEASE.getDisplayName(), unmarshalledPerson.getObservations().get(0).getDisease()
+                .getDisplayName());
+        assertEquals(AgeRangeEnum.TWENTIES, unmarshalledPerson.getObservations().get(0).getAgeRange());
+
         // Check deceased Relative attributes
         Relative importedRelative = unmarshalledPerson.getRelatives().get(0);
         assertEquals(BASIC_RELATIVE_NAME, importedRelative.getName());
-        assertEquals(BASIC_RELATIVE_CODE, importedRelative.getCode());
+        assertEquals(BASIC_RELATIVE_CODE, importedRelative.getCodeEnum());
         assertEquals(DUMMY_GENDER.getDisplayName(), importedRelative.getGender().getDisplayName());
         assertEquals(DUMMY_ETHNICITY2.getDisplayName(), importedRelative.getEthnicities().get(0).getDisplayName());
         assertEquals(DUMMY_ETHNICITY3.getDisplayName(), importedRelative.getEthnicities().get(1).getDisplayName());
         assertEquals(DUMMY_RACE2.getDisplayName(), importedRelative.getRaces().get(0).getDisplayName());
-        assertEquals(DUMMY_DISEASE2.getDisplayName(), importedRelative.getObservations()
-                .get(0).getDisease().getDisplayName());
-        assertEquals(AgeRange.FORTIES, importedRelative.getObservations()
-                .get(0).getAgeRange());
-        
+        assertEquals(DUMMY_DISEASE2.getDisplayName(), importedRelative.getObservations().get(0).getDisease()
+                .getDisplayName());
+        assertEquals(AgeRangeEnum.FORTIES, importedRelative.getObservations().get(0).getAgeRange());
+
         // Check that the motherId/fatherId of the 2 cousins are set
         Relative importedAunt = unmarshalledPerson.getRelatives().get(1);
         Relative importedUncle = unmarshalledPerson.getRelatives().get(2);
         Relative importedMCOUSN = unmarshalledPerson.getRelatives().get(3);
         Relative importedPCOUSN = unmarshalledPerson.getRelatives().get(4);
-        assertEquals(importedMCOUSN.getMotherId(), importedAunt.getId());
-        assertEquals(importedPCOUSN.getFatherId(), importedUncle.getId());
+        assertEquals(importedMCOUSN.getMotherId(), importedAunt.getUuid());
+        assertEquals(importedPCOUSN.getFatherId(), importedUncle.getUuid());
+        
+        // Test user enters custom file name
+        action.setFileName(CUSTOM_FILE_NAME);
+        assertEquals(DOWNLOAD_FILE_ACTION, action.saveXmlDocument());
+        assertEquals(CUSTOM_FILE_NAME + EXTENSION, action.getFileName());
 
         // Test re-index on Unmarshalled Aunt
-        action.setRelativeId(1L);
+        action.setRelativeId(importedAunt.getUuid().toString());
+        action.setFileName(null);
         assertEquals(DOWNLOAD_FILE_ACTION, action.saveXmlDocument());
         input = action.getDownloadFile();
         xmlFileString = FhhCastorUtils.getInputStreamAsString(input);
-        
-        Person unmarshalledMaunt = new Person();
 
-        unmarshalledMaunt = (Person) FhhCastorUtils.unmarshallXMLFile(xmlFileString, 
-                this.getClass().getResource(MAPPING_FILE).getPath(), unmarshalledMaunt);
-        
+        patientPerson = (PatientPerson) FhhCastorUtils.unmarshallXMLFile(xmlFileString, new PatientPerson());
+
+        Person unmarshalledMaunt = HL7ConversionUtils.person(patientPerson);
+
         // Check Maunt attributes
         assertEquals(MAUNT_FILE_NAME, action.getFileName());
         assertEquals(MAUNT_NAME, unmarshalledMaunt.getName());
-        
+
         // original relative should be a nephew
         Relative originalAsNephew = unmarshalledMaunt.getRelativeOfType(RelativeCode.NEPHEW);
         assertNull(originalAsNephew.getName());
         assertEquals(DUMMY_GENDER.getDisplayName(), originalAsNephew.getGender().getDisplayName());
         assertEquals(DUMMY_ETHNICITY.getDisplayName(), originalAsNephew.getEthnicities().get(0).getDisplayName());
         assertEquals(DUMMY_RACE.getDisplayName(), originalAsNephew.getRaces().get(0).getDisplayName());
-        assertEquals(DUMMY_DISEASE.getDisplayName(), originalAsNephew.getObservations()
-                .get(0).getDisease().getDisplayName());
-        assertEquals(AgeRange.TWENTIES, originalAsNephew.getObservations()
-                .get(0).getAgeRange());
-        
+        assertEquals(DUMMY_DISEASE.getDisplayName(), originalAsNephew.getObservations().get(0).getDisease()
+                .getDisplayName());
+        assertEquals(AgeRangeEnum.TWENTIES, originalAsNephew.getObservations().get(0).getAgeRange());
+
         // she should have original's cousin as daughter
         assertNotNull(unmarshalledMaunt.getRelativeOfType(RelativeCode.DAU));
-        
+
         // she should have original's mom as sister
         assertNotNull(unmarshalledMaunt.getRelativeOfType(RelativeCode.NSIS));
-        assertNull(unmarshalledMaunt.getRelativeOfType(RelativeCode.NBRO));       
-        
+        assertNull(unmarshalledMaunt.getRelativeOfType(RelativeCode.NBRO));
+
         // nephew's mom id should be set to original's mom id
-        assertEquals(unmarshalledMaunt.getRelativeOfType(RelativeCode.NSIS).getId(), unmarshalledMaunt.getRelativeOfType(
-                RelativeCode.NEPHEW).getMotherId());
+        assertEquals(unmarshalledMaunt.getRelativeOfType(RelativeCode.NSIS).getUuid(), unmarshalledMaunt
+                .getRelativeOfType(RelativeCode.NEPHEW).getMotherId());
     }
-    
+
     @Test
     public void testgetAndSetProband() {
         Person p = new Person();
         action.setProband(p);
         assertEquals(p, action.getProband());
-    }
-    
-    @Test
-    public void testgetPreviewReindex() {
-        assertEquals("success", action.previewReindex());
     }
 }

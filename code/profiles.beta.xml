@@ -1,0 +1,28 @@
+<profilesXml>
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <log.level.default>DEBUG</log.level.default>
+                <jboss.home>/usr/local/jboss-4.0.5.GA-ejb3</jboss.home>
+                <jboss.hostname>domu-102.5amsolutions.com</jboss.hostname>
+                <jboss.configuration>default</jboss.configuration>
+                <database.url.prefix>jdbc:mysql://domu-102.5amsolutions.com:3306/</database.url.prefix>
+                <database.name>fhhdemo</database.name>
+                <admin.db.username>root</admin.db.username>
+                <admin.db.password>passw0rd</admin.db.password>
+                <test.selenium.server.port>61004</test.selenium.server.port>
+                <test.selenium.browser>*firefox /usr/local/firefox-3.5.6/firefox-bin</test.selenium.browser>
+                <showErrorStackTraces>false</showErrorStackTraces>
+                <mshv.keystore.filename>/home/jboss405/keystore-demo</mshv.keystore.filename>
+                <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>
+                <application.base.url>https://fhh-beta.5amsolutions.com/fhh-web/</application.base.url>
+                <test.mshv.user.email>FHH.tester.demo@gmail.com</test.mshv.user.email>
+                <test.mshv.user.pw>fhht3sterdemo</test.mshv.user.pw>
+            </properties>
+        </profile>
+    </profiles>
+</profilesXml>

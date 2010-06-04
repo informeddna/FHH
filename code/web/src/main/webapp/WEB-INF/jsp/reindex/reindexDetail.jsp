@@ -27,10 +27,10 @@
         <c:forEach items="${person.relatives}" var="currentItem" varStatus="status">
             <c:choose>
                 <c:when test="${empty currentItem.name}">
-                    <option value="${currentItem.id}"><fmt:message key="${currentItem.codeEnum.resourceKey}"/></option>
+                    <option value="${currentItem.uuid}"><fmt:message bundle="${der}" key="${currentItem.codeEnum.resourceKey}"/></option>
                 </c:when>
                 <c:otherwise>
-                    <option value="${currentItem.id}">${currentItem.name}</option>
+                    <option value="${currentItem.uuid}">${currentItem.name}</option>
                 </c:otherwise>
             </c:choose>
         </c:forEach>

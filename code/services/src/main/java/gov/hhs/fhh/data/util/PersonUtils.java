@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,16 +33,22 @@
  */
 package gov.hhs.fhh.data.util;
 
-import gov.hhs.fhh.data.HeightUnit;
+import gov.hhs.fhh.data.ClinicalObservation;
+import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.WeightUnit;
+import gov.hhs.fhh.data.util.htmimport.HTMRelationship;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.fiveamsolutions.hl7.model.mfhp.HeightUnit;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
@@ -72,50 +78,27 @@ public final class PersonUtils {
      * @param code RelativeCode containing the <code>htmValue</code>
      * @return int occurrence of the relative within its relative type
      */
-    public static int getParentNum(String htmName, RelativeCode code) {
+    public static int getParentNum(final String htmName, final RelativeCode code) {
         // Mother and father nodes don't contain a number, return 1 since they are always
         // the first relative of their relative type.
         if (RelativeCode.NMTH.equals(code) || RelativeCode.NFTH.equals(code)) {
             return 1;
         }
-        return Integer.valueOf(StringUtils.substring(htmName, code.getHtmValue().length()));
+        return Integer.valueOf(StringUtils.substring(htmName, HTMRelationship.fromRelativeCode(code).length()));
     }
     
-    /**
-     * Used in the HTM import to determine the maternal/paternal specifier for a cousin by
-     *  using the <code>RelativeCode</code> of the cousin's parent.
-     * @param code RelativeCode of the aunt/uncle (cousin's parent)
-     * @return true if maternal, otherwise false
-     */
-    public static boolean isMothersSibling(RelativeCode code) {
-        if (RelativeCode.MAUNT.equals(code)
-                || RelativeCode.MUNCLE.equals(code)) {
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Assigns an id to each relative.
-     * @param relatives <code>Relative</code> objects to assign ids
-     */
-    public static void setRelativeIds(List<Relative>  relatives) {
-        int i = 0;
-        for (Relative currRelative : relatives) {
-            currRelative.setId((long) i);
-            i++;
-        }
-    }
-
     /**
      * @param p Person to add Relative
      * @param relativeCode type of relative
      * @return new relative
      */
-    public static Relative addRelative(Person p, RelativeCode relativeCode) {
-        Relative newRelative = new Relative();
-        newRelative.setCode(relativeCode.toString());
+    public static Relative addRelative(final Person p, final RelativeCode relativeCode) {
+        final Relative newRelative = new Relative();
+        newRelative.setGender(relativeCode.getImpliedGender());
+        newRelative.setCodeEnum(relativeCode);
+        checkAndCorrectUUID(newRelative, p.getRelatives());
         p.getRelatives().add(newRelative);
+        setKnownParents(p, newRelative);
         return newRelative;
     }
 
@@ -124,7 +107,7 @@ public final class PersonUtils {
      * @param numRelatives number to add
      * @param relativeCode to set
      */
-    public static void addRelatives(Person p, Integer numRelatives, RelativeCode relativeCode) {
+    public static void addRelatives(final Person p, final Integer numRelatives, final RelativeCode relativeCode) {
         if (numRelatives != null) {
             for (int i = 0; i < numRelatives; i++) {
                 addRelative(p, relativeCode);
@@ -148,7 +131,7 @@ public final class PersonUtils {
             } else {
                 bmi = calculateMetricBmi(p);
             }
-            DecimalFormat format = new DecimalFormat("0.0");
+            final DecimalFormat format = new DecimalFormat("0.0");
             return format.format(bmi);
         }
         return null;
@@ -202,5 +185,140 @@ public final class PersonUtils {
             
         }
         return sqr;
+    }
+    
+    /**
+     * Sets the mother of a relative.
+     * @param relative Relative child of mother
+     * @param mother Relative to set
+     */
+    public static void setMother(final Relative relative, final Relative mother) {
+        relative.setMother(mother);
+    }
+    
+    /**
+     * Sets the father of a relative.
+     * @param relative Relative child of father
+     * @param father Relative to set
+     */
+    public static void setFather(final Relative relative, final Relative father) {
+        relative.setFather(father);
+    }
+    
+    /**
+     * Sets the parents of Aunts, Uncles, Brothers, and Sisters. Sons and dauters ids are generated before export
+     *   since their parent is a Person as opposed to a Relative object.
+     * @param proband central proband
+     * @param relative Relative object in which parents are known (Aunt, Uncle, Brother, or Sister).
+     */
+    public static void setKnownParents(final Person proband, final Relative relative) {
+        switch (relative.getCodeEnum()) {
+        case MAUNT:
+        case MUNCLE:
+            PersonUtils.setMother(relative, proband.getMother().getMother());
+            PersonUtils.setFather(relative, proband.getMother().getFather());
+            break;
+        case PAUNT:
+        case PUNCLE:
+            PersonUtils.setMother(relative, proband.getFather().getMother());
+            PersonUtils.setFather(relative, proband.getFather().getFather());
+            break;
+        case NBRO:
+        case NSIS:
+            PersonUtils.setMother(relative, proband.getMother());
+            PersonUtils.setFather(relative, proband.getFather());
+            break;
+        default:
+        }
+    }
+    
+    /**
+     * Sets the mother and father of proband and probands parents.
+     * @param proband Person object representing proband
+     */
+    public static void setImmediateRelatives(final Person proband) {
+        final Map<RelativeCode, Relative> relativeMap = new HashMap<RelativeCode, Relative>();
+        for (final Relative currRelative : proband.getRelatives()) {
+            switch (currRelative.getCodeEnum()) {
+            case NMTH:
+            case NFTH:
+            case MGRFTH:
+            case MGRMTH:
+            case PGRFTH:
+            case PGRMTH:
+                relativeMap.put(currRelative.getCodeEnum(), currRelative);
+                break;
+            default:
+            }
+        }
+        proband.setMother(relativeMap.get(RelativeCode.NMTH));
+        proband.setFather(relativeMap.get(RelativeCode.NFTH));
+        proband.getMother().setMother(relativeMap.get(RelativeCode.MGRMTH));
+        proband.getMother().setFather(relativeMap.get(RelativeCode.MGRFTH));
+        proband.getFather().setMother(relativeMap.get(RelativeCode.PGRMTH));
+        proband.getFather().setFather(relativeMap.get(RelativeCode.PGRFTH));
+    }
+    
+    /**
+     * Sets the parents of Siblings, Aunts and Uncles.  Immediate family member parents must be set.
+     * @param proband Person object representing the proband
+     */
+    public static void setAllKnownParents(final Person proband) {
+        for (final Relative currRelative : proband.getRelatives()) {
+            setKnownParents(proband, currRelative);
+        }
+    }
+    
+    /**
+     * Filters out '<' and '>' characters from names and conditions and replaces the characters with html codes.
+     * @param proband Person object to filer
+     */
+    public static void xssFilter(final Person proband) {
+        filterNameAndConditions(proband);
+        for (final Relative currRelative  : proband.getRelatives()) {
+            filterNameAndConditions(currRelative);
+        }
+    }
+    
+    /**
+     * Check whether the new relative has an id that is already assigned to an
+     * existing relative, and if so assign a new one and check again.
+     * @param newRelative - the new person to be added
+     * @param relatives - the existing relatives
+     */
+    public static void checkAndCorrectUUID(final Relative newRelative, final List<Relative> relatives) {
+        for (final Relative r : relatives) {
+            if (newRelative.getUuid().equals(r.getUuid())) {
+                newRelative.generateUuid();
+                checkAndCorrectUUID(newRelative, relatives);
+            }
+        }
+        
+    }
+
+    private static void filterNameAndConditions(final Person p) {
+        // Filter out xml characters in name and conditions (only user entered String fields).
+        // We also do this in an Interceptor, but user could still enter malicious input in xml and htm
+        // files.
+        p.setName(FormatUtils.performXSSFilter(p.getName()));
+        
+        for (final ClinicalObservation currObs : p.getObservations()) {
+            if (currObs.getDisease().isOther()) {
+                filterDisease(currObs.getDisease());
+            }
+        }
+        if (p instanceof Relative) {
+            final Relative rel = (Relative) p;
+            if (rel.getCauseOfDeath() != null) {
+                filterDisease(rel.getCauseOfDeath());
+            }
+        }
+    }
+    
+    private static void filterDisease(final Disease disease) {
+        disease.setOriginalText(FormatUtils.performXSSFilter(
+                disease.getOriginalText()));
+        disease.setAppDisplay(FormatUtils.performXSSFilter(
+                disease.getAppDisplay()));
     }
 }

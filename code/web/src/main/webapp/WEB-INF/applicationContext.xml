@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
+
+    <bean id="webServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate">
+        <constructor-arg ref="messageFactory" />
+    </bean>
+    
+    <bean id="savefamilyhistory" class="gov.hhs.fhh.web.action.SaveHistoryAction" singleton="false">
+       <property name="webServiceTemplate" ref="webServiceTemplate" />
+    </bean>
+</beans>

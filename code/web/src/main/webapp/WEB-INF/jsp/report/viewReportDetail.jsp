@@ -20,17 +20,27 @@
     <c:url value="/familyHistory/familyHistory.action" var="familyHistory" />
     <s:url value="/viewReport/downloadPdf.action" id="savePdfUrl" />
     <a href="${familyHistory}"><fmt:message key="menu.text.myHistory" /></a>
-    <a href="javascript://nop/" onclick="showPopUpWindow('${changeReportUrl}', loadViewReportDetail, true);"><fmt:message key="button.report.edit"/></a>
+    <a id="diagramTableOptions" href="javascript://nop/" onclick="showPopUpWindow('${changeReportUrl}', loadViewReportDetail, true);"><fmt:message key="button.report.edit"/></a>
     <a href="javascript://nop/" onclick="showPopUpWindow('${saveFamilyHistoryUrl}', loadViewReportDetail, true);"><fmt:message key="button.saveXmlDocument"/></a>
-    <a href="${savePdfUrl}"><fmt:message key="button.printHistory"/></a>
+    <a href="${savePdfUrl}" target="_blank"><fmt:message key="button.printHistory"/></a>
 </div>
 <c:if test="${showDiagram}">
+<p><fmt:message key="report.legend.gotoTable" /> <a href="#table"><fmt:message key="report.legend.gotoTableLink" /></a></p>
+
 <hr />
 <!-- show diagram only if selected -->
 <h2><fmt:message key="report.diagram.head"/></h2>
 <h5><fmt:message key="report.date"/>: <fmt:formatDate value="${date}" type="both" dateStyle="full" timeStyle="short" /></h5>
 <div class="scrollingBox">
 <c:set var="now" value="<%=new java.util.Date()%>"/>
+<c:choose>
+    <c:when test="${highlightDisease !=null}">
+        <c:set var="cols" value="4"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="cols" value="3"/>
+    </c:otherwise>
+</c:choose>
 <c:url value="/viewReport/retrieveImage.action" var="retrieveImageUrl" >
     <c:param name="ignore" value="${now.time}"/>
 </c:url>
@@ -39,17 +49,20 @@
 <table class="datatableWrapper">
     <tbody><tr>
         <td class="datatableWrapperInner">
-<table border="0" cellpadding="0" cellspacing="0" class="dataListing" summary="<fmt:message key="report.legend.summary"/>">
+<table columns="${cols}" border="0" cellpadding="0" cellspacing="0" class="dataListing1" style="border 1px solid #AEAEAE" summary="<fmt:message key="report.legend.summary"/>">
     <tr>
-        <th colspan="4"><fmt:message key="report.legend.title"/></th>
+        <th colspan="${cols}"><fmt:message key="report.legend.title"/></th>
     </tr>
     <tr>
         <td><img src="<s:url value="/images/icon_male.gif"/>" alt="<fmt:message key="icon.report.male"/>" />
          <fmt:message key="report.legend.male"/></td>
         <td><img src="<s:url value="/images/icon_female.gif"/>" alt="<fmt:message key="icon.report.female"/>" />
         <fmt:message key="report.legend.female"/></td>
-        <td><img src="<s:url value="/images/icon_maleFemaleHighlight.gif"/>" alt="<fmt:message key="icon.report.diseased"/>" />
-        <fmt:message key="report.legend.familyDisease"/></td>
+        <c:if test="${highlightDisease !=null}">
+            <td><img src="<s:url value="/images/icon_maleFemaleHighlight.gif"/>" alt="<fmt:message key="icon.report.diseased"/>" />
+            <fmt:message key="report.legend.familyDisease"/></td>
+        </c:if>
+            
         <td><img src="<s:url value="/images/icon_maleFemaleDec.gif"/>" alt="<fmt:message key="icon.report.deceased"/>" />
         <fmt:message key="report.legend.deceased"/></td>
     </tr>
@@ -58,7 +71,7 @@
         <c:set var="legendSize" value="0" />
             <c:forEach items="${legendList}" var="legendDisease" varStatus="status">
                 <c:choose>
-                    <c:when test= "${status.index % 4 == 0 && status.index != 0}">
+                    <c:when test= "${status.index % cols == 0 && status.index != 0}">
                         </tr><tr>
                     </c:when>
                  </c:choose>
@@ -70,25 +83,15 @@
                 <c:set var="legendSize" value="${legendSize + 1}"/>
             </c:forEach>
             <!-- clean up the table so there are no hanging cells -->
-            <c:if test="${legendSize %4 != 0}">
-                    <c:choose>
-                        <c:when test= "${legendSize % 4 == 1}">
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            </tr><tr>
-                        </c:when>
-                        <c:when test= "${legendSize % 4 == 2}">
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            </tr><tr>
-                        </c:when>
-                        <c:when test= "${legendSize % 4 == 3}">
-                            <td>&nbsp;</td>
-                            </tr><tr>
-                        </c:when>
-                     </c:choose>
-                 </c:if>
+            <c:set var="len" value="${fn:length(legendList)}"/>
+            <c:set var="mod" value="${len % cols}" />
+            <c:set var="x" value="${cols - (len % cols)}" />
+            <c:if test="${cols > x}">
+                <c:forEach var="k" begin="1" end="${x}">
+                    <td>&nbsp;</td>
+                </c:forEach>
+            </c:if>
+            </tr><tr>
         </c:if>
     </tr>
 </table>
@@ -129,10 +132,10 @@
         <td>
             <b><fmt:message key="person.age"/>:</b> ${person.myAge}<br />
             <c:if test="${person.height != null}">
-                <b><fmt:message key="person.height"/>:</b> <c:if test="${not empty person.height.value}">${person.height.value} <fmt:message key="${person.height.unit.resourceKey}" /></c:if><br />
+                <b><fmt:message key="person.height"/>:</b> <c:if test="${not empty person.height.value}">${person.height.value} <fmt:message bundle="${der}" key="${person.height.unit.resourceKey}" /></c:if><br />
             </c:if>
             <c:if test="${person.weight != null}">
-                <b><fmt:message key="person.weight"/>:</b> <c:if test="${not empty person.weight.value}">${person.weight.value} <fmt:message key="${person.weight.unit.resourceKey}" /></c:if><br />
+                <b><fmt:message key="person.weight"/>:</b> <c:if test="${not empty person.weight.value}">${person.weight.value} <fmt:message bundle="${der}" key="${person.weight.unit.resourceKey}" /></c:if><br />
                 <c:if test="${person.height != null}">
                     <b><fmt:message key="person.bmi"/>:</b> <c:if test="${not empty person.bmi}">${person.bmi}</c:if><br />
                 </c:if>
@@ -148,6 +151,7 @@
 </c:if>
 <c:set var="relativeReports" value="${relativeReports}" scope="request"/>
 
+<a name="table"></a>
 <table class="datatableWrapper">
 <tbody>
 <tr>
@@ -180,11 +184,11 @@
                         <c:if test="${showNames}">
                             ${currRelative.name}
                         </c:if>
-                        (<fmt:message key="${currRelative.codeEnum.resourceKey}"/>)
+                        (<fmt:message bundle="${der}" key="${currRelative.codeEnum.resourceKey}"/>)
                     </td>
                     <td>
                         <c:if test="${!empty currRelative.livingStatusEnum}">
-                            <fmt:message key="${currRelative.livingStatusEnum.resourceKey}"/>&nbsp;
+                            <fmt:message bundle="${der}" key="${currRelative.livingStatusEnum.resourceKey}"/>&nbsp;
                         </c:if> 
                     </td>
                     <td>
@@ -198,7 +202,7 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message key="${currCo.ageRange.resourceKey}" /> )<br />
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -214,7 +218,7 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message key="${currCo.ageRange.resourceKey}" /> )<br />
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -230,7 +234,7 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message key="${currCo.ageRange.resourceKey}" /> )<br />
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -246,7 +250,7 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message key="${currCo.ageRange.resourceKey}" /> )<br />
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -262,7 +266,7 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message key="${currCo.ageRange.resourceKey}" /> )<br />
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -278,7 +282,7 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message key="${currCo.ageRange.resourceKey}" /> )<br />
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -297,7 +301,7 @@
                                         ${currCo.disease.escapedReportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message key="${currCo.ageRange.resourceKey}" /> )<br />
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
                             </c:forEach>
                         </c:if>
                         &nbsp;

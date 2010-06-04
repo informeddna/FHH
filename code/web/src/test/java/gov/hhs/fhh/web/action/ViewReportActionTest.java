@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,20 +34,14 @@
 package gov.hhs.fhh.web.action;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
-import gov.hhs.fhh.data.Gender;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.Weight;
-import gov.hhs.fhh.data.WeightUnit;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
-import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,6 +49,10 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author lpower
@@ -97,7 +95,7 @@ public class ViewReportActionTest extends AbstractFhhWebTest {
         p.setDateOfBirth(DUMMY_DATE.getTime());
         p.setWeight(DUMMY_WEIGHT);
         p.setGender(DUMMY_GENDER);
-        DUMMY_CLINICAL_OBSERVATION.setAgeRange(AgeRange.TWENTIES);
+        DUMMY_CLINICAL_OBSERVATION.setAgeRange(AgeRangeEnum.TWENTIES);
         DUMMY_CLINICAL_OBSERVATION.setDisease(DUMMY_DISEASE);
         p.setObservations(new ArrayList<ClinicalObservation>());
         p.getObservations().add(DUMMY_CLINICAL_OBSERVATION);

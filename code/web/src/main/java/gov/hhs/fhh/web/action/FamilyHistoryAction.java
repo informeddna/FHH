@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -33,18 +33,26 @@
  */
 package gov.hhs.fhh.web.action;
 
+import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
+import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeBranch;
-import gov.hhs.fhh.web.util.FhhCastorUtils;
+import gov.hhs.fhh.data.util.HL7ConversionUtils;
+import gov.hhs.fhh.data.util.PersonUtils;
+import gov.hhs.fhh.data.util.htmimport.HTMImporter;
+import gov.hhs.fhh.model.mfhp.castor.FhhCastorUtils;
+import gov.hhs.fhh.service.locator.FhhRegistry;
+import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
-import gov.hhs.fhh.web.util.FhhUtils;
+import gov.hhs.fhh.xml.PatientPerson;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -53,28 +61,26 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
+import com.fiveamsolutions.nci.commons.web.struts2.action.ActionHelper;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
 /**
  * @author bpickeral
- *
+ * 
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.CyclomaticComplexity" })
 public class FamilyHistoryAction extends ActionSupport implements Preparable {
     private static final long serialVersionUID = 1161714L;
     private static final Logger LOG = Logger.getLogger(FamilyHistoryAction.class);
-    private static final String MAPPING_FILE = "/mapping.xml";
-    private static final String HTM_MAPPING_FILE = "/htm_mapping.xml";
     private static final String IMPORT_ERROR = "Error importing file";
     private static final String IMPORT_COMPLETE = "importComplete";
     private static final String IMPORT_FAILED = "input";
-    private static final String IMPORT_FIELD_NAME = "upload";
+    private static final String IMPORT_FIELD_NAME = "importedFile";
     private Person person;
     private File importedFile;
     private RelativeBranch relativeBranch;
     private boolean maintainState;
-    private boolean create;
     private String removeRelativeId;
 
     /**
@@ -87,7 +93,7 @@ public class FamilyHistoryAction extends ActionSupport implements Preparable {
         Person rootPerson = FhhHttpSessionUtil.getRootPerson();
         if (rootPerson != null) {
             setPerson(rootPerson);
-            this.relativeBranch = new RelativeBranch(person);
+            this.relativeBranch = new RelativeBranch(getPerson());
         }
     }
 
@@ -98,6 +104,7 @@ public class FamilyHistoryAction extends ActionSupport implements Preparable {
         if (!maintainState) {
             setPerson(new Person());
             FhhHttpSessionUtil.storePersonInSession(getPerson());
+            FhhHttpSessionUtil.setAttribute(FhhHttpSessionUtil.POPUP_KEY, "create");
             relativeBranch = null;
         }
         return SUCCESS;
@@ -105,16 +112,29 @@ public class FamilyHistoryAction extends ActionSupport implements Preparable {
 
     /**
      * Method invokes the familyHistory page.
-     *
+     * 
      * @return path String
      */
     public String familyHistory() {
         return SUCCESS;
     }
 
+    
+    /**
+     * Method invokes the importfamilyHistory page and lets it know that we're coming back there after cancelling
+     * loading a history from mshv.
+     * 
+     * @return path String
+     */
+    public String importFamilyHistoryCancelledMshv() {
+        ActionHelper.saveMessage(getText("importLocal.fromMshv.canceled"));
+        return SUCCESS;
+    }
+    
+    
     /**
      * Method invokes the familyHistoryDetail page.
-     *
+     * 
      * @return path String
      */
     public String familyHistoryDetail() {
@@ -123,7 +143,7 @@ public class FamilyHistoryAction extends ActionSupport implements Preparable {
 
     /**
      * Method invokes the familyHistoryDetail page.
-     *
+     * 
      * @return path String
      */
     public String saveFamilyHistory() {
@@ -132,92 +152,133 @@ public class FamilyHistoryAction extends ActionSupport implements Preparable {
 
     /**
      * Method invokes the familyHistoryDetail page.
-     *
+     * 
      * @return path String
      */
     public String importFamilyHistory() {
         return SUCCESS;
     }
 
-
     /**
      * Imports the Person Object to session.
-     *
+     * 
      * @return input
      */
     public String importXmlFile() {
         InputStream in = null;
         File file = getImportedFile();
+        if (file == null) {
+            addFieldError(IMPORT_FIELD_NAME, getText("importLocal.importedFile.required"));
+            return IMPORT_FAILED;
+        }
         try {
             in = FileUtils.openInputStream(file);
             String fileStr = FhhCastorUtils.getInputStreamAsString(in);
             if (fileStr.contains("<?xml")) {
+                LOG.debug("about to import xml file");
                 importXMLFile(fileStr);
             } else {
                 importHTMFile(fileStr);
-            }   
+            }
+            PersonUtils.setImmediateRelatives(getPerson());
+            PersonUtils.setAllKnownParents(getPerson());
+            FhhHttpSessionUtil.setAttribute(FhhHttpSessionUtil.getRootKey(), getPerson());
         } catch (Exception e) {
             LOG.error(IMPORT_ERROR, e);
             addFieldError(IMPORT_FIELD_NAME, getText("importFamilyHistory.error.importingFile"));
-            
+
             return IMPORT_FAILED;
         } finally {
             IOUtils.closeQuietly(in);
         }
         return IMPORT_COMPLETE;
     }
-    
+
     /**
      * Populates the family Tree with attributes from a version 2.x FHH XML file.
+     * 
      */
-    private void importXMLFile(String xmlFile) throws MarshalException, 
-        ValidationException, IOException, MappingException {
-        setPerson((Person) FhhCastorUtils.unmarshallXMLFile(xmlFile, 
-                this.getClass().getResource(MAPPING_FILE).getPath(), new Person()));
-        getPerson().setCompletedForm(true);
-        FhhHttpSessionUtil.setAttribute(FhhHttpSessionUtil.getRootKey(), getPerson());
-        setPerson(FhhUtils.setupParents(this.person));
+    private void importXMLFile(String xmlFile) throws MarshalException, ValidationException, IOException,
+            MappingException {
+        PatientPerson unmarshalledPerson = (PatientPerson) 
+                    FhhCastorUtils.unmarshallXMLFile(xmlFile, new PatientPerson());
+        setPerson(HL7ConversionUtils.person(unmarshalledPerson));
+        // Set parents of relatives
+        setPerson(FhhUtils.setupParents(getPerson()));
+        PersonUtils.xssFilter(getPerson());
         FhhHttpSessionUtil.addAllUserEnteredDiseases(getPerson());
+        populateRaceEthnicityIds(getPerson());
+        for (Relative relative : getPerson().getRelatives()) {
+            populateRaceEthnicityIds(relative);
+        }
     }
+    
+    
+    /**
+     * @param personParam the person to populate Race and Ethnicity ids
+     */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
+    public static void populateRaceEthnicityIds(Person personParam) {
+        for (Ethnicity ethnicity : personParam.getEthnicities()) {
+            if (ethnicity.getId() == null || ethnicity.getId() == 0) {
+                List<Ethnicity> matching = FhhRegistry.getPersonService().getEthnicityByCodeAndCodeSystem(
+                        ethnicity.getCode(), ethnicity.getCodeSystemName());
+                if (matching != null && !matching.isEmpty()) {
+                    ethnicity.setId(matching.get(0).getId());
+                }
+            }
+        }
+        
+        for (Race race : personParam.getRaces()) {
+            if (race.getId() == null || race.getId() == 0) {
+                List<Race> matching = FhhRegistry.getPersonService().getRaceByCodeAndCodeSystem(
+                        race.getCode(), race.getCodeSystemName());
+                if (matching != null && !matching.isEmpty()) {
+                    race.setId(matching.get(0).getId());
+                }
+            }
+        }
+    }
+    
     
     /**
      * Populates the family Tree with attributes from a version 1.x FHH HTM file.
      */
-    private void importHTMFile(String htmFile) throws MarshalException,
-        ValidationException, IOException, MappingException {
-        Person p = (Person) FhhCastorUtils.unmarshallHTMFile(htmFile, 
-                this.getClass().getResource(HTM_MAPPING_FILE).getPath(), new Person());
-        setPerson(p);
-        FhhHttpSessionUtil.setAttribute(FhhHttpSessionUtil.getRootKey(), getPerson());
+    private void importHTMFile(String htmFile) throws MarshalException, ValidationException, IOException,
+            MappingException {
+        HTMImporter importer = new HTMImporter();
+        setPerson(importer.build(htmFile));
     }
-    
+
     /**
-     * Action removes the relative of index relativeId and all of the relatives descendants from
-     * the family tree.
-     *
+     * Action removes the relative of index relativeId and all of the relatives descendants from the family tree.
+     * 
      * @return path String
      */
     public String removeRelative() {
         List<Relative> removeList = new ArrayList<Relative>();
-        removeDescendants(person.getRelatives().get(Integer.valueOf(removeRelativeId)), removeList);
-        person.getRelatives().remove((int) Integer.valueOf(removeRelativeId));
-        for (Relative currRelative : removeList) {
-            person.getRelatives().remove(currRelative);
-        }
-        this.relativeBranch = new RelativeBranch(person);
+        Relative relativeToRemove = getPerson().getRelative(UUID.fromString(getRemoveRelativeId()));
+        removeDescendants(relativeToRemove, removeList);
+        getPerson().getRelatives().remove(relativeToRemove);
+        getPerson().getRelatives().removeAll(removeList);
+        getPerson().getUnrelatedRelatives().remove(relativeToRemove);
+        setRelativeBranch(new RelativeBranch(getPerson()));
         return "familyHistory";
     }
-    
+
     /**
-     * Method adds relatives to the removeList that are parents of the relative passed in.  Method calls
+     * Method adds relatives to the removeList that are parents of the relative passed in. Method calls
      * removeDescendants on any descendants added to the removeList.
+     * 
      * @param relativeRemoved The ancestor of the relatives to be removed.
      * @param removeList The list of relatives to be removed.
      */
     private void removeDescendants(Relative relativeRemoved, List<Relative> removeList) {
-        for (Relative currRelative : person.getRelatives()) {
-            if (relativeRemoved.equals(currRelative.getMother())
-                    || relativeRemoved.equals(currRelative.getFather())) {
+        if (relativeRemoved == null) {
+            return;
+        }
+        for (Relative currRelative : getPerson().getRelatives()) {
+            if (relativeRemoved.equals(currRelative.getMother()) || relativeRemoved.equals(currRelative.getFather())) {
                 removeList.add(currRelative);
                 removeDescendants(currRelative, removeList);
             }
@@ -281,20 +342,6 @@ public class FamilyHistoryAction extends ActionSupport implements Preparable {
     }
 
     /**
-     * @return is creating a new Person/Family History (from Home page)
-     */
-    public boolean isCreate() {
-        return create;
-    }
-
-    /**
-     * @param create true if are creating a new Person/Family History (from Home page)
-     */
-    public void setCreate(boolean create) {
-        this.create = create;
-    }
-
-    /**
      * @return the removeRelativeId
      */
     public String getRemoveRelativeId() {
@@ -307,4 +354,5 @@ public class FamilyHistoryAction extends ActionSupport implements Preparable {
     public void setRemoveRelativeId(String removeRelativeId) {
         this.removeRelativeId = removeRelativeId;
     }
+
 }

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -38,7 +38,8 @@ import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
-import gov.hhs.fhh.data.util.DiseaseUtils;
+import gov.hhs.fhh.service.PersonInfo;
+import gov.hhs.fhh.web.data.ConnectionInfo;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
+
 
 /**
  * This class is used to manage objects in session.
@@ -63,6 +65,24 @@ public class FhhHttpSessionUtil {
      * Reference to the attribute name of the user entered diseases in session.
      */
     public static final String DISEASE_KEY = "diseaseKey";
+    
+    /**
+     * Reference to the attribute name of the healthvault key session.
+     */
+    public static final String HV_KEY = "_hv";
+    
+    /**
+     * Reference to the attribute name of the previewPersonKey stored in session(used to display the preview chart of
+     * the person pulled out of mshv).
+     */
+    public static final String PREVIEW_PERSON_KEY = "previewPersonKey";
+    
+    
+    /**
+     * key for the popup session param.
+     */
+    public static final String POPUP_KEY = "popupKey";
+    
     
     private static int sidCounter = Integer.MIN_VALUE;
     
@@ -117,8 +137,8 @@ public class FhhHttpSessionUtil {
     }
     
     /**
-     * Gets the rootKey of the person object from session.
-     * @return String representing the rootKey
+     * Gets the rootPerson object from session.
+     * @return Person object
      */
     public static Person getRootPerson() {
         String rootKey = getRootKey();
@@ -127,6 +147,36 @@ public class FhhHttpSessionUtil {
             person = (Person) getSession().getAttribute(rootKey);
         }
         return person;
+    }
+    
+    /**
+     * Gets the healthvaultKey of the person object from session.
+     * @return String representing the rootKey
+     */
+    public static String getHealthvaultKey() {
+        return (String) getSession().getAttribute(ROOT_KEY) + HV_KEY;
+    }
+    
+    /**
+     * Gets the ConnectionInfo object from session for Healthvault.
+     * @return String representing the rootKey
+     */
+    public static ConnectionInfo getHVSession() {
+        String hvKey = getHealthvaultKey();
+        ConnectionInfo connectionInfo = null;
+        if (hvKey != null) {
+            connectionInfo = (ConnectionInfo) getSession().getAttribute(hvKey);
+        }
+        return connectionInfo;
+    }
+
+    /**
+     * Stores the person in session and sets the rootKey in session as
+     * the generated key.
+     * @param connectionInfo ConnectionInfo to store in session
+     */
+    public static void setHVSession(PersonInfo connectionInfo) {
+        getSession().setAttribute(getHealthvaultKey(), connectionInfo);
     }
     
     /**
@@ -143,7 +193,7 @@ public class FhhHttpSessionUtil {
      * @param disease to add
      */
     public static void addUserEnteredDisease(Disease disease) {
-        if (disease.getId().equals(DiseaseUtils.OTHER_DISEASE_ID)) {
+        if (disease.isOther()) {
             Map<String, Disease> userEnteredDiseases = getUserEnteredDiseases();
             if (userEnteredDiseases == null) {
                 userEnteredDiseases = new HashMap<String, Disease>();
@@ -191,4 +241,5 @@ public class FhhHttpSessionUtil {
             getSession().setAttribute(sessionKey, o);
         }
     }
+    
 }

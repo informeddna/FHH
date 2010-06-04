@@ -3,18 +3,18 @@
                          "http://castor.org/mapping.dtd">
 
 <mapping>
-	<class name="gov.hhs.fhh.data.Person">
+	<class name="gov.hhs.fhh.htm.HTMPerson">
 	   <map-to xml="person"/>
-       <field name="htmNode" type="gov.hhs.fhh.data.util.htmimport.HTMNode" >
+       <field name="htmNode" type="gov.hhs.fhh.model.mfhp.castor.HTMNode" >
             <bind-xml name="htmNode"/>
        </field>
 	</class>
-    <class name="gov.hhs.fhh.data.util.htmimport.HTMNode">
-       <field name="inputNodes" type="gov.hhs.fhh.data.util.htmimport.InputNode" collection="arraylist">
+    <class name="gov.hhs.fhh.model.mfhp.castor.HTMNode">
+       <field name="inputNodes" type="gov.hhs.fhh.model.mfhp.castor.InputNode" collection="arraylist">
             <bind-xml name="input"/>
        </field>
     </class>
-    <class name="gov.hhs.fhh.data.util.htmimport.InputNode">
+    <class name="gov.hhs.fhh.model.mfhp.castor.InputNode">
        <field name="type" type="string">
            <bind-xml name="type" node="attribute"/>
        </field>

@@ -3,8 +3,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        <title><fmt:message key="fhh.title"/> - <decorator:title default="Welcome" /></title>
+        <title><fmt:message key="fhh.title"/></title>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <META HTTP-EQUIV="Pragma" CONTENT="no-cache"/>
         <%@ include file="/WEB-INF/jsp/decorators/headIncludes.jsp" %>
         <link rel="address bar icon" href="<c:url value="/images/favicon.ico"/>" />
         <link rel="icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" />
@@ -21,7 +22,7 @@
                             <s:param name="maintainState" value="true"/>
                         </s:url>
                         <fmt:message key="logout.warning.part1" /> <span id="warningCountdownDisplay"></span> <fmt:message key="logout.warning.part1.seconds" />
-                        <fmt:message key="logout.warning.part2" /> <s:a href="%{reloadUrl}" id="mainWarningRedirect"><fmt:message key="logout.warning.part2.link" /></s:a>.
+                        <fmt:message key="logout.warning.part2" /> <a href="${reloadUrl}" id="mainWarningRedirect"><fmt:message key="logout.warning.part2.link" /></a>.
                     </div>
                     <%-- Content --%> 
                     <div id="content">

@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -42,7 +42,7 @@ import com.opensymphony.xwork2.ActionSupport;
  *  The struts field validator custom messages were not picking up the Spanish version of ApplicationResources.
  */
 public class AbstractFHHAction extends ActionSupport {
-    private static final long serialVersionUID = 19255463L;
+    private static final long serialVersionUID = 1L;
     
     /**
      * Adds a field error if a required field (String Value) is empty.
@@ -69,7 +69,11 @@ public class AbstractFHHAction extends ActionSupport {
     public boolean validateIntegerField(String fieldName, String fieldKey, String fieldValue) {
         if (!StringUtils.isEmpty(fieldValue)) {
             try {
-                Integer.valueOf(fieldValue);
+                Integer i = Integer.valueOf(fieldValue);
+                if (i.intValue() <= 0) {
+                    addFieldError(fieldName, getText(fieldKey) + " " + getText("errors.invalid.integer"));
+                    return false;
+                }
             } catch (NumberFormatException e) {
                 addFieldError(fieldName, getText(fieldKey) + " " + getText("errors.invalid.integer"));
                 return false;
@@ -78,6 +82,8 @@ public class AbstractFHHAction extends ActionSupport {
         return true;
     }
     
+
+
     /**
      * Adds a field error if a required field (Object) is null.
      * @param fieldName name of the field

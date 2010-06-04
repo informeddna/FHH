@@ -1,28 +1,8 @@
-<%@ include file="/WEB-INF/jsp/common/taglibs.jsp"%>
+<%@ include file="../common/taglibs.jsp"%>
 <html>
 <head>
-    <title><fmt:message key="fhh.title"/></title>
-    <script type="text/javascript" charset="ISO-8859-1">
-    <s:url value="/familyHistory/familyHistory.action" id="returnUrl" />
-    <s:url value="/popup/familyHistory/importFamilyHistory.action" id="importXmlUrl" />
-
-    loadFamilyHistoryDetail = function() {
-    	window.location.href = '${returnUrl}';
-    }
-
-    importXmlDocument = function() {
-    	showPopUpWindow('${importXmlUrl}', loadFamilyHistoryDetail, true);
-    }
-
-    saveFamilyHistory = function() {
-    	showPopUpWindow('${saveFamilyHistoryUrl}', loadFamilyHistoryDetail, true);
-    }
-
-    handlePopup = function(url) {
-    	showPopUpWindow(url, loadFamilyHistoryDetail, true);
-    }
-
-    </script>
+    <title><fmt:message key="menu.text.myHistory"/></title>
+  <%@ include file="../common/eventHandlers.jsp" %>
 </head>
 <body>
     <script type="text/javascript" charset="ISO-8859-1">

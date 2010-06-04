@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -35,48 +35,37 @@ package gov.hhs.fhh.web.action;
 
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
-import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.web.FhhWebException;
-import gov.hhs.fhh.web.util.FhhCastorUtils;
+import gov.hhs.fhh.model.mfhp.castor.ExportUtils;
+import gov.hhs.fhh.service.FhhWebException;
+import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
-import gov.hhs.fhh.web.util.FhhUtils;
-import gov.hhs.fhh.web.util.RelativeDraw;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.UUID;
 
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
 /**
  * @author bpickeral
- *
+ * 
  */
 public class ReindexAction extends ActionSupport implements Preparable {
     private static final long serialVersionUID = 116173314L;
-    
-    private static final String EXTENSION_ID = "718163810183";
-    private static final String DOWNLOAD_DOC_NAME = "FamilyHistory.xml";
+    private static final String DOWNLOAD_DOC_NAME = "FamilyHistory";
+    private static final String EXTENSION = ".xml";
     private static final String DEFAULT_DOC_PREFIX = "My_";
-    private static final String MAPPING_FILE = "/mapping.xml";
-    private static final String XML_FILE_FOOTER = "</patient></subject></FamilyHistory>";
-    private static final String XML_COMMENT = "<!--This file was produced by the Family Health Portrait tool "
-        + "at http://familyhistory.hhs.gov. You should not attempt to edit the file. "
-        + "Visit http://familyhistory.hhs.gov to upload the file for viewing and editing. The web site also"
-        + " can provide a viewable and printable chart and diagram of the family health history.-->";
-   
+
     private Person person;
     private Person proband;
     private String fileName;
-    private Long relativeId;
+    private String relativeId;
     private InputStream downloadFile;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -95,10 +84,10 @@ public class ReindexAction extends ActionSupport implements Preparable {
     public String reindex() {
         return SUCCESS;
     }
-    
+
     /**
-     * Method sends family history detail to output in the form of an XML document.
-     * Method assumes the relative Ids are set.
+     * Method sends family history detail to output in the form of an XML document. Method assumes the relative Ids are
+     * set.
      * 
      * @return path String
      * @throws FhhWebException if there is an error
@@ -106,56 +95,73 @@ public class ReindexAction extends ActionSupport implements Preparable {
     public String saveXmlDocument() throws FhhWebException {
         proband = getPerson();
         if (getRelativeId() != null) {
-            proband = proband.recenterOn(getRelativeId().intValue());
+            proband = proband.recenterOn(UUID.fromString(getRelativeId()));
         }
-        
-        StringWriter stringWriter = new StringWriter();
-        generateFileName();
-        StringBuffer sb = new StringBuffer();
-        sb.append(generateHistoryHeader());
-        try {
-            FhhCastorUtils.marshallXmlFile(stringWriter, 
-                    FamilyHistoryAction.class.getResource(MAPPING_FILE).getPath(), proband);
-        } catch (Exception e) {
-            throw new FhhWebException(e);
+
+        if (fileName == null) {
+            fileName = getFileNameForPerson(proband);
+        } else {
+            setFileName(fileName + EXTENSION);
         }
-        sb.append(stringWriter.toString());
-        sb.append(XML_FILE_FOOTER);
-        downloadFile = new ByteArrayInputStream(sb.toString().getBytes());
-        
+
+        setChildrenIds();
+        downloadFile = new ByteArrayInputStream(ExportUtils.createXMLFile(proband, true).getBytes());
+
         return "downloadXMLFile";
     }
-    
-    
+
     /**
-     * Method creates a new Person for the reindexed family member
-     * Method assumes the relative Ids are set.
+     * @param person - the person for which the file name will be retrieved
+     * @return - the file name of the xml file that is returned when saveXmlDocument() is called.
+     */
+    public static String getFileNameForPerson(Person person) {
+        String retval = null;
+        StringBuffer fileNameBuff = new StringBuffer();
+        if (person != null && person.getName() != null) {
+            fileNameBuff.append(person.getName()).append('_');
+        } else {
+            fileNameBuff.append(DEFAULT_DOC_PREFIX);
+        }
+        fileNameBuff.append(DOWNLOAD_DOC_NAME + EXTENSION);
+        retval = fileNameBuff.toString().replaceAll(" ", "_");
+
+        return retval;
+    }
+
+    
+    private void setChildrenIds() {
+        for (Relative currRelative : proband.getRelatives()) {
+            if (currRelative.isChildOfProband()) {
+                setProbandParentId(currRelative);
+            }
+        }
+    }
+
+    private void setProbandParentId(Relative relative) {
+        if (Gender.MALE.equals(proband.getGender())) {
+            relative.setFatherId(proband.getUuid());
+        } else if (Gender.FEMALE.equals(proband.getGender())) {
+            relative.setMotherId(proband.getUuid());
+        }
+    }
+
+    /**
+     * Method creates a new Person for the reindexed family member Method assumes the relative Ids are set.
      * 
      * @return InputStream
-     * @throws FhhWebException on error.
+     * @throws FhhWebException - in case of an error.
      */
     public InputStream getReindexPreview() throws FhhWebException {
         proband = getPerson();
         if (getRelativeId() != null) {
-            proband = proband.recenterOn(getRelativeId().intValue());
+            proband = proband.recenterOn(UUID.fromString(getRelativeId()));
         }
         // need to add parents or grandparents, if they're not part of the recentered person
         proband = FhhUtils.setupParents(proband);
         // now draw the png
-        try {
-            RelativeDraw selfDraw = new RelativeDraw(new Relative(proband));
-            selfDraw.setCode(RelativeCode.SELF.toString());
-            selfDraw.setShowNames(true);
-            return new ByteArrayInputStream(selfDraw.organizeFamilyTree(proband));
-        } catch (Exception e) {
-            LOG.info("catching an exception!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            LOG.info(e.getMessage());
-            LOG.info(e.getCause().toString());
-            LOG.info(e.getStackTrace().toString());
-        }
-        return new ByteArrayInputStream("hello".getBytes());
+        return ViewReportAction.getDiagramForPerson(proband, true, null);
     }
-    
+
     /**
      * Retrieves the pedigree diagram.
      * 
@@ -165,7 +171,7 @@ public class ReindexAction extends ActionSupport implements Preparable {
     public String retrieveImage() {
         return "previewImage";
     }
-    
+
     /**
      * Retrieves the pedigree diagram for reindexing.
      * 
@@ -176,10 +182,9 @@ public class ReindexAction extends ActionSupport implements Preparable {
         return "success";
     }
 
-
-    
     /**
      * Method transmits the family history file to the HttpServletResponse output stream.
+     * 
      * @return input stream containgint the xml file
      */
     public InputStream getDownloadFile() {
@@ -187,36 +192,7 @@ public class ReindexAction extends ActionSupport implements Preparable {
         if (relativeId == null) {
             proband.setXmlFileSaved(true);
         }
-        return downloadFile;    
-    }
-    
-    /**
-     * Generates and stores the xml file name.
-     **/
-    private void generateFileName() {
-        StringBuffer fileNameBuff = new StringBuffer();
-        if (proband.getName() != null) {
-            fileNameBuff.append(proband.getName()).append('_');
-        } else {
-            fileNameBuff.append(DEFAULT_DOC_PREFIX);
-        }
-        fileNameBuff.append(DOWNLOAD_DOC_NAME);
-        setFileName(fileNameBuff.toString().replaceAll(" ", "_"));
-    }
-
-    /**
-     * Generates the family history header for the xml document. Todo: Once the FamilyHistory Class is implemented, do
-     * not hardcode the values.
-     **/
-    private static String generateHistoryHeader() {
-        Date today = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + XML_COMMENT 
-                + "<FamilyHistory classCode=\"OBS\" moodCode=\"EVN\">"
-                + "<id extention=\"gov.hhs.fhh:" + EXTENSION_ID + "\" />" + "<effectiveTime value=\""
-                + format.format(today) + "\" />"
-                + "<methodCode displayName=\"Surgeon General's Family Health History Tool\" />"
-                + "<subject typeCode=\"SBJ\">" + "<patient classCode=\"PAT\">";
+        return downloadFile;
     }
 
     /**
@@ -264,14 +240,14 @@ public class ReindexAction extends ActionSupport implements Preparable {
     /**
      * @return the relativeId
      */
-    public Long getRelativeId() {
+    public String getRelativeId() {
         return relativeId;
     }
 
     /**
      * @param relativeId the relativeId to set
      */
-    public void setRelativeId(Long relativeId) {
+    public void setRelativeId(String relativeId) {
         this.relativeId = relativeId;
     }
 }

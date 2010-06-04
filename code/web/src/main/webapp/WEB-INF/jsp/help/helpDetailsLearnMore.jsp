@@ -21,8 +21,14 @@
 <h4><fmt:message key="help.learnMore.text.h4.myPrivacy" /></h4>
 <p><fmt:message key="help.learnMore.text.p1.myPrivacy" /></p>
 
+<h4><fmt:message key="help.learnMore.text.h4.privacyHealthVault" /></h4>
+<p><fmt:message key="help.learnMore.text.p1.privacyHealthVault" /> <a href="http://www.healthvault.com/privacy-policy.html" target="_blank"><fmt:message key="help.learnMore.text.p1.link.privacyHealthVault" /></a>
+<fmt:message key="help.learnMore.text.p2.privacyHealthVault" /> <a href="http://www.healthvault.com/terms-of-use.html" target="_blank"><fmt:message key="help.learnMore.text.p2.link.privacyHealthVault" /></a></p>
+
 <h4><fmt:message key="help.learnMore.text.h4.toolHelp" /></h4>
-<p><fmt:message key="help.learnMore.text.p1.toolHelp" /> <a href="mailto:ncicb@pop.nci.nih.gov"><fmt:message key="help.learnMore.text.p1.toolHelpEmail" /></a> <fmt:message key="help.learnMore.text.p1.toolHelpPhone" /> <fmt:message key="help.learnMore.text.p1.toolHelpHours" /></p>
+<p><fmt:message key="help.learnMore.text.p1.toolHelp" /> <fmt:message key="help.learnMore.text.p1.toolHelpMs" /><a href="mailto:ncicb@pop.nci.nih.gov"><fmt:message key="help.learnMore.text.p1.toolHelpEmail" /></a> <fmt:message key="help.learnMore.text.p1.toolHelpPhone" /> <fmt:message key="help.learnMore.text.p1.toolHelpHours" /></p>
+<p><em><fmt:message key="help.learnMore.text.p1.msnote1"/></em> <fmt:message key="help.learnMore.text.p1.msnote2"/>
+<a href="http://support.microsoft.com/healthvault" target="_blank"><fmt:message key="help.learnMore.text.p1.msemail"/></a></p>
 
 <h4><fmt:message key="help.learnMore.text.h4.whyReindex" /></h4>
 <p><fmt:message key="help.learnMore.text.p1.whyReindex" /></p>

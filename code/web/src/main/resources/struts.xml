@@ -4,240 +4,327 @@
 "http://struts.apache.org/dtds/struts-2.0.dtd">
 
 <struts>
-    <constant name="struts.devMode" value="true" />
-    <constant name="struts.ui.theme" value="css_xhtml" />
-    <package name="default" extends="struts-default">
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.ui.theme" value="css_xhtml" />
+    <constant name="struts.url.includeParams" value="none" />
+    
 
-        <interceptors>
+	<package name="default" extends="struts-default">
+		<interceptors>
+			<interceptor name="nci-commonsParams"
+				class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.DisplayTagParametersInterceptor" />
+			<interceptor name="nullCollectionElements"
+				class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.NullCollectionElementInterceptor" />
+			<interceptor name="parameterTrim"
+				class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.ParameterTrimInterceptor" />
+			<interceptor name="i18n"
+				class="com.opensymphony.xwork2.interceptor.I18nInterceptor" />
+			<interceptor name="customI18n"
+				class="gov.hhs.fhh.web.interceptor.CustomI18nInterceptor" />
+            <interceptor name="xssFilterInterceptor"
+                class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.XSSFilterInterceptor" />
+			<interceptor name="exception"
+				class="gov.hhs.fhh.web.interceptor.FHHExceptionInterceptor" />
 
-            <interceptor name="nci-commonsParams"
-                class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.DisplayTagParametersInterceptor" />
+			<interceptor-stack name="fhhParamsPrepareParamsStack">
+				<interceptor-ref name="logger" />
+				<interceptor-ref name="exception" />
+				<interceptor-ref name="alias" />
+				<interceptor-ref name="nci-commonsParams" />
+				<interceptor-ref name="servletConfig" />
+				<interceptor-ref name="prepare" />
+				<interceptor-ref name="i18n" />
+				<interceptor-ref name="customI18n" />
+				<interceptor-ref name="chain" />
+				<interceptor-ref name="fileUpload" />
+				<interceptor-ref name="checkbox" />
+				<interceptor-ref name="staticParams" />
+				<interceptor-ref name="nci-commonsParams" />
+				<interceptor-ref name="conversionError" />
+				<interceptor-ref name="nullCollectionElements" />
+                <interceptor-ref name="xssFilterInterceptor" />
+				<interceptor-ref name="parameterTrim">
+					<param name="trimToNull">true</param>
+				</interceptor-ref>
+				<interceptor-ref name="validation">
+					<param name="excludeMethods">input,back,cancel</param>
+				</interceptor-ref>
+				<interceptor-ref name="workflow">
+					<param name="excludeMethods">input,back,cancel</param>
+				</interceptor-ref>
+			</interceptor-stack>
 
-            <interceptor name="nullCollectionElements"
-                class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.NullCollectionElementInterceptor" />
+			<interceptor-stack name="fhhDefaultStack">
+				<interceptor-ref name="logger" />
+				<interceptor-ref name="exception" />
+				<interceptor-ref name="alias" />
+				<interceptor-ref name="servletConfig" />
+				<interceptor-ref name="prepare" />
+				<interceptor-ref name="i18n" />
+				<interceptor-ref name="customI18n" />
+				<interceptor-ref name="chain" />
+				<interceptor-ref name="debugging" />
+				<interceptor-ref name="profiling" />
+				<interceptor-ref name="fileUpload" />
+				<interceptor-ref name="checkbox" />
+				<interceptor-ref name="staticParams" />
+				<interceptor-ref name="nci-commonsParams" />
+				<interceptor-ref name="conversionError" />
+				<interceptor-ref name="nullCollectionElements" />
+                <interceptor-ref name="xssFilterInterceptor" />
+				<interceptor-ref name="parameterTrim">
+					<param name="trimToNull">true</param>
+				</interceptor-ref>
+				<interceptor-ref name="validation">
+					<param name="excludeMethods">input,back,cancel</param>
+				</interceptor-ref>
+				<interceptor-ref name="workflow">
+					<param name="excludeMethods">input,back,cancel</param>
+				</interceptor-ref>
+			</interceptor-stack>
 
-            <interceptor name="parameterTrim"
-                class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.ParameterTrimInterceptor" />
-            <interceptor name="i18n" class="com.opensymphony.xwork2.interceptor.I18nInterceptor" />
-            <interceptor name="customI18n" class="gov.hhs.fhh.web.interceptor.CustomI18nInterceptor" />
+			<interceptor-stack name="fhhPerMethodValidationStack">
+				<interceptor-ref name="logger" />
+				<interceptor-ref name="exception" />
+				<interceptor-ref name="alias" />
+				<interceptor-ref name="nci-commonsParams" />
+				<interceptor-ref name="servletConfig" />
+				<interceptor-ref name="prepare" />
+				<interceptor-ref name="i18n" />
+				<interceptor-ref name="customI18n" />
+				<interceptor-ref name="chain" />
+				<interceptor-ref name="fileUpload" />
+				<interceptor-ref name="checkbox" />
+				<interceptor-ref name="staticParams" />
+				<interceptor-ref name="nci-commonsParams" />
+				<interceptor-ref name="conversionError" />
+				<interceptor-ref name="nullCollectionElements" />
+                <interceptor-ref name="xssFilterInterceptor" />
+				<interceptor-ref name="parameterTrim">
+					<param name="trimToNull">true</param>
+				</interceptor-ref>
+				<interceptor-ref name="validation">
+					<param name="excludeMethods">input,back,cancel</param>
+					<param name="validateAnnotatedMethodOnly">true</param>
+				</interceptor-ref>
+				<interceptor-ref name="workflow">
+					<param name="excludeMethods">input,back,cancel</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
 
-            <interceptor-stack name="fhhParamsPrepareParamsStack">
-                <interceptor-ref name="logger"/>
-                <interceptor-ref name="exception" />
-                <interceptor-ref name="alias" />
-                <interceptor-ref name="nci-commonsParams" />
-                <interceptor-ref name="servletConfig" />
-                <interceptor-ref name="prepare" />
-                <interceptor-ref name="i18n" />
-                <interceptor-ref name="customI18n" />
-                <interceptor-ref name="chain" />
-                <interceptor-ref name="fileUpload" />
-                <interceptor-ref name="checkbox" />
-                <interceptor-ref name="staticParams" />
-                <interceptor-ref name="nci-commonsParams" />
-                <interceptor-ref name="conversionError" />
-                <interceptor-ref name="nullCollectionElements" />
-                <interceptor-ref name="parameterTrim">
-                    <param name="trimToNull">true</param>
-                </interceptor-ref>
-                <interceptor-ref name="validation">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
-                <interceptor-ref name="workflow">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
-           </interceptor-stack>
+		<default-interceptor-ref name="fhhParamsPrepareParamsStack" />
 
-            <interceptor-stack name="fhhDefaultStack">
-                <interceptor-ref name="logger"/>
-                <interceptor-ref name="exception" />
-                <interceptor-ref name="alias" />
-                <interceptor-ref name="servletConfig" />
-                <interceptor-ref name="prepare" />
-                <interceptor-ref name="i18n" />
-                <interceptor-ref name="customI18n" />
-                <interceptor-ref name="chain" />
-                <interceptor-ref name="debugging" />
-                <interceptor-ref name="profiling" />
-                <interceptor-ref name="fileUpload" />
-                <interceptor-ref name="checkbox" />
-                <interceptor-ref name="staticParams" />
-                <interceptor-ref name="nci-commonsParams" />
-                <interceptor-ref name="conversionError" />
-                <interceptor-ref name="nullCollectionElements" />
-                <interceptor-ref name="parameterTrim">
-                    <param name="trimToNull">true</param>
-                </interceptor-ref>
-                <interceptor-ref name="validation">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
-                <interceptor-ref name="workflow">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
-           </interceptor-stack>
+		<global-results>
+			<result name="error">/error.jsp</result>
+			<result name="notYetImplemented">/notYetImplemented.jsp</result>
+		</global-results>
 
-           <interceptor-stack name="fhhPerMethodValidationStack">
-                <interceptor-ref name="logger"/>
-                <interceptor-ref name="exception" />
-                <interceptor-ref name="alias" />
-                <interceptor-ref name="nci-commonsParams" />
-                <interceptor-ref name="servletConfig" />
-                <interceptor-ref name="prepare" />
-                <interceptor-ref name="i18n" />
-                <interceptor-ref name="customI18n" />
-                <interceptor-ref name="chain" />
-                <interceptor-ref name="fileUpload" />
-                <interceptor-ref name="checkbox" />
-                <interceptor-ref name="staticParams" />
-                <interceptor-ref name="nci-commonsParams" />
-                <interceptor-ref name="conversionError" />
-                <interceptor-ref name="nullCollectionElements" />
-                <interceptor-ref name="parameterTrim">
-                    <param name="trimToNull">true</param>
-                </interceptor-ref>
-                <interceptor-ref name="validation">
-                    <param name="excludeMethods">input,back,cancel</param>
-                    <param name="validateAnnotatedMethodOnly">true</param>
-                </interceptor-ref>
-                <interceptor-ref name="workflow">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
-           </interceptor-stack>
-        </interceptors>
+		<global-exception-mappings>
+			<exception-mapping result="error" exception="java.lang.Throwable" />
+		</global-exception-mappings>
 
-        <default-interceptor-ref name="fhhParamsPrepareParamsStack" />
-
-        <global-results>
-            <result name="error">/error.jsp</result>
-            <result name="notYetImplemented">/notYetImplemented.jsp</result>
-        </global-results>
-
-        <global-exception-mappings>
-            <exception-mapping result="error" exception="java.lang.Throwable" />
-        </global-exception-mappings>
-
-        <action name="home">
-            <result>/WEB-INF/jsp/home.jsp</result>
-        </action>
-
-        <action name="logout" class="com.fiveamsolutions.nci.commons.web.struts2.action.LogoutAction" method="logout">
-            <result type="redirect-action">home</result>
-        </action>
-
-        <action name="viewReport/*"
-            class="gov.hhs.fhh.web.action.ViewReportAction" method="{1}">
-            <result name="success">/WEB-INF/jsp/report/{1}.jsp</result>
-            <result name="pedigreeDiagram" type="stream">
-                <param name="contentType">image/png;</param>
-                <param name="bufferSize">4096</param>
-                <param name="inputName">pedigreeImage</param>
+		<action name="home">
+			<result>/WEB-INF/jsp/home.jsp</result>
+		</action>
+		<action name="logout"
+			class="com.fiveamsolutions.nci.commons.web.struts2.action.LogoutAction"
+			method="logout">
+			<result type="redirect-action">home</result>
+		</action>
+		<action name="viewReport/*" class="gov.hhs.fhh.web.action.ViewReportAction"
+			method="{1}">
+			<result name="success">/WEB-INF/jsp/report/{1}.jsp</result>
+			<result name="pedigreeDiagram" type="stream">
+				<param name="contentType">image/png;</param>
+				<param name="bufferSize">4096</param>
+				<param name="inputName">pedigreeImage</param>
+			</result>
+			<result name="streamPdf" type="stream">
+				<param name="contentType">application/pdf;</param>
+				<param name="bufferSize">4096</param>
+				<param name="inputName">pdf</param>
+				<param name="contentDisposition">filename="FamilyHistory.pdf"</param>
+			</result>
+		</action>
+		<action name="popup/viewReport/*" class="gov.hhs.fhh.web.action.ViewReportAction"
+			method="{1}">
+			<result name="success">/WEB-INF/jsp/report/{1}.jsp</result>
+			<result name="changeReport">/WEB-INF/jsp/report/changeReportOptions.jsp
+			</result>
+			<result name="submit">/WEB-INF/jsp/report/closeChangeReportOptions.jsp
+			</result>
+		</action>
+		<action name="familyHistory/*" class="gov.hhs.fhh.web.action.FamilyHistoryAction"
+			method="{1}">
+			<result name="success">/WEB-INF/jsp/familyHistory/{1}.jsp</result>
+			<result name="familyHistory">/WEB-INF/jsp/familyHistory/familyHistory.jsp
+			</result>
+		</action>
+		<action name="popup/familyHistory/importFamilyHistoryCancelledMshv"
+			class="gov.hhs.fhh.web.action.FamilyHistoryAction" method="importFamilyHistoryCancelledMshv">
+			<result name="success">/WEB-INF/jsp/familyHistory/importFamilyHistory.jsp
+			</result>
+		</action>
+		<action name="popup/familyHistory/paramlessLoaded">
+			<result type="redirect-action">
+				<param name="actionName">familyHistory/familyHistory.action</param>
+				<param name="popup">closePopup</param>
+			</result>
+		</action>
+		<action name="popup/familyHistory/*" class="gov.hhs.fhh.web.action.FamilyHistoryAction"
+			method="{1}">
+			<result name="input">/WEB-INF/jsp/familyHistory/importFamilyHistory.jsp
+			</result>
+			<result name="success">/WEB-INF/jsp/familyHistory/{1}.jsp</result>
+			<result name="importComplete">/WEB-INF/jsp/person/close.jsp</result>
+		</action>
+		<action name="popup/reindex/*" class="gov.hhs.fhh.web.action.ReindexAction"
+			method="{1}">
+			<result name="success">/WEB-INF/jsp/reindex/{1}.jsp</result>
+			<result name="downloadXMLFile" type="stream">
+				<param name="contentType">application/download</param>
+				<param name="inputName">downloadFile</param>
+				<param name="bufferSize">4096</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+			</result>
+			<result name="previewImage" type="stream">
+				<param name="contentType">image/png;</param>
+				<param name="inputName">reindexPreview</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+		<action name="reindex/*" class="gov.hhs.fhh.web.action.ReindexAction"
+			method="{1}">
+			<result name="success">/WEB-INF/jsp/reindex/{1}.jsp</result>
+			<result name="downloadXMLFile" type="stream">
+				<param name="contentType">application/download</param>
+				<param name="inputName">downloadFile</param>
+				<param name="bufferSize">4096</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+			</result>
+			<result name="previewImage" type="stream">
+				<param name="contentType">image/png;</param>
+				<param name="inputName">reindexPreview</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+		<action name="popup/leavingFhhWarn">
+			<result>/WEB-INF/jsp/healthvault/leavingFhh.jsp</result>
+		</action>
+		<action name="popup/leavingFhhToLoadWarn">
+			<result>/WEB-INF/jsp/healthvault/leavingFhhToLoadFromMshv.jsp
+			</result>
+		</action>
+		<action name="healthvault/*" class="gov.hhs.fhh.web.action.HealthvaultAction"
+			method="{1}">
+			<result name="success">/WEB-INF/jsp/healthvault/{1}.jsp</result>
+			<result name="saveToHV" type="redirect-action">
+				<param name="actionName">familyHistory/familyHistory.action</param>
+			</result>
+			<result name="failHvConnectToSaveError" type="redirect-action">
+                <param name="actionName">familyHistory/familyHistory.action</param>
             </result>
-            <result name="streamPdf" type="stream">
-                <param name="contentType">application/pdf;</param>
-                <param name="bufferSize">4096</param>
-                <param name="inputName">pdf</param>
-                <param name="contentDisposition">filename="FamilyHistory.pdf"</param>
+			<result name="previewChartResult" type="stream">
+				<param name="contentType">image/png;</param>
+				<param name="inputName">previewChart</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="loadedPreviewedPedigree" type="redirect-action">
+				<param name="actionName">familyHistory/familyHistory.action</param>
+			</result>
+		</action>
+		<action name="popup/healthvault/*" class="gov.hhs.fhh.web.action.HealthvaultAction"
+			method="{1}">
+			<result name="successLoadPedigree">/WEB-INF/jsp/healthvault/confirmLoadPedigree.jsp
+			</result>
+			<result name="successLoad">/WEB-INF/jsp/familyHistory/familyHistory.jsp
+			</result>
+			<result name="failHvConnectToLoadError" type="redirect-action">
+                <param name="actionName">home.action</param>
             </result>
-        </action>
-        <action name="popup/viewReport/*"
-            class="gov.hhs.fhh.web.action.ViewReportAction" method="{1}">
-            <result name="success">/WEB-INF/jsp/report/{1}.jsp</result>
-            <result name="changeReport">/WEB-INF/jsp/report/changeReportOptions.jsp</result>
-            <result name="submit">/WEB-INF/jsp/report/closeChangeReportOptions.jsp</result>
-        </action>
-        <action name="familyHistory/*"
-            class="gov.hhs.fhh.web.action.FamilyHistoryAction" method="{1}">
-            <result name="success">/WEB-INF/jsp/familyHistory/{1}.jsp</result>
-            <result name="familyHistory">/WEB-INF/jsp/familyHistory/familyHistory.jsp</result>
-        </action>
-        <action name="popup/familyHistory/*"
-            class="gov.hhs.fhh.web.action.FamilyHistoryAction" method="{1}">
-            <result name="input">/WEB-INF/jsp/familyHistory/importFamilyHistory.jsp</result>
-            <result name="success">/WEB-INF/jsp/familyHistory/{1}.jsp</result>
-            <result name="importComplete">/WEB-INF/jsp/person/close.jsp</result>
-        </action>
-        <action name="reindex/*"
-            class="gov.hhs.fhh.web.action.ReindexAction" method="{1}">
-            <result name="success">/WEB-INF/jsp/reindex/{1}.jsp</result>
-            <result name="downloadXMLFile" type="stream">
-                <param name="contentType">text/xml;charset=UTF-8</param>
-                <param name="inputName">downloadFile</param>
-                <param name="bufferSize">4096</param>
-                <param name="contentDisposition">attachment;filename="${fileName}"</param>
-            </result>
-        </action>
-        <action name="popup/reindex/*"
-            class="gov.hhs.fhh.web.action.ReindexAction" method="{1}">
-            <result name="success">/WEB-INF/jsp/reindex/{1}.jsp</result>
-            <result name="previewImage" type="stream">
-                <param name="contentType">image/png;</param>
-                <param name="inputName">reindexPreview</param>
-                <param name="bufferSize">4096</param>
-            </result>
-        </action>
-        <action name="popup/addPerson/*"
-            class="gov.hhs.fhh.web.action.AddPersonAction" method="{1}">
-            <interceptor-ref name="fhhPerMethodValidationStack"/>
-            <result name="input">/WEB-INF/jsp/person/addPerson.jsp</result>
-            <result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
-            <result name="submit">/WEB-INF/jsp/person/close.jsp</result>
-            <result name="addFamilyTree" type="redirect-action">popup/addFamilyTree/addFamilyTree</result>
-            <result name="xmlDiseaseSubTypes" type="stream">
-                <param name="contentType">text/xml;charset=UTF-8</param>
-                <param name="inputName">diseaseSubTypesAsXml</param>
-                <param name="bufferSize">4096</param>
-            </result>
-            <result name="xmlAutocomplete" type="stream">
-                <param name="contentType">text/xml;charset=UTF-8</param>
-                <param name="inputName">autocompleteAsXml</param>
-                <param name="bufferSize">4096</param>
-            </result>
-        </action>
-        <action name="popup/addRelative/*"
-            class="gov.hhs.fhh.web.action.AddRelativeAction" method="{1}">
-            <interceptor-ref name="fhhPerMethodValidationStack"/>
-            <result name="input">/WEB-INF/jsp/person/addPerson.jsp</result>
-            <result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
-            <result name="submit">/WEB-INF/jsp/person/close.jsp</result>
-            <result name="xmlCODSubTypes" type="stream">
-                <param name="contentType">text/xml;charset=UTF-8</param>
-                <param name="inputName">cODSubTypesAsXml</param>
-                <param name="bufferSize">4096</param>
-            </result>
-            <result name="xmlRelationshipSpecifiers" type="stream">
-                <param name="contentType">text/xml;charset=UTF-8</param>
-                <param name="inputName">relationshipSpecifiersAsXml</param>
-                <param name="bufferSize">4096</param>
-            </result>
-            <result name="xmlParents" type="stream">
-                <param name="contentType">text/xml;charset=UTF-8</param>
-                <param name="inputName">parentsAsXml</param>
-                <param name="bufferSize">4096</param>
-            </result>
-        </action>
-        <action name="popup/selectRelative/*"
-            class="gov.hhs.fhh.web.action.AddRelativeAction" method="{1}">
-            <interceptor-ref name="fhhPerMethodValidationStack"/>
-            <result name="input">/WEB-INF/jsp/person/selectRelative.jsp</result>
-            <result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
-        </action>
-        <action name="popup/addFamilyTree/*"
-            class="gov.hhs.fhh.web.action.AddFamilyTreeAction" method="{1}">
-            <result name="input">/WEB-INF/jsp/person/addFamilyTree.jsp</result>
-            <result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
-            <result name="submit">/WEB-INF/jsp/person/close.jsp</result>
-        </action>
-        <action name="popup/getHelp/*">
-            <result name="success">/WEB-INF/jsp/help/{1}.jsp</result>
-        </action>
-        <action name="popup/saveFamilyHistory/*" class="gov.hhs.fhh.web.action.ReindexAction">
-            <result name="success">/WEB-INF/jsp/save/{1}.jsp</result>
-        </action>
-        <action name="popup/droppedRelatives/*"
-            class="gov.hhs.fhh.web.action.DroppedRelativesAction" method="{1}">
-            <interceptor-ref name="fhhPerMethodValidationStack"/>
-            <result name="success">/WEB-INF/jsp/droppedRelatives/{1}.jsp</result>
-            <result name="input">/WEB-INF/jsp/droppedRelatives/{1}.jsp</result>
-        </action>
-    </package>
+			<result name="healthVaultPedigreeLoadError" type="redirect-action">
+				<param name="actionName">home.action</param>
+			</result>
+			<result name="healthVaultPedigreeLoaded" type="redirect-action">
+				<param name="actionName">home.action</param>
+			</result>
+			<result name="success">/WEB-INF/jsp/healthvault/{1}.jsp</result>
+			<result name="failedToSaveToMshv" type="redirect-action">
+				<param name="actionName">popup/saveFamilyHistory/step1.action</param>
+			</result>
+			<result name="saveLoadHV">/WEB-INF/jsp/healthvault/confirmSaveToHealthVault.jsp
+			</result>
+		</action>
+		<action name="popup/addPerson/*" class="gov.hhs.fhh.web.action.AddPersonAction"
+			method="{1}">
+			<interceptor-ref name="fhhPerMethodValidationStack" />
+			<result name="input">/WEB-INF/jsp/person/addPerson.jsp</result>
+			<result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
+			<result name="submit">/WEB-INF/jsp/person/close.jsp</result>
+			<result name="addFamilyTree" type="redirect-action">popup/addFamilyTree/addFamilyTree
+			</result>
+			<result name="xmlDiseaseSubTypes" type="stream">
+				<param name="contentType">text/xml;charset=UTF-8</param>
+				<param name="inputName">diseaseSubTypesAsXml</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="xmlAutocomplete" type="stream">
+				<param name="contentType">text/xml;charset=UTF-8</param>
+				<param name="inputName">autocompleteAsXml</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+		<action name="popup/addRelative/*" class="gov.hhs.fhh.web.action.AddRelativeAction"
+			method="{1}">
+			<interceptor-ref name="fhhPerMethodValidationStack" />
+			<result name="input">/WEB-INF/jsp/person/addPerson.jsp</result>
+			<result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
+			<result name="submit">/WEB-INF/jsp/person/close.jsp</result>
+			<result name="xmlCODSubTypes" type="stream">
+				<param name="contentType">text/xml;charset=UTF-8</param>
+				<param name="inputName">cODSubTypesAsXml</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="xmlRelationshipSpecifiers" type="stream">
+				<param name="contentType">text/xml;charset=UTF-8</param>
+				<param name="inputName">relationshipSpecifiersAsXml</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="xmlParents" type="stream">
+				<param name="contentType">text/xml;charset=UTF-8</param>
+				<param name="inputName">parentsAsXml</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+		<action name="popup/selectRelative/*" class="gov.hhs.fhh.web.action.AddRelativeAction"
+			method="{1}">
+			<interceptor-ref name="fhhPerMethodValidationStack" />
+			<result name="input">/WEB-INF/jsp/person/selectRelative.jsp</result>
+			<result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
+		</action>
+		<action name="popup/addFamilyTree/*" class="gov.hhs.fhh.web.action.AddFamilyTreeAction"
+			method="{1}">
+			<result name="input">/WEB-INF/jsp/person/addFamilyTree.jsp</result>
+			<result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
+			<result name="submit">/WEB-INF/jsp/person/close.jsp</result>
+		</action>
+		<action name="popup/getHelp/*">
+			<result name="success">/WEB-INF/jsp/help/{1}.jsp</result>
+		</action>
+		<action name="popup/saveFamilyHistory/*" class="gov.hhs.fhh.web.action.SaveHistoryAction"
+			method="{1}">
+			<result name="success">/WEB-INF/jsp/save/{1}.jsp</result>
+			<result name="manage">/WEB-INF/jsp/save/manage.jsp</result>
+			<result name="step1">/WEB-INF/jsp/save/step1.jsp</result>
+			<result name="downloading">/WEB-INF/jsp/save/downloading.jsp</result>
+			<result name="step2">/WEB-INF/jsp/save/step2.jsp</result>
+		</action>
+		<action name="popup/droppedRelatives/*" class="gov.hhs.fhh.web.action.DroppedRelativesAction"
+			method="{1}">
+			<interceptor-ref name="fhhPerMethodValidationStack" />
+			<result name="success">/WEB-INF/jsp/droppedRelatives/{1}.jsp</result>
+			<result name="input">/WEB-INF/jsp/droppedRelatives/{1}.jsp</result>
+		</action>
+	</package>
 </struts>

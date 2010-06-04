@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,12 +34,14 @@
 package gov.hhs.fhh.data;
 
 import static org.junit.Assert.assertEquals;
-import gov.hhs.fhh.data.util.AgeRangeFieldHandler;
-import gov.hhs.fhh.data.util.CodeNode;
-import gov.hhs.fhh.data.util.DeceasedEstimatedAgeNode;
-import gov.hhs.fhh.data.util.RelationshipHolderNode;
+import gov.hhs.fhh.model.mfhp.castor.RelationshipHolderNode;
 
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer;
+import com.fiveamsolutions.hl7.model.age.CodeNode;
+import com.fiveamsolutions.hl7.model.age.DeceasedEstimatedAgeNode;
 
 /**
  * @author bpickeral
@@ -51,21 +53,21 @@ public class RelationshipHolderNodeTest {
     public void testSetDeceasedEstimatedAgeNode() {
         RelationshipHolderNode relationshipHolder = new RelationshipHolderNode();
         DeceasedEstimatedAgeNode ageNode = new DeceasedEstimatedAgeNode();
-        AgeRangeFieldHandler handler = new AgeRangeFieldHandler();
+        AgeRangeFieldContainer handler = new AgeRangeFieldContainer();
         handler.setLowValue("20");
         
         ageNode.setCodeNode(new CodeNode());
         ageNode.getCodeNode().setOriginalText("");
         
         relationshipHolder.setDeceasedEstimatedAgeNode(ageNode);
-        assertEquals(AgeRange.UNKNOWN, relationshipHolder.getAgeAtDeath());
+        assertEquals(AgeRangeEnum.UNKNOWN, relationshipHolder.getAgeAtDeath());
         
-        ageNode.getCodeNode().setOriginalText(AgeRange.PREBIRTH.getOriginalText());
+        ageNode.getCodeNode().setOriginalText(AgeRangeEnum.PREBIRTH.getOriginalText());
         relationshipHolder.setDeceasedEstimatedAgeNode(ageNode);
-        assertEquals(AgeRange.PREBIRTH, relationshipHolder.getAgeAtDeath());
+        assertEquals(AgeRangeEnum.PREBIRTH, relationshipHolder.getAgeAtDeath());
         
         ageNode.setAgeRangeHandler(handler);
         relationshipHolder.setDeceasedEstimatedAgeNode(ageNode);
-        assertEquals(AgeRange.TWENTIES, relationshipHolder.getAgeAtDeath());
+        assertEquals(AgeRangeEnum.TWENTIES, relationshipHolder.getAgeAtDeath());
     }
 }

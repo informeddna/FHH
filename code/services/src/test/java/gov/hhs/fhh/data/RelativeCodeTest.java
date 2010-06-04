@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,19 +34,23 @@
 package gov.hhs.fhh.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
 
 /**
  * @author bpickeral
- *
+ * 
  */
 public class RelativeCodeTest {
     private final RelativeCode DUMMY_CODE = RelativeCode.AUNT;
     private final String NO_SUCH_VALUE = "no such value";
-    
-    
+
     @Test
     public void testCreateLivingStatus() {
         assertEquals(RelativeCode.AUNT.getResourceKey(), DUMMY_CODE.getResourceKey());
@@ -57,15 +61,223 @@ public class RelativeCodeTest {
         assertEquals(RelativeCode.AUNT.getDisplayValue(), DUMMY_CODE.getDisplayValue());
         assertEquals(RelativeCode.AUNT.isSpecifier(), DUMMY_CODE.isSpecifier());
     }
-    
+
     @Test
     public void testGetByValue() {
         assertEquals(RelativeCode.AUNT, RelativeCode.getByValue(DUMMY_CODE.toString()));
         assertNull(RelativeCode.getByValue(null));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public final void testGetByValueIllegalArgument() {
         RelativeCode.getByValue(NO_SUCH_VALUE);
+    }
+
+    @Test
+    public void isMotherSiblingTest() {
+        assertTrue(RelativeCode.MAUNT.isMothersSibling());
+        assertTrue(RelativeCode.MUNCLE.isMothersSibling());
+        assertFalse(RelativeCode.PAUNT.isMothersSibling());
+    }
+
+    @Test
+    public void testVerifyAllPotentialParentsHaveImpliedGender() {
+        for (RelativeCode relativeCode : RelativeCode.getCodesThatCanBeParents()) {
+            Assert.assertTrue(relativeCode.getImpliedGender() != null || relativeCode == RelativeCode.SELF);
+        }
+    }
+
+    @Test
+    public void testVerifyNarrowingPossibleParentCodes() {
+        for (RelativeCode relativeCode : RelativeCode.values()) {
+            if (relativeCode.getPossibleParents() != null && !relativeCode.getPossibleParents().isEmpty()) {
+                for (RelativeCode possibleParent : relativeCode.getPossibleParents()) {
+                    Assert.assertTrue(RelativeCode.getCodesThatCanBeParents().contains(possibleParent));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testGetRelativeCodeFromParentRelativeCode() {
+        for (RelativeCode relativeCode : RelativeCode.values()) {
+            RelativeCode selfCode = relativeCode.getRelativeCodeForParentCode(Gender.MALE, false);
+            if (RelativeCode.getCodesThatCanBeParents().contains(relativeCode)) {
+                Assert.assertNotNull(selfCode);
+            } else {
+                assertNull(selfCode);
+            }
+        }
+
+        RelativeCode selfCode = RelativeCode.PGRFTH.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.PUNCLE);
+
+        selfCode = RelativeCode.PGRFTH.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.PAUNT);
+
+        selfCode = RelativeCode.PGRMTH.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.PUNCLE);
+
+        selfCode = RelativeCode.PGRMTH.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.PAUNT);
+
+        selfCode = RelativeCode.MGRMTH.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.MUNCLE);
+
+        selfCode = RelativeCode.MGRMTH.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.MAUNT);
+
+        selfCode = RelativeCode.MGRFTH.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.MUNCLE);
+
+        selfCode = RelativeCode.MGRFTH.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.MAUNT);
+
+        selfCode = RelativeCode.MAUNT.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.MCOUSN);
+
+        selfCode = RelativeCode.MAUNT.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.MCOUSN);
+
+        selfCode = RelativeCode.MUNCLE.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.MCOUSN);
+
+        selfCode = RelativeCode.MUNCLE.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.MCOUSN);
+
+        selfCode = RelativeCode.PAUNT.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.PCOUSN);
+
+        selfCode = RelativeCode.PAUNT.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.PCOUSN);
+
+        selfCode = RelativeCode.PUNCLE.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.PCOUSN);
+
+        selfCode = RelativeCode.PUNCLE.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.PCOUSN);
+
+        selfCode = RelativeCode.SON.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.GRNSON);
+
+        selfCode = RelativeCode.SON.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.GRNDAU);
+
+        selfCode = RelativeCode.DAU.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.GRNSON);
+
+        selfCode = RelativeCode.DAU.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.GRNDAU);
+
+        selfCode = RelativeCode.NBRO.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NEPHEW);
+
+        selfCode = RelativeCode.NBRO.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NIECE);
+
+        selfCode = RelativeCode.HBRO.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NEPHEW);
+
+        selfCode = RelativeCode.HBRO.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NIECE);
+
+        selfCode = RelativeCode.NSIS.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NEPHEW);
+
+        selfCode = RelativeCode.NSIS.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NIECE);
+
+        selfCode = RelativeCode.HSIS.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NEPHEW);
+
+        selfCode = RelativeCode.HSIS.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NIECE);
+
+        selfCode = RelativeCode.SELF.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.SON);
+
+        selfCode = RelativeCode.SELF.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.DAU);
+
+        selfCode = RelativeCode.NMTH.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NBRO);
+
+        selfCode = RelativeCode.NMTH.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NSIS);
+
+        selfCode = RelativeCode.NMTH.getRelativeCodeForParentCode(Gender.MALE, true);
+        Assert.assertEquals(selfCode, RelativeCode.HBRO);
+
+        selfCode = RelativeCode.NMTH.getRelativeCodeForParentCode(Gender.FEMALE, true);
+        Assert.assertEquals(selfCode, RelativeCode.HSIS);
+
+        selfCode = RelativeCode.NFTH.getRelativeCodeForParentCode(Gender.MALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NBRO);
+
+        selfCode = RelativeCode.NFTH.getRelativeCodeForParentCode(Gender.FEMALE, false);
+        Assert.assertEquals(selfCode, RelativeCode.NSIS);
+
+        selfCode = RelativeCode.NFTH.getRelativeCodeForParentCode(Gender.MALE, true);
+        Assert.assertEquals(selfCode, RelativeCode.HBRO);
+
+        selfCode = RelativeCode.NFTH.getRelativeCodeForParentCode(Gender.FEMALE, true);
+        Assert.assertEquals(selfCode, RelativeCode.HSIS);
+    }
+
+    @Test
+    public void isNaturalParent() {
+        for (RelativeCode rc : RelativeCode.values()) {
+            if (rc.equals(RelativeCode.NFTH) || rc.equals(RelativeCode.NMTH)) {
+                assertTrue(rc.isNaturalParent());
+            } else {
+                assertFalse(rc.isNaturalParent());
+            }
+        }
+    }
+    
+    @Test
+    public void isNaturalAuntOrUncle() {
+        for (RelativeCode rc : RelativeCode.values()) {
+            if (rc.equals(RelativeCode.MAUNT) || rc.equals(RelativeCode.MUNCLE) || rc.equals(RelativeCode.PAUNT)
+                    || rc.equals(RelativeCode.PUNCLE)) {
+                assertTrue(rc.isNaturalAuntOrUncle());
+            } else {
+                assertFalse(rc.isNaturalAuntOrUncle());
+            }
+        }
+    }
+
+    @Test
+    public void isNaturalGrandParent() {
+        for (RelativeCode rc : RelativeCode.values()) {
+            if (rc.equals(RelativeCode.PGRFTH) || rc.equals(RelativeCode.PGRMTH) || rc.equals(RelativeCode.MGRFTH)
+                    || rc.equals(RelativeCode.MGRMTH)) {
+                assertTrue(rc.isNaturalGrandParent());
+            } else {
+                assertFalse(rc.isNaturalGrandParent());
+            }
+        }
+    }
+
+    @Test
+    public void isNaturalGrandMother() {
+        for (RelativeCode rc : RelativeCode.values()) {
+            if (rc.equals(RelativeCode.PGRMTH) || rc.equals(RelativeCode.MGRMTH)) {
+                assertTrue(rc.isNaturalGrandMother());
+            } else {
+                assertFalse(rc.isNaturalGrandMother());
+            }
+        }
+    }
+
+    @Test
+    public void isNaturalGrandFather() {
+        for (RelativeCode rc : RelativeCode.values()) {
+            if (rc.equals(RelativeCode.PGRFTH) || rc.equals(RelativeCode.MGRFTH)) {
+                assertTrue(rc.isNaturalGrandFather());
+            } else {
+                assertFalse(rc.isNaturalGrandFather());
+            }
+        }
     }
 }

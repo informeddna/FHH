@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -41,6 +41,8 @@ import java.util.Set;
 
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.collections.set.ListOrderedSet;
+
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
 
 /**
  * @author lpower
@@ -105,10 +107,18 @@ public class RelativeBranch {
     @SuppressWarnings("PMD.ExcessiveMethodLength")
     private void organizeTree(Person self) {
         Relative proband = new Relative(self, RelativeCode.SELF);
+
         Relative pGrandfather = new Relative();
+        pGrandfather.setGender(Gender.MALE);
+        
         Relative pGrandmother = new Relative();
+        pGrandmother.setGender(Gender.FEMALE);
+
         Relative mGrandfather = new Relative();
+        mGrandfather.setGender(Gender.MALE);
+        
         Relative mGrandmother = new Relative();
+        mGrandmother.setGender(Gender.FEMALE);
         
         List<Relative> fatherSiblings = new ArrayList<Relative>();
         List<Relative> motherSiblings = new ArrayList<Relative>();
@@ -116,7 +126,6 @@ public class RelativeBranch {
         List<Relative> relatives = self.getRelatives();
         
         for (Relative rel : relatives) {
-            rel.setId(Long.valueOf(relatives.indexOf(rel)));
             switch (rel.getCodeEnum()) {
             case MAUNT:
             case MUNCLE:
@@ -170,7 +179,7 @@ public class RelativeBranch {
             case NFTH:
             case SELF:
                 break;
-                default:
+            default:
                 throw new IllegalStateException("A specifier was encountered as relative code");    
             }
         } 

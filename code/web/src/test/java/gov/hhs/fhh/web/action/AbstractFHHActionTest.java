@@ -85,10 +85,9 @@ package gov.hhs.fhh.web.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 
 import org.junit.Test;
-
-import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 
 /**
  * @author bpickeral
@@ -100,6 +99,7 @@ public class AbstractFHHActionTest extends AbstractFhhWebTest {
     private final String FIELD_KEY = "Key";
     private final String STRING_VALUE = "value";
     private final String INT_VALUE = "50";
+    private final String NEG_INT_VALUE = "-50";
     
     
     @Test
@@ -124,6 +124,17 @@ public class AbstractFHHActionTest extends AbstractFhhWebTest {
         assertEquals(0, action.getFieldErrors().size());
     }
     
+    @Test
+    public void testValidateNegativeIntegerField() {
+        action.validateIntegerField(FIELD_NAME, FIELD_KEY, NEG_INT_VALUE);
+        assertEquals(1, action.getFieldErrors().size());
+        
+        action.clearErrorsAndMessages();
+        action.validateIntegerField(FIELD_NAME, FIELD_KEY, INT_VALUE);
+        
+        assertEquals(0, action.getFieldErrors().size());
+    }
+
     @Test
     public void testValidateRequiredObject() {
         assertTrue(action.validateIntegerField(FIELD_NAME, FIELD_KEY, null));

@@ -21,7 +21,7 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
         <c:set var="editingRelative" value="false" scope="request"/>
     </c:otherwise>
 </c:choose>
-
+<fmt:message key="person.condition.selectedMessage" var="diseaseSelectedMessage"><fmt:param><fmt:message key="button.addDiseaseToList.js"/></fmt:param></fmt:message>
 <s:form action="%{#attr.actionUrl}" cssClass="form" method="post" id="personForm" theme="simple">
 <div class="submodalContainer">
     <!-- BEGIN ACCORDION SECTION = PERSONAL INFO -->
@@ -32,16 +32,16 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
             <tr>
                 <td class="accordianTitleTd">
                     <c:if test="${editingRelative}">
-                        <h2><fmt:message key="addPerson.accordian.titlebar.pi.relative1" /><fmt:message key="${selectedCodeEnum.possessiveResourceKey}" /><fmt:message key="addPerson.accordian.titlebar.pi.relative2" /></h2> 
+                        <h2><fmt:message key="addPerson.accordian.titlebar.pi.relative1" /><fmt:message bundle="${der}" key="${selectedCodeEnum.possessiveResourceKey}" /><fmt:message key="addPerson.accordian.titlebar.pi.relative2" /></h2> 
                     </c:if>
                     <c:if test="${!editingRelative}">
                         <h2><fmt:message key="addPerson.accordian.titlebar.pi" /></h2> 
                     </c:if>
                     <span id="pi-hide" class="showHideText">
-                    	<a tabindex="1" href="javascript://nop" onclick="hideStyle('pi-title');$('pi').hide();$('pi-show').show();$('pi-hide').hide();">(<fmt:message key="accordian.titlebar.clickToHide" />)</a>
+                        <a tabindex="1" href="javascript://nop" onclick="hideStyle('pi-title');$('pi').hide();$('pi-show').show();$('pi-hide').hide();">(<fmt:message key="accordian.titlebar.clickToHide" />)</a>
                     </span>
-            		<span id="pi-show" class="showHideText" style="display:none;">
-                    	<a tabindex="1" href="javascript://nop" onclick="showStyle('pi-title');$('pi').show();$('pi-show').hide();$('pi-hide').show();">(<fmt:message key="accordian.titlebar.clickToShow" />)</a>
+                    <span id="pi-show" class="showHideText" style="display:none;">
+                        <a tabindex="1" href="javascript://nop" onclick="showStyle('pi-title');$('pi').show();$('pi-show').hide();$('pi-hide').show();">(<fmt:message key="accordian.titlebar.clickToShow" />)</a>
                     </span>
                 </td>
                 <s:url value="/popup/getHelp/helpDetailsEditPersonalInfo.action" id="helpUrl" />
@@ -56,7 +56,22 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                     <p><fmt:message key="form.text.relative" /></p>
                 </c:when>
                 <c:otherwise>
-                    <p><fmt:message key="form.text.self" /></p>
+                    <fhh:conditionalMshv>
+	                    <table class="twoColSimple">
+	                        <tr>
+	                            <td class="colOneSimple">
+                    </fhh:conditionalMshv>
+                                <fmt:message key="form.text.self" />
+                    <fhh:conditionalMshv>
+	                            </td>
+	                            <td class="colTwoSimple">
+	                                <c:url value="/popup/leavingFhhToLoadWarn.action" var="getFromHealthvault" />
+	                                <fmt:message key="form.text.self.hv" />
+	                                <a id="loadFromMshv" tabindex="90" href="${getFromHealthvault}"><img align="right" src="<s:url value="/images/copy_from_hv_sm.gif" />" alt="Copy from Microsoft HealthVault" /></a>
+	                            </td>
+	                        </tr>
+	                    </table>
+                    </fhh:conditionalMshv>
                 </c:otherwise>
             </c:choose>
             <p><span class="required">*</span><fmt:message key="form.requiredInformation.text" /></p>
@@ -68,10 +83,11 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                     <%-- Display Relationship if adding Relative --%>
                     <c:if test="${editingRelative}" >
                     <tr>
-                    	<th><label for="personRelationship"><fmt:message key="person.relationship" />:</label></th>
-                        <td><fmt:message key="${selectedCodeEnum.resourceKey}" /><s:hidden name="selectedCode"/></td>
+                        <th><label for="personRelationship"><fmt:message key="person.relationship" />:</label></th>
+                        <td><fmt:message bundle="${der}" key="${selectedCodeEnum.resourceKey}" /><s:hidden name="selectedCode"/></td>
                     </tr>
-               		</c:if>
+                       </c:if>
+                       
                     <%-- Error message for Gender --%>
                     <tr>
                         <td colspan="2" valign="top" align="center">
@@ -83,6 +99,7 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                             </s:if>
                         </td>
                     </tr>
+                    
                     <tr>
                         <th><span class="required">*</span><fmt:message key="person.gender" />:</th>
                         <td><s:radio key="person.gender" name="%{#attr.personLabel}.gender"
@@ -90,13 +107,14 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                         </td>
                     </tr>
                     
-                	<%-- Display Relative Fields if adding Relative --%>
-                	<c:if test="${editingRelative}">
+                    <%-- Display Relative Fields if adding Relative --%>
+                    <c:if test="${editingRelative}">
                     <s:hidden id="codSubTypesExist" name="codSubTypesExist" value="false"/>
                     <s:hidden name="selectedParentIndex" />
                     <s:hidden name="lastAddedCOD" id="lastAddedCOD" />
+                    
                     <tr>
-                    	<th><label for="personForm_relative_livingStatusYES"><fmt:message key="relative.livingStatus" /></label></th>
+                        <th><label for="personForm_relative_livingStatusYES"><fmt:message key="relative.livingStatus" /></label></th>
                         <td><s:radio key="" name="relative.livingStatus" onclick="livingStatusChanged()" list="livingStatusEnums" listValue="%{getText(resourceKey)}" theme="simple" tabindex="3" />
                         <%-- living = yes --%>
                         <div id="livingStatusYesSpan" style="display:none;" class="dynamicPanel">
@@ -143,10 +161,10 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                             <c:forEach var="item" items="${ageRangeEnums}">
                                                 <c:choose>
                                                     <c:when test="${!empty relative.estimatedAgeRange && item == relative.estimatedAgeRange}">
-                                                        <option selected="selected" value="${item}"><fmt:message key="${item.resourceKey}"/></option>
+                                                        <option selected="selected" value="${item}"><fmt:message bundle="${der}" key="${item.resourceKey}"/></option>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <option value="${item}"><fmt:message key="${item.resourceKey}"/></option>
+                                                        <option value="${item}"><fmt:message bundle="${der}" key="${item.resourceKey}"/></option>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:forEach>
@@ -185,28 +203,15 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                     </td>
                                 </tr>
                                 <%-- COD suboptions --%>
+                                <c:set var="noCODSubTypesExist" value="${!codSubTypesExist}"/>
                                 <tr>
                                     <th>
-                                        <c:choose>
-                                            <c:when test="${codSubTypesExist}">
-                                                <span id="codSubTypeLabelSpan">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span id="codSubTypeLabelSpan" style="display:none;">
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <span id="codSubTypeLabelSpan" <c:if test="${noCODSubTypesExist}">style="display:none;"</c:if>>
                                             <label for="personForm_selectedCODSubType"><fmt:message key="multipleItemSelector.pleaseSpecify" />:</label>
                                         </span>
                                     </th>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${codSubTypesExist}">
-                                                <span id="codSubTypeSpan">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span id="codSubTypeSpan" style="display:none;">
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <span id="codSubTypeSpan" <c:if test="${noCODSubTypesExist}">style="display:none;"</c:if>>
                                             <select name="selectedCODSubType" id="personForm_selectedCODSubType" onchange="codChanged()" tabindex="7">
                                                 <option value=""><fmt:message key="person.select.pleaseSpecify" /></option>
                                                 <c:forEach var="item" items="${codSubTypes}">
@@ -230,30 +235,17 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                         </s:if>
                                     </td>
                                 </tr>
-                              
+                                <c:set var="isCODOther" value="${!empty otherCOD or !empty fieldErrors['otherCOD']}"/>
+                                <c:set var="noCODOther" value="${!isCODOther}"/>
                                 <tr>  
                                     <th>
-                                        <c:choose>
-                                            <c:when test="${!empty otherCOD or !empty fieldErrors['otherCOD']}">
-                                                <span id="codOtherLabelSpan">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span id="codOtherLabelSpan" style="display:none;">
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <span id="codOtherLabelSpan" <c:if test="${noCODOther}">style="display:none;"</c:if>>
                                             <label for="codOther"><fmt:message key="multipleItemSelector.pleaseSpecify" />:</label>
                                         </span>
                                     </th>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${!empty otherCOD or !empty fieldErrors['otherCOD']}">
-                                                <span id="codOtherSpan">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span id="codOtherSpan" style="display:none;">
-                                            </c:otherwise>
-                                        </c:choose>
-                                        <s:textfield id="otherCOD" name="otherCOD" tabindex="9" size="45" maxlength="255" onblur="codChanged()" />
+                                        <span id="codOtherSpan" <c:if test="${noCODOther}">style="display:none;"</c:if>>
+                                            <s:textfield id="otherCOD" name="otherCOD" tabindex="9" size="45" maxlength="255" onblur="codChanged()" />
                                         </span>
                                     </td>
                                 </tr>
@@ -265,10 +257,10 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                             <c:forEach var="item" items="${ageRangeEnums}">
                                                 <c:choose>
                                                     <c:when test="${!empty relative.ageAtDeath && item == relative.ageAtDeath}">
-                                                        <option selected="selected" value="${item}"><fmt:message key="${item.resourceKey}"/></option>
+                                                        <option selected="selected" value="${item}"><fmt:message bundle="${der}" key="${item.resourceKey}"/></option>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <option value="${item}"><fmt:message key="${item.resourceKey}"/></option>
+                                                        <option value="${item}"><fmt:message bundle="${der}" key="${item.resourceKey}"/></option>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:forEach>
@@ -280,6 +272,7 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                     </td>
                 </tr>
                 </c:if>
+
                 <%-- DOB (Self) --%>
                 <c:if test="${!editingRelative}">
                     <%-- Error message for date of birth --%>
@@ -301,11 +294,11 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                 <%-- Twin + Adopted + Height + Weight (Self & Relative)  --%>
                 <tr>
                     <th>
-                    	<c:if test="${editingRelative}" >
-                        	<fmt:message key="relative.twinStatus" />
+                        <c:if test="${editingRelative}" >
+                            <fmt:message key="relative.twinStatus" />
                         </c:if>
-                    	<c:if test="${!editingRelative}" >
-                        	<fmt:message key="person.twinStatus" />
+                        <c:if test="${!editingRelative}" >
+                            <fmt:message key="person.twinStatus" />
                         </c:if>
                     </th>
                     <td><s:radio key="" id="twinStatus" name="%{#attr.personLabel}.twinStatus" list="twinStatusEnums" listValue="%{getText(resourceKey)}" theme="simple" tabindex="11" /></td>
@@ -313,15 +306,15 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                 <tr>
                     <th>
                         <label for="personAdopted">
-                        	<c:if test="${editingRelative}" >
-                        		<fmt:message key="relative.adoptedStatus" />
+                            <c:if test="${editingRelative}" >
+                                <fmt:message key="relative.adoptedStatus" />
                             </c:if>
-                        	<c:if test="${!editingRelative}" >
-                        		<fmt:message key="person.adoptedStatus" />
+                            <c:if test="${!editingRelative}" >
+                                <fmt:message key="person.adoptedStatus" />
                             </c:if>
                         </label>
                     </th>
-                    <td><s:checkbox key="" id="personAdopted" name="%{#attr.personLabel}.adopted" tabindex="12" /> <fmt:message key="term.yes" /></td>
+                    <td><s:checkbox id="personAdopted" name="%{#attr.personLabel}.adopted" tabindex="12" /> <fmt:message bundle="${der}" key="term.yes" /></td>
                 </tr>
                 <c:if test="${!editingRelative}">
                 <%-- Error message for height --%>
@@ -364,36 +357,56 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                 <tr>
                     <th><label for="weightString"><fmt:message key="person.weight" />:</label></th>
                     <td>
-                        <s:textfield key="person.weight.value" name="weightString" size="5" maxlength="4" theme="simple" tabindex="15" />
+                        <s:textfield key="person.weight.value" name="weightString" value="%{person.weight.value}" size="5" maxlength="4" theme="simple" tabindex="15" />
                         <s:select key="person.weight.unit" name="person.weight.unit" value="%{person.weight.unit}"
                         list="weightUnitEnums" listValue="%{getText(resourceKey)}" tabindex="15" />
                     </td>
                 </tr>
+                </c:if>
+                <c:if test="${needsRelating}">
+                     <tr>
+                         <td colspan="2">
+                             <span class="errorMessage"><fmt:message key="familyHistory.family.text.unrelatedRelative" /></span>
+                         </td>
+                     </tr>
+                     <tr>
+                         <th>
+                             <span class="required">*</span><fmt:message key="addperson.choose.parent" />
+                         </th>
+                         <td>
+                            <span id="relateParentSpan">
+                                <select name="relativeToSetAsParentUuid" id="personForm_relativeToSetAsParentUuid">
+                                    <option value="" onclick="relativeToRelateToSelected('false')"><fmt:message key="addperson.select.parent" /></option>
+                                    <c:forEach var="item" items="${relativesToRelateTo}">
+                                        <option value="${item.relative.uuid}" onclick="relativeToRelateToSelected('${item.halfSiblingStatus}')">${item.displayString}</option>
+                                    </c:forEach>
+                                </select>
+                                <span id="halfSiblingCheckDiv" style="display:none;">
+                                    <s:checkbox id="personForm_relativeToSetAsParentHalfSiblingStatus" name="relativeToSetAsParentHalfSiblingStatus"></s:checkbox>
+                                    <label for="personForm_relativeToSetAsParentHalfSiblingStatus" class="checkboxLabel"><fmt:message key="addperson.half.sibling" /></label>
+                                </span>
+                            </span>
+                         </td>
+                     </tr>
                 </c:if>
             </table>
         </div>
     </div>
     <!-- END ACCORDION SECTION = PERSONAL INFO -->
     
-	<!-- BEGIN ACCORDION SECTION = HEALTH INFO -->
-	<div class="accordianContainer" id="healthInfo">
-		<table border="0" cellpadding="0" cellspacing="0" class="accordianTitlebarOpened" id="hi-title">
+    <!-- BEGIN ACCORDION SECTION = HEALTH INFO -->
+    <div class="accordianContainer" id="healthInfo">
+        <table border="0" cellpadding="0" cellspacing="0" class="accordianTitlebarOpened" id="hi-title">
             <colgroup span="1" />
             <colgroup span="1" width="0*" />
             <tr>
                 <td class="accordianTitleTd">
                     <c:if test="${editingRelative}">
-                        <h2><fmt:message key="addPerson.accordian.titlebar.hi.relative1" /><fmt:message key="${selectedCodeEnum.possessiveResourceKey}" /><fmt:message key="addPerson.accordian.titlebar.hi.relative2" /></h2> 
+                        <h2><fmt:message key="addPerson.accordian.titlebar.hi.relative1" /><fmt:message bundle="${der}" key="${selectedCodeEnum.possessiveResourceKey}" /><fmt:message key="addPerson.accordian.titlebar.hi.relative2" /></h2> 
                     </c:if>
                     <c:if test="${!editingRelative}">
                         <h2><fmt:message key="addPerson.accordian.titlebar.hi" /></h2> 
                     </c:if>
-                    <span id="hi-hide" class="showHideText">
-                    	<a tabindex="15" href="javascript://nop" onclick="hideStyle('hi-title');$('hi').hide();$('hi-show').show();$('hi-hide').hide();">(<fmt:message key="accordian.titlebar.clickToHide" />)</a>
-                    </span>
-                    <span id="hi-show" class="showHideText" style="display:none;">
-                    	<a tabindex="15" href="javascript://nop" onclick="showStyle('hi-title');$('hi').show();$('hi-show').hide();$('hi-hide').show();">(<fmt:message key="accordian.titlebar.clickToShow" />)</a>
-                    </span>
                 </td>
                 <s:url value="/popup/getHelp/helpDetailsEditPersonalInfo.action" id="helpUrl" />
                 <td class="accordianTitleTdBtn">
@@ -422,31 +435,31 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
             </ul>
             <div class="errorMessage"><fmt:message key="person.unmatchedCondition.helpText2" /></div>
         </c:if>
-		
-		<fhh:multipleItemTable baseId="selectedDiseases" listField="${selectedDiseases}" listField2="${ageOfDiagnosisList}"
-		listFieldName2="ageOfDiagnosisList" listFieldName="selectedDiseases" multiple="true" listLabel="${listLabel}"
-		tabIndex="1" objectValue="id" required="false" tableHeader1="person.diseaseCondition" tableHeader2="person.ageOfDiagnosisList" />
-	</div>
-	<!-- END ACCORDION SECTION = HEALTH INFO -->
+        
+        <fhh:multipleItemTable baseId="selectedDiseases" listField="${selectedDiseases}" listField2="${ageOfDiagnosisList}"
+        listFieldName2="ageOfDiagnosisList" listFieldName="selectedDiseases" multiple="true" listLabel="${listLabel}"
+        tabIndex="1" objectValue="id" required="false" tableHeader1="person.diseaseCondition" tableHeader2="person.ageOfDiagnosisList" />
+    </div>
+    <!-- END ACCORDION SECTION = HEALTH INFO -->
 
-	<!-- BEGIN ACCORDION SECTION = FAMILY BACKGROUND INFO -->
-	<div class="accordianContainer" id="bkgdInfo">
-		<table border="0" cellpadding="0" cellspacing="0" class="accordianTitlebarOpened" id="bi-title">
+    <!-- BEGIN ACCORDION SECTION = FAMILY BACKGROUND INFO -->
+    <div class="accordianContainer" id="bkgdInfo">
+        <table border="0" cellpadding="0" cellspacing="0" class="accordianTitlebarOpened" id="bi-title">
             <colgroup span="1" />
             <colgroup span="1" width="0*" />
             <tr>
                 <td class="accordianTitleTd">
                     <c:if test="${editingRelative}">
-                        <h2><fmt:message key="addPerson.accordian.titlebar.bi.relative1" /><fmt:message key="${selectedCodeEnum.possessiveResourceKey}" /><fmt:message key="addPerson.accordian.titlebar.bi.relative2" /></h2> 
+                        <h2><fmt:message key="addPerson.accordian.titlebar.bi.relative1" /><fmt:message bundle="${der}" key="${selectedCodeEnum.possessiveResourceKey}" /><fmt:message key="addPerson.accordian.titlebar.bi.relative2" /></h2> 
                     </c:if>
                     <c:if test="${!editingRelative}">
                         <h2><fmt:message key="addPerson.accordian.titlebar.bi" /></h2> 
                     </c:if>
                     <span id="bi-hide" class="showHideText">
-                    	<a tabindex="20" href="javascript://nop" onclick="hideStyle('bi-title');$('bi').hide();$('bi-show').show();$('bi-hide').hide();">(<fmt:message key="accordian.titlebar.clickToHide" />)</a>
+                        <a tabindex="20" href="javascript://nop" onclick="hideStyle('bi-title');$('bi').hide();$('bi-show').show();$('bi-hide').hide();">(<fmt:message key="accordian.titlebar.clickToHide" />)</a>
                     </span>
                     <span id="bi-show" class="showHideText" style="display:none;">
-                    	<a tabindex="20" href="javascript://nop" onclick="showStyle('bi-title');$('bi').show();$('bi-show').hide();$('bi-hide').show();">(<fmt:message key="accordian.titlebar.clickToShow" />)</a>
+                        <a tabindex="20" href="javascript://nop" onclick="showStyle('bi-title');$('bi').show();$('bi-show').hide();$('bi-hide').show();">(<fmt:message key="accordian.titlebar.clickToShow" />)</a>
                     </span>
                 </td>
                 <s:url value="/popup/getHelp/helpDetailsEditPersonalInfo.action" id="helpUrl" />
@@ -455,25 +468,25 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                 </td>
             </tr>
         </table>
-		<div class="accordianContent" id="bi">
-			<table border="0" cellpadding="0" cellspacing="0" class="form" summary="<fmt:message key="form.bi.table.summary" />">
+        <div class="accordianContent" id="bi">
+            <table border="0" cellpadding="0" cellspacing="0" class="form" summary="<fmt:message key="form.bi.table.summary" />">
                 <c:if test="${!editingRelative}">
                 <tbody id="consanguinity">
                     <tr>
                         <td colspan="2">
-                        	<div class="p"><label for="personForm_person_consanguinityFlag"><fmt:message key="person.consanguinity" /></label> <s:checkbox name="%{#attr.personLabel}.consanguinityFlag" tabindex="20" /></div>
+                            <div class="p"><label for="personForm_person_consanguinityFlag"><fmt:message key="person.consanguinity" /></label> <s:checkbox name="%{#attr.personLabel}.consanguinityFlag" tabindex="20" /></div>
                             <hr />
                         </td>
                     </tr>
                 </tbody>
                 </c:if>
-				<!-- BEGIN RACE / ETHNICITY INFO -->
+                <!-- BEGIN RACE / ETHNICITY INFO -->
                 <tbody id="raceEthnicity">
                     <tr>
                         <td colspan="2">
                             <div class="p"><fmt:message key="person.multipleRaces" /></div>
                         </td>
-                	</tr>
+                    </tr>
                     <%-- race --%>
                     <%--See setTabIndexesForCheckboxLists() for tabindexes of races and ethnicities --%>
                     <tr>
@@ -487,14 +500,24 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                     </c:when>
                                     <c:otherwise></c:otherwise>
                                 </c:choose>
+                                
+                                <c:set var="isChecked" value="unchecked"></c:set>
+                                <c:forEach items="${personObject.raceIds}" var="currentId">
+                                    <c:if test="${currentId == currentRace.id}">
+                                        <c:set var="isChecked" value="checked"></c:set>
+                                    </c:if>
+                                </c:forEach>
+                                
+                                <input <c:if test="${isChecked == 'checked'}">checked="checked"</c:if> tabindex="21" name="selectedRaces" value="${currentRace.id}" id="selectedRaces-${status.index + 1}" onclick="raceChanged()" type="checkbox">
+                                <!--  
                                 <c:choose>
-                                    <c:when test = "${fn:contains(personObject.raceIds, currentRace.id)}">
+                                    <c:when test="${isChecked == 'checked'}">
                                         <input checked="checked" tabindex="21" name="selectedRaces" value="${currentRace.id}" id="selectedRaces-${status.index + 1}" onclick="raceChanged()" type="checkbox">
                                     </c:when>
                                     <c:otherwise>
-                                    	<input tabindex="21" name="selectedRaces" value="${currentRace.id}" id="selectedRaces-${status.index + 1}" onclick="raceChanged()" type="checkbox">
+                                        <input tabindex="21" name="selectedRaces" value="${currentRace.id}" id="selectedRaces-${status.index + 1}" onclick="raceChanged()" type="checkbox">
                                     </c:otherwise>
-                                </c:choose>
+                                </c:choose>-->
                                 <label for="selectedRaces-${status.index + 1}" class="checkboxLabel">${currentRace.appDisplay}</label>
                             </c:forEach>
                         </td>
@@ -514,14 +537,15 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                         </c:when>
                                         <c:otherwise></c:otherwise>
                                     </c:choose>
-                                    <c:choose>
-                                        <c:when test = "${fn:contains(personObject.raceIds, currentAsianRace.id)}">
-                                            <input checked="checked" tabindex="22" name="selectedAsianRaces" value="${currentAsianRace.id}" id="selectedAsianRaces-${status.index + 1}" type="checkbox">
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input tabindex="22" name="selectedAsianRaces" value="${currentAsianRace.id}" id="selectedAsianRaces-${status.index + 1}" type="checkbox">
-                                        </c:otherwise>
-                                    </c:choose>
+                                    
+	                                <c:set var="isChecked" value="unchecked"></c:set>
+	                                <c:forEach items="${personObject.raceIds}" var="currentId">
+	                                    <c:if test="${currentId == currentAsianRace.id}">
+	                                        <c:set var="isChecked" value="checked"></c:set>
+	                                    </c:if>
+	                                </c:forEach>
+
+	                                <input <c:if test="${isChecked == 'checked'}">checked="checked"</c:if> tabindex="22" name="selectedAsianRaces" value="${currentAsianRace.id}" id="selectedAsianRaces-${status.index + 1}" type="checkbox">
                                     <label for="selectedAsianRaces-${status.index + 1}" class="checkboxLabel">${currentAsianRace.appDisplay}</label>
                                 </c:forEach>
                             </div>
@@ -542,14 +566,15 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                         </c:when>
                                         <c:otherwise></c:otherwise>
                                     </c:choose>
-                                    <c:choose>
-                                        <c:when test = "${fn:contains(personObject.raceIds, currentHawaiianRace.id)}">
-                                            <input checked="checked" tabindex="23" name="selectedHawaiianRaces" value="${currentHawaiianRace.id}" id="selectedHawaiianRaces-${status.index + 1}" type="checkbox">
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input tabindex="23" name="selectedHawaiianRaces" value="${currentHawaiianRace.id}" id="selectedHawaiianRaces-${status.index + 1}" type="checkbox">
-                                        </c:otherwise>
-                                    </c:choose>
+                                    
+                                    <c:set var="isChecked" value="unchecked"></c:set>
+                                    <c:forEach items="${personObject.raceIds}" var="currentId">
+                                        <c:if test="${currentId == currentHawaiianRace.id}">
+                                            <c:set var="isChecked" value="checked"></c:set>
+                                        </c:if>
+                                    </c:forEach>
+
+                                    <input <c:if test="${isChecked == 'checked'}">checked="checked"</c:if> tabindex="23" name="selectedHawaiianRaces" value="${currentHawaiianRace.id}" id="selectedHawaiianRaces-${status.index + 1}" type="checkbox">
                                     <label for="selectedHawaiianRaces-${status.index + 1}" class="checkboxLabel">${currentHawaiianRace.appDisplay}</label>
                                 </c:forEach>
                             </div>
@@ -566,14 +591,15 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                     </c:when>
                                     <c:otherwise></c:otherwise>
                                 </c:choose>
-                                <c:choose>
-                                    <c:when test = "${fn:contains(personObject.ethnicityIds, currentEthnicity.id)}">
-                                        <input checked="checked" tabindex="24" name="selectedEthnicities" value="${currentEthnicity.id}" id="selectedEthnicities-${status.index + 1}" onclick="ethnicityChanged()" type="checkbox">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <input tabindex="24" name="selectedEthnicities" value="${currentEthnicity.id}" id="selectedEthnicities-${status.index + 1}" onclick="ethnicityChanged()" type="checkbox">
-                                    </c:otherwise>
-                                </c:choose>
+                                
+                                <c:set var="isChecked" value="unchecked"></c:set>
+                                <c:forEach items="${personObject.ethnicityIds}" var="currentId">
+                                    <c:if test="${currentId == currentEthnicity.id}">
+                                        <c:set var="isChecked" value="checked"></c:set>
+                                    </c:if>
+                                </c:forEach>
+                                
+                                <input <c:if test="${isChecked == 'checked'}">checked="checked"</c:if> tabindex="24" name="selectedEthnicities" value="${currentEthnicity.id}" id="selectedEthnicities-${status.index + 1}" onclick="ethnicityChanged()" type="checkbox">   
                                 <label for="selectedEthnicities-${status.index + 1}" class="checkboxLabel">${currentEthnicity.appDisplay}</label>
                             </c:forEach>
                         </td>
@@ -593,42 +619,56 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
                                         </c:when>
                                         <c:otherwise></c:otherwise>
                                     </c:choose>
-                                    <c:choose>
-                                        <c:when test = "${fn:contains(personObject.ethnicityIds, currentHisEthnicity.id)}">
-                                            <input checked="checked" tabindex="25" name="selectedHispanicEthnicities" value="${currentHisEthnicity.id}" id="selectedHispanicEthnicities-${status.index + 1}" type="checkbox">
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input tabindex="25" name="selectedHispanicEthnicities" value="${currentHisEthnicity.id}" id="selectedHispanicEthnicities-${status.index + 1}" type="checkbox">
-                                        </c:otherwise>
-                                    </c:choose>
+                                    
+                                    
+	                                <c:set var="isChecked" value="unchecked"></c:set>
+	                                <c:forEach items="${personObject.ethnicityIds}" var="currentId">
+	                                    <c:if test="${currentId == currentHisEthnicity.id}">
+	                                        <c:set var="isChecked" value="checked"></c:set>
+	                                    </c:if>
+	                                </c:forEach>
+	                                
+	                                <input <c:if test="${isChecked == 'checked'}">checked="checked"</c:if> tabindex="25" name="selectedHispanicEthnicities" value="${currentHisEthnicity.id}" id="selectedHispanicEthnicities-${status.index + 1}" type="checkbox">   
                                     <label for="selectedHispanicEthnicities-${status.index + 1}" class="checkboxLabel">${currentHisEthnicity.appDisplay}</label>
                                 </c:forEach>
                             </div>
                         </td>
                     </tr>
                     <tr>
-						<s:url value="/popup/getHelp/helpDetailsAshkenaziJew.action" id="helpUrl" />
-                    	<td colspan="2" class="colspan"><a tabindex="29" href="javascript://nop/" onclick="popupWindow('${helpUrl}')"><fmt:message key="form.bi.helpLink.ashkenaziJew" /></a></td>
+                        <s:url value="/popup/getHelp/helpDetailsAshkenaziJew.action" id="helpUrl" />
+                        <td colspan="2" class="colspan"><a tabindex="29" href="javascript://nop/" onclick="popupWindow('${helpUrl}')"><fmt:message key="form.bi.helpLink.ashkenaziJew" /></a></td>
                     </tr>
-				</tbody>
-				<!-- END RACE / ETHNICITY INFO -->
-			</table>
-		</div>
-	</div>
-	<!-- END ACCORDION SECTION = FAMILY BACKGROUND INFO -->
+                </tbody>
+                <!-- END RACE / ETHNICITY INFO -->
+            </table>
+        </div>
+    </div>
+    <!-- END ACCORDION SECTION = FAMILY BACKGROUND INFO -->
 
-	<!-- BEGIN INCLUDE = SAVE CANCEL BUTTONS -->
-	<div class="buttonContainer">
-	   <c:choose>
+    <!-- BEGIN INCLUDE = SAVE CANCEL BUTTONS -->
+    <div class="buttonContainer">
+        <script type="text/javascript">
+            var diseaseSelectedMessage = "${diseaseSelectedMessage}";
+        </script>
+       <c:choose>
             <c:when test="${editingRelative || person.completedForm}" >
-                <s:submit cssClass="enableEnterSubmit" value="%{getText('button.save')}" tabindex="30"/>
-	        </c:when>
-	        <c:otherwise>
-        		<s:submit cssClass="enableEnterSubmit" value="%{getText('tree.form.button')}" tabindex="30"/>
+                <div class="buttonContainer">
+                            <a id="personForm_0" tabindex="30" href="#" onclick="validateAndSubmit(diseaseSelectedMessage)"><fmt:message key="button.save" /></a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a id="cancelRelative" href="javascript:;" onclick="window.top.hidePopWin()"><fmt:message key="button.cancel"/></a>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="buttonContainer">
+                            <a id="personForm_0" tabindex="30" href="#" onclick="validateAndSubmit(diseaseSelectedMessage)"><fmt:message key="tree.form.button" /></a>
+                            &nbsp;&nbsp;&nbsp;
+                            <c:url var="selfCancel" value="/home.action" />
+                            <a id="cancelAndGoHome" href="javascript://nop/" tabindex="31" onclick="window.top.location='${selfCancel}'"><fmt:message key="button.cancel"/></a>
+                </div>
             </c:otherwise>
         </c:choose>
-	</div>
-	<!-- END INCLUDE = SAVE CANCEL BUTTONS -->
+    </div>
+    <!-- END INCLUDE = SAVE CANCEL BUTTONS -->
 </div>
 </s:form>
 <c:url var="getAutoComplete" value="/popup/addPerson/retrieveAutocompleteConditions.action" />
@@ -640,7 +680,7 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
         minimumCharacters="3" source="otherDisease" target="otherDisease" parameters="autocompleteDisease={otherDisease}" />
 <c:if test="${editingRelative}" >
     <script type="text/javascript">
-    window.onload = addRelativeOnLoad();
+    window.onload = function() {addRelativeOnLoad();};
     </script>
     <c:url var="getCODSubTypes" value="/popup/addRelative/retrieveCODSubTypes.action" />
     <s:if test="fieldErrors['causeOfDeath'] != null">
@@ -654,7 +694,7 @@ var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
 </c:if>
 <c:if test="${!editingRelative}" >
     <script type="text/javascript">
-    window.onload = addPersonOnLoad();
+    window.onload = function(){addPersonOnLoad();};
     </script>
     <c:url var="getOtherCodValues" value="/popup/addPerson/retrieveDiseaseSubTypes.action" />
 </c:if>

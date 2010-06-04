@@ -93,6 +93,7 @@ var ItemSelectorUtils = {
         var item = selectedItem.options[selectedItem.selectedIndex].text;
         var otherSelected = isOtherSelected(item);
         
+        //TODO: User entered disease / condition will have a blank value so, this error will ALWAYS be thrown when selecting a user entered type and clicking Add
         if (selectedItem.value == '') {
         	if (locale == 'es') {
         		ItemSelectorUtils.conditionalAlert('Por favor, seleccione una enfermedad.', showAlerts);

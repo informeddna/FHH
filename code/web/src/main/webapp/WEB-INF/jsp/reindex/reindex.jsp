@@ -2,7 +2,7 @@
 
 <html>
 <head>
-    <title><fmt:message key="fhh.title"/></title>
+    <title><fmt:message key="menu.text.reindex"/></title>
 </head>
 <body>
     <%-- Set the Session Timeout redirect to the current page --%>
@@ -13,8 +13,7 @@
         document.getElementById('mainWarningRedirect').href = '${reindexUrl}';
         <s:url value="/popup/getHelp/helpDetailsReindex.action" id="helpUrl" />
         document.getElementById('navHelpUrl').onclick = function(){popupWindow('${helpUrl}');};
-        window.onload = activateNavAnchor("navReindex");
-    </script>
+        window.onload = function() {activateNavAnchor("navReindex");};
     </script>
     <div class="boxpad" id="reindexDetail">
         <%@ include file="reindexDetail.jsp" %>

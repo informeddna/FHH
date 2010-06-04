@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -34,8 +34,6 @@
 package gov.hhs.fhh.web.action;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
@@ -118,7 +116,12 @@ public class AddFamilyTreeActionTest extends AbstractFhhWebTest {
         assertEquals(RelativeCode.MAUNT.toString(), action.getPerson().getRelatives().get(12).getCode());
         assertEquals(RelativeCode.MUNCLE.toString(), action.getPerson().getRelatives().get(13).getCode());
         
+        // Assert Mother and Father are set for parents
         assertEquals(RelativeCode.NMTH.toString(), action.getPerson().getMother().getCode());
         assertEquals(RelativeCode.NFTH.toString(), action.getPerson().getFather().getCode());
+        assertEquals(RelativeCode.MGRMTH.toString(), action.getPerson().getMother().getMother().getCode());
+        assertEquals(RelativeCode.MGRFTH.toString(), action.getPerson().getMother().getFather().getCode());
+        assertEquals(RelativeCode.PGRMTH.toString(), action.getPerson().getFather().getMother().getCode());
+        assertEquals(RelativeCode.PGRFTH.toString(), action.getPerson().getFather().getFather().getCode());
     }
 }

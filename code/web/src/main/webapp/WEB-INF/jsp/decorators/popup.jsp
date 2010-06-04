@@ -5,6 +5,7 @@
     <head>
         <title><s:set value="getText('fhh.title')" name="defaultTitle"/><decorator:title default="${defaultTitle}" /></title>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <META HTTP-EQUIV="Pragma" CONTENT="no-cache"/>
         <%@ include file="/WEB-INF/jsp/decorators/headIncludes.jsp" %>
         <link rel="stylesheet" type="text/css" href="<c:url value='/styles/fhh.css'/>" media="all" />
         <decorator:head/>
@@ -24,7 +25,7 @@
                     <div id="content">
                         <decorator:body/>
                     </div>
-                    <div class="clear" />
+                    <div class="clear"></div>
                 </div>
             </div>
             <script type="text/javascript">

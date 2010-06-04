@@ -3,10 +3,10 @@
  * Family Health History Portal 
  * END USER AGREEMENT
  * 
- * The U.S. Department of Health & Human Services (“HHS”) hereby irrevocably 
+ * The U.S. Department of Health & Human Services ("HHS") hereby irrevocably 
  * grants to the user a non-exclusive, royalty-free right to use, display, 
  * reproduce, and distribute this Family Health History portal software 
- * (the “software”) and prepare, use, display, reproduce and distribute 
+ * (the "software") and prepare, use, display, reproduce and distribute 
  * derivative works thereof for any commercial or non-commercial purpose by any 
  * party, subject only to the following limitations and disclaimers, which 
  * are hereby acknowledged by the user.  
@@ -35,11 +35,6 @@ package gov.hhs.fhh.web.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
-
-import gov.hhs.fhh.data.AgeRange;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
@@ -47,6 +42,10 @@ import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+
+import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
 
 /**
  * @author bpickeral
@@ -67,7 +66,7 @@ public class DroppedRelativesActionTest extends AbstractFhhWebTest {
         Disease d = new Disease();
         ClinicalObservation obs = new ClinicalObservation();
         obs.setDisease(d);
-        obs.setAgeRange(AgeRange.TWENTIES);
+        obs.setAgeRange(AgeRangeEnum.TWENTIES);
         d.setOriginalText(ORIG_TEXT);
         FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, p);
         FhhHttpSessionUtil.getSession().setAttribute(FhhHttpSessionUtil.ROOT_KEY, MIN_HEX);
@@ -76,7 +75,7 @@ public class DroppedRelativesActionTest extends AbstractFhhWebTest {
         assertEquals(INPUT, action.droppedRelatives());
         assertTrue(action.getFieldErrors().size() == 0);
         
-        droppedCousin.setCode(RelativeCode.COUSN.toString());
+        droppedCousin.setCodeEnum(RelativeCode.COUSN);
         droppedCousin.getObservations().add(obs);
         p.getHtmImportDroppedRelatives().add(droppedCousin);
         assertEquals(INPUT, action.droppedRelatives());
