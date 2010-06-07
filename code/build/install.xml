@@ -679,7 +679,7 @@ $HeadURL: https://gforge.nci.nih.gov/svnroot/automation/trunk/software/bda-build
         <mkdir dir="${temp.dir}/${mfhp-ear.dist.relative.dir}"/>
         <unzip src="${mfhp-ear.dir.dist}/${mfhp.ear.name}" dest="${temp.dir}/${mfhp-ear.dist.relative.dir}"/>
         <unzip src="${temp.dir}/${mfhp-ear.dist.relative.dir}/fhh-web.war" dest="${temp.dir}/fhh-web"/>
-        <unzip src="${temp.dir}/fhh-web/WEB-INF/lib/fhh-web-2.4.0.jar" dest="${temp.dir}/fhh-web-jar"/>
+        <unzip src="${temp.dir}/fhh-web/WEB-INF/lib/fhh-web-${mfhp-ear.version}.jar" dest="${temp.dir}/fhh-web-jar"/>
         <unzip src="${temp.dir}/${mfhp-ear.dist.relative.dir}/${mfhp-services.jar.name}" dest="${temp.dir}/fhh-services"/>
 
         <!-- Filter contents of the files below to be based on install time properties. Paths below are paths witin the ear. -->
@@ -733,7 +733,7 @@ $HeadURL: https://gforge.nci.nih.gov/svnroot/automation/trunk/software/bda-build
 
         <move file="${mfhp-ear.dir.dist}/${mfhp.ear.name}" tofile="${mfhp-ear.dir.dist}/${mfhp.ear.name}.orig"/>
 
-        <jar destfile="${temp.dir}/fhh-web/WEB-INF/lib/fhh-web-2.4.0.jar"
+        <jar destfile="${temp.dir}/fhh-web/WEB-INF/lib/fhh-web-${mfhp-ear.version}.jar"
             basedir="${temp.dir}/fhh-web-jar" compress="false" />
 
         <war destfile="${temp.dir}/${mfhp-ear.dist.relative.dir}/fhh-web.war"
