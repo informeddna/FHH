@@ -23,7 +23,7 @@
         <test.selenium.server.port>60001</test.selenium.server.port>
         <test.selenium.server.debug>true</test.selenium.server.debug>
         <test.selenium.browser>*chrome</test.selenium.browser>
-        <selenium-maven-plugin.version>1.0</selenium-maven-plugin.version>
+        <selenium-maven-plugin.version>1.0.1</selenium-maven-plugin.version>
     </properties>
 
     <dependencies>

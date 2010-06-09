@@ -82,7 +82,7 @@
  */
 package gov.hhs.fhh.test.selenium;
 
-import gov.hhs.fhh.test.TestProperties;
+import gov.hhs.fhh.test.ear.TestProperties;
 import gov.hhs.fhh.test.selenium.page.PageActor;
 import gov.hhs.fhh.test.selenium.page.PageActorException;
 import gov.hhs.fhh.test.selenium.page.PageFlow;

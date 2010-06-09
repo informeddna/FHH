@@ -33,7 +33,7 @@
  */
 package gov.hhs.fhh.test.selenium;
 
-import gov.hhs.fhh.test.TestProperties;
+import gov.hhs.fhh.test.ear.TestProperties;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

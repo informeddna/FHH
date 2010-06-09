@@ -54,6 +54,7 @@ public class AddConditionTest extends AbstractFHHSeleniumTest {
     // Add multiple conditions and delete multiple conditions
     private void AddDconditions() throws Exception {
         clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
+        Thread.sleep(4000);
         // Add conditions
         selenium.select("selectedDiseasesSelectedItem", "label=Dementia/Alzheimer's");
         selenium.select("SelectedAge", "label=60 years and older");
@@ -73,11 +74,8 @@ public class AddConditionTest extends AbstractFHHSeleniumTest {
         selenium.click("link=Add");
         clickAndWait("personForm_0");
         waitForText("Update My Family History");
-        selenium.click("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        waitForText("Name");
-        Thread.sleep(2000);
-        // Validate the disease are present
-        waitForFrameAndSelectIt("popupFrame");
+        clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
+        Thread.sleep(4000);
         assertTrue(selenium.isTextPresent("Dementia/Alzheimer's"));
         assertTrue(selenium.isTextPresent("60 years and older"));
         assertTrue(selenium.isTextPresent("Asthma"));
@@ -87,39 +85,44 @@ public class AddConditionTest extends AbstractFHHSeleniumTest {
         selenium.click("personForm_0");
         Thread.sleep(2000);
         waitForText("Update My Family History");
-        selenium.click("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        Thread.sleep(2000);
-        waitForText("Name");
+        clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
+        Thread.sleep(4000);
         // Remove added diseases
         selenium.click("link=Remove");
         selenium.click("personForm_0");
-        Thread.sleep(2000);
-        selenium.waitForPageToLoad("48000");
-        selenium.click("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        Thread.sleep(2000);
-        selenium.waitForPageToLoad("48000");
-        waitForFrameAndSelectIt("popupFrame");
+        Thread.sleep(4000);
+        clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
+        Thread.sleep(4000);
         selenium.click("link=Remove");
         selenium.click("personForm_0");
-        Thread.sleep(2000);
-        selenium.waitForPageToLoad("48000");
-        selenium.click("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        Thread.sleep(2000);
-        selenium.waitForPageToLoad("48000");
-        waitForFrameAndSelectIt("popupFrame");
+        Thread.sleep(4000);
+        clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
+        Thread.sleep(4000);
         selenium.click("link=Remove");
         selenium.click("personForm_0");
         Thread.sleep(2000);
         waitForText("Update My Family History");
-        selenium.click("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        selenium.waitForPageToLoad("48000");
+        clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
+        Thread.sleep(4000);
+        selenium.click("link=Remove");
+        selenium.click("personForm_0");
+        Thread.sleep(2000);
+        waitForText("Update My Family History");
+        clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
+        Thread.sleep(4000);
         // Validate diseases have been removed
-        assertFalse(selenium.isTextPresent("Aids"));
-        assertFalse(selenium.isTextPresent("Dementia/Alzheimer's"));
-        assertFalse(selenium.isTextPresent("Asthma"));
+        assertEquals(selenium.getTable("selectedDiseasesSelectedItemTable.0.0"), "Disease or Condition");
+        Exception thrown = null;
+        try {
+            // verify that no more diseases are in the table, Aids and lung disease are still strings within the page in
+            // the selection dropdown
+            selenium.getTable("selectedDiseasesSelectedItemTable.1.0");
+        } catch (Exception e) {
+            thrown = e;
+        }
+        assertNotNull(thrown);
         clickAndWait("personForm_0");
         Thread.sleep(2000);
-        selectParentWindow();
         assertTrue(selenium.isTextPresent("My Family Health History"));
     }
 }

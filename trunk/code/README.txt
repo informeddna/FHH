@@ -59,7 +59,9 @@ change all occurrences of emptySessionPath="true" TO emptySessionPath="false"
 Copy profiles.xml.mac.example to profiles.xml and specify the correct properties for your local setup:
 most importantly check the values for: jboss.home, admin.db.username, admin.db.password
 
-5.2 Make sure the property mshv.keystore.filename is pointing to the correct location
+5.2 login into mysql and create a db called mfhp if it does not already exist
+
+5.3 Make sure the property mshv.keystore.filename is pointing to the correct location
 A keystore file is located in fhh_checkout_location/services/src/main/resources/keystore-demo
 We recommend creating a hidden directory .fhh in the user home directory and copy the file in there.
 

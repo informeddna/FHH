@@ -33,8 +33,8 @@
         <database.url.prefix>jdbc:mysql://localhost:3306/</database.url.prefix>
         <database.name>mfhp</database.name>
         <jdbc.url>${database.url.prefix}${database.name}</jdbc.url>
-        <jdbc.username>mfhpuser</jdbc.username>
-        <jdbc.password>mfhpuser</jdbc.password>
+        <jdbc.username>${admin.db.username}</jdbc.username>
+        <jdbc.password>${admin.db.password}</jdbc.password>
         <jdbc.groupId>mysql</jdbc.groupId>
         <jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
         <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>

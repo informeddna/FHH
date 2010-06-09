@@ -97,7 +97,7 @@ public class FHHErMessagesTest extends AbstractFHHSeleniumTest {
         waitForFrameAndSelectIt("popupFrame");
         waitForText("Relationship to me");
         selenium.click("submitRelative");
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         Assert.assertTrue(selenium.isTextPresent("Relationship to me is required."));
         selenium.select("relativeForm_selectedCode", "label=Aunt");
         selenium.click("submitRelative");

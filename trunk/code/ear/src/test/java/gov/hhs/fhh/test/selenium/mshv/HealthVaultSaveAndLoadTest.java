@@ -1,6 +1,6 @@
 package gov.hhs.fhh.test.selenium.mshv;
 
-import gov.hhs.fhh.test.TestProperties;
+import gov.hhs.fhh.test.ear.TestProperties;
 import gov.hhs.fhh.test.selenium.AbstractHvTest;
 import junit.framework.Assert;
 
