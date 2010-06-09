@@ -60,7 +60,7 @@ public class SaveDiagramTest extends AbstractFHHSeleniumTest {
     private void CreateFSD() throws Exception {
     	clickAndWait("link=Create a Family Health History");
     	waitForText("Name");
-		Thread.sleep(2000);
+		Thread.sleep(4000);
 		selenium.type("personForm_person_name", "test");
 		selenium.click("personForm_person_genderMALE");
 		selenium.type("personForm_dateOfBirthString", "02/01/1976");
@@ -70,7 +70,7 @@ public class SaveDiagramTest extends AbstractFHHSeleniumTest {
 		selenium.type("personForm_weightString", "100");
 		selenium.click("selectedRaces-5");
 		selenium.click("personForm_0");
-		selenium.waitForPageToLoad("48000");
+		Thread.sleep(4000);
 		selenium.type("familyTreeForm_brothers", "1");
 		selenium.type("familyTreeForm_sisters", "1");
 		selenium.type("familyTreeForm_sons", "1");
@@ -86,7 +86,7 @@ public class SaveDiagramTest extends AbstractFHHSeleniumTest {
 		waitForText("Table");
 		Thread.sleep(2000);
 		selenium.click("xpath=//div[@id='viewReportDetail']/div[3]/a[2]");
-		Thread.sleep(2000);
+		Thread.sleep(4000);
 		selenium.click("showChart");
 		selenium.click("submitReportOptions");
 		selenium.selectWindow("title=My Family Health Portrait");
