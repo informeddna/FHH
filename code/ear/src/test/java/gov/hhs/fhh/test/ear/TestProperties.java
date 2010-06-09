@@ -31,7 +31,7 @@
  * TRADEMARK OR OTHER PROPRIETARY RIGHTS.
  * 
  */
-package gov.hhs.fhh.test;
+package gov.hhs.fhh.test.ear;
 
 import java.io.IOException;
 import java.io.InputStream;

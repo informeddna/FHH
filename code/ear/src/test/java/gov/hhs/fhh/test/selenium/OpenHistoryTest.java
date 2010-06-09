@@ -92,7 +92,7 @@ public class OpenHistoryTest extends AbstractFHHSeleniumTest {
 
         // self - id present, using that.
         clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[4]/td[4]/a/img");
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         assertTrue(selenium.isChecked("selectedEthnicities-1"));
         assertTrue(selenium.isChecked("selectedRaces-1"));
         clickAndWait("personForm_0");

@@ -25,6 +25,7 @@ public class UserEnterredCauseOfDeathTest extends AbstractHvTest{
         selenium.click("//table[@id='dataListing']/tbody/tr[2]/td[4]/a/img");
         Thread.sleep(2000);
         selenium.selectFrame("popupFrame");
+        Thread.sleep(2000);
         String causeOfDeath = selenium.getValue("otherCOD");
         Assert.assertEquals("MOOOOOOOOOOOOOOOOOO", causeOfDeath);
     }
