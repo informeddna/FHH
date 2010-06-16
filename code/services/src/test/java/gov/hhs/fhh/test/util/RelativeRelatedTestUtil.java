@@ -34,10 +34,10 @@
 package gov.hhs.fhh.test.util;
 
 import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public class RelativeRelatedTestUtil {
      */
     public static ClinicalObservation createDisease(int diseaseSelection) {
         ClinicalObservation ci = new ClinicalObservation();
-        Disease d = new Disease();
+        UserEnteredDisease d = new UserEnteredDisease();
         d.setAppDisplay("DIS"+diseaseSelection);
         d.setDisplayName("DISEASE"+diseaseSelection);
         ci.setDisease(d);

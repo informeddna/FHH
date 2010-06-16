@@ -34,16 +34,31 @@
 package gov.hhs.fhh.service;
 
 import gov.hhs.fhh.data.Disease;
-import gov.hhs.fhh.data.DisplayString;
 import gov.hhs.fhh.data.Ethnicity;
+import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
+import gov.hhs.fhh.data.Relative;
+import gov.hhs.fhh.data.util.HL7ConversionUtils;
+import gov.hhs.fhh.data.util.PersonUtils;
+import gov.hhs.fhh.data.util.htmimport.HTMImporter;
+import gov.hhs.fhh.model.mfhp.castor.FhhCastorUtils;
+import gov.hhs.fhh.service.util.FhhUtils;
+import gov.hhs.fhh.xml.PatientPerson;
+import gov.hhs.mfhp.model.Observation;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 
 import com.fiveamsolutions.nci.commons.util.HibernateUtil;
@@ -55,6 +70,7 @@ import com.fiveamsolutions.nci.commons.util.HibernateUtil;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class PersonServiceBean extends GenericServiceBean implements PersonServiceLocal {
+    private static final Logger LOG = Logger.getLogger(PersonServiceBean.class);
     private static final String ALL_DISEASES_CACHE_REGION = "AllDiseases.cache.region";
     private static final String DISEASE_SUB_TYPES_CACHE_REGION = "DiseaseSubTypes.cache.region";
     private static final String DISEASES_CACHE_REGION = "Diseases.cache.region";
@@ -83,7 +99,7 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
     public List<Race> getAsianRaces() {
         String query = FROM + Race.class.getName() + " where subType = 'Asian'";
         return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
-        ASIAN_RACES_CACHE_REGION).list();
+                ASIAN_RACES_CACHE_REGION).list();
     }
 
     /**
@@ -93,7 +109,7 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
     public List<Race> getHawaiianRaces() {
         String query = FROM + Race.class.getName() + " where subType = 'NativeHawaiian'";
         return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
-        HAWAIIAN_RACES_CACHE_REGION).list();
+                HAWAIIAN_RACES_CACHE_REGION).list();
     }
 
     /**
@@ -103,7 +119,7 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
     public List<Ethnicity> getEthnicities() {
         String query = FROM + Ethnicity.class.getName() + " where subType = 'Ethnicity'";
         return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
-        ETHNICITIES_CACHE_REGION).list();
+                ETHNICITIES_CACHE_REGION).list();
     }
 
     /**
@@ -113,7 +129,7 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
     public List<Ethnicity> getHispanicEthnicities() {
         String query = FROM + Ethnicity.class.getName() + " where subType = 'Hispanic'";
         return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
-        HISPANIC_ETHNICITIES_CACHE_REGION).list();
+                HISPANIC_ETHNICITIES_CACHE_REGION).list();
     }
 
     /**
@@ -121,9 +137,11 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
      */
     @SuppressWarnings(UNCHECKED)
     public List<Disease> getDiseases() {
-        String query = FROM + Disease.class.getName() + " where subType = 'Disease'";
-        return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
-        DISEASES_CACHE_REGION).list();
+
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery("mfhp.observation.noparents")
+                .setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION).list();
+
+        return convertToDiseases(observations);
     }
 
     /**
@@ -131,12 +149,12 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
      */
     @SuppressWarnings(UNCHECKED)
     public List<Disease> getDiseaseSubTypes(Long diseaseId) {
-        String queryStr = FROM + Disease.class.getName() + " where parent.id = :diseaseId";
-        Query query = HibernateUtil.getCurrentSession().createQuery(queryStr);
+        Query query = HibernateUtil.getCurrentSession().getNamedQuery("mfhp.observation.children");
         query.setCacheable(true);
         query.setCacheRegion(DISEASE_SUB_TYPES_CACHE_REGION);
-        query.setParameter("diseaseId", diseaseId);
-        return query.list();
+        query.setParameter("parentId", diseaseId);
+
+        return convertToDiseases(query.list());
     }
 
     /**
@@ -144,24 +162,37 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
      */
     @SuppressWarnings(UNCHECKED)
     public List<Disease> getAllDiseases() {
-        String query = FROM + Disease.class.getName();
-        return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
-        ALL_DISEASES_CACHE_REGION).list();
+
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery("mfhp.observation.all")
+                .setCacheable(true).setCacheRegion(ALL_DISEASES_CACHE_REGION).list();
+        return convertToDiseases(observations);
     }
-    
+
+    /**
+     * lame!
+     * 
+     * @param observations
+     * @return
+     */
+    private List<Disease> convertToDiseases(List<Observation> observations) {
+        List<Disease> diseases = new ArrayList<Disease>();
+
+        for (Observation o : observations) {
+            diseases.add((Disease) o);
+        }
+
+        return diseases;
+    }
+
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings(UNCHECKED)
     public List<Disease> getDiseaseByName(String diseaseName) {
-        String queryStr = "SELECT distinct d " + FROM + Disease.class.getName() + " d, " 
-            + DisplayString.class.getName() + " ds "
-            + "where ds.appDisplay LIKE :diseaseName AND ds.appDisplay NOT LIKE :parentDisease "
-            + "AND ds in elements(d.displayStrings) order by ds.appDisplay";
-        Query query = HibernateUtil.getCurrentSession().createQuery(queryStr);
-        query.setParameter("diseaseName", '%' + diseaseName + '%');
-        query.setParameter("parentDisease", '%' + "..." + '%');
-        return query.list();
+        Query query = HibernateUtil.getCurrentSession().getNamedQuery("mfhp.observation.findByDisplayName");
+        query.setParameter("displayname", "%" + diseaseName + "%");
+        return convertToDiseases(query.list());
+
     }
 
     /**
@@ -180,9 +211,113 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
      */
     @SuppressWarnings("unchecked")
     public List<Race> getRaceByCodeAndCodeSystem(String code, String codeSystem) {
-        String query = FROM + Race.class.getName() + " where code = '" + code + "' AND codeSystemName = '"
-                + codeSystem + "'";
+        String query = FROM + Race.class.getName() + " where code = '" + code + "' AND codeSystemName = '" + codeSystem
+                + "'";
         return HibernateUtil.getCurrentSession().createQuery(query).setCacheable(true).setCacheRegion(
                 RACES_CACHE_REGION).list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Person importFile(File file) throws ImportException {
+        Person result = new Person();
+
+        String fileStr = getFileAsString(file);
+        if (fileStr.contains("<?xml")) {
+            LOG.debug("about to import xml file");
+            result = importXMLFile(fileStr);
+        } else {
+            result = importHTMFile(fileStr);
+        }
+        PersonUtils.setImmediateRelatives(result);
+        PersonUtils.setAllKnownParents(result);
+        return result;
+    }
+
+    private String getFileAsString(File file) throws ImportException {
+        String result = "";
+        InputStream in = null;
+        try {
+            in = FileUtils.openInputStream(file);
+            result = FhhCastorUtils.getInputStreamAsString(in);
+        } catch (IOException e) {
+            LOG.error("Unable to read file : " + file.getAbsolutePath(), e);
+            throw new ImportException("Unable to read file : " + file.getAbsolutePath(), e);
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+        return result;
+    }
+
+    /**
+     * Populates the family Tree with attributes from a version 1.x FHH HTM file.
+     * 
+     * @return
+     */
+    private Person importHTMFile(String htmFile) {
+        HTMImporter importer = new HTMImporter();
+        return importer.build(htmFile);
+    }
+
+    /**
+     * Populates the family Tree with attributes from a version 2.x FHH XML file.
+     * 
+     * @return
+     * 
+     */
+    private Person importXMLFile(String xmlFile) throws ImportException {
+        PatientPerson unmarshalledPerson;
+        try {
+            unmarshalledPerson = (PatientPerson) FhhCastorUtils.unmarshallXMLFile(xmlFile, new PatientPerson());
+        } catch (Exception e) {
+            LOG.error("Problem unmarshalling xml file", e);
+            throw new ImportException("Problem unmarshalling xml file", e);
+        }
+        Person result = HL7ConversionUtils.person(unmarshalledPerson);
+        // Set parents of relatives
+        result = FhhUtils.setupParents(result);
+        deepPopulateRaceEthnicityIds(result);
+        return result;
+    }
+
+    /**
+     * @param person to populate the ids for race and ethnicity for pedigree
+     */
+    public void deepPopulateRaceEthnicityIds(Person person) {
+        populateRaceEthnicityIds(person);
+        for (final Relative relative : person.getRelatives()) {
+            populateRaceEthnicityIds(relative);
+        }
+    }
+
+    private void populateRaceEthnicityIds(Person personParam) {
+        populateEthnicityIds(personParam);
+        populateRaceId(personParam);
+    }
+
+    private void populateRaceId(Person personParam) {
+        for (Race race : personParam.getRaces()) {
+            if (race.getId() != null && race.getId() != 0) {
+                continue;
+            }
+            List<Race> matching = getRaceByCodeAndCodeSystem(race.getCode(), race.getCodeSystemName());
+            if (matching != null && !matching.isEmpty()) {
+                race.setId(matching.get(0).getId());
+            }
+        }
+    }
+
+    private void populateEthnicityIds(Person personParam) {
+        for (Ethnicity ethnicity : personParam.getEthnicities()) {
+            if (ethnicity.getId() != null && ethnicity.getId() != 0) {
+                continue;
+            }
+            List<Ethnicity> matching = getEthnicityByCodeAndCodeSystem(ethnicity.getCode(), ethnicity
+                    .getCodeSystemName());
+            if (matching != null && !matching.isEmpty()) {
+                ethnicity.setId(matching.get(0).getId());
+            }
+        }
     }
 }

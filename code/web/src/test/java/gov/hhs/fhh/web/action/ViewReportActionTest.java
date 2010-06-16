@@ -36,6 +36,7 @@ package gov.hhs.fhh.web.action;
 import static org.junit.Assert.assertEquals;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
+import gov.hhs.fhh.data.DiseaseBean;
 import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
@@ -67,8 +68,8 @@ public class ViewReportActionTest extends AbstractFhhWebTest {
     
     private final Weight DUMMY_WEIGHT = new Weight(180, WeightUnit.US);
     private final String DUMMY_NAME = "Name";
-    private final Disease DUMMY_DISEASE = new Disease();
-    private final Disease DUMMY_DISEASE2 = new Disease();
+    private final Disease DUMMY_DISEASE = new DiseaseBean();
+    private final Disease DUMMY_DISEASE2 = new DiseaseBean();
     private final String DUMMY_DISEASE_VALUE = "current";
     private static final String DUMMY_DISEASE_DISPLAY = "Cancer";
     private static final String OTHER_DISEASE = "Other - Add New";

@@ -82,18 +82,18 @@ import com.fiveamsolutions.hl7.model.snomed.SNOMEDCode;
 public class PersonFactoryTest extends AbstractHibernateTestCase {
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
     private static final String DATE_STRING = "01/01/1970";
-    private static final String RACE_CODE = "Code0";
-    private static final String RACE_VALUE = "DisplayName0";
+    private static final String RACE_CODE = "1002-5";
+    private static final String RACE_VALUE = "American Indian or Alaska Native";
     private static final String UNKNOWN_CODE = "";
     private static final String UNKNOWN_VALUE = "value";
 
-    private static final String DISEASE_CODE = "Code0";
+    private static final String DISEASE_CODE = "26929004";
     private static final String DISEASE_VALUE = "DisplayName0";
 
     private static final String USER_ENTERED_VALUE = "user entered";
 
-    private static final String ETHNICITY_CODE = "Code0";
-    private static final String ETHNICITY_VALUE = "DisplayName0";
+    private static final String ETHNICITY_CODE = "2155-0";
+    private static final String ETHNICITY_VALUE = "Central American";
 
     private static final Integer HEIGHT = 70;
     private static final Integer WEIGHT = 170;

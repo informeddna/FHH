@@ -82,6 +82,8 @@
  */
 package gov.hhs.mfhp.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -92,8 +94,12 @@ import javax.persistence.Id;
  * @author bhumphrey
  * 
  */
-@Entity
-public class CodeSystem {
+@Entity (name = "codesystem")
+public class CodeSystem implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String name;
     private String version;

@@ -39,10 +39,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 
 import java.text.DecimalFormat;
@@ -297,7 +297,6 @@ public class PersonUtilsTest {
     @Test 
     public void testXSSFilter() {
         final Person p = new Person();
-        PersonUtils.xssFilter(p);
         assertNotNull(p);
         
         p.setName(XSS_INPUT);
@@ -306,26 +305,24 @@ public class PersonUtilsTest {
         mother.setLivingStatus(LivingStatus.NO.toString());
         
         final ClinicalObservation obs = new ClinicalObservation();
-        final Disease disease = new Disease();
+        final UserEnteredDisease disease = new UserEnteredDisease();
         disease.setOriginalText(XSS_INPUT);
         obs.setDisease(disease);
         obs.setAgeRange(AgeRangeEnum.FIFTIES);
         
-        final Disease codDisease = new Disease();
+        final UserEnteredDisease codDisease = new UserEnteredDisease();
         codDisease.setOriginalText(XSS_INPUT);
         mother.setCauseOfDeath(codDisease);
         mother.setAgeAtDeath(AgeRangeEnum.FIFTIES);
         
         final ClinicalObservation obs2 = new ClinicalObservation();
-        final Disease disease2 = new Disease();
+        final UserEnteredDisease disease2 = new UserEnteredDisease();
         disease2.setOriginalText(XSS_INPUT);
         obs2.setDisease(disease2);
         obs2.setAgeRange(AgeRangeEnum.FIFTIES);
         
         p.getObservations().add(obs);
         mother.getObservations().add(obs2);
-        
-        PersonUtils.xssFilter(p);
         
         assertEquals(FILTERED_XSS_INPUT, p.getName());
         assertEquals(FILTERED_XSS_INPUT, p.getObservations().get(0).getDisease().getOriginalText());

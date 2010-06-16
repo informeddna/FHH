@@ -24,20 +24,6 @@ function addRelativeOnLoad() {
     ethnicityChanged('relative');
 }
 
-//TODO: METHOD COLLIDES WITH ItemSelectorUtils.js and ItemSelectorUtils.js is the last to load in addPerson.jsp so it will be used.
-function isOtherSelected(mySelection) {
-    //TODO: Very fragile
-    var subSection = mySelection.substring(5,0);
-    //TODO: Magic numbers; introduce parameter or reference global
-    var eq1 = "Other";
-    var eq2 = "Otros";
-    var otherSelected = 0; // why not false
-    if (subSection == eq1 || subSection == eq2) {
-        otherSelected = 1; // why not true
-    }
-    return otherSelected;
-}
-
 function livingStatusChanged() {
     if ($('personForm_relative_livingStatusYES').checked) {
         disableNoSpan();
@@ -104,9 +90,8 @@ function finishRetrieveSubType() {
     if ($('selectedSubType').length == 1) {
         $('subTypeSpan').hide();
         //User enters value for other disease type if Other is selected
-        var otherSelected = isOtherSelected(elementSelected);
-        //TODO: Why is this value == 16? and == 1? Magic numbers? 
-        if (selectedDisease.value == 16 && otherSelected == 1) {
+        //TODO: Why is this value == 16? Magic numbers? 
+        if (selectedDisease.value == OTHER_DISEASE_ID && isOtherSelected(elementSelected)) {
             $('otherDiseaseSpan').show();
         } else {
             ItemSelectorUtils.disableOtherDisease();
@@ -127,7 +112,7 @@ function codChanged() {
     var elementSelected = selectedCOD.options[selectedCOD.selectedIndex].text;
     var otherSelected = isOtherSelected(elementSelected);
     //TODO: Why is this value == 16? and != 1? Magic numbers? 
-    if (selectedCOD.value == 16  && otherSelected != 1) {
+    if (selectedCOD.value == OTHER_DISEASE_ID  &&  !isOtherSelected(elementSelected)) {
         $('otherCOD').value = elementSelected;
     } 
     
@@ -140,10 +125,9 @@ function finishRetrieveCODSubType() {
         disableCODSubType();
         var selectedCOD = $('personForm_causeOfDeath');
         var elementSelected = selectedCOD.options[selectedCOD.selectedIndex].text;
-        var otherSelected = isOtherSelected(elementSelected);
         // User enters value for other disease type if Other is selected
         //TODO: Why is this value == 16? and == 1? Magic number? 
-        if (selectedCOD.value == 16 && otherSelected == 1) {
+        if (selectedCOD.value == OTHER_DISEASE_ID &&  isOtherSelected(elementSelected)) {
             $('codOtherSpan', 'codOtherLabelSpan').invoke('show');
         } else {
             disableCODOther();
@@ -183,15 +167,15 @@ function validateAndSubmit(message) {
 }
 
 function relativeToRelateToSelected(showHalfSiblingCheckbox){
-	if(showHalfSiblingCheckbox != null){
-		if(showHalfSiblingCheckbox == true || showHalfSiblingCheckbox == 'true'){
-			document.getElementById('halfSiblingCheckDiv').style.display = "";
-		}else{
-			document.getElementById('halfSiblingCheckDiv').style.display = "none";
-			document.getElementById('personForm_relativeToSetAsParentHalfSiblingStatus').checked = false;
-		}
-	}else{
-		document.getElementById('halfSiblingCheckDiv').style.display = "none";
-		document.getElementById('personForm_relativeToSetAsParentHalfSiblingStatus').checked = false;
-	}
+    if(showHalfSiblingCheckbox != null){
+        if(showHalfSiblingCheckbox == true || showHalfSiblingCheckbox == 'true'){
+            document.getElementById('halfSiblingCheckDiv').style.display = "";
+        }else{
+            document.getElementById('halfSiblingCheckDiv').style.display = "none";
+            document.getElementById('personForm_relativeToSetAsParentHalfSiblingStatus').checked = false;
+        }
+    }else{
+        document.getElementById('halfSiblingCheckDiv').style.display = "none";
+        document.getElementById('personForm_relativeToSetAsParentHalfSiblingStatus').checked = false;
+    }
 }

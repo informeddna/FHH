@@ -40,6 +40,7 @@ import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
@@ -63,7 +64,7 @@ public class DroppedRelativesActionTest extends AbstractFhhWebTest {
     public void testDroppedRelatives() throws Exception {
         Person p = new Person();
         Relative droppedCousin = new Relative();
-        Disease d = new Disease();
+        UserEnteredDisease d = new UserEnteredDisease();
         ClinicalObservation obs = new ClinicalObservation();
         obs.setDisease(d);
         obs.setAgeRange(AgeRangeEnum.TWENTIES);

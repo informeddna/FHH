@@ -35,8 +35,10 @@ package gov.hhs.fhh.service;
 
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
+import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
 
+import java.io.File;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -120,4 +122,17 @@ public interface PersonServiceLocal extends GenericServiceLocal {
      * @return - the list of races matching the code and code system name.
      */
     List<Race> getRaceByCodeAndCodeSystem(String code, String codeSystem);
+    
+    
+    /**
+     * @param file the stream to extract the file contents to import
+     * @return the import result
+     * @throws ImportException if any errors occur
+     */
+    Person importFile(File file) throws ImportException;
+
+    /**
+     * @param result the person to populate Race and Ethnicity ids
+     */
+    void deepPopulateRaceEthnicityIds(Person result);
 }

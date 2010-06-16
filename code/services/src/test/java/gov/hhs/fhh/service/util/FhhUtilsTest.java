@@ -38,10 +38,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.data.util.PersonUtils;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 
@@ -283,7 +283,7 @@ public class FhhUtilsTest {
         hvGrandFather.setName("hvGrandFather");
         hvGrandFather.setLivingStatus(LivingStatus.YES.toString());
         hvGrandFather.setBirthTime("12/22/1982");
-        Disease disease = new Disease();
+        UserEnteredDisease disease = new UserEnteredDisease();
         disease.setAppDisplay("decapitation");
         ClinicalObservation co = new ClinicalObservation();
         co.setDisease(disease);

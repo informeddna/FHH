@@ -33,8 +33,6 @@
  */
 package gov.hhs.fhh.data.util;
 
-import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
@@ -270,17 +268,6 @@ public final class PersonUtils {
     }
     
     /**
-     * Filters out '<' and '>' characters from names and conditions and replaces the characters with html codes.
-     * @param proband Person object to filer
-     */
-    public static void xssFilter(final Person proband) {
-        filterNameAndConditions(proband);
-        for (final Relative currRelative  : proband.getRelatives()) {
-            filterNameAndConditions(currRelative);
-        }
-    }
-    
-    /**
      * Check whether the new relative has an id that is already assigned to an
      * existing relative, and if so assign a new one and check again.
      * @param newRelative - the new person to be added
@@ -296,29 +283,7 @@ public final class PersonUtils {
         
     }
 
-    private static void filterNameAndConditions(final Person p) {
-        // Filter out xml characters in name and conditions (only user entered String fields).
-        // We also do this in an Interceptor, but user could still enter malicious input in xml and htm
-        // files.
-        p.setName(FormatUtils.performXSSFilter(p.getName()));
-        
-        for (final ClinicalObservation currObs : p.getObservations()) {
-            if (currObs.getDisease().isOther()) {
-                filterDisease(currObs.getDisease());
-            }
-        }
-        if (p instanceof Relative) {
-            final Relative rel = (Relative) p;
-            if (rel.getCauseOfDeath() != null) {
-                filterDisease(rel.getCauseOfDeath());
-            }
-        }
-    }
     
-    private static void filterDisease(final Disease disease) {
-        disease.setOriginalText(FormatUtils.performXSSFilter(
-                disease.getOriginalText()));
-        disease.setAppDisplay(FormatUtils.performXSSFilter(
-                disease.getAppDisplay()));
-    }
+    
+    
 }

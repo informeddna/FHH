@@ -88,7 +88,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
+import gov.hhs.fhh.data.DiseaseBean;
 import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
@@ -170,7 +170,7 @@ public class PedigreeFactoryTest {
     private final TwinStatus TEST_TWIN_STATUS = TwinStatus.NO;
     private final Gender TEST_GENDER = Gender.MALE;
     private final Gender TEST_GENDER2 = Gender.FEMALE;
-    private final Disease COD = new Disease();
+    private final DiseaseBean COD = new DiseaseBean();
     private final String COD_STR = "test disease";
     private final String COD_CODE = "01234";
     private final AgeRangeEnum AGE_AT_DEATH = AgeRangeEnum.FIFTIES;

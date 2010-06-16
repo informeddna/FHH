@@ -54,7 +54,7 @@ public class ClinicalObservationTest {
     private static final boolean TRUE = true;
     private static final boolean FALSE = false;
     private final ClinicalObservation DUMMY_OBS = new ClinicalObservation();
-    private final Disease DUMMY_DISEASE = new Disease();
+    private final DiseaseBean DUMMY_DISEASE = new DiseaseBean();
     private final AgeRangeEnum DUMMY_AGE = AgeRangeEnum.FIFTIES;
     
     @Before

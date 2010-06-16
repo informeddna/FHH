@@ -40,7 +40,7 @@ import javax.persistence.MappedSuperclass;
  * @param <AC> the parent for this subtype
  */
 @MappedSuperclass
-interface AbstractCodeableSubType<AC extends AbstractCodeable> {
+interface AbstractCodeableSubType<AC extends Codeable> {
 
     /**
      * @return the parent

@@ -1,12 +1,12 @@
 /**
  * The software subject to this notice and license includes both human readable
- * source code form and machine readable, binary, object code form. The 2.3.0
+ * source code form and machine readable, binary, object code form. The mfhp-2.4.0
  * Software was developed in conjunction with the National Cancer Institute 
  * (NCI) by NCI employees and 5AM Solutions, Inc. (5AM). To the extent 
  * government employees are authors, any rights in such works shall be subject 
  * to Title 17 of the United States Code, section 105. 
  *
- * This 2.3.0 Software License (the License) is between NCI and You. You (or 
+ * This mfhp-2.4.0 Software License (the License) is between NCI and You. You (or 
  * Your) shall mean a person or an entity, and all other entities that control, 
  * are controlled by, or are under common control with the entity. Control for 
  * purposes of this definition means (i) the direct or indirect power to cause 
@@ -17,10 +17,10 @@
  * This License is granted provided that You agree to the conditions described 
  * below. NCI grants You a non-exclusive, worldwide, perpetual, fully-paid-up, 
  * no-charge, irrevocable, transferable and royalty-free right and license in 
- * its rights in the 2.3.0 Software to (i) use, install, access, operate, 
+ * its rights in the mfhp-2.4.0 Software to (i) use, install, access, operate, 
  * execute, copy, modify, translate, market, publicly display, publicly perform,
- * and prepare derivative works of the 2.3.0 Software; (ii) distribute and 
- * have distributed to and by third parties the 2.3.0 Software and any 
+ * and prepare derivative works of the mfhp-2.4.0 Software; (ii) distribute and 
+ * have distributed to and by third parties the mfhp-2.4.0 Software and any 
  * modifications and derivative works thereof; and (iii) sublicense the 
  * foregoing rights set out in (i) and (ii) to third parties, including the 
  * right to license such rights to further third parties. For sake of clarity, 
@@ -80,33 +80,44 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package gov.hhs.fhh.test;
+package gov.hhs.fhh.web.converter;
 
-import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.service.MessagingGatewayLocal;
-import gov.hhs.fhh.service.PersonInfo;
+import gov.hhs.fhh.data.UserEnteredDisease;
+import gov.hhs.fhh.data.util.DiseaseUtils;
+
+import java.util.Map;
+
+import org.apache.struts2.util.StrutsTypeConverter;
 
 /**
  * @author bhumphrey
- *
+ * 
  */
-public class MessagingGatewayStub implements MessagingGatewayLocal {
+public class UserEnteredDiseaseTypeConverter extends StrutsTypeConverter {
 
     /**
+     * {@inheritDoc}
      * 
+     * @see org.apache.struts2.util.StrutsTypeConverter#convertFromString(java.util.Map, java.lang.String[],
+     *      java.lang.Class)
      */
-    public MessagingGatewayStub() {
-        // TODO Auto-generated constructor stub
-    }
-    
-    public Person loadFromHealthVault(PersonInfo personInfo) {
-        // TODO Auto-generated method stub
-        return null;
+    @Override
+    public Object convertFromString(Map context, String[] values, Class toClass) {
+        String source = values[0];
+        if (source == null) {
+            return null;
+        }
+        return DiseaseUtils.findOrCreateNewDisease(source);
     }
 
-    public void saveToHealthVault(PersonInfo personInfo, Person person) {
-        // TODO Auto-generated method stub
-        
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.apache.struts2.util.StrutsTypeConverter#convertToString(java.util.Map, java.lang.Object)
+     */
+    @Override
+    public String convertToString(Map context, Object o) {
+        return ((UserEnteredDisease) o).getAbbreviation();
     }
 
 }

@@ -1,12 +1,12 @@
 /**
  * The software subject to this notice and license includes both human readable
- * source code form and machine readable, binary, object code form. The 2.3.0
+ * source code form and machine readable, binary, object code form. The mfhp-2.4.0
  * Software was developed in conjunction with the National Cancer Institute 
  * (NCI) by NCI employees and 5AM Solutions, Inc. (5AM). To the extent 
  * government employees are authors, any rights in such works shall be subject 
  * to Title 17 of the United States Code, section 105. 
  *
- * This 2.3.0 Software License (the License) is between NCI and You. You (or 
+ * This mfhp-2.4.0 Software License (the License) is between NCI and You. You (or 
  * Your) shall mean a person or an entity, and all other entities that control, 
  * are controlled by, or are under common control with the entity. Control for 
  * purposes of this definition means (i) the direct or indirect power to cause 
@@ -17,10 +17,10 @@
  * This License is granted provided that You agree to the conditions described 
  * below. NCI grants You a non-exclusive, worldwide, perpetual, fully-paid-up, 
  * no-charge, irrevocable, transferable and royalty-free right and license in 
- * its rights in the 2.3.0 Software to (i) use, install, access, operate, 
+ * its rights in the mfhp-2.4.0 Software to (i) use, install, access, operate, 
  * execute, copy, modify, translate, market, publicly display, publicly perform,
- * and prepare derivative works of the 2.3.0 Software; (ii) distribute and 
- * have distributed to and by third parties the 2.3.0 Software and any 
+ * and prepare derivative works of the mfhp-2.4.0 Software; (ii) distribute and 
+ * have distributed to and by third parties the mfhp-2.4.0 Software and any 
  * modifications and derivative works thereof; and (iii) sublicense the 
  * foregoing rights set out in (i) and (ii) to third parties, including the 
  * right to license such rights to further third parties. For sake of clarity, 
@@ -80,69 +80,70 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package gov.hhs.fhh.service;
+package gov.hhs.fhh.data;
 
-import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.data.util.PedigreeFactory;
-import gov.hhs.fhh.data.util.PersonFactory;
-import gov.hhs.fhh.data.util.PersonUtils;
-import gov.hhs.fhh.service.locator.FhhRegistry;
-import gov.hhs.fhh.service.util.FhhUtils;
-
-import com.fiveamsolutions.hl7.messaging.ClientLocator;
-import com.fiveamsolutions.hl7.messaging.HealthVaultClient;
-import com.fiveamsolutions.hl7.model.Pedigree;
+import java.io.Serializable;
 
 /**
  * @author bhumphrey
  * 
- *         This is *NOT* an EJB.
- * 
  */
-public class MessagingGatewayBean implements MessagingGatewayLocal {
+public class UserEnteredDisease extends DiseaseBean implements Disease, Serializable {
 
+    private static final long MAGIC_NUMBER_SIXTEEN = 16L;
     /**
      * 
-     * {@inheritDoc}
-     * 
-     * @see gov.hhs.fhh.service.MessagingGatewayLocal#saveToHealthVault(java.lang.String, java.lang.String,
-     *      java.lang.String, gov.hhs.fhh.data.Person)
      */
-    public void saveToHealthVault(final PersonInfo personInfo, final Person person) {
-        final Pedigree pedigree = PedigreeFactory.getInstance().createPedigree(person);
-        final HealthVaultClient client = ClientLocator.getInstance().getHealthVaultClient();
-        client.save(personInfo.getPersonId(), personInfo.getRecordId(), personInfo.getSessionToken(), personInfo
-                .getUserAuthToken(), pedigree);
+    private static final long serialVersionUID = 1L;
+
+
+
+
+    /**
+     * default constructor.
+     */
+    public UserEnteredDisease() {
+        // no - op
     }
 
+   
+
+
     /**
-     * 
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.DiseaseBean#getParent()
+     */
+    @Override
+    public Disease getParent() {
+        return null;
+    }
+
+
+
+
+    /**
      * {@inheritDoc}
      * 
-     * @see gov.hhs.fhh.service.MessagingGatewayLocal#loadFromHealthVault(gov.hhs.fhh.service.PersonInfo)
+     * @see com.fiveamsolutions.nci.commons.data.persistent.PersistentObject#getId()
      */
-    public Person loadFromHealthVault(final PersonInfo personInfo) {
-        final HealthVaultClient client = ClientLocator.getInstance().getHealthVaultClient();
-        final Pedigree pedigree = client.load(personInfo.getPersonId(), personInfo.getRecordId(), personInfo
-                .getSessionToken(), personInfo.getUserAuthToken());
-        //avoid the NPE when the HealthVaultClient returns no data
-        Person result = (pedigree == null) ? null : PersonFactory.getInstance().createPerson(pedigree);
-        if (result == null) {
-            return null;
-        }
-        // Set parents of relatives
-        result = FhhUtils.setupParents(result);
-        getPersonService().deepPopulateRaceEthnicityIds(result);
+    public Long getId() {
+        return MAGIC_NUMBER_SIXTEEN;
+    }
 
-        PersonUtils.setImmediateRelatives(result);
-        PersonUtils.setAllKnownParents(result);
-        return result;
+
+
+
+    /**
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.DiseaseBean#isOther()
+     */
+    @Override
+    public boolean isOther() {
+        return true;
     }
     
-    /**
-     * @return person service bean
-     */
-    protected PersonServiceLocal getPersonService() {
-        return FhhRegistry.getPersonService();
-    }
+    
+    
+    
+
 }

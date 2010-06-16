@@ -96,5 +96,12 @@ public enum CodeStatus {
      * inactive enum.
      */
     INACTIVE;
+    
+    /**
+     * default constructor.
+     */
+    CodeStatus() {
+        // no op.
+    }
 
 }

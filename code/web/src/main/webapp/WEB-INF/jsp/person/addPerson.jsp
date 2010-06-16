@@ -4,6 +4,7 @@
 var removeTxt = '<fmt:message key="button.remove" />';
 var DISEASE_NONE = '<fmt:message key="person.disease.none" />';
 var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
+var OTHER_DISEASE_ID = '16';
 </script>
 <script type="text/javascript" language="javascript" charset="ISO-8859-1" src="<c:url value='/scripts/addPerson.js'/>"></script>
 <script type="text/javascript" language="javascript" charset="ISO-8859-1" src="<c:url value='/scripts/ItemSelectorUtils.js'/>"></script>

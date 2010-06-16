@@ -11,7 +11,7 @@ public class AddRemoveUserEnterredConditionTest extends AbstractFHHSeleniumTest 
         importXMLFile("Proband_RelativeCondition_FamilyHistory.xml");
         selenium.click("//table[@id='dataListing']/tbody/tr[2]/td[4]/a/img");
         selenium.selectFrame("popupFrame");
-        Thread.sleep(3000);
+        Thread.sleep(4000);
         Assert.assertEquals("User-entered condition1", selenium.getTable("healthHistoryTableList.1.0"));
         Assert.assertEquals("Septicemia", selenium.getTable("healthHistoryTableList.2.0"));
         Assert.assertEquals("User-entered condition2", selenium.getTable("healthHistoryTableList.3.0"));

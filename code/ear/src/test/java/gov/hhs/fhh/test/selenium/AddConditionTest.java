@@ -64,7 +64,7 @@ public class AddConditionTest extends AbstractFHHSeleniumTest {
         // Wait for Ajax for to load
         waitForAjax();
         Thread.sleep(2000);
-        selenium.select("selectedSubType", "value=35");
+        selenium.select("selectedSubType", "label=Asthma");
         selenium.select("SelectedAge", "label=50-59 years");
         selenium.click("link=Add");
         selenium.select("selectedDiseasesSelectedItem", "label=Other - Add New");
@@ -75,7 +75,8 @@ public class AddConditionTest extends AbstractFHHSeleniumTest {
         clickAndWait("personForm_0");
         waitForText("Update My Family History");
         clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        Thread.sleep(4000);
+        
+        waitForText("Your Paternal Grandmother");
         assertTrue(selenium.isTextPresent("Dementia/Alzheimer's"));
         assertTrue(selenium.isTextPresent("60 years and older"));
         assertTrue(selenium.isTextPresent("Asthma"));
@@ -86,13 +87,13 @@ public class AddConditionTest extends AbstractFHHSeleniumTest {
         Thread.sleep(2000);
         waitForText("Update My Family History");
         clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        Thread.sleep(4000);
+        waitForText("Your Paternal Grandmother");
         // Remove added diseases
         selenium.click("link=Remove");
         selenium.click("personForm_0");
         Thread.sleep(4000);
         clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        Thread.sleep(4000);
+        waitForText("Your Paternal Grandmother");
         selenium.click("link=Remove");
         selenium.click("personForm_0");
         Thread.sleep(4000);
@@ -103,13 +104,13 @@ public class AddConditionTest extends AbstractFHHSeleniumTest {
         Thread.sleep(2000);
         waitForText("Update My Family History");
         clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        Thread.sleep(4000);
+        waitForText("Your Paternal Grandmother");
         selenium.click("link=Remove");
         selenium.click("personForm_0");
         Thread.sleep(2000);
         waitForText("Update My Family History");
         clickAndWaitForSubmodal("xpath=//table[@id='dataListing']/tbody/tr[11]/td[4]/a/img");
-        Thread.sleep(4000);
+        waitForText("Your Paternal Grandmother");
         // Validate diseases have been removed
         assertEquals(selenium.getTable("selectedDiseasesSelectedItemTable.0.0"), "Disease or Condition");
         Exception thrown = null;

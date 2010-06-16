@@ -38,7 +38,6 @@ import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.test.AbstractHibernateTestCase;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -57,7 +56,6 @@ import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
  *
  */
 public class RelativeReportTest extends AbstractHibernateTestCase {
-    private static final boolean TRUE = true;
     private final Weight DUMMY_WEIGHT = new Weight(180, WeightUnit.US);
     private final String DUMMY_NAME = "Name";
     private final UUID DUMMY_ID = UUID.randomUUID();
@@ -66,11 +64,9 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
     private final Race DUMMY_RACE = new Race();
     //private final ClinicalObservation DUMMY_OBS =  new ClinicalObservation();
     private final RelativeReport DUMMY_RELATIVE = new RelativeReport();
-    private final Date date = new Date();
     private final RelativeCode DUMMY_CODE = RelativeCode.MCOUSN;
     private final String DUMMY_YEAR = "1960";
     private final String DEAD_STATUS = LivingStatus.NO.toString();
-    private final String ALIVE_STATUS = LivingStatus.YES.toString();
     private final AgeRangeEnum DUMMY_AGE = AgeRangeEnum.FIFTIES;
     
     
@@ -103,26 +99,12 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
         assertEquals(DEAD_STATUS, DUMMY_RELATIVE.getLivingStatus());
         assertEquals(DUMMY_YEAR, DUMMY_RELATIVE.getBirthTime());
     }
-/*
-        DUMMY_RELATIVE.setCauseOfDeath(DUMMY_DISEASE);
 
-         DUMMY_OBS.setAgeRange(AgeRangeEnum.THIRTIES.getResourceKey());
-        List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
-        observations.add(DUMMY_OBS);
-        DUMMY_RELATIVE.setObservations(observations);
-        //assertEquals(DUMMY_DISEASE, DUMMY_RELATIVE.getObservations().get(0).getDisease());
-        assertEquals(AgeRangeEnum.THIRTIES.getResourceKey(), DUMMY_RELATIVE.getObservations().get(0).getAgeRange());
-        assertEquals(DUMMY_DISEASE, DUMMY_RELATIVE.getCauseOfDeath());
-        
-        ClinicalObservation obs = new ClinicalObservation(DUMMY_OBS);
-        assertEquals(DUMMY_DISEASE, obs.getDisease());
-        assertEquals(AgeRangeEnum.THIRTIES.getResourceKey(), obs.getAgeRange());
-    */
 
     @Test
     public void testCreateRelativeReportFindDiabetes() {
-        Disease dis = new Disease();
-        dis.setAbbreviation("DIA");
+        UserEnteredDisease dis = new UserEnteredDisease();
+        dis.setDisplayName("DIA");
         ClinicalObservation ci = new ClinicalObservation();
         ci.setDisease(dis);
         ci.setAgeRange(AgeRangeEnum.THIRTIES);
@@ -138,8 +120,8 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
 
     @Test
     public void testCreateRelativeReportFindHeartDisease() {
-        Disease dis = new Disease();
-        dis.setAbbreviation("HA");
+        UserEnteredDisease dis = new UserEnteredDisease();
+        dis.setDisplayName("HD");
         ClinicalObservation ci = new ClinicalObservation();
         ci.setDisease(dis);
         ci.setAgeRange(AgeRangeEnum.THIRTIES);
@@ -155,8 +137,8 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
 
     @Test
     public void testCreateRelativeReportFindOtherDisease() {
-        Disease dis = new Disease();
-        dis.setAbbreviation("MD");
+        UserEnteredDisease dis = new UserEnteredDisease();
+        dis.setDisplayName("OTH");
         ClinicalObservation ci = new ClinicalObservation();
         ci.setDisease(dis);
         ci.setAgeRange(AgeRangeEnum.THIRTIES);
@@ -172,7 +154,7 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
 
     @Test
     public void testCreateRelativeReportFindUserEnteredDisease() {
-        Disease dis = new Disease();
+        UserEnteredDisease dis = new UserEnteredDisease();
         dis.setOriginalText("My disease!");
         ClinicalObservation ci = new ClinicalObservation();
         ci.setDisease(dis);
@@ -189,7 +171,7 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
 
     @Test
     public void testCreateLegendList() {
-        Disease dis = new Disease();
+        UserEnteredDisease dis = new UserEnteredDisease();
         dis.setOriginalText("My disease!");
         Set<Disease> diseases = new ListOrderedSet();
         diseases.add(dis);
@@ -211,7 +193,7 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
         Set<Disease> diseases = new ListOrderedSet();
         List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
 
-        Disease dis = new Disease();
+        UserEnteredDisease dis = new UserEnteredDisease();
         dis.setOriginalText("My disease!");
         diseases.add(dis);
         ClinicalObservation ci = new ClinicalObservation();
@@ -219,7 +201,7 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
         ci.setAgeRange(AgeRangeEnum.THIRTIES);
         observations.add(ci);
 
-        Disease dis2 = new Disease();
+        UserEnteredDisease dis2 = new UserEnteredDisease();
         dis2.setDisplayName("This disease");
         diseases.add(dis2);
         ClinicalObservation ci2 = new ClinicalObservation();
@@ -227,7 +209,7 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
         ci2.setAgeRange(AgeRangeEnum.ADOLESCENCE);
         observations.add(ci2);
 
-        Disease dis3 = new Disease();
+        UserEnteredDisease dis3 = new UserEnteredDisease();
         dis3.setDisplayName("This disease");
         diseases.add(dis3);
         ClinicalObservation ci3 = new ClinicalObservation();
@@ -241,70 +223,6 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
         assertEquals(rr.getLegendList(),diseases);
     }
 
-    /*
-    @Test
-    public void testCreateRelativeReportFindHeartDisease() {
-        DUMMY_DISEASE.setAbbreviation("HA");
-        DUMMY_OBS.setAgeRange(AgeRangeEnum.THIRTIES);
-        List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
-        observations.add(DUMMY_OBS);
-        DUMMY_RELATIVE.setObservations(observations);
-        ClinicalObservation obs = new ClinicalObservation(DUMMY_OBS);
-        assertEquals(DUMMY_DISEASE, obs.getDisease());
-        assertEquals(AgeRangeEnum.THIRTIES, obs.getAgeRange());
-        assertEquals(DUMMY_RELATIVE.getHeartDisease(),obs);
-    }
-    
-    @Test
-    public void testCreateRelativeReportFindOtherDisease() {
-        Disease dis = new Disease();
-        dis.setAbbreviation("MD");
-        ClinicalObservation ci = new ClinicalObservation();
-        ci.setDisease(dis);
-        ci.setAgeRange(AgeRangeEnum.THIRTIES);
-        List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
-        observations.add(ci);
-        DUMMY_RELATIVE.setObservations(observations);
-        ClinicalObservation obs = new ClinicalObservation(ci);
-        assertEquals(dis, obs.getDisease());
-        assertEquals(AgeRangeEnum.THIRTIES, obs.getAgeRange());
-        assertEquals(DUMMY_RELATIVE.getAdditionalDiseases(),obs);
-    }
-
-    @Test
-    public void testCreateRelativeReportFindNonAbbreviationDisease() {
-        DUMMY_OBS.setAgeRange(AgeRangeEnum.THIRTIES);
-        List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
-        observations.add(DUMMY_OBS);
-        DUMMY_RELATIVE.setObservations(observations);
-        ClinicalObservation obs = new ClinicalObservation(DUMMY_OBS);
-        assertEquals(DUMMY_DISEASE, obs.getDisease());
-        assertEquals(AgeRangeEnum.THIRTIES, obs.getAgeRange());
-        assertEquals(DUMMY_RELATIVE.getAdditionalDiseases(),obs);
-    }
-
-    @Test
-    public void testCopyRelativeReport() {
-        
-        RelativeReport copiedRelative = new RelativeReport(DUMMY_RELATIVE);
-        
-        assertEquals(DUMMY_ID, copiedRelative.getId());
-        assertEquals(DUMMY_NAME, copiedRelative.getName());
-        assertEquals(DUMMY_WEIGHT, copiedRelative.getWeight());
-        assertEquals(DUMMY_GENDER, copiedRelative.getGender());
-        assertEquals(DUMMY_DISEASE, copiedRelative.getObservations().get(0).getDisease());
-        assertEquals(AgeRangeEnum.THIRTIES, copiedRelative.getObservations().get(0).getAgeRange());
-        assertEquals(DUMMY_ETHNICITY, copiedRelative.getEthnicities().get(0));
-        assertEquals(DUMMY_RACE, copiedRelative.getRaces().get(0));
-        assertEquals(DUMMY_CODE, copiedRelative.getCode());
-        assertEquals(DUMMY_AGE, copiedRelative.getAgeAtDeath());
-        assertEquals(DUMMY_DISEASE, copiedRelative.getCauseOfDeath());
-        assertEquals(DEAD_STATUS, copiedRelative.getLivingStatus());
-        assertEquals(DUMMY_YEAR, copiedRelative.getBirthTime()); 
-       
-    }
-    
-     */
 
     
 }

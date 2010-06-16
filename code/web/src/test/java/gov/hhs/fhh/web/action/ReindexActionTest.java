@@ -38,12 +38,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
+import gov.hhs.fhh.data.DiseaseBean;
 import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.data.util.HL7ConversionUtils;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.model.mfhp.castor.FhhCastorUtils;
@@ -76,14 +77,14 @@ public class ReindexActionTest extends AbstractFhhWebTest {
     private final String DOWNLOAD_FILE_ACTION = "downloadXMLFile";
     private final String BASIC_TEST_ETHNICITY = "Hispanic of Latino";
     private final String BASIC_TEST_RACE = "American Indian or Alaska Native";
-    private final String BASIC_TEST_DISEASE = "DisplayName7";
+    private final String BASIC_TEST_DISEASE = "Hypertension";
     private final String BASIC_TEST_DISEASE_CODE = "38341003";
     private final String DECEASED_STATUS = LivingStatus.NO.getResourceKey();
     private final Weight DUMMY_WEIGHT = new Weight(180, WeightUnit.US);;
     private final GregorianCalendar DUMMY_DATE = new GregorianCalendar(1970, 9, 7, 0, 0, 0);
     private final Gender DUMMY_GENDER = Gender.MALE;
-    private final Disease DUMMY_DISEASE = new Disease();
-    private final Disease DUMMY_DISEASE2 = new Disease();
+    private final UserEnteredDisease DUMMY_DISEASE = new UserEnteredDisease();
+    private final UserEnteredDisease DUMMY_DISEASE2 = new UserEnteredDisease();
     private final Ethnicity DUMMY_ETHNICITY = new Ethnicity();
     private final Ethnicity DUMMY_ETHNICITY2 = new Ethnicity();
     private final Ethnicity DUMMY_ETHNICITY3 = new Ethnicity();
@@ -98,8 +99,7 @@ public class ReindexActionTest extends AbstractFhhWebTest {
     private final String BASIC_RELATIVE_ETHNICITY = "Hispanic of Latino";
     private final String BASIC_RELATIVE_ETHNICITY2 = "Dominican";
     private final String BASIC_RELATIVE_RACE = "Asian";
-    private final String BASIC_RELATIVE_DISEASE = "DisplayName18";
-    private final Long BASIC_RELATIVE_DISEASE_ID = 18L;
+    private final String BASIC_RELATIVE_DISEASE = "Type 2 Diabetes";
     private final String BASIC_RELATIVE_DISEASE_CODE = "44054006";
 
     private final String MAUNT_NAME = "maunt name";
@@ -128,6 +128,7 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         DUMMY_ETHNICITY.setDisplayName(BASIC_TEST_ETHNICITY);
         DUMMY_RACE.setDisplayName(BASIC_TEST_RACE);
         DUMMY_DISEASE.setDisplayName(BASIC_TEST_DISEASE);
+        DUMMY_DISEASE.setOriginalText(BASIC_TEST_DISEASE);
         DUMMY_DISEASE.setCode(BASIC_TEST_DISEASE_CODE);
         DUMMY_CLINICAL_OBSERVATION.setAgeRange(AgeRangeEnum.TWENTIES);
         DUMMY_CLINICAL_OBSERVATION.setDisease(DUMMY_DISEASE);
@@ -147,7 +148,7 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         DUMMY_ETHNICITY3.setDisplayName(BASIC_RELATIVE_ETHNICITY2);
         DUMMY_RACE2.setDisplayName(BASIC_RELATIVE_RACE);
         DUMMY_DISEASE2.setDisplayName(BASIC_RELATIVE_DISEASE);
-        DUMMY_DISEASE2.setId(BASIC_RELATIVE_DISEASE_ID);
+        DUMMY_DISEASE2.setOriginalText(BASIC_RELATIVE_DISEASE);
         DUMMY_DISEASE2.setCode(BASIC_RELATIVE_DISEASE_CODE);
         DUMMY_CLINICAL_OBSERVATION2.setAgeRange(AgeRangeEnum.FORTIES);
         DUMMY_CLINICAL_OBSERVATION2.setDisease(DUMMY_DISEASE2);
@@ -221,8 +222,10 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         assertEquals(DUMMY_GENDER.getDisplayName(), unmarshalledPerson.getGender().getDisplayName());
         assertEquals(DUMMY_ETHNICITY.getDisplayName(), unmarshalledPerson.getEthnicities().get(0).getDisplayName());
         assertEquals(DUMMY_RACE.getDisplayName(), unmarshalledPerson.getRaces().get(0).getDisplayName());
-        assertEquals(DUMMY_DISEASE.getDisplayName(), unmarshalledPerson.getObservations().get(0).getDisease()
-                .getDisplayName());
+//        assertEquals(DUMMY_DISEASE.getDisplayName(), unmarshalledPerson.getObservations().get(0).getDisease()
+//                .getDisplayName());
+        assertEquals(DUMMY_DISEASE.getCode(), unmarshalledPerson.getObservations().get(0).getDisease()
+                .getCode());
         assertEquals(AgeRangeEnum.TWENTIES, unmarshalledPerson.getObservations().get(0).getAgeRange());
 
         // Check deceased Relative attributes
@@ -233,8 +236,10 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         assertEquals(DUMMY_ETHNICITY2.getDisplayName(), importedRelative.getEthnicities().get(0).getDisplayName());
         assertEquals(DUMMY_ETHNICITY3.getDisplayName(), importedRelative.getEthnicities().get(1).getDisplayName());
         assertEquals(DUMMY_RACE2.getDisplayName(), importedRelative.getRaces().get(0).getDisplayName());
-        assertEquals(DUMMY_DISEASE2.getDisplayName(), importedRelative.getObservations().get(0).getDisease()
-                .getDisplayName());
+//        assertEquals(DUMMY_DISEASE2.getDisplayName(), importedRelative.getObservations().get(0).getDisease()
+//                .getDisplayName());
+        assertEquals(DUMMY_DISEASE2.getCode(), importedRelative.getObservations().get(0).getDisease()
+                .getCode());
         assertEquals(AgeRangeEnum.FORTIES, importedRelative.getObservations().get(0).getAgeRange());
 
         // Check that the motherId/fatherId of the 2 cousins are set
@@ -271,8 +276,8 @@ public class ReindexActionTest extends AbstractFhhWebTest {
         assertEquals(DUMMY_GENDER.getDisplayName(), originalAsNephew.getGender().getDisplayName());
         assertEquals(DUMMY_ETHNICITY.getDisplayName(), originalAsNephew.getEthnicities().get(0).getDisplayName());
         assertEquals(DUMMY_RACE.getDisplayName(), originalAsNephew.getRaces().get(0).getDisplayName());
-        assertEquals(DUMMY_DISEASE.getDisplayName(), originalAsNephew.getObservations().get(0).getDisease()
-                .getDisplayName());
+        assertEquals(DUMMY_DISEASE.getCode(), originalAsNephew.getObservations().get(0).getDisease()
+                .getCode());
         assertEquals(AgeRangeEnum.TWENTIES, originalAsNephew.getObservations().get(0).getAgeRange());
 
         // she should have original's cousin as daughter

@@ -37,12 +37,12 @@ import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.service.PersonServiceLocal;
 import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.service.locator.ServiceLocator;
+import gov.hhs.mfhp.model.Code;
+import gov.hhs.mfhp.model.Observation;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @author bpickeral
@@ -88,8 +88,14 @@ public final class FhhDataUtils {
     
     private static void generateCodeToDiseaseMap(List<Disease> allDiseaseList) {
         for (Disease currDisease : allDiseaseList) {
-            if (!StringUtils.isEmpty(currDisease.getCode())) {
-                codeToDiseaseMap.put(currDisease.getCode(), currDisease); 
+            // Don't include disease that have no active codes
+            if (((Observation) currDisease).getActiveCode() == null) {
+                continue;
+            }
+            for (Code code : ((Observation) currDisease).getCodes()) {
+                
+           
+                codeToDiseaseMap.put(code.getCodeName(), currDisease); 
             }
         }
     }

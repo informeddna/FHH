@@ -89,9 +89,14 @@ import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.data.util.SpanishCharacter;
 import gov.hhs.fhh.test.AbstractHibernateTestCase;
+import gov.hhs.mfhp.model.Code;
+import gov.hhs.mfhp.model.CodeStatus;
+import gov.hhs.mfhp.model.DisplayName;
+import gov.hhs.mfhp.model.Observation;
 
 import org.junit.Test;
 
@@ -102,25 +107,22 @@ import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
  *
  */
 public class DiseaseUtilsTest extends AbstractHibernateTestCase {
-    private String MULTIPLE_RESULT_NO_MATCH = "diseaseX";
-    private String EXACT_MATCH_APP_DISPLAY = "diseaseX subtype1";
+    private String MULTIPLE_RESULT_NO_MATCH = "Disorder";
+    private String EXACT_MATCH_APP_DISPLAY = "Social Phobia";
     private String ONE_MATCH = "one match";
     private String NO_MATCH = "no match";
     private String DISEASE_CODE = "code";
     private String USER_ENTERED = "User Entered";
     
     @Test
-    public void testCreateAgeRange() {
+    public void testFindOrCreateNewDisease() {
         Disease currDisease = DiseaseUtils.findOrCreateNewDisease(MULTIPLE_RESULT_NO_MATCH);
         assertEquals(currDisease.getOriginalText(), MULTIPLE_RESULT_NO_MATCH);
         
         currDisease = DiseaseUtils.findOrCreateNewDisease(EXACT_MATCH_APP_DISPLAY);
         assertEquals(currDisease.getAppDisplay(), EXACT_MATCH_APP_DISPLAY);
-        assertNull(currDisease.getOriginalText());
         
-        currDisease = DiseaseUtils.findOrCreateNewDisease(ONE_MATCH);
-        assertEquals(currDisease.getAppDisplay(), ONE_MATCH);
-        assertNull(currDisease.getOriginalText());
+        
         
         currDisease = DiseaseUtils.findOrCreateNewDisease(NO_MATCH);
         assertEquals(currDisease.getAppDisplay(), NO_MATCH);
@@ -134,19 +136,27 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
         assertNull(DiseaseUtils.replaceSpanishCharactersWithHTML(null));
     }
     
+    private Observation createObservation(String code, String name) {
+        Observation d1 = new Observation();
+        Code c1 = new Code();
+        c1.setCodeName(code);
+        c1.setStatus(CodeStatus.ACTIVE);
+        d1.getCodes().add(c1);
+        
+        DisplayName n1 = new DisplayName();
+        n1.setText(name);
+        n1.setLanguage("en");
+        d1.getDisplayNames().add(n1);
+        return d1;
+    }
+    
     @Test 
     public void testHighlightingDisease() {
-        Disease d1 = new Disease();
-        d1.setCode(DiseaseUtils.COLON_CANCER_CODE);
-        d1.setAppDisplay("c");
+        Observation d1 = createObservation(DiseaseUtils.COLON_CANCER_CODE,"c");
         
-        Disease d2 = new Disease();
-        d2.setCode(DiseaseUtils.DIABETES_CODE);
-        d2.setAppDisplay("d");
+        Observation d2= createObservation(DiseaseUtils.DIABETES_CODE,"d");
         
-        Disease d3 = new Disease();
-        d3.setCode(DiseaseUtils.DIABETES_CODE);
-        d3.setAppDisplay("d");
+        Observation d3 = createObservation(DiseaseUtils.DIABETES_CODE, "d");
         
         assertFalse("two known diseases are the same when they aren't",DiseaseUtils.compareHighlightDisease(d1, d2));
         
@@ -169,7 +179,7 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
     public void testSetMatchedOrUnmatched() {
         ClinicalObservation obs = new ClinicalObservation();
         Person p = new Person();
-        Disease d = new Disease();
+        UserEnteredDisease d = new UserEnteredDisease();
         obs.setDisease(d);
         d.setCode(null);
         // Test type other
@@ -180,9 +190,8 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
         // Test type that should not be set
         obs = new ClinicalObservation();
         p = new Person();
-        d = new Disease();
-        obs.setDisease(d);
-        d.setCode(DiseaseUtils.COLON_CANCER_CODE);
+        Disease d2 = createObservation(DiseaseUtils.COLON_CANCER_CODE, "Colon Cancer");
+        obs.setDisease(d2);
         DiseaseUtils.setMatchedOrUnmatched(p, obs);
         assertFalse(p.isUnmatchedCondition());
         assertFalse(obs.isUnmatchedCondition());
@@ -193,15 +202,15 @@ public class DiseaseUtilsTest extends AbstractHibernateTestCase {
         Disease d = null;
         assertEquals("", DiseaseUtils.generateDiseaaseTableId(d, AgeRangeEnum.ADOLESCENCE));
         
-        d = new Disease();
-        d.setCode(DISEASE_CODE);
+        d = createObservation(DISEASE_CODE, "a disease");
         assertEquals("", DiseaseUtils.generateDiseaaseTableId(d, null));
         assertEquals(String.valueOf(DISEASE_CODE) + AgeRangeEnum.THIRTIES.toString(), 
                 DiseaseUtils.generateDiseaaseTableId(d, AgeRangeEnum.THIRTIES));
         
-        d.setCode(null);
-        d.setOriginalText(USER_ENTERED);
+        UserEnteredDisease d1 = new UserEnteredDisease();
+        d1.setCode(null);
+        d1.setOriginalText(USER_ENTERED);
         assertEquals(AgeRangeEnum.THIRTIES.toString() + USER_ENTERED, 
-                DiseaseUtils.generateDiseaaseTableId(d, AgeRangeEnum.THIRTIES));
+                DiseaseUtils.generateDiseaaseTableId(d1, AgeRangeEnum.THIRTIES));
     }
 }

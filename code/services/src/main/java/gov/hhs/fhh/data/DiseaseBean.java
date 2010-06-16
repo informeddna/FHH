@@ -80,174 +80,45 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package gov.hhs.mfhp.model;
+package gov.hhs.fhh.data;
 
-import gov.hhs.fhh.data.Disease;
-import gov.hhs.fhh.data.DisplayString;
 import gov.hhs.fhh.data.util.DiseaseUtils;
-import gov.hhs.fhh.service.util.CurrentLanguageHolder;
+import gov.hhs.fhh.data.util.FormatUtils;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
+import java.io.Serializable;
 import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
 
 /**
  * @author bhumphrey
- * 
+ *
  */
-@Entity (name = "observation")
-@org.hibernate.annotations.Entity(mutable = false)
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@NamedQueries(value = {
-        @NamedQuery(name = "mfhp.observation.all", query = "from observation"),
-        @NamedQuery(name = "mfhp.observation.noparents", query = "from observation where parent is null"),
-        @NamedQuery(name = "mfhp.observation.children", query = "from observation where parent.id = :parentId"),
-        @NamedQuery(name = "mfhp.observation.findByCode", query = "select o from "
-                + "observation as o left outer join o.codes as code where code.codeName = :codeName"),
-        @NamedQuery(name = "mfhp.observation.findByDisplayName", query = "select o from "
-                + "observation as o left outer join o.displayNames as displayname "
-                + "where lower(displayname.text) like lower(:displayname)") })
-public class Observation implements PersistentObject, Disease {
+public class DiseaseBean implements Disease, Serializable {
 
     /**
-     * serial number.
+     * 
      */
     private static final long serialVersionUID = 1L;
-
+    private String originalText;
+    private String displayName;
+    private String codeSystemVersion;
+    private String codeSystemName;
+    private String codeSystem;
+    private String code;
+    private String appDisplay;
     private Long id;
-    private String name;
-
-    private Observation parent;
-
-    private Set<Code> codes = new HashSet<Code>();
-
-    private Set<DisplayName> displayNames = new HashSet<DisplayName>();
-
-
+    private Disease parent;
+    
+    
+    
+    
     /**
      * default constructor.
      */
-    public Observation() {
-        // empty
+    public DiseaseBean() {
+        //no op.
     }
 
     /**
-     * @return the id
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the name
-     */
-    @Basic
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the parent
-     */
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    public Observation getParent() {
-        return parent;
-    }
-
-    /**
-     * @param parent the parent to set
-     */
-    public void setParent(Observation parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * @param codes the codes to set
-     */
-    public void setCodes(Set<Code> codes) {
-        this.codes = codes;
-    }
-
-    /**
-     * @return the codes
-     */
-    @OneToMany(fetch = FetchType.EAGER)
-    public Set<Code> getCodes() {
-        return codes;
-    }
-
-    /**
-     * @return the displaynames
-     */
-    @OneToMany(fetch = FetchType.EAGER)
-    public Set<DisplayName> getDisplayNames() {
-        return displayNames;
-    }
-
-    /**
-     * @param displayNames the displaynames to set
-     */
-    public void setDisplayNames(Set<DisplayName> displayNames) {
-        this.displayNames = displayNames;
-    }
-
-    /**
-     * 
-     * @return activeCode the first code with active flag set.
-     */
-    @Transient
-    public Code getActiveCode() {
-        for (Code code : getCodes()) {
-            if (code.getStatus() == CodeStatus.ACTIVE) {
-                return code;
-            }
-        }
-        return null;
-    }
-
-   
-
-   
-
-    /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#compareTo(gov.hhs.fhh.data.Disease)
@@ -255,10 +126,14 @@ public class Observation implements PersistentObject, Disease {
     public int compareTo(Disease d) {
         int retval = 0;
         if (d != null) {
-            if (getAppDisplay() != null) {
-                retval = getAppDisplay().compareTo(d.getAppDisplay());
-            } else if (getOriginalText() != null) {
-                retval = getOriginalText().compareTo(d.getOriginalText());
+            if (d.isOther()) {
+                if (getAppDisplay() != null) {
+                    retval = getAppDisplay().compareTo(d.getAppDisplay());
+                } else if (getOriginalText() != null) {
+                    retval = getOriginalText().compareTo(d.getOriginalText());
+                }
+            } else {
+                retval = -1;
             }
         }
 
@@ -266,197 +141,255 @@ public class Observation implements PersistentObject, Disease {
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#getAbbreviation()
      */
-    @Transient
     public String getAbbreviation() {
         return getGeneratedAbbreviation();
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#getDisplayStrings()
      */
-    @Transient
     public Map<String, DisplayString> getDisplayStrings() {
-        Map<String, DisplayString> map = new HashMap<String, DisplayString>();
-
-        for (DisplayName i : getDisplayNames()) {
-            map.put(i.getLanguage(), new DisplayString(i.getLanguage(), getName(), i.getText()));
-        }
-        return map;
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#getEscapedGeneratedAbbreviation()
      */
-    @Transient
     public String getEscapedGeneratedAbbreviation() {
-        return DiseaseUtils.replaceSpanishCharactersWithHTML(getGeneratedAbbreviation());
+        return DiseaseUtils.replaceSpanishCharactersWithHTML(getAbbreviation());
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#getEscapedOriginalText()
      */
-    @Transient
     public String getEscapedOriginalText() {
+        // TODO Auto-generated method stub
         return DiseaseUtils.replaceSpanishCharactersWithHTML(getOriginalText());
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#getEscapedReportDisplay()
      */
-    @Transient
     public String getEscapedReportDisplay() {
         return DiseaseUtils.replaceSpanishCharactersWithHTML(getReportDisplay());
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#getGeneratedAbbreviation()
      */
-    @Transient
     public String getGeneratedAbbreviation() {
         return DiseaseUtils.getDiseaseAbbreviation(this);
     }
 
     /**
+     * {@inheritDoc}
      * 
+     * @see gov.hhs.fhh.data.Disease#getParent()
+     */
+    public Disease getParent() {
+        return parent;
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#getReportDisplay()
      */
-    @Transient
     public String getReportDisplay() {
         return DiseaseUtils.getReportDisplay(this);
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Disease#isOther()
      */
-    @Transient
     public boolean isOther() {
-        return false;
+        return code == null;
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Codeable#addDisplayString(java.lang.String, java.lang.String, java.lang.String)
      */
-    @Transient
-    public void addDisplayString(String language, String displayName, String appDisplay) {
+    public void addDisplayString(String a, String b, String c) {
         throw new NoSuchMethodError();
+
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Codeable#getAppDisplay()
      */
-    @Transient
     public String getAppDisplay() {
-        String language = CurrentLanguageHolder.getCurrentLanguage();
-        DisplayString ds = getDisplayStrings().get(language.toLowerCase(Locale.getDefault()));
-        if (ds == null) {
-            ds = getDisplayStrings().get(CurrentLanguageHolder.DEFAULT_LANGUAGE);
-        }
-
-        return ds != null ? ds.getAppDisplay() : null;
+        return appDisplay;
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Codeable#getCode()
      */
-    @Transient
     public String getCode() {
-        
-        final Code activeCode = getActiveCode();
-        return (activeCode == null ? null : activeCode.getCodeName());
+        return code;
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Codeable#getCodeSystem()
      */
-    @Transient
     public String getCodeSystem() {
-        return getActiveCode().getCodeSystem().getName();
+        return codeSystem;
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Codeable#getCodeSystemName()
      */
-    @Transient
     public String getCodeSystemName() {
-        return getActiveCode().getCodeSystem().getCommonName();
+        return codeSystemName;
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Codeable#getCodeSystemVersion()
      */
-    @Transient
     public String getCodeSystemVersion() {
-        return getActiveCode().getCodeSystem().getVersion();
+        return codeSystemVersion;
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Codeable#getDisplayName()
      */
-    @Transient
     public String getDisplayName() {
-        return getAppDisplay();
+        return displayName;
     }
 
     /**
-     * 
      * {@inheritDoc}
      * 
      * @see gov.hhs.fhh.data.Codeable#getOriginalText()
      */
-    @Transient
     public String getOriginalText() {
-        return getName();
+        return originalText;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see gov.hhs.fhh.data.Codeable#setAppDisplay(java.lang.String)
+     */
+    public void setAppDisplay(String appDisplay) {
+        this.appDisplay = FormatUtils.performXSSFilter(appDisplay);
+
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see gov.hhs.fhh.data.Codeable#setCode(java.lang.String)
+     */
+    public void setCode(String code) {
+        this.code = code;
 
+    }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see gov.hhs.fhh.data.Codeable#setCodeSystem(java.lang.String)
+     */
+    public void setCodeSystem(String codeSystem) {
+        this.codeSystem = codeSystem;
 
- 
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see gov.hhs.fhh.data.Codeable#setCodeSystemName(java.lang.String)
+     */
+    public void setCodeSystemName(String codeSystemName) {
+        this.codeSystemName = codeSystemName;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see gov.hhs.fhh.data.Codeable#setCodeSystemVersion(java.lang.String)
+     */
+    public void setCodeSystemVersion(String codeSystemVersion) {
+        this.codeSystemVersion = codeSystemVersion;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see gov.hhs.fhh.data.Codeable#setDisplayName(java.lang.String)
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see gov.hhs.fhh.data.Codeable#setOriginalText(java.lang.String)
+     */
+    public void setOriginalText(String originalText) {
+        this.originalText = FormatUtils.performXSSFilter(originalText);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see com.fiveamsolutions.nci.commons.data.persistent.PersistentObject#getId()
+     */
+    public Long getId() {
+        return id;
+    }
+    
+    /**
+     * 
+     * @param id internal database id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * 
+     * @param parent the parent for this disease
+     */
+    public void setParent(Disease parent) {
+        this.parent = parent;
+        
+    }
 
 }

@@ -56,7 +56,7 @@ import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
  *
  */
 @MappedSuperclass
-public abstract class AbstractCodeable implements PersistentObject {
+public abstract class AbstractCodeable implements PersistentObject, Codeable {
     private static final long serialVersionUID = 1L;
     static final int NAME_LENGTH = 255;
     static final int CODE_LENGTH = 50;
@@ -113,7 +113,8 @@ public abstract class AbstractCodeable implements PersistentObject {
     }
 
     /**
-     * @return the code
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#getCode()
      */
     @Length(max = CODE_LENGTH)
     public String getCode() {
@@ -122,14 +123,16 @@ public abstract class AbstractCodeable implements PersistentObject {
 
 
     /**
-     * @param code the code to set
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#setCode(java.lang.String)
      */
     public void setCode(String code) {
         this.code = code;
     }
 
     /**
-     * @return the codeSystemName
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#getCodeSystemName()
      */
     @Length(max = NAME_LENGTH)
     public String getCodeSystemName() {
@@ -137,14 +140,16 @@ public abstract class AbstractCodeable implements PersistentObject {
     }
 
     /**
-     * @param codeSystemName the codeSystemName to set
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#setCodeSystemName(java.lang.String)
      */
     public void setCodeSystemName(String codeSystemName) {
         this.codeSystemName = codeSystemName;
     }
 
     /**
-     * @return the displayName
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#getDisplayName()
      */
     @Transient
     public String getDisplayName() {
@@ -157,7 +162,8 @@ public abstract class AbstractCodeable implements PersistentObject {
     }
 
     /**
-     * @param displayName the displayName to set
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#setDisplayName(java.lang.String)
      */
     public void setDisplayName(String displayName) {
         String language = CurrentLanguageHolder.getCurrentLanguage();
@@ -172,7 +178,8 @@ public abstract class AbstractCodeable implements PersistentObject {
     }
 
     /**
-     * @return the originalText
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#getOriginalText()
      */
     @Length(max = NAME_LENGTH)
     public String getOriginalText() {
@@ -180,43 +187,48 @@ public abstract class AbstractCodeable implements PersistentObject {
     }
 
     /**
-     * @param originalText the originalText to set
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#setOriginalText(java.lang.String)
      */
     public void setOriginalText(String originalText) {
         this.originalText = originalText;
     }
 
     /**
-     * @return the codeSystem
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#getCodeSystem()
      */
     public String getCodeSystem() {
         return codeSystem;
     }
 
     /**
-     * @param codeSystem the codeSystem to set
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#setCodeSystem(java.lang.String)
      */
     public void setCodeSystem(String codeSystem) {
         this.codeSystem = codeSystem;
     }
 
     /**
-     * @return the codeSystemVersion
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#getCodeSystemVersion()
      */
     public String getCodeSystemVersion() {
         return codeSystemVersion;
     }
 
     /**
-     * @param codeSystemVersion the codeSystemVersion to set
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#setCodeSystemVersion(java.lang.String)
      */
     public void setCodeSystemVersion(String codeSystemVersion) {
         this.codeSystemVersion = codeSystemVersion;
     }
 
     /**
-     * (Used in drop-downs/lists).
-     * @return the appDisplay
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#getAppDisplay()
      */
     @Transient
     public String getAppDisplay() {
@@ -230,7 +242,8 @@ public abstract class AbstractCodeable implements PersistentObject {
     }
 
     /**
-     * @param appDisplay the appDisplay to set
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#setAppDisplay(java.lang.String)
      */
     public void setAppDisplay(String appDisplay) {
         String language = CurrentLanguageHolder.getCurrentLanguage();
@@ -245,7 +258,8 @@ public abstract class AbstractCodeable implements PersistentObject {
     }
 
     /**
-     * @return the displayStrings
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#getDisplayStrings()
      */
     @Transient
     public Map<String, DisplayString> getDisplayStrings() {
@@ -261,10 +275,8 @@ public abstract class AbstractCodeable implements PersistentObject {
     }
 
     /**
-     * Add a new DisplayString for this object.
-     * @param language language to set
-     * @param displayName displayName to set
-     * @param appDisplay appDisplay to set
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.data.Codeable#addDisplayString(java.lang.String, java.lang.String, java.lang.String)
      */
     public void addDisplayString(String language, String displayName, String appDisplay) {
         DisplayString ds = new DisplayString(language, displayName, appDisplay);

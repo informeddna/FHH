@@ -34,12 +34,22 @@
 package gov.hhs.fhh.web.test;
 
 import gov.hhs.fhh.data.AbstractCodeable;
+import gov.hhs.fhh.data.Codeable;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
+import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.data.util.DiseaseUtils;
+import gov.hhs.fhh.service.ImportException;
+import gov.hhs.fhh.service.PersonServiceBean;
 import gov.hhs.fhh.service.PersonServiceLocal;
+import gov.hhs.mfhp.model.Code;
+import gov.hhs.mfhp.model.CodeStatus;
+import gov.hhs.mfhp.model.CodeSystem;
+import gov.hhs.mfhp.model.DisplayName;
+import gov.hhs.mfhp.model.Observation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +57,7 @@ import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
 
 /**
  * @author bpickeral
- *
+ * 
  */
 public class PersonServiceStub implements PersonServiceLocal {
 
@@ -106,13 +116,48 @@ public class PersonServiceStub implements PersonServiceLocal {
         return ethnicities;
     }
 
+    private Disease createObservation(int i) {
+        Observation o = new Observation();
+        Code c = new Code();
+        c.setCodeName("CODE-" + i);
+        c.setStatus(CodeStatus.ACTIVE);
+        CodeSystem codeSystem = new CodeSystem();
+        codeSystem.setCommonName("CODE_SYS" + i);
+        codeSystem.setName("CODE_SYS" + i);
+        c.setCodeSystem(codeSystem);
+        o.getCodes().add(c);
+        DisplayName displayName = new DisplayName();
+        displayName.setLanguage("en");
+        displayName.setText("DisplayName" + i);
+        o.getDisplayNames().add(displayName);
+        return o;
+    }
+
+    private Disease createObservation(String code, String text) {
+        Observation o = new Observation();
+        o.setId(0L);
+        Code c = new Code();
+        c.setCodeName(code);
+        c.setStatus(CodeStatus.ACTIVE);
+        CodeSystem codeSystem = new CodeSystem();
+        codeSystem.setCommonName("SNOMED_CT");
+        codeSystem.setName("SNOMED_CT");
+        c.setCodeSystem(codeSystem);
+        o.getCodes().add(c);
+        DisplayName displayName = new DisplayName();
+        displayName.setLanguage("en");
+        displayName.setText(text);
+        o.getDisplayNames().add(displayName);
+        return o;
+    }
+
     /**
      * {@inheritDoc}
      */
     public List<Disease> getDiseases() {
         List<Disease> diseases = new ArrayList<Disease>();
         for (int i = 0; i < 3; i++) {
-            diseases.add((Disease) setupAC(i, new Disease()));
+            diseases.add(createObservation(i));
         }
         return diseases;
     }
@@ -123,7 +168,7 @@ public class PersonServiceStub implements PersonServiceLocal {
     public List<Disease> getDiseaseSubTypes(Long disease) {
         List<Disease> diseases = new ArrayList<Disease>();
         for (int i = 0; i < 3; i++) {
-            diseases.add((Disease) setupAC(i, new Disease()));
+            diseases.add(createObservation(i));
         }
         return diseases;
     }
@@ -133,36 +178,33 @@ public class PersonServiceStub implements PersonServiceLocal {
      */
     public List<Disease> getAllDiseases() {
         List<Disease> diseases = new ArrayList<Disease>();
-        for (int i = 0; i < 20; i++) {
-            diseases.add((Disease) setupAC(i, new Disease()));
-        }
-        diseases.get(7).setCode("38341003");
-        diseases.get(14).setCode(DiseaseUtils.STROKE_CODE);
-        diseases.get(18).setCode("44054006");
-        diseases.add((Disease) setupAC(20, new Disease(), DiseaseUtils.DIABETES_CODE));
-        diseases.add((Disease) setupAC(51, new Disease(), DiseaseUtils.COLON_CANCER_CODE));
-        diseases.add((Disease) setupAC(50, new Disease(), DiseaseUtils.BREAST_CANCER_CODE));
-        diseases.add((Disease) setupAC(58, new Disease(), DiseaseUtils.OVARIAN_CANCER_CODE));
-        diseases.add((Disease) setupAC(69, new Disease(), DiseaseUtils.HEART_DISEASE_CODE));
+        diseases.add(createObservation("38341003", "Hypertension"));
+        diseases.add(createObservation(DiseaseUtils.STROKE_CODE, "Stroke"));
+        diseases.add(createObservation("44054006", "Type 2 Diabetes"));
+        diseases.add(createObservation(DiseaseUtils.DIABETES_CODE, "Diabetes"));
+        diseases.add(createObservation(DiseaseUtils.COLON_CANCER_CODE, "Colon Cancer"));
+        diseases.add(createObservation(DiseaseUtils.BREAST_CANCER_CODE, "Breast Cancer"));
+        diseases.add(createObservation(DiseaseUtils.OVARIAN_CANCER_CODE, "Ovarian Cancer"));
+        diseases.add(createObservation(DiseaseUtils.HEART_DISEASE_CODE, "Heart Disease"));
         return diseases;
     }
 
-    private AbstractCodeable setupAC(int i, AbstractCodeable codeable, String code) {
+    private Codeable setupAC(int i, AbstractCodeable codeable, String code) {
         return setupAC(i, codeable, code, "CODE_SYS" + i);
     }
-    
-    private AbstractCodeable setupAC(int i, AbstractCodeable codeable, String code, String codeSystemName) {
+
+    private Codeable setupAC(int i, AbstractCodeable codeable, String code, String codeSystemName) {
         codeable.setCode(code);
         codeable.setCodeSystemName(codeSystemName);
         codeable.addDisplayString("en", "DisplayName" + i, null);
         codeable.setAppDisplay("AppDisplay" + i);
         return codeable;
     }
-    
+
     /**
      * @param i gender code
      */
-    private AbstractCodeable setupAC(int i, AbstractCodeable codeable) {
+    private Codeable setupAC(int i, AbstractCodeable codeable) {
         return setupAC(i, codeable, "Code" + i);
     }
 
@@ -172,36 +214,14 @@ public class PersonServiceStub implements PersonServiceLocal {
     public <T extends PersistentObject> T getPersistentObject(Class<T> toClass, Long id) {
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public List<Disease> getDiseaseByName(String diseaseName) {
         List<Disease> diseases = new ArrayList<Disease>();
-        
-        if (diseaseName.equals("Unknown Cancer")) {
-            Disease disease = new Disease();
-            disease.setId(78L);
-            disease.setDisplayName("Unknown Cancer");
-            disease.setAppDisplay("Unknown Cancer");
-            disease.setOriginalText("Unknown Cancer");
-            diseases.add(disease);
-        }else if (diseaseName.endsWith("Kidney Nephrosis")){
-            Disease disease = new Disease();
-            disease.setId(44L);
-            disease.setDisplayName("Kidney Nephrosis");
-            disease.setAppDisplay("Kidney Nephrosis");
-            disease.setOriginalText("Kidney Nephrosis");
-            diseases.add(disease);
-        }
+        diseases.add(createObservation(diseaseName, diseaseName));
         return diseases;
-    }
-    
-    private Disease createDisease(String appDisplay, String displayName) {
-        Disease d = new Disease();
-        d.setAppDisplay(appDisplay);
-        d.setDisplayName(displayName);
-        return d;
     }
 
     public List<Ethnicity> getEthnicityByCodeAndCodeSystem(String code, String codeSystem) {
@@ -234,5 +254,28 @@ public class PersonServiceStub implements PersonServiceLocal {
         }
 
         return retval;
+    }
+
+    /* (non-Javadoc)
+     * @see gov.hhs.fhh.service.PersonServiceLocal#importFile(java.io.File)
+     */
+    public Person importFile(File file) throws ImportException {
+        return null;
+    }
+    
+    public void deepPopulateRaceEthnicityIds(Person result) {
+        final PersonServiceLocal bean = this;
+        
+        //to ensure no db calls are made
+        new PersonServiceBean() {
+            @Override
+            public List<Ethnicity> getEthnicityByCodeAndCodeSystem(String code, String codeSystem) {
+                return bean.getEthnicityByCodeAndCodeSystem(code, codeSystem);
+            }
+
+            public java.util.List<Race> getRaceByCodeAndCodeSystem(String code, String codeSystem) {
+                return bean.getRaceByCodeAndCodeSystem(code, codeSystem);
+            };
+        }.deepPopulateRaceEthnicityIds(result);
     }
 }

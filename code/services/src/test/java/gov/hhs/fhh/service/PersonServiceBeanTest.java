@@ -34,6 +34,8 @@
 package gov.hhs.fhh.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Race;
@@ -114,5 +116,20 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
     public void testGetDiseaseSubTypes() {
         List<Disease> diseases = personServiceBean.getDiseaseSubTypes(new Long(12));
         assertEquals(15, diseases.size());
+    }
+
+  
+    @Test
+    public void getDiseaseByName() {
+        List diseases = personServiceBean.getDiseaseByName("Cancer");
+        assertFalse(diseases.isEmpty());
+      
+    }
+    
+    @Test
+    public void getDiseaseByNameNotFound() {
+        List diseases = personServiceBean.getDiseaseByName("Loud Music");
+        assertTrue(diseases.isEmpty());
+      
     }
 }

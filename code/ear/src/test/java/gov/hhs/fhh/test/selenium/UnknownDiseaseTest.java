@@ -13,7 +13,7 @@ public class UnknownDiseaseTest extends AbstractFHHSeleniumTest {
         selenium.click("//table[@id='dataListing']/tbody/tr[4]/td[4]/a/img");
         Thread.sleep(4000);
 
-        Assert.assertEquals("Unknown Disease", selenium.getTable("healthHistoryTableList.1.0"));
+        Assert.assertEquals("Unknown", selenium.getTable("healthHistoryTableList.1.0"));
     }
 
 }

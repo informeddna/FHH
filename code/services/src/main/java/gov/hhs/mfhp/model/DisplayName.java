@@ -82,6 +82,8 @@
  */
 package gov.hhs.mfhp.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -94,9 +96,13 @@ import javax.persistence.Id;
  *         lanugage is expected to be a value from http://ftp.ics.uci.edu/pub/ietf/http/related/iso639.txt.
  * 
  */
-@Entity
-public class DisplayName {
+@Entity (name = "displayname")
+public class DisplayName implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String text;
     private String language;
