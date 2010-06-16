@@ -71,7 +71,7 @@ public class RelativeTest extends AbstractHibernateTestCase {
     private final String DUMMY_NAME = "Name";
     private final UUID DUMMY_ID = UUID.randomUUID();
     private final Gender DUMMY_GENDER = Gender.MALE;
-    private final Disease DUMMY_DISEASE = new Disease();
+    private final DiseaseBean DUMMY_DISEASE = new DiseaseBean();
     private final Ethnicity DUMMY_ETHNICITY = new Ethnicity();
     private final Race DUMMY_RACE = new Race();
     private final ClinicalObservation DUMMY_OBS =  new ClinicalObservation();

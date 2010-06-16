@@ -36,6 +36,7 @@ package gov.hhs.fhh.data.util;
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
+import gov.hhs.fhh.data.UserEnteredDisease;
 
 import java.util.Iterator;
 import java.util.List;
@@ -50,10 +51,6 @@ import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
  * @author lpower
  */
 public class DiseaseUtils {
-    /**
-     * 
-     */
-    private static final long USER_ENTERED_DISEASE_ID = 16L;
     /**
      * Heart Disease id.
      */
@@ -78,12 +75,12 @@ public class DiseaseUtils {
      * Ovarian Cancer id.
      */
     public static final String OVARIAN_CANCER_CODE = "363443007";
-    
+
     /**
      * Other Disease Display Name.
      */
     public static final String OTHER_DISEASE_DISPLAY = "Other Disease type";
-    
+
     private static final int MAX_SIZE = 4;
 
     /**
@@ -116,7 +113,7 @@ public class DiseaseUtils {
      * @return String of disease abbreviation for this disease
      */
     public static String getDiseaseAbbreviation(Disease d) {
-        String abbrev = d.getAbbreviation();
+        String abbrev = null;
         if (abbrev == null) {
             String start = d.getDisplayName();
             if (d.getOriginalText() != null) {
@@ -141,7 +138,7 @@ public class DiseaseUtils {
         // CHECKSTYLE:ON
         return abbrev;
     }
-    
+
     /**
      * Method writes the diseases that this person has.
      * 
@@ -156,11 +153,12 @@ public class DiseaseUtils {
             return 0 == mine.compareTo(highlight);
         }
     }
-    
+
     /**
      * Used in the legacy import to find an existing disease in FHH that matches the value of the legacy user entered
-     *  disease. Method creates a disease of type 'Other' if no matching disease was found or if multiple diseases
-     *  were found and method could not find a generic disease type within the search results.
+     * disease. Method creates a disease of type 'Other' if no matching disease was found or if multiple diseases were
+     * found and method could not find a generic disease type within the search results.
+     * 
      * @param diseaseName disease name to search for
      * @return Disease existing disease or newly created disease of type 'Other'
      */
@@ -172,16 +170,17 @@ public class DiseaseUtils {
         if (!diseases.isEmpty()) {
             disease = matchAppropriateDisease(diseaseName, diseases);
         }
-        
+
         // No matches were found, create a disease of type 'Other'
         if (disease == null) {
             disease = createOtherDiseaseType(diseaseName);
         }
         return disease;
     }
-    
+
     /**
      * Replaces Spanish characters with the appropriate numerical html value.
+     * 
      * @param diseaseName String to translate
      * @return String HTML value
      */
@@ -195,17 +194,17 @@ public class DiseaseUtils {
         }
         return sb.toString();
     }
-    
+
     private static Disease matchAppropriateDisease(String diseaseName, List<Disease> diseases) {
         // If a single match was found, return the match
         if (diseases.size() == 1) {
             return diseases.get(0);
-        // Otherwise find a disease that has an exact match for appDisplay or displayName 
-        } else {     
-            return findExactDisease(diseaseName, diseases); 
+            // Otherwise find a disease that has an exact match for appDisplay or displayName
+        } else {
+            return findExactDisease(diseaseName, diseases);
         }
     }
-    
+
     private static Disease findExactDisease(String diseaseName, List<Disease> diseases) {
         Disease disease = null;
         Iterator<Disease> it = diseases.iterator();
@@ -219,23 +218,25 @@ public class DiseaseUtils {
         }
         return disease;
     }
-    
+
     /**
      * Returns a Disease of type other with the original text initialized to <code>Name</code>.
+     * 
      * @param name String disease name
      * @return Disease new disease
      */
     public static Disease createOtherDiseaseType(String name) {
-        Disease disease = new Disease();
-        disease.setId(USER_ENTERED_DISEASE_ID);
+        UserEnteredDisease disease = new UserEnteredDisease();
         disease.setOriginalText(name);
         disease.setAppDisplay(name);
+        disease.setDisplayName(name);
         return disease;
     }
-    
+
     /**
-     * Sets the <code>unmatchedCondition</code> flag in a ClinicalObservation.  The flag is used to determine
-     *  if a user entered disease from legacy import was matched to an FHH disease.
+     * Sets the <code>unmatchedCondition</code> flag in a ClinicalObservation. The flag is used to determine if a user
+     * entered disease from legacy import was matched to an FHH disease.
+     * 
      * @param p Person to set <code>unmatchedCondition</code>
      * @param obs The <code>ClinicalObservation</code> containing the condition
      */
@@ -245,10 +246,11 @@ public class DiseaseUtils {
             p.setUnmatchedCondition(true);
         }
     }
-    
+
     /**
-     * Generates the row ID of the Disease added to the Disease table.  Used for removing the previous COD
-     *  value when the COD is changed.
+     * Generates the row ID of the Disease added to the Disease table. Used for removing the previous COD value when the
+     * COD is changed.
+     * 
      * @param d <code>Disease</code> containing the Cause of Death
      * @param ageAtDeath <code>AgeRangeEnum</code> age at death
      * @return String Code of Disease + AgeRangeEnum + (Other Disease Value if Disease is of type Other)
@@ -257,7 +259,7 @@ public class DiseaseUtils {
         StringBuffer id = new StringBuffer();
         if (d != null && ageAtDeath != null) {
             boolean isOther = d.isOther();
-            if (!isOther && !StringUtils.isEmpty(d.getCode())) {
+            if (!isOther  && !StringUtils.isEmpty(d.getCode())) {
                 id.append(d.getCode().toString());
             }
             id.append(ageAtDeath.toString());

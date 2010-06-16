@@ -82,6 +82,8 @@
  */
 package gov.hhs.mfhp.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -93,13 +95,18 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.validator.NotNull;
 
 /**
  * @author bhumphrey
  *
  */
-@Entity
-public class Code {
+@Entity (name = "code")
+public class Code implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String codeName;
     private CodeSystem codeSystem;
@@ -166,6 +173,7 @@ public class Code {
      * @return the status
      */
     @Enumerated(EnumType.STRING)
+    @NotNull
     public CodeStatus getStatus() {
         return status;
     }

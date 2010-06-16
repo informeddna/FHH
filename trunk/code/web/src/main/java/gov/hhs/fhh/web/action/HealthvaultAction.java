@@ -34,14 +34,11 @@
 package gov.hhs.fhh.web.action;
 
 import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.data.Relative;
-import gov.hhs.fhh.data.util.PersonUtils;
 import gov.hhs.fhh.service.FhhWebException;
 import gov.hhs.fhh.service.HealthVaultContext;
 import gov.hhs.fhh.service.HealthVaultLocal;
 import gov.hhs.fhh.service.PersonInfo;
 import gov.hhs.fhh.service.locator.FhhRegistry;
-import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.Settings;
 import gov.hhs.fhh.web.data.ConnectionInfo;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
@@ -310,7 +307,7 @@ public class HealthvaultAction extends AbstractFHHAction implements Preparable {
                 // edit reference to more specific message key in the errorMessage.tag case
                 throw new Exception("could not get a dataperson from hv");
             }
-            postLoadProcessing();
+            FhhHttpSessionUtil.addAllUserEnteredDiseases(getPerson());
             FhhHttpSessionUtil.setAttribute(FhhHttpSessionUtil.PREVIEW_PERSON_KEY, getPerson());
             FhhHttpSessionUtil.setAttribute(FhhHttpSessionUtil.getRootKey(), null);
             LOG.info("in getPedigreeFromHealthVault() method, about to set popup_key to hvload");
@@ -374,23 +371,6 @@ public class HealthvaultAction extends AbstractFHHAction implements Preparable {
         } while (currentException != null);
 
         return retval;
-    }
-
-    /**
-     * From FamilyHistoryAction importXmlFile(...) methods. Needed to make the My Family section display properly among
-     * other things.
-     */
-    private void postLoadProcessing() {
-        // Set parents of relatives
-        setPerson(FhhUtils.setupParents(getPerson()));
-        FhhHttpSessionUtil.addAllUserEnteredDiseases(getPerson());
-        FamilyHistoryAction.populateRaceEthnicityIds(getPerson());
-        for (final Relative relative : getPerson().getRelatives()) {
-            FamilyHistoryAction.populateRaceEthnicityIds(relative);
-        }
-
-        PersonUtils.setImmediateRelatives(getPerson());
-        PersonUtils.setAllKnownParents(getPerson());
     }
 
     /**

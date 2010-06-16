@@ -35,6 +35,7 @@ package gov.hhs.fhh.test.util;
 
 import static org.junit.Assert.assertEquals;
 import gov.hhs.fhh.data.AbstractCodeable;
+import gov.hhs.fhh.data.Codeable;
 
 import com.fiveamsolutions.nci.commons.util.HibernateUtil;
 
@@ -56,7 +57,7 @@ public class ServiceTestUtil {
      * @param n
      * @return
      */
-    public static Long saveGetId(AbstractCodeable n) {
+    public static Long saveGetId(Codeable n) {
         Long id = (Long) HibernateUtil.getCurrentSession().save(n);
         return id;
     }
@@ -65,8 +66,7 @@ public class ServiceTestUtil {
      * @param id
      * @param retrieved
      */
-    public static void verify(Long id, AbstractCodeable retrieved) {
-        assertEquals(id, retrieved.getId());
+    public static void verify(Long id, Codeable retrieved) {
         assertEquals("5555555", retrieved.getCode());
         assertEquals("CODE_SYS", retrieved.getCodeSystemName());
         assertEquals("DisplayName", retrieved.getDisplayStrings().get("en").getDisplayName());

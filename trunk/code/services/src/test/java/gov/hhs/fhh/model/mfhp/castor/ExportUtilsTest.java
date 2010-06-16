@@ -1,12 +1,12 @@
 package gov.hhs.fhh.model.mfhp.castor;
 
 import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.service.FhhWebException;
 
@@ -32,8 +32,8 @@ public class ExportUtilsTest {
     private final Weight DUMMY_WEIGHT = new Weight(180, WeightUnit.US);;
     private final GregorianCalendar DUMMY_DATE = new GregorianCalendar(1970, 9, 7, 0, 0, 0);
     private final Gender DUMMY_GENDER = Gender.MALE;
-    private final Disease DUMMY_DISEASE = new Disease();
-    private final Disease DUMMY_DISEASE2 = new Disease();
+    private final UserEnteredDisease DUMMY_DISEASE = new UserEnteredDisease();
+    private final UserEnteredDisease DUMMY_DISEASE2 = new UserEnteredDisease();
     private final Ethnicity DUMMY_ETHNICITY = new Ethnicity();
     private final Ethnicity DUMMY_ETHNICITY2 = new Ethnicity();
     private final Ethnicity DUMMY_ETHNICITY3 = new Ethnicity();
@@ -79,7 +79,6 @@ public class ExportUtilsTest {
         DUMMY_ETHNICITY3.setDisplayName(BASIC_RELATIVE_ETHNICITY2);
         DUMMY_RACE2.setDisplayName(BASIC_RELATIVE_RACE);
         DUMMY_DISEASE2.setDisplayName(BASIC_RELATIVE_DISEASE);
-        DUMMY_DISEASE2.setId(BASIC_RELATIVE_DISEASE_ID);
         DUMMY_DISEASE2.setCode(BASIC_RELATIVE_DISEASE_CODE);
         DUMMY_CLINICAL_OBSERVATION2.setAgeRange(AgeRangeEnum.FORTIES);
         DUMMY_CLINICAL_OBSERVATION2.setDisease(DUMMY_DISEASE2);

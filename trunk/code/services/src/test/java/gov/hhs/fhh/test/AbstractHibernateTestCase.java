@@ -77,7 +77,7 @@ public class AbstractHibernateTestCase {
     @Before
     public final void setUp() {
         transaction = HibernateUtil.getHibernateHelper().beginTransaction();
-        FhhRegistry.getInstance().setServiceLocator(new MockDataServiceLocator());
+        FhhRegistry.getInstance().setServiceLocator(new TestServiceLocator());
     }
 
     /**
@@ -122,7 +122,9 @@ public class AbstractHibernateTestCase {
             while(lineIterator.hasNext()) {
                 String sqlCmd = lineIterator.nextLine();
                 String hsqldbSqlCmd = sqlCmd.replaceAll("\\\\'", "''");
-//                LOG.debug(hsqldbSqlCmd);
+
+                
+                LOG.debug(hsqldbSqlCmd);
                 s.execute(hsqldbSqlCmd);
             }
         }

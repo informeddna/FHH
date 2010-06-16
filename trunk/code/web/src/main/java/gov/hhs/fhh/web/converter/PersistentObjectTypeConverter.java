@@ -33,7 +33,12 @@
  */
 package gov.hhs.fhh.web.converter;
 
+import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.service.locator.FhhRegistry;
+import gov.hhs.mfhp.model.Observation;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fiveamsolutions.nci.commons.service.GenericDataService;
 import com.fiveamsolutions.nci.commons.web.struts2.converter.AbstractPersistentObjectTypeConverter;
@@ -43,6 +48,19 @@ import com.fiveamsolutions.nci.commons.web.struts2.converter.AbstractPersistentO
  */
 public class PersistentObjectTypeConverter extends AbstractPersistentObjectTypeConverter {
 
+    private final Map<Class, Class> mappedInterfaces;
+    
+    
+    /**
+     * 
+     */
+    public PersistentObjectTypeConverter() {
+        super();
+        mappedInterfaces = new HashMap<Class, Class>();
+        mappedInterfaces.put(Disease.class, Observation.class);
+        
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -50,4 +68,19 @@ public class PersistentObjectTypeConverter extends AbstractPersistentObjectTypeC
     protected GenericDataService getGenericDataService() {
         return FhhRegistry.getGenericService();
     }
+
+    /**
+     * {@inheritDoc} 
+     * @see com.fiveamsolutions.nci.commons.web.struts2.converter.
+     * AbstractPersistentObjectTypeConverter#convertFromString(java.util.Map, java.lang.String[], java.lang.Class)
+     */
+    @Override
+    public Object convertFromString(Map map, String[] values, Class toClass) {
+        // TODO Auto-generated method stub
+        if (mappedInterfaces.containsKey(toClass)) {
+            return super.convertFromString(map, values, mappedInterfaces.get(toClass));
+        }
+        return super.convertFromString(map, values, toClass);
+    }
+    
 }

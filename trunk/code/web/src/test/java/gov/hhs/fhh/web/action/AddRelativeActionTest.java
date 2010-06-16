@@ -39,13 +39,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.Disease;
+import gov.hhs.fhh.data.DiseaseBean;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.data.util.DiseaseUtils;
+import gov.hhs.fhh.data.util.FhhDataUtils;
 import gov.hhs.fhh.data.util.PersonUtils;
+import gov.hhs.fhh.service.PersonServiceLocal;
+import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
+import gov.hhs.fhh.web.test.MockServiceLocator;
+import gov.hhs.fhh.web.test.PersonServiceStub;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 import gov.hhs.fhh.web.util.RelativeToRelateTo;
 
@@ -76,8 +82,8 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
     private final String PARENTS_ACTION = "xmlParents";
     private final boolean TRUE = true;
     private final String MIN_HEX = "80000000";
-    private final Disease DUMMY_DISEASE = new Disease();
-    private final Disease DUMMY_DISEASE2 = new Disease();
+    private final DiseaseBean DUMMY_DISEASE = new DiseaseBean();
+    private final DiseaseBean DUMMY_DISEASE2 = new DiseaseBean();
     private final String DUMMY_DISEASE_VALUE = "current";
     private final String DUMMY_NAME = "name";
     private final String LIVING_RELATIVE_DOB_STR = "09/07/1968";
@@ -92,9 +98,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
 
     @Test
     public void testPrepare() {
-        DUMMY_DISEASE.setId((long) 1);
         DUMMY_DISEASE.setCode(DiseaseUtils.BREAST_CANCER_CODE);
-        DUMMY_DISEASE2.setId((long) 2);
         DUMMY_DISEASE2.setCode(DiseaseUtils.COLON_CANCER_CODE);
 
         Person p = new Person();
@@ -184,10 +188,21 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
 
     @Test
     public void testSubmitRelative() {
+        FhhRegistry.getInstance().setServiceLocator(new MockServiceLocator() {
+            @Override
+            public PersonServiceLocal getPersonService() {
+                return new PersonServiceStub() {
+                    @Override
+                    public List<Disease> getDiseaseByName(String diseaseName) {
+                        return new ArrayList<Disease>();
+                    }
+                };
+            } 
+        });
+        FhhDataUtils.getInstance().setServiceLocator(FhhRegistry.getInstance().getServiceLocator());
+
         // Test for disease with app display not null
-        DUMMY_DISEASE.setId((long) 1);
         DUMMY_DISEASE.setCode(DiseaseUtils.BREAST_CANCER_CODE);
-        DUMMY_DISEASE2.setId((long) 2);
         DUMMY_DISEASE2.setCode(DiseaseUtils.COLON_CANCER_CODE);
         DUMMY_DISEASE2.setDisplayName("");
 
@@ -286,7 +301,6 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
     
     @Test
     public void testSubmitRelativeValidation() {
-        DUMMY_DISEASE.setId((long) 1);
         DUMMY_DISEASE.setCode(DUMMY_DISEASE_VALUE);
         
         // Test adding a deceased relative with invalid DOB
@@ -729,6 +743,19 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
     
     @Test
     public void testCreatingUserEnteredDiseaseAndSettingOnAnotherRelative() {
+        FhhRegistry.getInstance().setServiceLocator(new MockServiceLocator() {
+            @Override
+            public PersonServiceLocal getPersonService() {
+                return new PersonServiceStub() {
+                    @Override
+                    public List<Disease> getDiseaseByName(String diseaseName) {
+                        return new ArrayList<Disease>();
+                    }
+                };
+            } 
+        });
+        FhhDataUtils.getInstance().setServiceLocator(FhhRegistry.getInstance().getServiceLocator());
+
         action.setPerson(new Person());
         action.setRelative(new Relative());
         action.getRelative().setGender(Gender.MALE);

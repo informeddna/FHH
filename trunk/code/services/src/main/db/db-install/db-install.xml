@@ -14,6 +14,6 @@
         <sqlFile path="${db-install.run.dir}/mysql/extraCreateSchema.sql" />
         <sqlFile path="${db-install.run.dir}/mysql/race.sql" />
         <sqlFile path="${db-install.run.dir}/mysql/ethnicity.sql" />
-        <sqlFile path="${db-install.run.dir}/mysql/disease.sql" />
+        <sqlFile stripComments="true" splitStatements="true" path="${db-install.run.dir}/mysql/observations.sql" />
     </changeSet>
 </databaseChangeLog>

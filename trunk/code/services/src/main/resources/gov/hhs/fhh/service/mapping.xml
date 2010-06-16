@@ -3,241 +3,227 @@
                          "http://castor.org/mapping.dtd">
 
 <mapping>
-	<class name="gov.hhs.fhh.xml.PatientPerson">
-		<map-to xml="patientPerson" />
-		<field name="id" type="string" handler="gov.hhs.fhh.data.castor.UUIDFieldHandler">
-			<bind-xml name="extention" node="attribute" location="id" />
-		</field>
-		<field name="name" type="string">
-			<bind-xml name="formatted" node="attribute" location="name" />
-		</field>
-		<field name="dateOfBirth" type="string"
-			handler="gov.hhs.fhh.model.mfhp.castor.DateFieldHandler">
-			<bind-xml name="value" node="attribute" location="birthTime" />
-		</field>
-		<field name="multipleBirthIndicator" type="string">
-			<bind-xml name="value" node="attribute" location="multipleBirthIndicator" />
-		</field>
-		<field name="genderNode" type="com.fiveamsolutions.hl7.model.mfhp.GenderNode">
-			<bind-xml name="administrativeGenderCode" />
-		</field>
-		<field name="ethnicities" type="gov.hhs.fhh.data.Ethnicity"
-			collection="arraylist">
-			<bind-xml name="ethnicGroupCode" />
-		</field>
-		<field name="races" type="gov.hhs.fhh.data.Race" collection="arraylist">
-			<bind-xml name="raceCode" />
-		</field>
-		<field name="clinicalObservationsNode"
-			type="gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode">
-			<bind-xml name="subjectOf2" />
-		</field>
-		<field name="relatives" type="gov.hhs.fhh.data.Relative"
-			collection="arraylist">
-			<bind-xml name="relative" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.data.AbstractCodeable">
-		<field name="code" type="string">
-			<bind-xml name="code" node="attribute" />
-		</field>
-		<field name="codeSystemName" type="string">
-			<bind-xml name="codeSystemName" node="attribute" />
-		</field>
-		<field name="displayName" type="string">
-			<bind-xml name="displayName" node="attribute" />
-		</field>
+    <class name="gov.hhs.fhh.xml.PatientPerson">
+        <map-to xml="patientPerson" />
+        <field name="id" type="string" handler="gov.hhs.fhh.data.castor.UUIDFieldHandler">
+            <bind-xml name="extention" node="attribute" location="id" />
+        </field>
+        <field name="name" type="string">
+            <bind-xml name="formatted" node="attribute" location="name" />
+        </field>
+        <field name="dateOfBirth" type="string" handler="gov.hhs.fhh.model.mfhp.castor.DateFieldHandler">
+            <bind-xml name="value" node="attribute" location="birthTime" />
+        </field>
+        <field name="multipleBirthIndicator" type="string">
+            <bind-xml name="value" node="attribute" location="multipleBirthIndicator" />
+        </field>
+        <field name="genderNode" type="com.fiveamsolutions.hl7.model.mfhp.GenderNode">
+            <bind-xml name="administrativeGenderCode" />
+        </field>
+        <field name="ethnicities" type="gov.hhs.fhh.data.Ethnicity" collection="arraylist">
+            <bind-xml name="ethnicGroupCode" />
+        </field>
+        <field name="races" type="gov.hhs.fhh.data.Race" collection="arraylist">
+            <bind-xml name="raceCode" />
+        </field>
+        <field name="clinicalObservationsNode" type="gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode">
+            <bind-xml name="subjectOf2" />
+        </field>
+        <field name="relatives" type="gov.hhs.fhh.data.Relative" collection="arraylist">
+            <bind-xml name="relative" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.data.AbstractCodeable">
+        <field name="code" type="string">
+            <bind-xml name="code" node="attribute" />
+        </field>
+        <field name="codeSystemName" type="string">
+            <bind-xml name="codeSystemName" node="attribute" />
+        </field>
+        <field name="displayName" type="string">
+            <bind-xml name="displayName" node="attribute" />
+        </field>
 
-	</class>
-	<class name="com.fiveamsolutions.hl7.model.mfhp.GenderNode">
-		<field name="code" type="string">
-			<bind-xml name="code" node="attribute" />
-		</field>
-		<field name="codeSystemName" type="string">
-			<bind-xml name="codeSystemName" node="attribute" />
-		</field>
-		<field name="displayName" type="string">
-			<bind-xml name="displayName" node="attribute" />
-		</field>
-		<field name="originalText" type="string">
-			<bind-xml name="originalText" node="attribute" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.data.Ethnicity" extends="gov.hhs.fhh.data.AbstractCodeable">
-		<field name="id" type="long">
-			<bind-xml name="id" node="attribute" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.data.HispanicEthnicityType" extends="gov.hhs.fhh.data.Ethnicity">
-	</class>
-	<class name="gov.hhs.fhh.data.Race" extends="gov.hhs.fhh.data.AbstractCodeable">
-		<field name="id" type="long">
-			<bind-xml name="id" node="attribute" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.data.AsianRaceType" extends="gov.hhs.fhh.data.Race">
-	</class>
-	<class name="gov.hhs.fhh.data.NativeHawaiianRaceType" extends="gov.hhs.fhh.data.Race">
-	</class>
-	<class name="gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode">
-		<field name="observations" type="gov.hhs.fhh.data.ClinicalObservation"
-			collection="arraylist">
-			<bind-xml name="clinicalObservation" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.data.ClinicalObservation">
-		<field name="code" type="com.fiveamsolutions.hl7.model.age.CodeNode">
-			<bind-xml name="code" />
-		</field>
-		<field name="valueNode" type="gov.hhs.fhh.model.mfhp.castor.ValueNode">
-			<bind-xml name="value" />
-		</field>
-		<field name="dataEstimatedAgeNode"
-			type="com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode">
-			<bind-xml name="dataEstimatedAge" location="subject" />
-		</field>
-		<field name="cODCodeNode" type="com.fiveamsolutions.hl7.model.age.CodeNode">
-			<bind-xml name="code" location="sourceOf" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.model.mfhp.castor.ValueNode">
-		<field name="value" type="string">
-			<bind-xml name="value" node="attribute" />
-		</field>
-		<field name="unit" type="string">
-			<bind-xml name="unit" node="attribute" />
-		</field>
-	</class>
-	<class name="com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode">
-		<field name="codeNode" type="com.fiveamsolutions.hl7.model.age.CodeNode">
-			<bind-xml name="code" />
-		</field>
-		<field name="ageRangeHandler"
-			type="com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer">
-			<bind-xml name="value" />
-		</field>
-	</class>
-	<class name="com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer">
-		<field name="unit" type="string">
-			<bind-xml name="unit" node="attribute" />
-		</field>
-		<field name="lowValue" type="string">
-			<bind-xml name="value" node="attribute" location="low" />
-		</field>
-		<field name="highValue" type="string">
-			<bind-xml name="value" node="attribute" location="high" />
-		</field>
-	</class>
-	<class name="com.fiveamsolutions.hl7.model.age.CodeNode">
-		<field name="id" type="long">
-			<bind-xml name="id" node="attribute" />
-		</field>
-		<field name="code" type="string">
-			<bind-xml name="code" node="attribute" />
-		</field>
-		<field name="codeSystemName" type="string">
-			<bind-xml name="codeSystemName" node="attribute" />
-		</field>
-		<field name="displayName" type="string">
-			<bind-xml name="displayName" node="attribute" />
-		</field>
-		<field name="originalText" type="string">
-			<bind-xml name="originalText" node="attribute" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.data.Disease" extends="gov.hhs.fhh.data.AbstractCodeable">
-		<field name="id" type="long">
-			<bind-xml name="id" node="attribute" />
-		</field>
-		<field name="originalText" type="string">
-			<bind-xml name="originalText" node="attribute" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.data.CancerDiseaseType" extends="gov.hhs.fhh.data.Disease">
-	</class>
-	<class name="gov.hhs.fhh.data.DiabetesDiseaseType" extends="gov.hhs.fhh.data.Disease">
-	</class>
-	<class name="gov.hhs.fhh.data.GastrointestinalDisorderDiseaseType"
-		extends="gov.hhs.fhh.data.Disease">
-	</class>
-	<class name="gov.hhs.fhh.data.HeartDiseaseType" extends="gov.hhs.fhh.data.Disease">
-	</class>
-	<class name="gov.hhs.fhh.data.KidneyDiseaseType" extends="gov.hhs.fhh.data.Disease">
-	</class>
-	<class name="gov.hhs.fhh.data.LungDiseaseType" extends="gov.hhs.fhh.data.Disease">
-	</class>
-	<class name="gov.hhs.fhh.data.PsychologicalDisorderDiseaseType"
-		extends="gov.hhs.fhh.data.Disease">
-	</class>
-	<class name="gov.hhs.fhh.data.Relative">
-		<field name="relativeCodeNode" type="gov.hhs.fhh.model.mfhp.castor.RelativeCodeNode">
-			<bind-xml name="code" />
-		</field>
-		<field name="relationshipHolderNode"
-			type="gov.hhs.fhh.model.mfhp.castor.RelationshipHolderNode">
-			<bind-xml name="relationshipHolder" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.model.mfhp.castor.RelativeCodeNode">
-		<field name="code" type="string">
-			<bind-xml name="code" node="attribute" />
-		</field>
-		<field name="codeSystemName" type="string">
-			<bind-xml name="codeSystemName" node="attribute" />
-		</field>
-		<field name="displayName" type="string">
-			<bind-xml name="displayName" node="attribute" />
-		</field>
-	</class>
-	<class name="gov.hhs.fhh.model.mfhp.castor.RelationshipHolderNode">
-		<field name="parentNodes" type="gov.hhs.fhh.data.Relative"
-			collection="arraylist">
-			<bind-xml name="relative" />
-		</field>
-		<field name="uuid" type="string" handler="gov.hhs.fhh.data.castor.UUIDFieldHandler">
-			<bind-xml name="extention" node="attribute" location="id" />
-		</field>
-		<field name="name" type="string">
-			<bind-xml name="formatted" node="attribute" location="name" />
-		</field>
-		<field name="birthTime" type="string">
-			<bind-xml name="value" node="attribute" location="birthTime" />
-		</field>
-		<field name="deceasedIndicator" type="string">
-			<bind-xml name="value" node="attribute" location="deceasedIndCode" />
-		</field>
-		<field name="multipleBirthIndicator" type="string">
-			<bind-xml name="value" node="attribute" location="multipleBirthIndicator" />
-		</field>
-		<field name="genderNode" type="com.fiveamsolutions.hl7.model.mfhp.GenderNode">
-			<bind-xml name="administrativeGenderCode" />
-		</field>
-		<field name="ethnicities" type="gov.hhs.fhh.data.Ethnicity"
-			collection="arraylist">
-			<bind-xml name="ethnicGroupCode" />
-		</field>
-		<field name="races" type="gov.hhs.fhh.data.Race" collection="arraylist">
-			<bind-xml name="raceCode" />
-		</field>
-		<field name="deceasedEstimatedAgeNode"
-			type="com.fiveamsolutions.hl7.model.age.DeceasedEstimatedAgeNode">
-			<bind-xml name="deceasedEstimatedAge" location="subjectOf1" />
-		</field>
-		<field name="clinicalObservationsNode"
-			type="gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode">
-			<bind-xml name="subjectOf2" />
-		</field>
-		<field name="dataEstimatedAgeNode" type="com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode">
-			<bind-xml name="dataEstimatedAge" />
-		</field>
-	</class>
-	<class name="com.fiveamsolutions.hl7.model.age.DeceasedEstimatedAgeNode">
-		<field name="codeNode" type="com.fiveamsolutions.hl7.model.age.CodeNode">
-			<bind-xml name="code" />
-		</field>
-		<field name="ageRangeHandler"
-			type="com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer">
-			<bind-xml name="value" />
-		</field>
-	</class>
+    </class>
+    <class name="com.fiveamsolutions.hl7.model.mfhp.GenderNode">
+        <field name="code" type="string">
+            <bind-xml name="code" node="attribute" />
+        </field>
+        <field name="codeSystemName" type="string">
+            <bind-xml name="codeSystemName" node="attribute" />
+        </field>
+        <field name="displayName" type="string">
+            <bind-xml name="displayName" node="attribute" />
+        </field>
+        <field name="originalText" type="string">
+            <bind-xml name="originalText" node="attribute" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.data.Ethnicity" extends="gov.hhs.fhh.data.AbstractCodeable">
+        <field name="id" type="long">
+            <bind-xml name="id" node="attribute" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.data.HispanicEthnicityType" extends="gov.hhs.fhh.data.Ethnicity">
+    </class>
+    <class name="gov.hhs.fhh.data.Race" extends="gov.hhs.fhh.data.AbstractCodeable">
+        <field name="id" type="long">
+            <bind-xml name="id" node="attribute" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.data.AsianRaceType" extends="gov.hhs.fhh.data.Race">
+    </class>
+    <class name="gov.hhs.fhh.data.NativeHawaiianRaceType" extends="gov.hhs.fhh.data.Race">
+    </class>
+    <class name="gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode">
+        <field name="observations" type="gov.hhs.fhh.data.ClinicalObservation" collection="arraylist">
+            <bind-xml name="clinicalObservation" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.data.ClinicalObservation">
+        <field name="code" type="com.fiveamsolutions.hl7.model.age.CodeNode">
+            <bind-xml name="code" />
+        </field>
+        <field name="valueNode" type="gov.hhs.fhh.model.mfhp.castor.ValueNode">
+            <bind-xml name="value" />
+        </field>
+        <field name="dataEstimatedAgeNode" type="com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode">
+            <bind-xml name="dataEstimatedAge" location="subject" />
+        </field>
+        <field name="cODCodeNode" type="com.fiveamsolutions.hl7.model.age.CodeNode">
+            <bind-xml name="code" location="sourceOf" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.model.mfhp.castor.ValueNode">
+        <field name="value" type="string">
+            <bind-xml name="value" node="attribute" />
+        </field>
+        <field name="unit" type="string">
+            <bind-xml name="unit" node="attribute" />
+        </field>
+    </class>
+    <class name="com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode">
+        <field name="codeNode" type="com.fiveamsolutions.hl7.model.age.CodeNode">
+            <bind-xml name="code" />
+        </field>
+        <field name="ageRangeHandler" type="com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer">
+            <bind-xml name="value" />
+        </field>
+    </class>
+    <class name="com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer">
+        <field name="unit" type="string">
+            <bind-xml name="unit" node="attribute" />
+        </field>
+        <field name="lowValue" type="string">
+            <bind-xml name="value" node="attribute" location="low" />
+        </field>
+        <field name="highValue" type="string">
+            <bind-xml name="value" node="attribute" location="high" />
+        </field>
+    </class>
+    <class name="com.fiveamsolutions.hl7.model.age.CodeNode">
+        <field name="id" type="long">
+            <bind-xml name="id" node="attribute" />
+        </field>
+        <field name="code" type="string">
+            <bind-xml name="code" node="attribute" />
+        </field>
+        <field name="codeSystemName" type="string">
+            <bind-xml name="codeSystemName" node="attribute" />
+        </field>
+        <field name="displayName" type="string">
+            <bind-xml name="displayName" node="attribute" />
+        </field>
+        <field name="originalText" type="string">
+            <bind-xml name="originalText" node="attribute" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.data.DiseaseBean">
+        <field name="id" type="long">
+            <bind-xml name="id" node="attribute" />
+        </field>
+        <field name="originalText" type="string">
+            <bind-xml name="originalText" node="attribute" />
+        </field>
+        <field name="code" type="string">
+            <bind-xml name="code" node="attribute" />
+        </field>
+        <field name="codeSystemName" type="string">
+            <bind-xml name="codeSystemName" node="attribute" />
+        </field>
+        <field name="displayName" type="string">
+            <bind-xml name="displayName" node="attribute" />
+        </field>
+    </class>
+     <class name="gov.hhs.fhh.data.UserEnteredDisease">
+        <field name="originalText" type="string">
+            <bind-xml name="originalText" node="attribute" />
+        </field>
+     </class>
+
+    <class name="gov.hhs.fhh.data.Relative">
+        <field name="relativeCodeNode" type="gov.hhs.fhh.model.mfhp.castor.RelativeCodeNode">
+            <bind-xml name="code" />
+        </field>
+        <field name="relationshipHolderNode" type="gov.hhs.fhh.model.mfhp.castor.RelationshipHolderNode">
+            <bind-xml name="relationshipHolder" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.model.mfhp.castor.RelativeCodeNode">
+        <field name="code" type="string">
+            <bind-xml name="code" node="attribute" />
+        </field>
+        <field name="codeSystemName" type="string">
+            <bind-xml name="codeSystemName" node="attribute" />
+        </field>
+        <field name="displayName" type="string">
+            <bind-xml name="displayName" node="attribute" />
+        </field>
+    </class>
+    <class name="gov.hhs.fhh.model.mfhp.castor.RelationshipHolderNode">
+        <field name="parentNodes" type="gov.hhs.fhh.data.Relative" collection="arraylist">
+            <bind-xml name="relative" />
+        </field>
+        <field name="uuid" type="string" handler="gov.hhs.fhh.data.castor.UUIDFieldHandler">
+            <bind-xml name="extention" node="attribute" location="id" />
+        </field>
+        <field name="name" type="string">
+            <bind-xml name="formatted" node="attribute" location="name" />
+        </field>
+        <field name="birthTime" type="string">
+            <bind-xml name="value" node="attribute" location="birthTime" />
+        </field>
+        <field name="deceasedIndicator" type="string">
+            <bind-xml name="value" node="attribute" location="deceasedIndCode" />
+        </field>
+        <field name="multipleBirthIndicator" type="string">
+            <bind-xml name="value" node="attribute" location="multipleBirthIndicator" />
+        </field>
+        <field name="genderNode" type="com.fiveamsolutions.hl7.model.mfhp.GenderNode">
+            <bind-xml name="administrativeGenderCode" />
+        </field>
+        <field name="ethnicities" type="gov.hhs.fhh.data.Ethnicity" collection="arraylist">
+            <bind-xml name="ethnicGroupCode" />
+        </field>
+        <field name="races" type="gov.hhs.fhh.data.Race" collection="arraylist">
+            <bind-xml name="raceCode" />
+        </field>
+        <field name="deceasedEstimatedAgeNode" type="com.fiveamsolutions.hl7.model.age.DeceasedEstimatedAgeNode">
+            <bind-xml name="deceasedEstimatedAge" location="subjectOf1" />
+        </field>
+        <field name="clinicalObservationsNode" type="gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode">
+            <bind-xml name="subjectOf2" />
+        </field>
+        <field name="dataEstimatedAgeNode" type="com.fiveamsolutions.hl7.model.age.DataEstimatedAgeNode">
+            <bind-xml name="dataEstimatedAge" />
+        </field>
+    </class>
+    <class name="com.fiveamsolutions.hl7.model.age.DeceasedEstimatedAgeNode">
+        <field name="codeNode" type="com.fiveamsolutions.hl7.model.age.CodeNode">
+            <bind-xml name="code" />
+        </field>
+        <field name="ageRangeHandler" type="com.fiveamsolutions.hl7.model.age.AgeRangeFieldContainer">
+            <bind-xml name="value" />
+        </field>
+    </class>
 </mapping>

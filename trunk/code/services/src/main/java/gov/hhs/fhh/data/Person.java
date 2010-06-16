@@ -33,6 +33,7 @@
  */
 package gov.hhs.fhh.data;
 
+import gov.hhs.fhh.data.util.FormatUtils;
 import gov.hhs.fhh.data.util.PersonUtils;
 
 import java.io.Serializable;
@@ -325,7 +326,7 @@ public class Person implements Serializable {
      * @param name the name to set
      */
     public void setName(final String name) {
-        this.name = name;
+        this.name = FormatUtils.performXSSFilter(name);
     }
 
     /**

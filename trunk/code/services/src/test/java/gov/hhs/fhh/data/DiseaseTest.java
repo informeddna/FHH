@@ -39,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.data.util.SpanishCharacter;
+import gov.hhs.mfhp.model.Observation;
 
 import org.junit.Test;
 
@@ -49,10 +50,9 @@ import org.junit.Test;
 public class DiseaseTest {
     private static final String ABBREV = "abbrev";
     
-    @Test
     public void testCompareTo() {
-        Disease d = new Disease();
-        Disease d2 = new Disease();
+        UserEnteredDisease d = new UserEnteredDisease();
+        UserEnteredDisease d2 = new UserEnteredDisease();
         try {
             d.compareTo(null);
             fail();
@@ -86,44 +86,32 @@ public class DiseaseTest {
     
     @Test
     public void testIsOther() {
-        Disease d = new Disease();
+        UserEnteredDisease d = new UserEnteredDisease();
         assertTrue(d.isOther());
         
-        d.setCode(DiseaseUtils.BREAST_CANCER_CODE);
-        assertFalse(d.isOther());
+        DiseaseBean b = new DiseaseBean();
+        b.setCode(DiseaseUtils.BREAST_CANCER_CODE);
+        assertFalse(b.isOther());
     }
-    
-    @Test
-    public void testGetGeneratedAbbrev() {
-        Disease d = new Disease();
-        d.setAbbreviation(ABBREV);
-        assertEquals(ABBREV, d.getGeneratedAbbreviation());
-    }
-    
-    @Test
-    public void testGetEscapedGeneratedAbbrev() {
-        Disease d = new Disease();
-        d.setAbbreviation(SpanishCharacter.A_ACUTE.getSpanish());
-        assertEquals(SpanishCharacter.A_ACUTE.getHtml(), d.getEscapedGeneratedAbbreviation());
-    }
+ 
     
     @Test
     public void testGetReportDisplay() {
-        Disease d = new Disease();
+        UserEnteredDisease d = new UserEnteredDisease();
         d.setOriginalText(ABBREV);
         assertEquals(ABBREV, d.getReportDisplay());
     }
     
     @Test
     public void testGetEscapedReportDisplay() {
-        Disease d = new Disease();
+        UserEnteredDisease d = new UserEnteredDisease();
         d.setOriginalText(SpanishCharacter.A_ACUTE.getSpanish());
         assertEquals(SpanishCharacter.A_ACUTE.getHtml(), d.getEscapedReportDisplay());
     }
     
     @Test
     public void testGetEscapedOriginalText() {
-        Disease d = new Disease();
+        UserEnteredDisease d = new UserEnteredDisease();
         d.setOriginalText(SpanishCharacter.A_ACUTE.getSpanish());
         assertEquals(SpanishCharacter.A_ACUTE.getHtml(), d.getEscapedOriginalText());
     }

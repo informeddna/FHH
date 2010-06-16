@@ -36,13 +36,15 @@ package gov.hhs.fhh.data.util;
 
 import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
+import gov.hhs.fhh.data.DiseaseBean;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode;
 import gov.hhs.fhh.model.mfhp.castor.ValueNode;
 import gov.hhs.fhh.xml.PatientPerson;
 
-import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.fiveamsolutions.hl7.model.age.CodeNode;
 import com.fiveamsolutions.hl7.model.mfhp.ClinicalObservationCode;
@@ -56,18 +58,19 @@ import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
- *
+ * 
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class HL7ConversionUtils {
-    
+
     /**
      * String representing true used by Castor.
      */
     private static final String TRUE_STRING = "true";
-    
+
     /**
      * Converts a Person object to an HL7 PatientPerson object.
+     * 
      * @param person FHH data Person object
      * @return HL7 PatientPerson object
      */
@@ -84,9 +87,10 @@ public final class HL7ConversionUtils {
         patientPerson.setId(person.getUuid());
         return patientPerson;
     }
-    
+
     /**
      * Converts a PatientPerson object to a Person object.
+     * 
      * @param patientPerson HL7 PatientPerson object
      * @return FHH data Person object
      */
@@ -103,7 +107,7 @@ public final class HL7ConversionUtils {
         person.setUuid(patientPerson.getId());
         return person;
     }
-    
+
     /**
      * Used by Castor to generate the Clinical Observation Node.
      * 
@@ -115,13 +119,13 @@ public final class HL7ConversionUtils {
         for (ClinicalObservation currObservation : p.getObservations()) {
             Disease currDisease = currObservation.getDisease();
             currObservation.setCode(new CodeNode(currDisease.getCode(), currDisease.getCodeSystemName(), currDisease
-                    .getDisplayName(), currDisease.getId(), currDisease.getOriginalText()));
+                    .getDisplayName(), null, currDisease.getOriginalText()));
         }
         node.getObservations().addAll(p.getObservations());
         addAttributesAsObservations(p, node);
         return node;
     }
-    
+
     /**
      * Add non-disease clinical observations to ClinicalObservationsNode.
      * 
@@ -154,15 +158,15 @@ public final class HL7ConversionUtils {
         if (p.getWeight().getValue() != null) {
             ClinicalObservation weightObs = new ClinicalObservation();
             weightObs.setCode(new CodeNode(ClinicalObservationCode.WEIGHT));
-            weightObs.setValueNode(new ValueNode(p.getWeight().getValue().toString(), 
-                    p.getWeight().getUnit().getDisplayName()));
+            weightObs.setValueNode(new ValueNode(p.getWeight().getValue().toString(), p.getWeight().getUnit()
+                    .getDisplayName()));
             node.getObservations().add(weightObs);
         }
         if (p.getHeight().getValue() != null) {
             ClinicalObservation heightObs = new ClinicalObservation();
             heightObs.setCode(new CodeNode(ClinicalObservationCode.HEIGHT));
-            heightObs.setValueNode(new ValueNode(p.getHeight().getValue().toString(), 
-                    p.getHeight().getUnit().getDisplayName()));
+            heightObs.setValueNode(new ValueNode(p.getHeight().getValue().toString(), p.getHeight().getUnit()
+                    .getDisplayName()));
             node.getObservations().add(heightObs);
         }
     }
@@ -179,7 +183,7 @@ public final class HL7ConversionUtils {
             setupObservation(p, currObservation, diseaseMap);
         }
     }
-    
+
     /**
      * Stores information from clinicalObservation into the Person Object. Any information set must also be transfered
      * to the Relative in setRelationshipHolderNode.
@@ -193,12 +197,13 @@ public final class HL7ConversionUtils {
         // User entered disease
         if (currCode.getOriginalText() != null) {
             setupObservationWithOriginalText(p, observation);
-        // Observation with SNOMED code.  If an observation does not have original text or SNOMED code, drop the invalid
-        // node.
+            // Observation with SNOMED code. If an observation does not have original text or SNOMED code, drop the
+            // invalid
+            // node.
         } else if (currCode.getCode() != null) {
             setupObservationWithoutOriginalText(p, observation, diseaseMap, currCode.getCode());
         } else if (currCode.getDisplayName() != null) {
-            lookupAndAddDisease(observation);
+            observation.setDisease(DiseaseUtils.createOtherDiseaseType(currCode.getDisplayName()));
             p.getObservations().add(observation);
         }
     }
@@ -215,63 +220,45 @@ public final class HL7ConversionUtils {
         if (currCode.getOriginalText().equals(ClinicalObservationCode.CONSANGUINITY_ORG_TEXT)) {
             p.setConsanguinityFlag(true);
         } else {
-            if (!lookupAndAddDisease(observation)) {
-                Disease otherDisease = DiseaseUtils.createOtherDiseaseType(currCode.getOriginalText());
-                observation.setDisease(otherDisease);
-            }
+            observation.setDisease(lookupDisease(observation.getCode()));
             p.getObservations().add(observation);
         }
     }
-    
+
     /**
      * tries to get a disease from the code to disease map, if that doesn't work tries to look it up by display name.
      * 
      * @param observation - observation to diseasify
      * @return whether or not a disease was added.
      */
-    private static boolean lookupAndAddDisease(ClinicalObservation observation) {
-        CodeNode currCode = observation.getCode();
+    private static Disease lookupDisease(CodeNode currCode) {
 
-        Disease matchingDisease = FhhDataUtils.getCodeToDiseaseMap().get(currCode.getCode());
-        if (matchingDisease != null) {
-            observation.setDisease(matchingDisease);
-            return true;
-        }
-
-        return lookUpAndAddDiseaseByDisplayName(observation);
-    }
-    
-    private static boolean lookUpAndAddDiseaseByDisplayName(ClinicalObservation observation) {
-        CodeNode currCode = observation.getCode();
-        if (currCode.getId() == null) {
-            return false;
-        }
-        List<Disease> diseases = FhhDataUtils.getPersonService().getDiseaseByName(currCode.getDisplayName());
-        if (diseases == null || diseases.isEmpty()) {
-            return false;
-        }
-        for (Disease disease : diseases) {
-            if (disease.getId().equals(currCode.getId())) {
-                observation.setDisease(disease);
-                return true;
+        if (StringUtils.isNotBlank(currCode.getCode())) {
+            Disease matchingDisease = FhhDataUtils.getCodeToDiseaseMap().get(currCode.getCode());
+            if (matchingDisease != null) {
+                return matchingDisease;
+            } else {
+                DiseaseBean disease = new DiseaseBean();
+                disease.setCode(currCode.getCode());
+                disease.setDisplayName(currCode.getDisplayName());
+                disease.setCodeSystemName(currCode.getCodeSystemName());
+                return disease;
             }
-        }
-
-        return false;
+        } 
+        return DiseaseUtils.createOtherDiseaseType(currCode.getOriginalText());
     }
-    
-    
+
     /**
-     * Function Stores information from a ClinicalObservation without original text (System diseases and
-     * attributes: height weight ect).
+     * Function Stores information from a ClinicalObservation without original text (System diseases and attributes:
+     * height weight ect).
      * 
      * @param p Person object in which to store information
      * @param observation observation containing code
      * @param diseaseMap map of SNOMED Codes (String) to diseases
      * @param snomedCode SNOMED Code of the observation
      */
-    private static void setupObservationWithoutOriginalText(Person p, ClinicalObservation observation, Map<String, 
-            Disease> diseaseMap, String snomedCode) {
+    private static void setupObservationWithoutOriginalText(Person p, ClinicalObservation observation,
+            Map<String, Disease> diseaseMap, String snomedCode) {
         Disease systemDisease = diseaseMap.get(snomedCode);
         // System Disease
         if (systemDisease != null) {
@@ -283,8 +270,8 @@ public final class HL7ConversionUtils {
     }
 
     /**
-     * Stores information from clinicalObservation (not a Disease or Condition) into the Person Object. 
-     * Any information set must also be transfered to the Relative in setRelationshipHolderNode.
+     * Stores information from clinicalObservation (not a Disease or Condition) into the Person Object. Any information
+     * set must also be transfered to the Relative in setRelationshipHolderNode.
      * 
      * @param p Person object in which to store information
      * @param currObservation observation containing code
@@ -294,18 +281,18 @@ public final class HL7ConversionUtils {
         if (code.equals(ClinicalObservationCode.ADOPTED.getCode())) {
             p.setAdopted(true);
         } else if (code.equals(ClinicalObservationCode.WEIGHT.getCode())) {
-            p.setWeight(new Weight(Integer.valueOf(observation.getValueNode().getValue()), 
-                    WeightUnit.fromUnit(observation.getValueNode().getUnit())));
+            p.setWeight(new Weight(Integer.valueOf(observation.getValueNode().getValue()), WeightUnit
+                    .fromUnit(observation.getValueNode().getUnit())));
         } else if (code.equals(ClinicalObservationCode.HEIGHT.getCode())) {
-            p.setHeight(new Height(Integer.valueOf(observation.getValueNode().getValue()), 
-                    HeightUnit.fromUnit(observation.getValueNode().getUnit())));
+            p.setHeight(new Height(Integer.valueOf(observation.getValueNode().getValue()), HeightUnit
+                    .fromUnit(observation.getValueNode().getUnit())));
         } else if (code.equals(TwinStatus.IDENTICAL.getCode())) {
             p.setTwinStatus(TwinStatus.IDENTICAL);
         } else if (code.equals(TwinStatus.FRATERNAL.getCode())) {
             p.setTwinStatus(TwinStatus.FRATERNAL);
         }
     }
-    
+
     /**
      * Converts the boolean twin status to a String used by Castor.
      * 
@@ -320,9 +307,9 @@ public final class HL7ConversionUtils {
     }
 
     /**
-     * Used for Castor serialization. Import uses the gender nodes original text value to find if the form was 
-     *  completed for a relative (Gender is only required attribute). Set originalText if form was not completed. 
-     *  If unmatched condition exists upon save, all unmatched conditions are validated (form completed).
+     * Used for Castor serialization. Import uses the gender nodes original text value to find if the form was completed
+     * for a relative (Gender is only required attribute). Set originalText if form was not completed. If unmatched
+     * condition exists upon save, all unmatched conditions are validated (form completed).
      * 
      * @param p Person with information to store in GenderNode
      * @return the gender as a castor-serializable node.
@@ -332,9 +319,9 @@ public final class HL7ConversionUtils {
     }
 
     /**
-     * Used for castor deserialization. Import uses the gender nodes original text value to find if the form was 
-     *  completed for a relative (Gender is only required attribute).
-     *  
+     * Used for castor deserialization. Import uses the gender nodes original text value to find if the form was
+     * completed for a relative (Gender is only required attribute).
+     * 
      * @param p Person object in which to store information
      * @param genderNode the representation of the gender obtained from the castor-deserialized XML.
      */

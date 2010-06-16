@@ -10,5 +10,6 @@
     </preConditions>
     <changeSet author="smatyas" id="1">
         <comment>version 1.0 sql files</comment>
+        <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/2010-june-snomed-upgrades.sql"/>
     </changeSet>
 </databaseChangeLog>

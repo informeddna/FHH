@@ -78,7 +78,7 @@ public class PersonTest {
     private final ClinicalObservation DUMMY_OBS =  new ClinicalObservation();
     private final Person p = new Person();
     private final Date date = new Date();
-    private final Disease DUMMY_DISEASE = new Disease();
+    private final DiseaseBean DUMMY_DISEASE = new DiseaseBean();
 
     @Before
     public void before() {

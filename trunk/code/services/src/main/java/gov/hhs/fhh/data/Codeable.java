@@ -33,33 +33,70 @@
  */
 package gov.hhs.fhh.data;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import java.util.Map;
 
 /**
- * @author lpower
+ * 
+ * @author bhumphrey
  *
  */
-
-@Entity
-@DiscriminatorValue("Cancer")
-public class CancerDiseaseType extends Disease implements AbstractCodeableSubType<Disease> {
-
-    private static final long serialVersionUID = 65887678999987L;
+public interface Codeable {
 
     /**
-     * Default constructor.
+     * @return the code
      */
-    public CancerDiseaseType() {
-        //default constructor
-        super();
-    }
+    String getCode();
+
+    
+    /**
+     * @return the codeSystemName
+     */
+    String getCodeSystemName();
 
     /**
-     * Copy constructor.
-     * @param c the object to copy from.
+     * @return the displayName
      */
-    public CancerDiseaseType(CancerDiseaseType c) {
-        super(c);
-    }
+    String getDisplayName();
+
+
+    /**
+     * @return the originalText
+     */
+    String getOriginalText();
+
+
+    /**
+     * @return the codeSystem
+     */
+    String getCodeSystem();
+
+
+    /**
+     * @return the codeSystemVersion
+     */
+     String getCodeSystemVersion();
+
+
+    /**
+     * (Used in drop-downs/lists).
+     * 
+     * @return the appDisplay
+     */
+     String getAppDisplay();
+
+
+    /**
+     * @return the displayStrings
+     */
+     Map<String, DisplayString> getDisplayStrings();
+
+    /**
+     * Add a new DisplayString for this object.
+     * 
+     * @param language language to set
+     * @param displayName displayName to set
+     * @param appDisplay appDisplay to set
+     */
+     void addDisplayString(String language, String displayName, String appDisplay);
+
 }

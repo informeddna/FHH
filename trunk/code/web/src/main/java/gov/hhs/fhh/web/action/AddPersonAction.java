@@ -55,7 +55,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.ajaxtags.xml.AjaxXmlBuilder;
 import org.apache.commons.lang.StringUtils;
@@ -79,7 +78,6 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     private static final long serialVersionUID = 19278463L;
     private static final String SUBMIT_ACTION = "submit";
     private static final String FAMILY_TREE_ACTION = "addFamilyTree";
-    private static final String OTHER_DISEASE = "Other Disease type";
     private Person person;
 
     private List<Disease> diseases = new ArrayList<Disease>();
@@ -97,7 +95,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     private List<String> otherDiseaseValues = new ArrayList<String>();
     private String currentDiseaseValue;
     private String autocompleteDisease;
- 
+
     private String selectedCode;
     private String heightUnit1;
     private String heightUnit2;
@@ -145,7 +143,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
             setSelectedDiseases(new ArrayList<Disease>());
             setAgeOfDiagnosisList(new ArrayList<AgeRangeEnum>());
             for (ClinicalObservation obs : p.getObservations()) {
-                selectedDiseases.add(obs.getDisease());
+                addSelectedDisease(obs.getDisease());
                 ageOfDiagnosisList.add(obs.getAgeRange());
                 if (obs.getDisease().isOther()) {
                     getOtherDiseaseValues().add(obs.getDisease().getOriginalText());
@@ -154,6 +152,11 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
                 }
             }
         }
+    }
+
+    private void addSelectedDisease(Disease disease) {
+        getSelectedDiseases().add(disease);
+
     }
 
     /**
@@ -204,9 +207,10 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         this.asianRaces = FhhRegistry.getPersonService().getAsianRaces();
         this.hawaiianRaces = FhhRegistry.getPersonService().getHawaiianRaces();
         this.diseases = FhhRegistry.getPersonService().getDiseases();
-        Map<String, Disease> userEnteredDiseases = FhhHttpSessionUtil.getUserEnteredDiseases();
-        if (userEnteredDiseases != null) {
-            diseases.addAll(userEnteredDiseases.values());
+        if (FhhHttpSessionUtil.getUserEnteredDiseases() != null) {
+            List<Disease> userEnteredDiseases = new ArrayList<Disease>(FhhHttpSessionUtil.getUserEnteredDiseases()
+                    .values());
+            diseases.addAll(userEnteredDiseases);
         }
         Collections.sort(diseases);
         this.ethnicities = FhhRegistry.getPersonService().getEthnicities();
@@ -261,7 +265,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
             return SUBMIT_ACTION;
         }
     }
-    
+
     private void validateSubmitFields() {
         checkDateOfBirth();
         validateIntegerField("heightUnit1", "person.height.Unit1", getHeightUnit1());
@@ -270,7 +274,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         validateIntegerField("weightString", "person.weight", getWeightString());
         validateRequiredObject("person.gender", "person.gender", getPerson().getGender());
     }
-    
+
     /**
      * Checks for DOB errors and adds fields errors if necessary.
      * 
@@ -279,25 +283,23 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     private void checkDateOfBirth() {
 
         if (StringUtils.isEmpty(getDateOfBirthString())) {
-            addFieldError("dateOfBirthString", getText("person.dateOfBirth") + " " 
-                    + getText("errors.required.field"));
+            addFieldError("dateOfBirthString", getText("person.dateOfBirth") + " " + getText("errors.required.field"));
         } else if (FormatUtils.convertStringToDate(getDateOfBirthString()) == null) {
             addFieldError("dateOfBirthString", getText("dateOfBirthString") + " " + getText("errors.invalid.date"));
         }
     }
-    
+
     /**
      * Stores the date of birth using dateOfBirthString provided that dateOfBirthString is in the correct format.
      */
     private void storeDateOfBirth() {
         person.setDateOfBirth(FormatUtils.convertStringToDate(dateOfBirthString));
     }
-    
+
     private void storeHeight() {
         Height height;
         if (StringUtils.isEmpty(heightMetric)) {
-            height = new Height(FhhUtils.calculateHeightUS(heightUnit1, 
-                    heightUnit2), HeightUnit.US);
+            height = new Height(FhhUtils.calculateHeightUS(heightUnit1, heightUnit2), HeightUnit.US);
         } else {
             Integer heightMetricInt = null;
             if (!StringUtils.isEmpty(heightMetric)) {
@@ -319,14 +321,18 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
             int i = 0;
             for (AgeRangeEnum age : getAgeOfDiagnosisList()) {
                 ClinicalObservation observation = new ClinicalObservation();
+                if (i >= selectedDiseases.size()) {
+                    continue;
+                }
                 Disease currDisease = selectedDiseases.get(i);
                 observation.setAgeRange(age);
                 // Add a user defined disease if user entered an "Other" disease
                 // and did not select a user defined disease from the drop down (originalText not null).
-                if (currDisease.getDisplayName() != null && currDisease.getDisplayName().equals(OTHER_DISEASE)
-                        && currDisease.getOriginalText() == null) {
-                    currDisease = DiseaseUtils.findOrCreateNewDisease(
-                            FormatUtils.performXSSFilter(otherDiseaseValues.get(i)));
+                // if (currDisease.getDisplayName() != null && currDisease.getDisplayName().equals(OTHER_DISEASE)
+                // && currDisease.getOriginalText() == null) {
+                if (!StringUtils.isEmpty(otherDiseaseValues.get(i))) {
+                    currDisease = DiseaseUtils.findOrCreateNewDisease(FormatUtils.performXSSFilter(otherDiseaseValues
+                            .get(i)));
                     FhhHttpSessionUtil.addUserEnteredDisease(currDisease);
                 }
                 observation.setDisease(currDisease);
@@ -372,11 +378,11 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         if (StringUtils.isNotBlank(currentDiseaseValue)) {
             this.diseaseSubTypes = FhhRegistry.getPersonService().getDiseaseSubTypes(
                     Long.parseLong(currentDiseaseValue));
-                    Collections.sort(this.diseaseSubTypes);
+            Collections.sort(this.diseaseSubTypes);
         }
         return "xmlDiseaseSubTypes";
     }
-    
+
     /**
      * Get the set of retrieved sub types in XML for use by AjaxTags.
      * 
@@ -396,22 +402,23 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         }
         return new ByteArrayInputStream(xmlBuilder.toString().getBytes("UTF-8"));
     }
-    
+
     /**
      * Retrieves a list of sub types like the entered disease/condition.
+     * 
      * @return path to get disease sub types in XML form
      */
     @SkipValidation
     public String retrieveAutocompleteConditions() {
         if (StringUtils.isNotBlank(autocompleteDisease)) {
-            this.autoCompleteConditions = FhhRegistry.getPersonService().getDiseaseByName(
-                    autocompleteDisease);
+            this.autoCompleteConditions = FhhRegistry.getPersonService().getDiseaseByName(autocompleteDisease);
         }
         return "xmlAutocomplete";
     }
 
     /**
      * Get the set of retrieved sub types in XML for use by the autocomplete AjaxTag.
+     * 
      * @return the stream containing the XML encoding the set of autocomplete disease sub types
      * @throws IllegalAccessException on error
      * @throws NoSuchMethodException on error
@@ -419,7 +426,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
      * @throws UnsupportedEncodingException on error
      */
     public InputStream getAutocompleteAsXml() throws IllegalAccessException, NoSuchMethodException,
-        InvocationTargetException, UnsupportedEncodingException {
+            InvocationTargetException, UnsupportedEncodingException {
         AjaxXmlBuilder xmlBuilder = new AjaxXmlBuilder();
         if (!this.autoCompleteConditions.isEmpty()) {
             xmlBuilder.addItems(this.autoCompleteConditions, "appDisplay", "appDisplay");
@@ -735,7 +742,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     public void setSelectedHispanicEthnicities(List<Ethnicity> selectedHispanicEthnicities) {
         this.selectedHispanicEthnicities = selectedHispanicEthnicities;
     }
-    
+
     /**
      * @return the autocompleteDisease
      */
@@ -749,7 +756,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     public void setAutocompleteDisease(String autocompleteDisease) {
         this.autocompleteDisease = autocompleteDisease;
     }
-    
+
     /**
      * @return the autoCompleteConditions
      */

@@ -33,33 +33,19 @@
  */
 package gov.hhs.fhh.web.action;
 
-import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeBranch;
-import gov.hhs.fhh.data.util.HL7ConversionUtils;
-import gov.hhs.fhh.data.util.PersonUtils;
-import gov.hhs.fhh.data.util.htmimport.HTMImporter;
-import gov.hhs.fhh.model.mfhp.castor.FhhCastorUtils;
+import gov.hhs.fhh.service.PersonServiceLocal;
 import gov.hhs.fhh.service.locator.FhhRegistry;
-import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
-import gov.hhs.fhh.xml.PatientPerson;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 
 import com.fiveamsolutions.nci.commons.web.struts2.action.ActionHelper;
 import com.opensymphony.xwork2.ActionSupport;
@@ -69,7 +55,7 @@ import com.opensymphony.xwork2.Preparable;
  * @author bpickeral
  * 
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.CyclomaticComplexity" })
+@SuppressWarnings({ "PMD.TooManyMethods" })
 public class FamilyHistoryAction extends ActionSupport implements Preparable {
     private static final long serialVersionUID = 1161714L;
     private static final Logger LOG = Logger.getLogger(FamilyHistoryAction.class);
@@ -165,91 +151,34 @@ public class FamilyHistoryAction extends ActionSupport implements Preparable {
      * @return input
      */
     public String importXmlFile() {
-        InputStream in = null;
+        
         File file = getImportedFile();
         if (file == null) {
             addFieldError(IMPORT_FIELD_NAME, getText("importLocal.importedFile.required"));
             return IMPORT_FAILED;
         }
         try {
-            in = FileUtils.openInputStream(file);
-            String fileStr = FhhCastorUtils.getInputStreamAsString(in);
-            if (fileStr.contains("<?xml")) {
-                LOG.debug("about to import xml file");
-                importXMLFile(fileStr);
-            } else {
-                importHTMFile(fileStr);
-            }
-            PersonUtils.setImmediateRelatives(getPerson());
-            PersonUtils.setAllKnownParents(getPerson());
-            FhhHttpSessionUtil.setAttribute(FhhHttpSessionUtil.getRootKey(), getPerson());
+            
+            setPerson(getPersonService().importFile(file));
         } catch (Exception e) {
             LOG.error(IMPORT_ERROR, e);
             addFieldError(IMPORT_FIELD_NAME, getText("importFamilyHistory.error.importingFile"));
-
             return IMPORT_FAILED;
-        } finally {
-            IOUtils.closeQuietly(in);
-        }
+        } 
+        FhhHttpSessionUtil.addAllUserEnteredDiseases(getPerson());
+        FhhHttpSessionUtil.setAttribute(FhhHttpSessionUtil.getRootKey(), getPerson());
         return IMPORT_COMPLETE;
     }
 
     /**
-     * Populates the family Tree with attributes from a version 2.x FHH XML file.
-     * 
+     * @return get the person service
      */
-    private void importXMLFile(String xmlFile) throws MarshalException, ValidationException, IOException,
-            MappingException {
-        PatientPerson unmarshalledPerson = (PatientPerson) 
-                    FhhCastorUtils.unmarshallXMLFile(xmlFile, new PatientPerson());
-        setPerson(HL7ConversionUtils.person(unmarshalledPerson));
-        // Set parents of relatives
-        setPerson(FhhUtils.setupParents(getPerson()));
-        PersonUtils.xssFilter(getPerson());
-        FhhHttpSessionUtil.addAllUserEnteredDiseases(getPerson());
-        populateRaceEthnicityIds(getPerson());
-        for (Relative relative : getPerson().getRelatives()) {
-            populateRaceEthnicityIds(relative);
-        }
-    }
-    
-    
-    /**
-     * @param personParam the person to populate Race and Ethnicity ids
-     */
-    @SuppressWarnings("PMD.CyclomaticComplexity")
-    public static void populateRaceEthnicityIds(Person personParam) {
-        for (Ethnicity ethnicity : personParam.getEthnicities()) {
-            if (ethnicity.getId() == null || ethnicity.getId() == 0) {
-                List<Ethnicity> matching = FhhRegistry.getPersonService().getEthnicityByCodeAndCodeSystem(
-                        ethnicity.getCode(), ethnicity.getCodeSystemName());
-                if (matching != null && !matching.isEmpty()) {
-                    ethnicity.setId(matching.get(0).getId());
-                }
-            }
-        }
-        
-        for (Race race : personParam.getRaces()) {
-            if (race.getId() == null || race.getId() == 0) {
-                List<Race> matching = FhhRegistry.getPersonService().getRaceByCodeAndCodeSystem(
-                        race.getCode(), race.getCodeSystemName());
-                if (matching != null && !matching.isEmpty()) {
-                    race.setId(matching.get(0).getId());
-                }
-            }
-        }
-    }
-    
-    
-    /**
-     * Populates the family Tree with attributes from a version 1.x FHH HTM file.
-     */
-    private void importHTMFile(String htmFile) throws MarshalException, ValidationException, IOException,
-            MappingException {
-        HTMImporter importer = new HTMImporter();
-        setPerson(importer.build(htmFile));
+    protected PersonServiceLocal getPersonService() {
+        return FhhRegistry.getPersonService();
     }
 
+    
+    
     /**
      * Action removes the relative of index relativeId and all of the relatives descendants from the family tree.
      * 

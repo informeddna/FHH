@@ -42,6 +42,7 @@ import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.htm.InputNode;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.model.mfhp.castor.HTMNode;
+import gov.hhs.fhh.test.AbstractHibernateTestCase;
 import gov.hhs.fhh.test.util.PersonTestUtils;
 
 import java.util.HashMap;
@@ -54,7 +55,7 @@ import org.junit.Test;
  * @author bpickeral
  *
  */
-public class HTMImportUtilsTest {
+public class HTMImportUtilsTest extends AbstractHibernateTestCase {
     
     private final String SISTER1 = HTMRelationship.SISTER.getRelationship() + "1";
     private final String SISTER2 = HTMRelationship.SISTER.getRelationship() + "2";;

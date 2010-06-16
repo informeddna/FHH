@@ -33,277 +33,72 @@
  */
 package gov.hhs.fhh.data;
 
-import gov.hhs.fhh.data.util.DiseaseUtils;
-
 import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.ForeignKey;
 
 import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
 
 /**
- * @author lpower
+ * @author bhumphrey
  * 
  */
-@Entity(name = "disease")
-@org.hibernate.annotations.Entity(mutable = false)
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-// Unit tests write, so cannot use read-only
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "subType", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("Disease")
-public class Disease extends AbstractCodeable implements PersistentObject, Comparable<Disease> {
-    private static final long serialVersionUID = 1L;
-    private Disease parent;
-    private String abbreviation;
-    private Long id;
-    private static final Logger LOG = Logger.getLogger(Disease.class);
-
-    /**
-     * The type of disease for sorting purposes.
-     * 
-     * @author vsemenov
-     * 
-     */
-    enum DiseaseType {
-        SYSTEM_NORMAL(0), SYSTEM_UNKNOWN(2), USER_ENTERED(1), OTHER_ADD_NEW(3);
-        private int compareValue;
-
-        private DiseaseType(int compareValue) {
-            this.compareValue = compareValue;
-        }
-
-        /**
-         * @return the compareValue
-         */
-        public int getCompareValue() {
-            return compareValue;
-        }
-    }
-
-    /**
-     * Default constructor.
-     */
-    public Disease() {
-        // default constructor
-        super();
-    }
-
-    /**
-     * Copy constructor.
-     * 
-     * @param c the Disease object to copy from.
-     */
-    public Disease(Disease c) {
-        super(c);
-        this.id = c.id;
-        this.parent = c.parent;
-        this.abbreviation = c.getAbbreviation();
-    }
+public interface Disease extends Comparable<Disease>, Codeable, PersistentObject {
 
     /**
      * @return the displayStrings
      */
-    @MapKey(name = "language")
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @ForeignKey(name = "disease_codeable_fk", inverseName = "disease_displaystring_fk")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    // Unit tests write, so cannot use read-only
-    @SuppressWarnings({ "PMD.UselessOverridingMethod", "PMD.CyclomaticComplexity" })
-    public Map<String, DisplayString> getDisplayStrings() {
-        return super.getDisplayStrings();
-    }
+    Map<String, DisplayString> getDisplayStrings();
 
     /**
      * CompareTo function used for sorting a Disease drop down list. System Diseases are displayed in alphabetical order
      * first followed by user entered diseases. The option to add a new disease appears last in the list.
      * 
-     * @param d2 object to compare to
+     * @param d object to compare to
      * @return int representing the objects ordering in the list
      */
-    @SuppressWarnings("PMD.ExcessiveMethodLength")
-    public int compareTo(Disease d2) {
-        if (!(d2 instanceof Disease)) {
-            throw new ClassCastException("A Disease object expected.");
-        }
-
-        int retval = 0;
-
-        if (getDiseaseType().getCompareValue() < d2.getDiseaseType().getCompareValue()) {
-            retval = -1;
-        } else if (getDiseaseType().getCompareValue() > d2.getDiseaseType().getCompareValue()) {
-            retval = 1;
-        } else {
-            // SYSTEM_UNKNOWN and ADD_NEW should only be in the disease list once, so we don't need to compare them.
-            if (getDiseaseType() == DiseaseType.SYSTEM_NORMAL) {
-                retval = getAppDisplay().compareTo(d2.getAppDisplay());
-            } else if (getDiseaseType() == DiseaseType.USER_ENTERED) {
-                retval = getOriginalText().compareTo(d2.getOriginalText());
-            }
-        }
-
-        LOG.debug(getAppDisplay() + isOther() + "|" + retval + "|" + d2.getAppDisplay() + d2.isOther());
-
-        return retval;
-
-    }
+    int compareTo(Disease d);
 
     /**
      * @return the parent
      */
-    @ManyToOne(cascade = { CascadeType.ALL })
-    @ForeignKey(name = "disease_parent_fk")
-    public Disease getParent() {
-        return parent;
-    }
-
-    /**
-     * @param parent the parent to set
-     */
-    public void setParent(Disease parent) {
-        this.parent = parent;
-    }
+    Disease getParent();
 
     /**
      * @return the abbreviation
      */
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
-    /**
-     * @param abbreviation the abbreviation to set
-     */
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
-    }
+    String getAbbreviation();
 
     /**
      * @return the abbreviation
      */
-    @Transient
-    public String getGeneratedAbbreviation() {
-        return DiseaseUtils.getDiseaseAbbreviation(this);
-    }
+    String getGeneratedAbbreviation();
 
     /**
      * @return the abbreviation
      */
-    @Transient
-    public String getEscapedGeneratedAbbreviation() {
-        return DiseaseUtils.replaceSpanishCharactersWithHTML(DiseaseUtils.getDiseaseAbbreviation(this));
-    }
+    String getEscapedGeneratedAbbreviation();
 
     /**
      * @return the string to display on reports
      */
-    @Transient
-    public String getReportDisplay() {
-        return DiseaseUtils.getReportDisplay(this);
-    }
+    String getReportDisplay();
 
     /**
      * @return the string to display on reports
      */
-    @Transient
-    public String getEscapedReportDisplay() {
-        return DiseaseUtils.replaceSpanishCharactersWithHTML(DiseaseUtils.getReportDisplay(this));
-    }
+    String getEscapedReportDisplay();
 
     /**
      * @return the string to display on reports
      */
-    @Transient
-    public String getEscapedOriginalText() {
-        return DiseaseUtils.replaceSpanishCharactersWithHTML(getOriginalText());
-    }
+    String getEscapedOriginalText();
 
     /**
      * @return true if the Disease is a User entered Disease (no SNOMED code)
      */
-    @Transient
-    public boolean isOther() {
-        return getCode() == null
-                && (StringUtils.isEmpty(getDisplayName())
-                        || getDisplayName().equals(DiseaseUtils.OTHER_DISEASE_DISPLAY) || getDisplayName()
-                        .toUpperCase().contains("OTHER"));
-    }
+    boolean isOther();
 
-    @Transient
-    private boolean isUnknown() {
-        boolean retval = false;
+   
 
-        if (getOriginalText() != null && getOriginalText().equals("Unknown")) {
-            retval = true;
-        }
-
-        return retval;
-    }
-
-    /**
-     * @return - the derived disease type.
-     */
-    @Transient
-    public DiseaseType getDiseaseType() {
-        DiseaseType retval = null;
-
-        if (isOther()) {
-            if (getOriginalText() == null) {
-                retval = DiseaseType.OTHER_ADD_NEW;
-            } else {
-                retval = DiseaseType.USER_ENTERED;
-            }
-        } else if (isUnknown()) {
-            retval = DiseaseType.SYSTEM_UNKNOWN;
-        } else {
-            retval = DiseaseType.SYSTEM_NORMAL;
-        }
-
-        return retval;
-    }
-
-    /**
-     * @return the id
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @ForeignKey(name = "codeable_fk")
-    public Long getId() {
-        return this.id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * @return true if the id is not null
-     */
-    protected boolean hasId() {
-        return id != null;
-    }
+    
 
 }

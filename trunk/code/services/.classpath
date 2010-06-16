@@ -4,6 +4,8 @@
   <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
   <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
   <classpathentry kind="src" path="src/test/data" excluding="**/*.java"/>
+  <classpathentry kind="src" path="src/main/db/db-install" including="db-install.xml" excluding="**/*.java"/>
+  <classpathentry kind="src" path="src/main/db/db-upgrade" including="db-upgrade.xml" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar" sourcepath="M2_REPO/javax/activation/activation/1.1/activation-1.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/ejb/ejb-api/3.0/ejb-api-3.0.jar"/>
@@ -26,8 +28,9 @@
   <classpathentry kind="var" path="M2_REPO/classworlds/classworlds/1.1-alpha-2/classworlds-1.1-alpha-2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/lobobrowser/cobra/0.98.4/cobra-0.98.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar" sourcepath="M2_REPO/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.2/commons-codec-1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4.jar" sourcepath="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.3/commons-lang-2.3.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.3/commons-lang-2.3-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-sources.jar"/>
@@ -45,9 +48,21 @@
   <classpathentry kind="var" path="M2_REPO/com/google/code/guice/guice/2.0.1/guice-2.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate/3.2.0.ga/hibernate-3.2.0.ga.jar" sourcepath="M2_REPO/org/hibernate/hibernate/3.2.0.ga/hibernate-3.2.0.ga-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-annotations/3.2.0.ga/hibernate-annotations-3.2.0.ga.jar"/>
-  <classpathentry kind="src" path="/hl7-commons"/>
-  <classpathentry kind="var" path="M2_REPO/com/fiveamsolutions/hl7/messaging/hl7-service/1.0.12-SNAPSHOT/hl7-service-1.0.12-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/fiveamsolutions/hl7/messaging/hl7-service-client/1.0.12-SNAPSHOT/hl7-service-client-1.0.12-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/fiveamsolutions/hl7-commons/1.0.11/hl7-commons-1.0.11.jar" sourcepath="M2_REPO/com/fiveamsolutions/hl7-commons/1.0.11/hl7-commons-1.0.11-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/bhumphrey/.m2/repository/com/fiveamsolutions/hl7-commons/1.0.11/hl7-commons-1.0.11-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/fiveamsolutions/hl7/messaging/hl7-service/1.0.14/hl7-service-1.0.14.jar" sourcepath="M2_REPO/com/fiveamsolutions/hl7/messaging/hl7-service/1.0.14/hl7-service-1.0.14-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/bhumphrey/.m2/repository/com/fiveamsolutions/hl7/messaging/hl7-service/1.0.14/hl7-service-1.0.14-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/fiveamsolutions/hl7/messaging/hl7-service-client/1.0.14/hl7-service-client-1.0.14.jar" sourcepath="M2_REPO/com/fiveamsolutions/hl7/messaging/hl7-service-client/1.0.14/hl7-service-client-1.0.14-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/bhumphrey/.m2/repository/com/fiveamsolutions/hl7/messaging/hl7-service-client/1.0.14/hl7-service-client-1.0.14-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/hsqldb/hsqldb/1.8.0.7/hsqldb-1.8.0.7.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/microsoft/hsg/hv-jaxb/1.0-jdk5-jaxb2.1.4/hv-jaxb-1.0-jdk5-jaxb2.1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/microsoft/hsg/hv-sdk/1.0-jdk5-jaxb2.1.4/hv-sdk-1.0-jdk5-jaxb2.1.4.jar"/>

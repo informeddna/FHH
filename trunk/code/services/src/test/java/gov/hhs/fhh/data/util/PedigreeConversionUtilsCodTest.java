@@ -1,7 +1,7 @@
 package gov.hhs.fhh.data.util;
 
-import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Relative;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 
 import org.junit.Assert;
@@ -17,7 +17,7 @@ public class PedigreeConversionUtilsCodTest {
     public void testCreateCauseOfDeath() {
         Relative relative = new Relative();
         relative.setLivingStatus(LivingStatus.NO.toString());
-        Disease disease = new Disease();
+        UserEnteredDisease disease = new UserEnteredDisease();
         disease.setAppDisplay("mooooo");
         relative.setCauseOfDeath(disease);
         relative.setAgeAtDeath(AgeRangeEnum.ADOLESCENCE);

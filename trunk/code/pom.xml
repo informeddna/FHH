@@ -10,7 +10,7 @@
     <properties>
         <!-- general build properties -->
         <cobertura.check.haltOnFailure>true</cobertura.check.haltOnFailure>
-        <cobertura.totalBranchRate>71</cobertura.totalBranchRate>
+        <cobertura.totalBranchRate>69</cobertura.totalBranchRate>
         <cobertura.totalLineRate>77</cobertura.totalLineRate>
         <showErrorStackTraces>false</showErrorStackTraces>
 
@@ -33,8 +33,8 @@
         <database.url.prefix>jdbc:mysql://localhost:3306/</database.url.prefix>
         <database.name>mfhp</database.name>
         <jdbc.url>${database.url.prefix}${database.name}</jdbc.url>
-        <jdbc.username>${admin.db.username}</jdbc.username>
-        <jdbc.password>${admin.db.password}</jdbc.password>
+        <jdbc.username>mfhpuser</jdbc.username>
+        <jdbc.password>mfhpuser</jdbc.password>
         <jdbc.groupId>mysql</jdbc.groupId>
         <jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
         <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
@@ -53,9 +53,9 @@
 
     <!-- General Project information -->
     <scm>
-        <connection>scm:svn:https://gforge.nci.nih.gov/svnroot/fhh/hhs/fhh/tags/fhh-2.3.1.3</connection>
-        <developerConnection>scm:svn:https://gforge.nci.nih.gov/svnroot/fhh/hhs/fhh/tags/fhh-2.3.1.3</developerConnection>
-        <url>https://gforge.nci.nih.gov/svnroot/fhh/hhs/fhh/tags/fhh-2.3.1.3</url>
+        <connection>https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</connection>
+        <developerConnection>https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</developerConnection>
+        <url>https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</url>
     </scm>
 
 
@@ -141,6 +141,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.1</version>
                 <configuration>
                     <source>${compileSource}</source>
                     <target>${compileSource}</target>
@@ -168,6 +169,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.5</version>
                 <executions>
                     <execution>
                         <goals>
@@ -188,10 +190,12 @@
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.0.1-beta-3</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.5</version>
                 <configuration>
                     <forkMode>once</forkMode>
                     <includes>
@@ -485,6 +489,18 @@
             <cobertura.check.haltOnFailure>false</cobertura.check.haltOnFailure>
             <skipTests>true</skipTests>
             <!-- maven.test.skip>true</maven.test.skip-->
+            <pmd.skip>true</pmd.skip>
+            <checkstyle.skip>true</checkstyle.skip>
+        </properties>
+    </profile>
+    <profile>
+        <id>tdd</id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+        </activation>
+        <properties>
+            <struts.devMode>true</struts.devMode>
+            <cobertura.check.haltOnFailure>false</cobertura.check.haltOnFailure>
             <pmd.skip>true</pmd.skip>
             <checkstyle.skip>true</checkstyle.skip>
         </properties>

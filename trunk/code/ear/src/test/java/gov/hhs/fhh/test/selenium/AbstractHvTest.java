@@ -23,8 +23,7 @@ public abstract class AbstractHvTest extends AbstractFHHSeleniumTest {
         Assert.assertTrue(selenium.isTextPresent(TestProperties.getHvUserDisplayName()));
         selenium.click("save");
         
-        Thread.sleep(5000);
-        Assert.assertTrue(selenium.isTextPresent("Copy Successful"));
+        waitForText("Copy Successful");
         Assert.assertTrue(selenium.isTextPresent(TestProperties.getHvUserDisplayName()));
         clickAndWait("continue");
         selectParentWindow();
