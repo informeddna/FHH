@@ -5,10 +5,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-    <preConditions>            
-        <dbms type="mysql" />                     
-    </preConditions>                                       
-    <changeSet id="1.0" author="smatyas">        
+    <preConditions> 
+            <dbms type="mysql" /> 
+    </preConditions>              
+ 
+    <changeSet id="1.0" author="smatyas">       
         <comment>version 1.0 sql files</comment>
         <sqlFile path="${db-install.run.dir}/mysql/mfhp-create-schema.sql" />
         <sqlFile path="${db-install.run.dir}/mysql/extraCreateSchema.sql" />

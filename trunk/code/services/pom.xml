@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>fhh</artifactId>
         <groupId>gov.hhs</groupId>
@@ -34,7 +35,7 @@
         <test.selenium.server.debug>true</test.selenium.server.debug>
         <test.selenium.browser>*chrome</test.selenium.browser>
         <selenium-maven-plugin.version>1.0</selenium-maven-plugin.version>
-        
+
         <db-upgrade.run.dir>${pom.basedir}/src/main/db/db-upgrade</db-upgrade.run.dir>
         <db-install.run.dir>${pom.basedir}/src/main/db/db-install</db-install.run.dir>
     </properties>
@@ -203,16 +204,18 @@
                     <include>db-upgrade.xml</include>
                 </includes>
             </resource>
+           
         </resources>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
             </testResource>
-            
+             
+
         </testResources>
     </build>
-    
+
 
     <dependencies>
         <!-- jars to include -->
@@ -276,7 +279,7 @@
             <version>0.98.4</version>
             <scope>compile</scope>
         </dependency>
-        
+
         <!-- JBoss Provided Libs -->
         <dependency>
             <groupId>javax.ejb</groupId>
@@ -297,13 +300,10 @@
             <version>2.3</version>
             <scope>provided</scope>
         </dependency>
-        <!--  needed for test 
-        dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>1.2.4</version>
-            <scope>provided</scope>
-        </dependency -->
+        <!--
+            needed for test dependency> <groupId>net.sf.ehcache</groupId> <artifactId>ehcache</artifactId>
+            <version>1.2.4</version> <scope>provided</scope> </dependency
+        -->
         <dependency>
             <groupId>jboss</groupId>
             <artifactId>jboss-annotations-ejb3</artifactId>
@@ -340,7 +340,7 @@
             <version>1.2.14</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- Test only jars -->
         <dependency>
             <groupId>hsqldb</groupId>
@@ -380,19 +380,22 @@
             <version>${jetty.version}</version>
             <scope>test</scope>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>1.2.4</version>
             <scope>test</scope>
         </dependency>
+        
     </dependencies>
 
     <profiles>
         <profile>
             <id>local-db</id>
             <activation>
-                <property><name>!skip-liquibase</name></property>
+                <property>
+                    <name>!skip-liquibase</name>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -445,15 +448,18 @@
                             <autocommit>true</autocommit>
                             <sqlCommand>
                                 drop database if exists ${database.name};
-                                delete from mysql.user where user='${jdbc.username}';
+                                delete from mysql.user where
+                                user='${jdbc.username}';
                                 create database
                                 ${database.name} default character set latin1;
                                 grant all on
                                 ${database.name}.* to '${jdbc.username}'@'localhost'
                                 identified
-                                by '${jdbc.password}' with grant option;
+                                by
+                                '${jdbc.password}' with grant option;
                                 grant all on
-                                ${database.name}.* to '${jdbc.username}'@'%' identified
+                                ${database.name}.* to
+                                '${jdbc.username}'@'%' identified
                                 by
                                 '${jdbc.password}' with grant option;
                             </sqlCommand>
@@ -479,7 +485,8 @@
                             <autocommit>true</autocommit>
                             <sqlCommand>
                                 drop database if exists ${database.name};
-                                create database ${database.name} default character set latin1;
+                                create database ${database.name}
+                                default character set latin1;
                             </sqlCommand>
                         </configuration>
                     </plugin>
@@ -593,8 +600,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <!--
-                                Skip the normal tests, we'll run them in
-                                the integration-test phase
+                                Skip the normal tests, we'll run them in the integration-test phase
                             -->
                             <skip>true</skip>
                         </configuration>
