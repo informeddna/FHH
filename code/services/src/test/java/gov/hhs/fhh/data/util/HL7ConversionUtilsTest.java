@@ -239,12 +239,12 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
         
         // Test setClinicalObservationsNode for system defined disease
         codeNode.setOriginalText(null);
-        codeNode.setCode("105592009");
+        codeNode.setCode("10001005");
         codeNode.setDisplayName(DUMMY_DISEASE_DISPLAY);
         codeNode.setCodeSystemName(DUMMY_DISEASE_CSN);
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
         disease = person.getObservations().get(0).getDisease();
-        assertEquals("105592009", disease.getCode());
+        assertEquals("10001005", disease.getCode());
 //        assertEquals(DUMMY_DISEASE_CSN, disease.getCodeSystemName());
         assertEquals("Septicemia", disease.getDisplayName());
         assertNotNull(disease.getOriginalText());
