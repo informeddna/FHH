@@ -4,7 +4,8 @@ function isOtherSelected(mySelection) {
         var subSection = mySelection.substring(5,0);
         var eq1 = "Other";
         var eq2 = "Otros";
-        return (subSection == eq1 || subSection == eq2);
+        var eq3 = "Outra";
+        return (subSection == eq1 || subSection == eq2 || subSection == eq3);
     }
     return otherSelected;
 }
@@ -93,27 +94,15 @@ var ItemSelectorUtils = {
         
         //TODO: User entered disease / condition will have a blank value so, this error will ALWAYS be thrown when selecting a user entered type and clicking Add
         if (selectedItem.value == '') {
-            if (locale == 'es') {
-                ItemSelectorUtils.conditionalAlert('Por favor, seleccione una enfermedad.', showAlerts);
-            } else {
-                ItemSelectorUtils.conditionalAlert('Please select a Disease.', showAlerts);
-            }
+            ItemSelectorUtils.conditionalAlert(JS_DISEASE_REQUIRED, showAlerts);
             return true;
         }
-        if (otherSelected && otherDisease.value == '') {
-            if (locale == 'es') {
-                ItemSelectorUtils.conditionalAlert('Por favor, dé un número para Otro.', showAlerts);
-            } else {
-                ItemSelectorUtils.conditionalAlert('Please enter a value for Other.', showAlerts);
-            }
+        if (otherSelected == 1 && selectedItem.value == 16 && otherDisease.value == '') {
+            ItemSelectorUtils.conditionalAlert(JS_DISEASE_OTHER_REQUIRED, showAlerts);
             return true;
         }
         if (selectedAge.value == '') {
-            if (locale == 'es') {
-                ItemSelectorUtils.conditionalAlert('Por favor, seleccione la edad del diagnóstico.', showAlerts);
-            } else {
-                ItemSelectorUtils.conditionalAlert('Please select an Age at Diagnosis.', showAlerts);
-            }
+            ItemSelectorUtils.conditionalAlert(JS_AGE_AT_DIAGNOSIS_REQUIRED, showAlerts);
             return true;
         }
         return false;

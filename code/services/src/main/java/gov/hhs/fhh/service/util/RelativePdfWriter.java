@@ -37,15 +37,19 @@ import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeReport;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 
 import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
 import com.lowagie.text.BadElementException;
@@ -63,8 +67,19 @@ import com.lowagie.text.pdf.PdfWriter;
  * @author lpower
  * 
  */
-@SuppressWarnings({ "PMD.SystemPrintln" , "PMD.CyclomaticComplexity" })
+@SuppressWarnings({ "PMD.CyclomaticComplexity" })
 public class RelativePdfWriter {
+    private static final Logger LOG = Logger.getLogger(RelativePdfWriter.class);
+    private final TextGetter txtGetter;
+
+    /**
+     * The required text getter to lookup messages by key from resource bundles.
+     * 
+     * @param txtGetter the implementation for message lookup
+     */
+    public RelativePdfWriter(TextGetter txtGetter) {
+        this.txtGetter = txtGetter;
+    }
 
     /**
      * 
@@ -75,11 +90,8 @@ public class RelativePdfWriter {
      * 
      */
     private static final int TEXT_FONTSIZE = 9;
-    
-    private boolean highlight = false;
-    
-    
 
+    private boolean highlight = false;
 
     /**
      * @return the highlight
@@ -88,14 +100,12 @@ public class RelativePdfWriter {
         return highlight;
     }
 
-
     /**
      * @param highlight the isHighlight to set
      */
     public void setHighlight(boolean highlight) {
-       this.highlight = highlight;
+        this.highlight = highlight;
     }
-
 
     /**
      * Generates a PDF file.
@@ -120,13 +130,12 @@ public class RelativePdfWriter {
 
             addMetaInformation(document);
 
-
             // add pedigree diagram
-            Paragraph myPhrase = new Paragraph("Family Health Portrait - Diagram Report", 
-                    new Font(Font.HELVETICA, HEAD_FONTSIZE,
-                    Font.BOLD));
-            document.add(myPhrase);
-            Paragraph myDate = getPara(getFormattedDate());
+            Paragraph diagramH2 = new Paragraph(getTxtGetter().getText("fhh.title") + "-"
+                    + getTxtGetter().getText("report.diagram.head"), 
+                    new Font(Font.HELVETICA, HEAD_FONTSIZE, Font.BOLD));
+            document.add(diagramH2);
+            Paragraph myDate = getPara(getTxtGetter().getText("report.date") + ": " + getFormattedDate());
             document.add(myDate);
             Image png = Image.getInstance(self.organizeFamilyTree(self));
             png.setAlignment(Image.MIDDLE);
@@ -140,16 +149,8 @@ public class RelativePdfWriter {
             getChartHeader(document);
             document.add(makeFamilyHistoryChart(p));
 
-        } catch (BadElementException e) {
-            System.err.println(e.getMessage());
-        } catch (MalformedURLException e) {
-            System.err.println(e.getMessage());
-        } catch (DocumentException de) {
-            System.err.println(de.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            LOG.error("Failure generating PDF", e);
         }
 
         document.close();
@@ -157,14 +158,14 @@ public class RelativePdfWriter {
 
     }
 
-
     /**
      * @return string of today's date
      */
     @SuppressWarnings("PMD.SimpleDateFormatNeedsLocale")
     private String getFormattedDate() {
         Date todaysDate = new java.util.Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd-MMM-yyyy");
+        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT, getTxtGetter()
+                .getLocale());
         return formatter.format(todaysDate);
     }
 
@@ -184,14 +185,12 @@ public class RelativePdfWriter {
      */
     private Document getChartHeader(Document document) throws DocumentException {
 
-        Paragraph myPhrase = new Paragraph("Family Health Portrait - Chart Report", 
-                new Font(Font.HELVETICA, HEAD_FONTSIZE,
-                Font.BOLD));
+        Paragraph myPhrase = new Paragraph(getTxtGetter().getText("fhh.title") + "-"
+                + getTxtGetter().getText("report.chart.head"), new Font(Font.HELVETICA, HEAD_FONTSIZE, Font.BOLD));
         document.add(myPhrase);
-        Paragraph myDate = getPara(getFormattedDate());
+        Paragraph myDate = getPara(getTxtGetter().getText("report.date") + ": " + getFormattedDate());
         document.add(myDate);
-        myPhrase = getPara("* Indicates that the the system needs your assistance in identifying this condition. "
-                + "Please visit the \"Family History\" page to review this condition.");
+        myPhrase = getPara("* " + getTxtGetter().getText("report.unmatchedCondition.text"));
         document.add(myPhrase);
         document.add(new Paragraph(" "));
         return document;
@@ -212,8 +211,10 @@ public class RelativePdfWriter {
             cols = 4;
         }
         PdfPTable table = new PdfPTable(cols);
-        
-        PdfPCell cell = new PdfPCell(new Paragraph("Chart Legend",new Font(Font.HELVETICA, TEXT_FONTSIZE, Font.BOLD)));
+
+        String diagramLegendTitle = getTxtGetter().getText("report.legend.title");
+        PdfPCell cell = new PdfPCell(new Paragraph(diagramLegendTitle, new Font(
+                Font.HELVETICA, TEXT_FONTSIZE, Font.BOLD)));
         cell.setColspan(cols);
         table.addCell(cell);
         // CHECKTYLE: ON
@@ -222,13 +223,14 @@ public class RelativePdfWriter {
         // add diseases for all people in the chart
         for (Disease d : legendList) {
             StringBuffer name = new StringBuffer();
-            name.append(d.getGeneratedAbbreviation()).append(" = ").append(d.getReportDisplay());
+            name.append(d.getGeneratedAbbreviation()).append(" = ").append(
+                    StringEscapeUtils.unescapeHtml(d.getReportDisplay()));
             table.addCell(getPara(name.append(" ").toString()));
         }
         // all cells in a row must be used, so add extras to complete the row
         int x = (cols - (legendList.size() % cols));
         if (cols > x) {
-            for (int i=0; i<x; i++) {
+            for (int i = 0; i < x; i++) {
                 table.addCell(" ");
             }
         }
@@ -253,7 +255,7 @@ public class RelativePdfWriter {
         Image femaleIcon = Image.getInstance(resource2);
         femaleIcon.scaleAbsolute(16, 16);
         femaleIcon.setAlignment(Image.TEXTWRAP);
-        
+
         URL resource3 = RelativeDraw.class.getClassLoader().getResource("icon_maleFemaleHighlight.gif");
         Image mfHighlight = Image.getInstance(resource3);
         mfHighlight.scaleAbsolute(38, 16);
@@ -266,29 +268,30 @@ public class RelativePdfWriter {
 
         PdfPCell cella = new PdfPCell();
         cella.addElement(maleIcon);
-        cella.addElement(getPara("male family member"));
+        cella.addElement(getPara(getTxtGetter().getText("report.legend.male")));
         table.addCell(cella);
         PdfPCell cell2 = new PdfPCell();
         cell2.addElement(femaleIcon);
-        cell2.addElement(getPara("female family member"));
+        cell2.addElement(getPara(getTxtGetter().getText("report.legend.female")));
         table.addCell(cell2);
         if (isHighlight()) {
             PdfPCell cell3 = new PdfPCell();
             cell3.addElement(mfHighlight);
-            cell3.addElement(getPara("family member with a history of diease"));
+            cell3.addElement(getPara(getTxtGetter().getText("report.legend.familyDisease")));
             table.addCell(cell3);
         }
         PdfPCell cell4 = new PdfPCell();
         cell4.addElement(mfDec);
-        cell4.addElement(getPara("deceased family member"));
+        cell4.addElement(getPara(getTxtGetter().getText("report.legend.deceased")));
         table.addCell(cell4);
         return table;
     }
 
     /**
      * These keys are set in ViewReportAction.createIntlLegendLabels - this is too tightly coupled code
+     * 
      * @param relatives Set of RelativeReports from which to create chart. creates the family history chart/table.
-     * @throws BadElementException 
+     * @throws BadElementException
      */
     private PdfPTable makeFamilyHistoryChart(PdfDataContainer p) throws BadElementException {
         // CHECKSTYLE:OFF magic number
@@ -309,9 +312,9 @@ public class RelativePdfWriter {
         return populateFamilyHistoryChart(table, p);
 
     }
-    
+
     /**
-     * @param String of text to be formatted as Paragraph  
+     * @param String of text to be formatted as Paragraph
      */
     private Paragraph getPara(String text) {
         return new Paragraph(text, new Font(Font.HELVETICA, TEXT_FONTSIZE));
@@ -319,7 +322,7 @@ public class RelativePdfWriter {
 
     /**
      * @param relatives Set of RelativeReports from which to create chart. creates the family history chart/table.
-     * @throws BadElementException 
+     * @throws BadElementException
      */
     @SuppressWarnings("PMD.AppendCharacterWithChar")
     private PdfPTable populateFamilyHistoryChart(PdfPTable table, PdfDataContainer p) throws BadElementException {
@@ -331,9 +334,22 @@ public class RelativePdfWriter {
             if (showNames && rel.getName() != null) {
                 name.append(rel.getName()).append(" ");
             }
-            name.append("(").append(rel.getCodeEnum().getDisplayValue()).append(")");
+            name.append("(").append(getTxtGetter().getText(rel.getCodeEnum().getResourceKey())).append(")");
             table.addCell(getPara(name.toString()));
-            table.addCell(rel.getLivingStatus());
+            //LivingStatus enum should be used in mfhp model
+            String i18nLivingStatusText = null;
+            if (rel.getLivingStatus() != null) {
+            LivingStatus livingStatus = null;
+                try {
+                    livingStatus = LivingStatus.getByValue(rel.getLivingStatus().toUpperCase());
+                } catch (RuntimeException e) {
+                    LOG.error(e);
+                }
+                if (livingStatus != null) {
+                    i18nLivingStatusText = getTxtGetter().getText(livingStatus.getResourceKey());
+                }
+            }
+            table.addCell(i18nLivingStatusText);
             table.addCell(handleClinicalObservation(rel, ageRangeEnums, rel.getHeartDisease()));
             table.addCell(handleClinicalObservation(rel, ageRangeEnums, rel.getStroke()));
             table.addCell(handleClinicalObservation(rel, ageRangeEnums, rel.getDiabetes()));
@@ -348,10 +364,12 @@ public class RelativePdfWriter {
 
     /**
      * creates the strings to be shown for clinical observations.
-     * @throws BadElementException 
+     * 
+     * @throws BadElementException
      */
     @SuppressWarnings("PMD.AppendCharacterWithChar")
-    private PdfPCell handleClinicalObservation(Relative relative, Map<AgeRangeEnum, String> ages, List<ClinicalObservation> cos) throws BadElementException  {
+    private PdfPCell handleClinicalObservation(Relative relative, Map<AgeRangeEnum, String> ages,
+            List<ClinicalObservation> cos) throws BadElementException {
         PdfPCell c = new PdfPCell();
         for (ClinicalObservation co : cos) {
             if (co.getDisease() != null) {
@@ -360,14 +378,21 @@ public class RelativePdfWriter {
                 if (relative.isUnmatchedCondition() && co.isUnmatchedCondition()) {
                     display.append("* ");
                 }
-                display.append(d.getReportDisplay());
+                display.append(StringEscapeUtils.unescapeHtml(d.getReportDisplay()));
                 c.addElement(getPara(display.toString()));
                 c.addElement(getPara("(" + ages.get(co.getAgeRange()) + ")"));
             }
         }
 
         return c;
-        
+
+    }
+
+    /**
+     * @return the txtGetter
+     */
+    public TextGetter getTxtGetter() {
+        return txtGetter;
     }
 
 }

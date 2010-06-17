@@ -238,7 +238,7 @@
 						<configuration>
 							<encoding>UTF8</encoding>
 							<src>${basedir}/src/main/resources</src>
-							<includes>ApplicationResources*.properties</includes>
+							<includes>ApplicationResources*.properties,DataElementResources*.properties</includes>
 						</configuration>
 					</execution>
 				</executions>

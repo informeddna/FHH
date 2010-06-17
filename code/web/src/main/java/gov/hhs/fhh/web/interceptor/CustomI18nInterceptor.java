@@ -33,9 +33,9 @@
  */
 package gov.hhs.fhh.web.interceptor;
 
-import java.util.Locale;
-
 import gov.hhs.fhh.service.util.CurrentLanguageHolder;
+
+import java.util.Locale;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
@@ -46,7 +46,46 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
  * @author Steve Lustbader
  */
 public class CustomI18nInterceptor extends AbstractInterceptor {
-    private static final String SPANISH = "es";
+    
+    private static final long serialVersionUID = 1L;
+
+
+    /**
+     * Supported I18N.
+     * @author smatyas
+     *
+     */
+    public enum SupportedI18N {
+        /**
+         * Spanish.
+         */
+        ES("es"),
+        
+        /**
+         * PORTUGUES.
+         */
+        PT("pt"),
+        /**
+         * ENGLISH.
+         */
+        EN("en");
+        
+        private final String language;
+
+        /**
+         * default constructor.
+         */
+        private SupportedI18N(String language) {
+            this.language = language;
+        }
+
+        /**
+         * @return the language
+         */
+        public String getLanguage() {
+            return language;
+        }
+    }
     
 
     /**
@@ -56,9 +95,10 @@ public class CustomI18nInterceptor extends AbstractInterceptor {
     public String intercept(ActionInvocation invocation) throws Exception {
         // We should only except 'en' and 'es' as locales, otherwise a phishing vulnerability exists.
         Locale locale = invocation.getInvocationContext().getLocale();
-        if (locale.equals(Locale.ENGLISH) || locale.equals(new Locale(SPANISH, "", ""))) {
+        try {
+            SupportedI18N.valueOf(locale.getLanguage().toUpperCase());
             CurrentLanguageHolder.setCurrentLanguage(locale.getLanguage());
-        } else {
+        } catch (IllegalArgumentException e) {
             locale = Locale.ENGLISH;
             invocation.getInvocationContext().setLocale(locale);
             CurrentLanguageHolder.setCurrentLanguage(locale.getLanguage());

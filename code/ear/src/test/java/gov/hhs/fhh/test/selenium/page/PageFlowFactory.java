@@ -83,19 +83,23 @@
 package gov.hhs.fhh.test.selenium.page;
 
 import gov.hhs.fhh.test.selenium.page.create.family.CreateFamilyPageContent;
+import gov.hhs.fhh.test.selenium.page.create.family.PortugeseCreateFamilyContent;
 import gov.hhs.fhh.test.selenium.page.create.family.SimpleCreateFamilyPage;
 import gov.hhs.fhh.test.selenium.page.create.family.SpanishCreateFamilyContent;
 import gov.hhs.fhh.test.selenium.page.create.proband.CreateProbandPageContent;
+import gov.hhs.fhh.test.selenium.page.create.proband.PortugeseCreateProbandPageContent;
 import gov.hhs.fhh.test.selenium.page.create.proband.SimpleCreateProbandPage;
 import gov.hhs.fhh.test.selenium.page.create.proband.SpanishCreateProbandPageContent;
 import gov.hhs.fhh.test.selenium.page.open.HomePage;
 import gov.hhs.fhh.test.selenium.page.open.HomePageContent;
+import gov.hhs.fhh.test.selenium.page.open.PortugeseHomePage;
+import gov.hhs.fhh.test.selenium.page.open.PortugeseHomePageContent;
+import gov.hhs.fhh.test.selenium.page.open.PortugeseStartNewFamilyHistoryPageContent;
 import gov.hhs.fhh.test.selenium.page.open.SpanishHomePage;
 import gov.hhs.fhh.test.selenium.page.open.SpanishHomePageContent;
 import gov.hhs.fhh.test.selenium.page.open.SpanishStartNewFamilyHistoryPageContent;
 import gov.hhs.fhh.test.selenium.page.open.StartNewFamilyHistoryPage;
 import gov.hhs.fhh.test.selenium.page.open.StartNewFamilyHistoryPageContent;
-
 
 import com.thoughtworks.selenium.Selenium;
 
@@ -122,6 +126,20 @@ public class PageFlowFactory {
                         new SpanishStartNewFamilyHistoryPageContent()), new VerifyPopulateNavigateActor(
                         SimpleCreateProbandPage.getInstance(selenium), new SpanishCreateProbandPageContent()),
                 new VerifyPopulateNavigateActor(SimpleCreateFamilyPage.getInstance(selenium), new SpanishCreateFamilyContent()));
+
+    }
+
+    /**
+     * @param selenium
+     * @return
+     */
+    public static PageFlow getPortugeseSimpleCreatePedigree(Selenium selenium) {
+        return new PageFlow(new NavigateVerifyPageActor(HomePage.getInstance(selenium), new HomePageContent()),
+                new NavigateVerifyPageActor(PortugeseHomePage.getInstance(selenium), new PortugeseHomePageContent()),
+                new NavigateVerifyPageActor(StartNewFamilyHistoryPage.getInstance(selenium),
+                        new PortugeseStartNewFamilyHistoryPageContent()), new VerifyPopulateNavigateActor(
+                        SimpleCreateProbandPage.getInstance(selenium), new PortugeseCreateProbandPageContent()),
+                new VerifyPopulateNavigateActor(SimpleCreateFamilyPage.getInstance(selenium), new PortugeseCreateFamilyContent()));
 
     }
 

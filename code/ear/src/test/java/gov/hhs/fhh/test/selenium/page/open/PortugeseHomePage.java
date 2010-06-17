@@ -80,43 +80,26 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package gov.hhs.fhh.test.selenium;
+package gov.hhs.fhh.test.selenium.page.open;
 
-import gov.hhs.fhh.test.selenium.page.PageFlowFactory;
-import gov.hhs.fhh.test.selenium.page.VerifyPopulateNavigateActor;
-import gov.hhs.fhh.test.selenium.page.save.SaveFamilyHistoryPage;
-import gov.hhs.fhh.test.selenium.page.save.SaveLocallyContent;
-import gov.hhs.fhh.test.selenium.page.save.SaveLocallyPage;
-import gov.hhs.fhh.test.selenium.page.save.SpanishSaveLocallyContent;
-import gov.hhs.fhh.test.selenium.page.update.SpanishUpdatePedigreePageContent;
-import gov.hhs.fhh.test.selenium.page.update.UpdatePedigreePageContent;
+import gov.hhs.fhh.test.selenium.page.Page;
+import gov.hhs.fhh.test.selenium.page.Populator;
 
-import org.junit.Test;
+import com.thoughtworks.selenium.Selenium;
 
 /**
  * @author bhumphrey
- * 
+ *
  */
-public class LocalDownloadingPageTest extends AbstractPageSeleniumTest {
+public class PortugeseHomePage extends Page<PortugeseLanguagePageNavigator, Populator<?>, PortugeseHomePageVerifier > {
 
-    @Test
-    public void testPageFlowEnglish() throws Exception {
-        test(PageFlowFactory.getSimpleCreatePedigree(selenium).add(
-                new VerifyPopulateNavigateActor(SaveFamilyHistoryPage.getInstance(selenium), new UpdatePedigreePageContent())
-                ).add(new VerifyPopulateNavigateActor(SaveLocallyPage.getInstance(selenium), new SaveLocallyContent())));
-
+    public PortugeseHomePage(PortugeseLanguagePageNavigator navigator, Populator<?> populator, PortugeseHomePageVerifier verifier) {
+        super(navigator, populator, verifier);
+       
     }
-
-    @Test
-    public void testPageFlowSpanish() throws Exception {
-        test(PageFlowFactory.getSpanishSimpleCreatePedigree(selenium).add(
-                new VerifyPopulateNavigateActor(SaveFamilyHistoryPage.getInstance(selenium), new SpanishUpdatePedigreePageContent())).add(new VerifyPopulateNavigateActor(SaveLocallyPage.getInstance(selenium), new SpanishSaveLocallyContent())));
-
-    }
-    @Test
-    public void testPageFlowPortugese() throws Exception {
-        test(PageFlowFactory.getPortugeseSimpleCreatePedigree(selenium).add(
-                new VerifyPopulateNavigateActor(SaveFamilyHistoryPage.getInstance(selenium), new PortugeseUpdatePedigreePageContent())).add(new VerifyPopulateNavigateActor(SaveLocallyPage.getInstance(selenium), new PortugeseSaveLocallyContent())));
+    
+    static public PortugeseHomePage getInstance(Selenium selenium) {
+        return new PortugeseHomePage(new PortugeseLanguagePageNavigator(selenium), null, new PortugeseHomePageVerifier(selenium));
         
     }
 
