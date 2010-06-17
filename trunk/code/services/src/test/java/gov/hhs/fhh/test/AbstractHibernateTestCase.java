@@ -33,7 +33,6 @@
  */
 package gov.hhs.fhh.test;
 
-
 import gov.hhs.fhh.service.TestServiceLocator;
 import gov.hhs.fhh.service.locator.FhhRegistry;
 
@@ -41,8 +40,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
-import java.util.List;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
@@ -56,16 +53,25 @@ import org.hibernate.Transaction;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.fiveamsolutions.nci.commons.util.HibernateUtil;
 
 /**
  * @author Scott Miller
- *
+ * 
  */
 public class AbstractHibernateTestCase {
 
     private static final Logger LOG = Logger.getLogger(AbstractHibernateTestCase.class);
+
+    private static String[] sqlFiles = { 
+        "/db-install/mysql/ethnicity.sql", 
+        "/db-install/mysql/race.sql",
+        "/db-install/mysql/observations.sql", 
+         "/db-upgrade/mysql/2010-june-snomed-upgrades.sql"
+
+    };
 
     protected Transaction transaction;
 
@@ -94,44 +100,41 @@ public class AbstractHibernateTestCase {
         }
     }
 
-    @Before
+    @BeforeClass
     @SuppressWarnings("unchecked")
-    final public void initDbIfNeeded() throws HibernateException, SQLException, IOException {
+    static public void initDbIfNeeded() throws HibernateException, SQLException, IOException {
         Transaction tx = HibernateUtil.getHibernateHelper().beginTransaction();
-        List<Long> counts = HibernateUtil.getCurrentSession().createQuery(
-                "select count(*) from " + Object.class.getName()).list();
-        for (Long count : counts) {
-            if (count > 0) {
-                LOG.debug("DB contains data, dropping and readding.");
-                SchemaExport se = new SchemaExport(HibernateUtil.getHibernateHelper().getConfiguration());
-                se.drop(false, true);
-                se.create(false, true);
-                break;
-            }
-        }
-        tx.commit();
-        tx = HibernateUtil.getHibernateHelper().beginTransaction();
-        Statement s = HibernateUtil.getCurrentSession().connection().createStatement();;
-        Collection<File> sqlFiles = FileUtils.listFiles(new File(TestProperties.getServicesBaseDir() + "/src/main/db/db-install/mysql/"), new String[]{"sql"}, false);
-        for (File sqlFile : sqlFiles) {
-            if (sqlFile.getAbsolutePath().contains("mfhp-create-schema.sql")) {
-                continue;
-            }
-            LOG.debug("Processing SQL for : " + sqlFile);
-            LineIterator lineIterator = FileUtils.lineIterator(sqlFile);
-            while(lineIterator.hasNext()) {
-                String sqlCmd = lineIterator.nextLine();
-                String hsqldbSqlCmd = sqlCmd.replaceAll("\\\\'", "''");
-
-                
-                LOG.debug(hsqldbSqlCmd);
-                s.execute(hsqldbSqlCmd);
-            }
-        }
+        LOG.debug("dropping and recreating db");
+        SchemaExport se = new SchemaExport(HibernateUtil.getHibernateHelper().getConfiguration());
+        se.drop(false, true);
+        se.create(false, true);
         tx.commit();
         
+        tx = HibernateUtil.getHibernateHelper().beginTransaction();
+        Statement s = HibernateUtil.getCurrentSession().connection().createStatement();
+        File sqlFile;
+        for (String filename : sqlFiles) {
+
+            LOG.debug("Processing SQL for : " + filename);
+            sqlFile = new File(TestProperties.getServicesBaseDir() + "/src/main/db" + filename);
+            LineIterator lineIterator = FileUtils.lineIterator(sqlFile);
+            while (lineIterator.hasNext()) {
+                String sqlCmd = lineIterator.nextLine();
+                String hsqldbSqlCmd = sqlCmd.replaceAll("\\\\'", "''").replaceAll("LAST_INSERT_ID", "IDENTITY");
+
+                LOG.debug(hsqldbSqlCmd);
+                try {
+                    s.execute(hsqldbSqlCmd);
+                } catch (SQLException e) {
+                    LOG.error("failed to execute '" + filename + "'", e);
+                    throw e;
+                }
+            }
+        }
+        tx.commit();
+
     }
-    
+
     @Before
     public void clearCaches() throws IllegalStateException, CacheException, IOException {
         for (String cacheName : CacheManager.getInstance().getCacheNames()) {
@@ -139,7 +142,7 @@ public class AbstractHibernateTestCase {
             cache.removeAll();
         }
     }
-    
+
     /**
      * @return the hibernate transaction
      */
