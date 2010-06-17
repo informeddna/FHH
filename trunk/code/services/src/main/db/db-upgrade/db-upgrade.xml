@@ -22,4 +22,12 @@
         <comment>https://jira.5amsolutions.com/browse/FHH-1559</comment>
         <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1559.sql"/>
     </changeSet>
+    
+    <changeSet author="bhumphrey" id="FHH-1635">
+         <preConditions>
+            <dbms type="mysql" />
+        </preConditions>
+        <comment>https://jira.5amsolutions.com/browse/FHH-1635</comment>
+        <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1635.sql"/>
+    </changeSet>
 </databaseChangeLog>
