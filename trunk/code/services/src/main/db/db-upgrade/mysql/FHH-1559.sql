@@ -6,7 +6,7 @@ delete from displayname where id in (select displaynames_id from observation_dis
 
 delete from observation_displayname where observation_id = (select id from Observation where lower(name) = 'colorectal cancer');
 
-delete from Observation where lower(name) = 'colorectal cancer';
+delete from observation where lower(name) = 'colorectal cancer';
 
 
 INSERT INTO observation (name, parent_id) VALUES ('Rectal Cancer', 2);
