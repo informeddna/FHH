@@ -69,7 +69,8 @@ public class AbstractHibernateTestCase {
         "/db-install/mysql/ethnicity.sql", 
         "/db-install/mysql/race.sql",
         "/db-install/mysql/observations.sql", 
-         "/db-upgrade/mysql/2010-june-snomed-upgrades.sql"
+         "/db-upgrade/mysql/2010-june-snomed-upgrades.sql",
+         "/db-upgrade/mysql/FHH-1559.sql"
 
     };
 
@@ -113,6 +114,7 @@ public class AbstractHibernateTestCase {
         tx = HibernateUtil.getHibernateHelper().beginTransaction();
         Statement s = HibernateUtil.getCurrentSession().connection().createStatement();
         File sqlFile;
+        s.execute("SET REFERENTIAL_INTEGRITY FALSE;");
         for (String filename : sqlFiles) {
 
             LOG.debug("Processing SQL for : " + filename);
@@ -131,6 +133,7 @@ public class AbstractHibernateTestCase {
                 }
             }
         }
+        s.execute("SET REFERENTIAL_INTEGRITY TRUE;");
         tx.commit();
 
     }

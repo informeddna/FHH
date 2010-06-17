@@ -1,8 +1,4 @@
 
-update code set status = 'INACTIVE' where codeName = '52845002' and status = 'ACTIVE';
-INSERT INTO code (codeName, status, codeSystem_id) VALUES ('52845002','ACTIVE',1); 
-INSERT INTO observation_code (observation_id, codes_id) VALUES ((select id from observation where name ='Nephritis'), LAST_INSERT_ID());
-
 update code set status = 'INACTIVE' where codeName = '105592009' and status = 'ACTIVE';
 INSERT INTO code (codeName, status, codeSystem_id) VALUES ('10001005','ACTIVE',1); 
 INSERT INTO observation_code (observation_id, codes_id) VALUES ((select id from observation where name ='Septicemia'), LAST_INSERT_ID());
