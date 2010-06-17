@@ -1,10 +1,10 @@
-delete from code where id in (select codes_id from observation_code where observation_id = (select id from Observation where lower(name) = 'colorectal cancer'));
+delete from code where id in (select codes_id from observation_code where observation_id = (select id from observation where lower(name) = 'colorectal cancer'));
 
-delete from observation_code where observation_id in (select o.id from Observation o where lower(o.name) = 'colorectal cancer' );
+delete from observation_code where observation_id in (select o.id from observation o where lower(o.name) = 'colorectal cancer' );
 
-delete from displayname where id in (select displaynames_id from observation_displayname where observation_id = (select id from Observation where lower(name) = 'colorectal cancer'));
+delete from displayname where id in (select displaynames_id from observation_displayname where observation_id = (select id from observation where lower(name) = 'colorectal cancer'));
 
-delete from observation_displayname where observation_id = (select id from Observation where lower(name) = 'colorectal cancer');
+delete from observation_displayname where observation_id = (select id from observation where lower(name) = 'colorectal cancer');
 
 delete from observation where lower(name) = 'colorectal cancer';
 
