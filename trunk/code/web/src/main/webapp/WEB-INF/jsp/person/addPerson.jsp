@@ -5,6 +5,9 @@ var removeTxt = '<fmt:message key="button.remove" />';
 var DISEASE_NONE = '<fmt:message key="person.disease.none" />';
 var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
 var OTHER_DISEASE_ID = '16';
+var JS_DISEASE_REQUIRED = '<fmt:message key="person.disease.required"/>';
+var JS_DISEASE_OTHER_REQUIRED = '<fmt:message key="person.disease.other.required"/>';
+var JS_AGE_AT_DIAGNOSIS_REQUIRED = '<fmt:message key="person.ageAtDiagnosis.required"/>';
 </script>
 <script type="text/javascript" language="javascript" charset="ISO-8859-1" src="<c:url value='/scripts/addPerson.js'/>"></script>
 <script type="text/javascript" language="javascript" charset="ISO-8859-1" src="<c:url value='/scripts/ItemSelectorUtils.js'/>"></script>

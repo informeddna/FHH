@@ -80,6 +80,11 @@ public class CustomI18nInterceptorTest extends AbstractFhhWebTest {
         interceptor.intercept(invocation);
         assertEquals("es", CurrentLanguageHolder.getCurrentLanguage());
         
+        ServletActionContext.getContext().getParameters().put("request_locale", "pt");
+        i18Interceptor.intercept(invocation);
+        interceptor.intercept(invocation);
+        assertEquals("pt", CurrentLanguageHolder.getCurrentLanguage());
+        
         ServletActionContext.getContext().getParameters().put("request_locale", "some other value");
         i18Interceptor.intercept(invocation);
         interceptor.intercept(invocation);

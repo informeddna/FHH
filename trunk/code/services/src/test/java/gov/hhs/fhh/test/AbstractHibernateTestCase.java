@@ -53,7 +53,6 @@ import org.hibernate.Transaction;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import com.fiveamsolutions.nci.commons.util.HibernateUtil;
 
@@ -70,7 +69,9 @@ public class AbstractHibernateTestCase {
         "/db-install/mysql/race.sql",
         "/db-install/mysql/observations.sql", 
          "/db-upgrade/mysql/2010-june-snomed-upgrades.sql",
-         "/db-upgrade/mysql/FHH-1559.sql"
+         "/db-upgrade/mysql/FHH-1559.sql",
+         "/db-upgrade/mysql/FHH-1635.sql",
+         "/db-upgrade/mysql/FHH-1247.sql"
 
     };
 
@@ -101,9 +102,9 @@ public class AbstractHibernateTestCase {
         }
     }
 
-    @BeforeClass
+    @Before
     @SuppressWarnings("unchecked")
-    static public void initDbIfNeeded() throws HibernateException, SQLException, IOException {
+    public void initDbIfNeeded() throws HibernateException, SQLException, IOException {
         Transaction tx = HibernateUtil.getHibernateHelper().beginTransaction();
         LOG.debug("dropping and recreating db");
         SchemaExport se = new SchemaExport(HibernateUtil.getHibernateHelper().getConfiguration());

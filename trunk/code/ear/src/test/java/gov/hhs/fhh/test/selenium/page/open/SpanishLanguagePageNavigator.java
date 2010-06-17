@@ -99,7 +99,7 @@ public class SpanishLanguagePageNavigator extends AbstractNavigator<SpanishHomeP
     }
     
     public void submit(SpanishHomePageContent content) {
-        getSelenium().click("changeLanguage_es");
+        getSelenium().click("es");
     }
 
 }

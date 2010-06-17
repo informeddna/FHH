@@ -114,19 +114,19 @@ public abstract class AbstractSeleniumPage  {
                 + id + "');", toMillisecondsString(timeoutSeconds));
     }
     
-    protected void waitForText(String id) throws WaitForTimeoutException {
-         waitForText(id, Integer.valueOf(RECORD_TIMEOUT_SECONDS));
+    protected void waitForText(String text) throws WaitForTimeoutException {
+         waitForText(text, Integer.valueOf(RECORD_TIMEOUT_SECONDS));
     }
 
    
-    protected void waitForText(String id, int waitTime) throws WaitForTimeoutException {
+    protected void waitForText(String text, int waitTime) throws WaitForTimeoutException {
         for (int second = 0;; second++) {
             if (second >= Integer.valueOf(waitTime)) {
-                LOG.error("timeout waiting for text " + id + ". Exceeded wait time (sec): " + waitTime);
-                throw new WaitForTimeoutException("timeout waiting for text " + id + ". Exceeded wait time (sec): " + waitTime);
+                LOG.error("timeout waiting for text " + text + ". Exceeded wait time (sec): " + waitTime);
+                throw new WaitForTimeoutException("timeout waiting for text " + text + ". Exceeded wait time (sec): " + waitTime);
             }
             try {
-                if (getSelenium().isTextPresent(id))
+                if (getSelenium().isTextPresent(text))
                     break;
             } catch (Exception e) {
             }

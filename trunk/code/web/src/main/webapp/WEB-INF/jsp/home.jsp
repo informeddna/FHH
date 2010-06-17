@@ -1,4 +1,13 @@
 <%@ include file="/WEB-INF/jsp/common/taglibs.jsp"%>
+<s:if test="#request.locale.language == 'es'">
+    <fmt:setLocale value="es" scope="session" />
+</s:if>
+<s:elseif test="#request.locale.language == 'pt'">
+    <fmt:setLocale value="pt" scope="session" />
+</s:elseif>
+<s:else>
+    <fmt:setLocale value="en" scope="session" />
+</s:else>
 <s:set name="help.context" scope="session" value="Home" />
 <script type="text/javascript">
     <s:url value="/popup/familyHistory/importFamilyHistory.action" id="importXmlUrl" />
@@ -16,17 +25,7 @@
     <div class="headerContainerHome">
         <table border="0" cellpadding="0" cellspacing="0" class="mainNavTable">
             <tr>
-                <s:if test="#request.locale.language == 'es'">
-                    <s:set name="newLocale" value="%{'en'}"/>
-                    <fmt:setLocale value="es" scope="session" />
-                </s:if>
-                <s:else>
-                    <s:set name="newLocale" value="%{'es'}"/>
-                    <fmt:setLocale value="en" scope="session" />
-                </s:else>
-                <s:url id="changeLanguageUrl" action="home" includeParams="none">
-                    <s:param name="request_locale" value="%{newLocale}"/>
-                </s:url>
+
                 <s:url id="helpUrl" action="popup/getHelp/helpDetailsHome" />
                 <td class="utilNavTd"><a href="javascript://nop/" onclick="popupWindow('${helpUrl}')"><fmt:message key="icon.text.getHelp" /></a></td>
             </tr>
@@ -57,18 +56,47 @@
                         <a id="loadExisting" href="javascript://nop/" onclick="importXmlDocument();"><fmt:message key="home.fhh.button2" /></a>
                     </div>
                     <div class="languagebuttonContainer">
-                        <s:url id="changeLanguageUrl" action="home.action" includeParams="none">
-                            <s:param name="request_locale" value="%{newLocale}"/>
+                        <s:url id="en" action="home.action">
+                            <s:param name="request_locale" value="'en'"/>
                             <s:param name="maintainState" value="true"/>
                         </s:url>
-                        <a id="changeLanguage_${newLocale}" href="${changeLanguageUrl}"><fmt:message key="menu.text.enEspanol" /></a>
+                        <s:url id="es" action="home.action">
+                            <s:param name="request_locale" value="'es'"/>
+                            <s:param name="maintainState" value="true"/>
+                        </s:url>
+                        <s:url id="pt" action="home.action">
+                            <s:param name="request_locale" value="'pt'"/>
+                            <s:param name="maintainState" value="true"/>
+                        </s:url>
+                        <s:if test="#request.locale.language != 'en'">
+                        <s:a id="en" href="%{en}"><fmt:message key="menu.text.inEnglish" /></s:a>
+                        <br/>
+                        </s:if>
+                        <s:if test="#request.locale.language != 'es'">
+                        <s:a id="es" href="%{es}"><fmt:message key="menu.text.enEspanol" /></s:a>
+                        <br/>
+                        </s:if>
+                        <s:if test="#request.locale.language != 'pt' ">
+                        <s:a id="pt" href="%{pt}"><fmt:message key="menu.text.enPortugues" /></s:a>
+                        <br/>
+                        </s:if>
                     </div>
                     <noscript>
                         <div class="noscript_panel">
                             <h1>
                                 <fmt:message key="home.js.h1" />
                                     <span>
-                                        [<a id="js_changeLanguage_${newLocale}" href="${changeLanguageUrl}"><fmt:message key="menu.text.enEspanol" /></a>]
+                                    <s:if test="#request.locale.language != 'en'">
+                                        [<s:a id="js_en" href="%{en}"><fmt:message key="menu.text.inEnglish" /></s:a>]
+                                        | 
+                                    </s:if>
+                                    <s:if test="#request.locale.language != 'es'">
+                                        [<s:a id="js_es" href="%{es}"><fmt:message key="menu.text.enEspanol" /></s:a>]
+                                        |
+                                    </s:if> 
+                                    <s:if test="#request.locale.language != 'pt' ">
+                                        [<s:a id="js_pt" href="%{pt}"><fmt:message key="menu.text.enPortugues" /></s:a>]
+                                    </s:if> 
                                     </span>
                             </h1>
                             <p><fmt:message key="home.js.p1" /></p>

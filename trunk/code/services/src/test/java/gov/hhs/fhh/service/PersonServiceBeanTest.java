@@ -109,7 +109,7 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
         for (Disease disease : diseases) {
             LOG.debug(disease.getId());
         }
-        assertEquals(89, diseases.size());
+        assertEquals(90, diseases.size());
     }
 
     @Test

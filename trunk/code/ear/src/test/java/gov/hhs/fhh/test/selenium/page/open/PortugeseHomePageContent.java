@@ -80,44 +80,21 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package gov.hhs.fhh.test.selenium;
+package gov.hhs.fhh.test.selenium.page.open;
 
-import gov.hhs.fhh.test.selenium.page.PageFlowFactory;
-import gov.hhs.fhh.test.selenium.page.VerifyPopulateNavigateActor;
-import gov.hhs.fhh.test.selenium.page.save.SaveFamilyHistoryPage;
-import gov.hhs.fhh.test.selenium.page.save.SaveLocallyContent;
-import gov.hhs.fhh.test.selenium.page.save.SaveLocallyPage;
-import gov.hhs.fhh.test.selenium.page.save.SpanishSaveLocallyContent;
-import gov.hhs.fhh.test.selenium.page.update.SpanishUpdatePedigreePageContent;
-import gov.hhs.fhh.test.selenium.page.update.UpdatePedigreePageContent;
+import org.apache.commons.lang.StringEscapeUtils;
 
-import org.junit.Test;
+
 
 /**
  * @author bhumphrey
- * 
+ *
  */
-public class LocalDownloadingPageTest extends AbstractPageSeleniumTest {
+public class PortugeseHomePageContent extends HomePageContent {
 
-    @Test
-    public void testPageFlowEnglish() throws Exception {
-        test(PageFlowFactory.getSimpleCreatePedigree(selenium).add(
-                new VerifyPopulateNavigateActor(SaveFamilyHistoryPage.getInstance(selenium), new UpdatePedigreePageContent())
-                ).add(new VerifyPopulateNavigateActor(SaveLocallyPage.getInstance(selenium), new SaveLocallyContent())));
 
-    }
-
-    @Test
-    public void testPageFlowSpanish() throws Exception {
-        test(PageFlowFactory.getSpanishSimpleCreatePedigree(selenium).add(
-                new VerifyPopulateNavigateActor(SaveFamilyHistoryPage.getInstance(selenium), new SpanishUpdatePedigreePageContent())).add(new VerifyPopulateNavigateActor(SaveLocallyPage.getInstance(selenium), new SpanishSaveLocallyContent())));
-
-    }
-    @Test
-    public void testPageFlowPortugese() throws Exception {
-        test(PageFlowFactory.getPortugeseSimpleCreatePedigree(selenium).add(
-                new VerifyPopulateNavigateActor(SaveFamilyHistoryPage.getInstance(selenium), new PortugeseUpdatePedigreePageContent())).add(new VerifyPopulateNavigateActor(SaveLocallyPage.getInstance(selenium), new PortugeseSaveLocallyContent())));
-        
+    public String getPageTitle() {
+        return "Ao usar Meu Retrato de";
     }
 
 }

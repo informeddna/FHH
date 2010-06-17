@@ -35,12 +35,6 @@
 <c:if test="${empty objectValue}">
     <c:set var="objectValue" value="id"/>
 </c:if>
-<s:if test="#request.locale.language == 'es'">
-    <s:set name="locale" value="%{'es'}"/>
-</s:if>
-<s:else>
-    <s:set name="locale" value="%{'en'}"/>
-</s:else>
 
 <span style="display: none">
     <select id="${baseId}SelectedItemValues" name="${listFieldName}" multiple="${multiple}">
@@ -176,7 +170,7 @@
         <td class="actionCol buttonContainer">
             <c:if test="${empty listField}"><span id="addDiseaseButtonSpan" style="display: none"></c:if>
             <c:if test="${!empty listField}"><span id="addDiseaseButtonSpan"></c:if>
-                <a tabindex="19" href="javascript://nop/" onclick="ItemSelectorUtils.addDiseaseToList('${baseId}', '${listFieldName}', '${multiple}', '${locale}');"><fmt:message key="button.addDiseaseToList"/></a>
+                <a tabindex="19" href="javascript://nop/" onclick="ItemSelectorUtils.addDiseaseToList('${baseId}', '${listFieldName}', '${multiple}', '<%=gov.hhs.fhh.service.util.CurrentLanguageHolder.getCurrentLanguage()%>');"><fmt:message key="button.addDiseaseToList"/></a>
             </span>
         </td>
     </tr>
@@ -184,4 +178,3 @@
 </table>
 <!-- END YELLOW BOX CONTAINING DISEASE INPUT FORM -->
 </div>
-

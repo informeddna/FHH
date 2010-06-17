@@ -22,41 +22,53 @@ public class AppResourcesTest {
     private FileGrep fgrep = new FileGrep();
     private Properties en = new Properties();
     private Properties es = new Properties();
+    private Properties pt = new Properties();
     private Properties enData = new Properties();
     private Properties esData = new Properties();
+    private Properties ptData = new Properties();
     private URL enUrl;
     private URL esUrl;
+    private URL ptUrl;
 
     @Before
     public void init() throws Exception {
         enUrl = this.getClass().getClassLoader().getResource("ApplicationResources.properties");
         esUrl = this.getClass().getClassLoader().getResource("ApplicationResources_es.properties");
+        ptUrl = this.getClass().getClassLoader().getResource("ApplicationResources_pt.properties");
         en.load(this.getClass().getClassLoader().getResourceAsStream("ApplicationResources.properties"));
         es.load(this.getClass().getClassLoader().getResourceAsStream("ApplicationResources_es.properties"));
+        pt.load(this.getClass().getClassLoader().getResourceAsStream("ApplicationResources_pt.properties"));
         enData.load(this.getClass().getClassLoader().getResourceAsStream("DataElementResources.properties"));
         esData.load(this.getClass().getClassLoader().getResourceAsStream("DataElementResources_es.properties"));
+        ptData.load(this.getClass().getClassLoader().getResourceAsStream("DataElementResources_pt.properties"));
     }
 
     @Test
     public void ensureSameKeys() throws Exception {
         Set<String> enKeys = new HashSet(en.keySet());
-        assertTrue("No keys are in common between the two files -- bad!!", enKeys.removeAll(es.keySet()));
+        assertTrue("No keys are in common between the en and es files -- bad!!", enKeys.removeAll(es.keySet()));
         Set<String> esKeys = new HashSet(es.keySet());
-        assertTrue("No keys are in common between the two files -- bad!!", esKeys.removeAll(en.keySet()));
+        assertTrue("No keys are in common between the es and en files -- bad!!", esKeys.removeAll(en.keySet()));
+        Set<String> ptKeys = new HashSet(pt.keySet());
+        assertTrue("No keys are in common between the pt and en files -- bad!!", ptKeys.removeAll(en.keySet()));
 
         assertEquals("EN extra keys " + enKeys.toString(), 0, enKeys.size());
         assertEquals("ES extra keys " + esKeys.toString(), 0, esKeys.size());
+        assertEquals("PT extra keys " + ptKeys.toString(), 0, ptKeys.size());
     }
     
     @Test
     public void ensureSameKeysDataElements() throws Exception {
         Set<String> enKeys = new HashSet(enData.keySet());
-        assertTrue("No keys are in common between the two files -- bad!!", enKeys.removeAll(esData.keySet()));
+        assertTrue("No keys are in common between the en and es files -- bad!!", enKeys.removeAll(esData.keySet()));
         Set<String> esKeys = new HashSet(esData.keySet());
-        assertTrue("No keys are in common between the two files -- bad!!", esKeys.removeAll(enData.keySet()));
+        assertTrue("No keys are in common between the es and pt files -- bad!!", esKeys.removeAll(enData.keySet()));
+        Set<String> ptKeys = new HashSet(ptData.keySet());
+        assertTrue("No keys are in common between the en and pt files -- bad!!", ptKeys.removeAll(enData.keySet()));
         
         assertEquals("EN extra keys " + enKeys.toString(), 0, enKeys.size());
         assertEquals("ES extra keys " + esKeys.toString(), 0, esKeys.size());
+        assertEquals("PT extra keys " + ptKeys.toString(), 0, ptKeys.size());
     }
 
     @Test
@@ -92,10 +104,12 @@ public class AppResourcesTest {
         for (String key : keysToRemove) {
             en.remove(key);
             es.remove(key);
+            pt.remove(key);
         }
         System.err.println(enUrl.toURI());
         en.store(new FileOutputStream(new File(enUrl.toURI())), "Test auto-removed unused property key-value(s)");
         es.store(new FileOutputStream(new File(esUrl.toURI())), "Test auto-removed unused property key-value(s)");
+        pt.store(new FileOutputStream(new File(ptUrl.toURI())), "Test auto-removed unused property key-value(s)");
     }
 
 }

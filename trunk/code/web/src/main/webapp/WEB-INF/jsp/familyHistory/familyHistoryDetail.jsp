@@ -135,7 +135,7 @@ addPersonOnclickFunc = function() {
                                 </s:url>
                                 <tr class="relative">
                                     <td scope="row">${currRelative.name}</td>
-                                    <td><table cellpadding="0" cellspacing="0"><s:textfield name="person.relationship" value="%{getText(#attr.currRelative.codeEnum.resourceKey)}"/></table></td>
+                                    <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="${currRelative.codeEnum.resourceKey}"/></table></td>
                                     <td class="action">&nbsp;</td>
                                     <td class="action"><a href="javascript://nop/" onclick="handlePopup('${editRelativeUrl}');"><img src="<s:url value="/images/icon_unmatched_condition.gif"/>" alt="Unrelated Relative" title="Unrelated Relative" /></a></td>
                                     <td class="action"><a href="${removeRelativeUrl}"><img src="<s:url value="/images/icon_trash.gif"/>" alt="<fmt:message key="button.remove.relative"/>" title="<fmt:message key="button.remove.relative"/>" /></a></td>
@@ -180,7 +180,7 @@ addPersonOnclickFunc = function() {
                     </s:url>
                     <tr class="relative">
                         <td scope="row">${person.father.name}</td>
-                        <td><table cellpadding="0" cellspacing="0"><s:textfield name="person.relationship" value="%{getText(person.father.codeEnum.resourceKey)}"/></table></td>
+                        <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="relativeCode.nfth"/></table></td>
                         <fhh:fhhTableButtons completedForm="${person.father.completedForm}" unmatchedCondition="${person.father.unmatchedCondition}" editUrl="${editRelativeUrl}" />
                     </tr>
                 </c:if>
@@ -191,7 +191,7 @@ addPersonOnclickFunc = function() {
                     </s:url>
                     <tr class="relative">
                         <td scope="row"><table cellpadding="0" cellspacing="0">${person.mother.name}</table></td>
-                        <td><table cellpadding="0" cellspacing="0"><s:textfield name="person.relationship" value="%{getText(person.mother.codeEnum.resourceKey)}"/></table></td>
+                        <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="relativeCode.nmth"/></table></td>
                         <fhh:fhhTableButtons completedForm="${person.mother.completedForm}" unmatchedCondition="${person.mother.unmatchedCondition}" editUrl="${editRelativeUrl}" />                        
                     </tr>
                 </c:if>
@@ -233,7 +233,7 @@ addPersonOnclickFunc = function() {
                         </s:url>
                         <tr class="relative">
                             <td scope="row">${currRelative.name}</td>
-                            <td><table cellpadding="0" cellspacing="0"><s:textfield name="person.relationship" value="%{getText(#attr.currRelative.codeEnum.resourceKey)}"/></table></td>
+                            <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="${currRelative.codeEnum.resourceKey}"/></table></td>
                             <fhh:fhhTableButtons completedForm="${currRelative.completedForm}" unmatchedCondition="${currRelative.unmatchedCondition}" editUrl="${editRelativeUrl}" removeUrl="${removeRelativeUrl}" />
                         </tr>
                     </c:forEach>
@@ -249,7 +249,7 @@ addPersonOnclickFunc = function() {
                         </s:url>
                         <tr class="relative">
                             <td scope="row">${currRelative.name}</td>
-                            <td><table cellpadding="0" cellspacing="0"><s:textfield name="person.relationship" value="%{getText(#attr.currRelative.codeEnum.resourceKey)}"/></table></td>
+                            <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="${currRelative.codeEnum.resourceKey}"/></table></td>
                             <fhh:fhhTableButtons completedForm="${currRelative.completedForm}" unmatchedCondition="${currRelative.unmatchedCondition}" editUrl="${editRelativeUrl}" removeUrl="${removeRelativeUrl}" />
                         </tr>
                     </c:forEach>
@@ -270,7 +270,7 @@ addPersonOnclickFunc = function() {
                 </s:url>
                 <tr class="relative">
                     <td scope="row">${currRelative.name}</td>
-                    <td><table cellpadding="0" cellspacing="0"><s:textfield name="person.relationship" value="%{getText(#attr.currRelative.codeEnum.resourceKey)}"/></table></td>
+                    <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="${currRelative.codeEnum.resourceKey}"/></table></td>
                     <c:choose>
                         <c:when test="${currRelative.removable}">
                             <fhh:fhhTableButtons completedForm="${currRelative.completedForm}" unmatchedCondition="${currRelative.unmatchedCondition}" editUrl="${editRelativeUrl}" removeUrl="${removeRelativeUrl}" />
@@ -298,7 +298,7 @@ addPersonOnclickFunc = function() {
                 </s:url>
                 <tr class="relative">
                     <td scope="row">${currRelative.name}</td>
-                    <td><table cellpadding="0" cellspacing="0"><s:textfield name="person.relationship" value="%{getText(#attr.currRelative.codeEnum.resourceKey)}"/></table></td>     
+                    <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="${currRelative.codeEnum.resourceKey}"/></table></td>     
                     <c:choose>
                         <c:when test="${currRelative.removable}">
                             <fhh:fhhTableButtons completedForm="${currRelative.completedForm}" unmatchedCondition="${currRelative.unmatchedCondition}" editUrl="${editRelativeUrl}" removeUrl="${removeRelativeUrl}" />

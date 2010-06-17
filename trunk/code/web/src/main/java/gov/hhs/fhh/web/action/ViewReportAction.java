@@ -39,6 +39,7 @@ import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeBranch;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.data.RelativeReport;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.service.FhhWebException;
 import gov.hhs.fhh.service.util.PdfDataContainer;
 import gov.hhs.fhh.service.util.RelativeDraw;
@@ -87,7 +88,7 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
     private Disease highlightDisease;
     private HttpServletRequest request;
     private String selectedHighlightDisease;
-    private String ignore; 
+    private String ignore;
 
     /**
      * prepare the action. {@inheritDoc}
@@ -98,7 +99,9 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
             setPerson(rootPerson);
             this.relativeBranch = new RelativeBranch(person);
             Set<Relative> meMomDadDescendants = new ListOrderedSet();
-            meMomDadDescendants.add(new Relative(person, RelativeCode.SELF));
+            Relative proband = new Relative(person, RelativeCode.SELF);
+            proband.setLivingStatus(LivingStatus.YES.name());
+            meMomDadDescendants.add(proband);
             if (!person.getRelatives().isEmpty()) {
                 meMomDadDescendants.addAll(person.getDescendants());
                 meMomDadDescendants.add(person.getFather());
@@ -205,7 +208,6 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
         return SUCCESS;
     }
 
-
     /**
      * Retrieves the report pdf.
      * 
@@ -227,13 +229,13 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
     public InputStream getPdf() throws Exception {
         // return makeDiagram();
         try {
-            RelativeDraw selfDraw = new RelativeDraw(new Relative(this.person), new ActionSupportTextGetter());
+            RelativeDraw selfDraw = new RelativeDraw(new Relative(this.person), new ActionSupportTextGetter(this));
             selfDraw.setCodeEnum(RelativeCode.SELF);
             selfDraw.setShowNames(this.isShowNames());
             if (getHighlightDisease() != null) {
                 selfDraw.setHighlightDisease(getHighlightDisease());
             }
-            RelativePdfWriter pdf = new RelativePdfWriter();
+            RelativePdfWriter pdf = new RelativePdfWriter(new ActionSupportTextGetter(this));
             PdfDataContainer p = new PdfDataContainer();
             p.getAgeRanges().putAll(createIntlAgeRanges());
             p.getLegendLabels().putAll(createIntlLegendLabels());
@@ -242,40 +244,44 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
             p.getLegendList().addAll(getLegendList());
             return new ByteArrayInputStream(pdf.makeRelativePdf(p));
         } catch (Exception e) {
-            LOG.info("exception generating pdf");
-            LOG.info(e.getMessage());
-            LOG.info(e.getCause().toString());
-            LOG.info(e.getStackTrace().toString());
+            LOG.error("exception generating pdf");
+            LOG.error(e.getMessage());
+            LOG.error(e.getCause().toString());
+            LOG.error(e.getStackTrace().toString());
         }
         return new ByteArrayInputStream("hello".getBytes());
     }
 
     /**
-     * Creates internationalized values for legend labels for use in the pdf.
-     * These keys are used in relativePdfWriter.makeFamilyHistoryChart - this is too tightly coupled code
+     * Creates internationalized values for legend labels for use in the pdf. These keys are used in
+     * relativePdfWriter.makeFamilyHistoryChart - this is too tightly coupled code
+     * 
      * @return Map of internationalized values
      */
     private Map<String, String> createIntlLegendLabels() {
+        ActionSupportTextGetter txtGetter = new ActionSupportTextGetter(this);
         Map<String, String> legendValues = new HashMap<String, String>();
-        legendValues.put("living", getText("report.table.living"));
-        legendValues.put("heartDisease", getText("report.table.heartDisease"));
-        legendValues.put("stroke", getText("report.table.stroke"));
-        legendValues.put("diabetes", getText("report.table.diabetes"));
-        legendValues.put("colonCancer", getText("report.table.colonCancer"));
-        legendValues.put("breastCancer", getText("report.table.breastCancer"));
-        legendValues.put("ovarianCancer", getText("report.table.ovarianCancer"));
-        legendValues.put("additionalDiseases", getText("report.table.additionalDiseases"));
+        legendValues.put("living", txtGetter.getText("report.table.living"));
+        legendValues.put("heartDisease", txtGetter.getText("report.table.heartDisease"));
+        legendValues.put("stroke", txtGetter.getText("report.table.stroke"));
+        legendValues.put("diabetes", txtGetter.getText("report.table.diabetes"));
+        legendValues.put("colonCancer", txtGetter.getText("report.table.colonCancer"));
+        legendValues.put("breastCancer", txtGetter.getText("report.table.breastCancer"));
+        legendValues.put("ovarianCancer", txtGetter.getText("report.table.ovarianCancer"));
+        legendValues.put("additionalDiseases", txtGetter.getText("report.table.additionalDiseases"));
         return legendValues;
     }
 
     /**
      * Creates internationalized values for age ranges for use in the pdf.
+     * 
      * @return Map of Age Ranges and internaltionalized values
      */
     private Map<AgeRangeEnum, String> createIntlAgeRanges() {
+        ActionSupportTextGetter txtGetter = new ActionSupportTextGetter(this);
         Map<AgeRangeEnum, String> ageRangeEnums = new HashMap<AgeRangeEnum, String>();
         for (AgeRangeEnum a : AgeRangeEnum.values()) {
-            ageRangeEnums.put(a, getText(a.getResourceKey()));
+            ageRangeEnums.put(a, txtGetter.getText(a.getResourceKey()));
         }
         return ageRangeEnums;
     }
@@ -301,7 +307,7 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
     public InputStream getPedigreeImage() throws Exception {
         return makeDiagram();
     }
-    
+
     /**
      * Sets the default pedigree diagram.
      * 
@@ -325,7 +331,8 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
         InputStream retval = null;
 
         try {
-            RelativeDraw selfDraw = new RelativeDraw(new Relative(person), new ActionSupportTextGetter());
+            RelativeDraw selfDraw = new RelativeDraw(new Relative(person), new ActionSupportTextGetter(
+                    new ActionSupport()));
             selfDraw.setCodeEnum(RelativeCode.SELF);
             selfDraw.setShowNames(showNoNames);
             if (highlightDisease != null) {
@@ -339,7 +346,7 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
 
         return retval;
     }
-    
+
     /**
      * @return the person
      */
@@ -485,10 +492,11 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
             if (d != null) {
                 setHighlightDisease(d);
             }
-            
+
         }
     }
-    // CHECKSTYLE:ON 
+
+    // CHECKSTYLE:ON
 
     /**
      * @return the date
