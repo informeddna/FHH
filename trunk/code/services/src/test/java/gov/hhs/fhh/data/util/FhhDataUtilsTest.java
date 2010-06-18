@@ -82,8 +82,10 @@
  */
 package gov.hhs.fhh.data.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.service.TestServiceLocator;
 import gov.hhs.fhh.service.locator.FhhRegistry;
@@ -119,5 +121,28 @@ public class FhhDataUtilsTest extends AbstractHibernateTestCase {
         }
         
         
+    }
+    
+    
+    @Test
+    public void validateSNOMEDUpgrade() {
+        Map<String, Disease> codeToDiseaseMap = FhhDataUtils.getCodeToDiseaseMap();
+        //105592009 => 10001005
+        validateCodeUpgrade(codeToDiseaseMap, "Septicemia", "10001005", "105592009");
+        validateCodeUpgrade(codeToDiseaseMap, "Stroke/Brain Attack", "116288000", "422504002");
+        validateCodeUpgrade(codeToDiseaseMap, "Anxiety", "197480006", "48694002");
+        validateCodeUpgrade(codeToDiseaseMap, "Lung Cancer", "363358000", "93880001");
+        validateCodeUpgrade(codeToDiseaseMap, "Brain Cancer", "1000000", "126952004");
+    }
+
+    /**
+     * @param codeToDiseaseMap
+     */
+    private void validateCodeUpgrade(Map<String, Disease> codeToDiseaseMap, String diseasename, String oldDcode, String newCode) {
+        assertTrue(diseasename + " - old code not found", codeToDiseaseMap.containsKey(oldDcode));
+        assertTrue(diseasename + " - new code not found", codeToDiseaseMap.containsKey(newCode));
+        
+        assertEquals(diseasename + " - disease found for old code doesn't map to disease found for new code", 
+                codeToDiseaseMap.get(oldDcode),codeToDiseaseMap.get(newCode));
     }
 }
