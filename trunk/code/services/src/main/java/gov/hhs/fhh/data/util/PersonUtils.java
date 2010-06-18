@@ -69,6 +69,8 @@ public final class PersonUtils {
      */
     public static final double LB_TO_KG_CONVERSION = 703.0;
 
+    private static final int CM_TO_METERS = 10;
+
     
     /**
      * Gets the occurrence of the relative within its relative type.  An htmName of sister2 will return 2.
@@ -142,7 +144,7 @@ public final class PersonUtils {
     /**
      * Converts the Height of Centimeters and raises it by a power of 2.
      * @param p person
-     * @return (height in cm)^2
+     * @return (height in m)^2
      */
      static double getMetricHeightSquared(final Person p) {
         final Integer v = p.getHeight().getValue();
@@ -154,7 +156,7 @@ public final class PersonUtils {
                 metricHeight = v * INCH_TO_CMS;
             } 
             
-            sqr = Math.pow(metricHeight, 2.0);
+            sqr = Math.pow(metricHeight / CM_TO_METERS, 2.0);
         }
         return sqr;
     }
