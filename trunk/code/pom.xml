@@ -10,8 +10,8 @@
     <properties>
         <!-- general build properties -->
         <cobertura.check.haltOnFailure>true</cobertura.check.haltOnFailure>
-        <cobertura.totalBranchRate>69</cobertura.totalBranchRate>
-        <cobertura.totalLineRate>77</cobertura.totalLineRate>
+        <cobertura.totalBranchRate>68</cobertura.totalBranchRate>
+        <cobertura.totalLineRate>76</cobertura.totalLineRate>
         <showErrorStackTraces>false</showErrorStackTraces>
 
         <!-- dependency versions references in multiple locations -->

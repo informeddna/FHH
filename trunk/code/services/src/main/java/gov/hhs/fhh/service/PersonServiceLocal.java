@@ -135,4 +135,11 @@ public interface PersonServiceLocal extends GenericServiceLocal {
      * @param result the person to populate Race and Ethnicity ids
      */
     void deepPopulateRaceEthnicityIds(Person result);
+    
+    
+    /**
+     * @return the disease with the observation name of 'Other disease type'
+     */
+    Disease getOtherDisease();
+
 }
