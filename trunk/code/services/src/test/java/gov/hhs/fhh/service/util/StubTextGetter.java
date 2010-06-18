@@ -12,4 +12,8 @@ public class StubTextGetter implements TextGetter {
         return Locale.getDefault();
     }
 
+    public String getTextFromBundle(String resourceKey, String bundleName) {
+        return resourceKey;
+    }
+
 }

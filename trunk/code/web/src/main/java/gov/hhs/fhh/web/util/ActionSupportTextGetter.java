@@ -31,12 +31,20 @@ public class ActionSupportTextGetter implements TextGetter {
     public String getText(String resourceKey) {
         return StringEscapeUtils.unescapeHtml(actionSupport.getText(resourceKey));
     }
-
+    
+    
     /**
      * {@inheritDoc}
      */
     public Locale getLocale() {
         return actionSupport.getLocale();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getTextFromBundle(String resourceKey, String bundleName) {
+        return actionSupport.getTexts(bundleName).getString(resourceKey);
     }
 
 }

@@ -242,7 +242,7 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
             p.setRelativeDraw(selfDraw);
             p.getRelativeReports().addAll(getRelativeReports());
             p.getLegendList().addAll(getLegendList());
-            return new ByteArrayInputStream(pdf.makeRelativePdf(p));
+            return new ByteArrayInputStream(pdf.makeRelativePdf(p, isShowPersonalInfo()));
         } catch (Exception e) {
             LOG.error("exception generating pdf");
             LOG.error(e.getMessage());

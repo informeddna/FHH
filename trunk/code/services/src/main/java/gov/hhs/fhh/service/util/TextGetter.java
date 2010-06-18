@@ -18,6 +18,13 @@ public interface TextGetter {
     String getText(String resourceKey);
     
     /**
+     * @param resourceKey - the resource key for which to get the string.
+     * @param bundleName - the bundle to get the key from.
+     * @return - the i8ned string for the specified resourcekey.
+     */
+    String getTextFromBundle(String resourceKey, String bundleName);
+    
+    /**
      * @return the Locale used
      */
     Locale getLocale();
