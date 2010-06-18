@@ -115,7 +115,7 @@ import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
  * @author bhumphrey
  * 
  */
-@Entity (name = "observation")
+@Entity(name = "observation")
 @org.hibernate.annotations.Entity(mutable = false)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries(value = {
@@ -126,7 +126,9 @@ import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
                 + "observation as o left outer join o.codes as code where code.codeName = :codeName"),
         @NamedQuery(name = "mfhp.observation.findByDisplayName", query = "select o from "
                 + "observation as o left outer join o.displayNames as displayname "
-                + "where lower(displayname.text) like lower(:displayname)") })
+                + "where lower(displayname.text) like lower(:displayname)"),
+        @NamedQuery(name = "mfhp.observation.findOtherDisease", 
+                query = "select o from observation as o where o.name = 'Other Disease type'") })
 public class Observation implements PersistentObject, Disease {
 
     /**
@@ -142,7 +144,6 @@ public class Observation implements PersistentObject, Disease {
     private Set<Code> codes = new HashSet<Code>();
 
     private Set<DisplayName> displayNames = new HashSet<DisplayName>();
-
 
     /**
      * default constructor.
@@ -229,6 +230,49 @@ public class Observation implements PersistentObject, Disease {
     }
 
     /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Observation)) {
+            return equalsHelper((Observation) obj);
+        }
+        return false;
+     }
+
+    private boolean equalsHelper(Observation other) {
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 
      * @return activeCode the first code with active flag set.
      */
@@ -241,10 +285,6 @@ public class Observation implements PersistentObject, Disease {
         }
         return null;
     }
-
-   
-
-   
 
     /**
      * 
@@ -394,7 +434,7 @@ public class Observation implements PersistentObject, Disease {
      */
     @Transient
     public String getCode() {
-        
+
         final Code activeCode = getActiveCode();
         return (activeCode == null ? null : activeCode.getCodeName());
     }
@@ -453,10 +493,5 @@ public class Observation implements PersistentObject, Disease {
     public String getOriginalText() {
         return getName();
     }
-
-
-
-
- 
 
 }

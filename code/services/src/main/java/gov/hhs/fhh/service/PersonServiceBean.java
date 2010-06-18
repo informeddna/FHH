@@ -169,6 +169,16 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings(UNCHECKED)
+    public Disease getOtherDisease() {
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery(
+                "mfhp.observation.findOtherDisease").setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION).list();
+        return (observations.isEmpty() ? null : observations.iterator().next());
+    }
+
+    /**
      * lame!
      * 
      * @param observations

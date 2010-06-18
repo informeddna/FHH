@@ -51,7 +51,12 @@ import gov.hhs.mfhp.model.Observation;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.bouncycastle.asn1.ess.OtherSigningCertificate;
 
 import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
 
@@ -277,5 +282,19 @@ public class PersonServiceStub implements PersonServiceLocal {
                 return bean.getRaceByCodeAndCodeSystem(code, codeSystem);
             };
         }.deepPopulateRaceEthnicityIds(result);
+    }
+
+    public Disease getOtherDisease() {
+        Observation other = new Observation();
+        other.setId(16L);
+        other.setName("Other disease type");
+        other.setCodes(new HashSet<Code>());
+        Set<DisplayName> displayNames = new HashSet<DisplayName>();
+        DisplayName otherDisplayname = new DisplayName();
+        otherDisplayname.setLanguage("en");
+        otherDisplayname.setText("Other - Add New");
+        displayNames.add(otherDisplayname);
+        other.setDisplayNames(displayNames);
+        return other;
     }
 }
