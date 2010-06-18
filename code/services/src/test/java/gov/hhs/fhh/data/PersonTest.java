@@ -57,6 +57,7 @@ import org.junit.Test;
 import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
 import com.fiveamsolutions.hl7.model.mfhp.Gender;
 import com.fiveamsolutions.hl7.model.mfhp.Height;
+import com.fiveamsolutions.hl7.model.mfhp.HeightUnit;
 import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
 import com.fiveamsolutions.hl7.model.mfhp.Weight;
 import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
@@ -125,15 +126,16 @@ public class PersonTest {
     @Test
     public void testGetBmi() {
         final DecimalFormat bmiDecimalFormat = new DecimalFormat("0.0");
-        
+
         p.setWeight(DUMMY_WEIGHT);
         double bmi = DUMMY_WEIGHT.getValue() * 703.0 / (DUMMY_HEIGHT.getValue() * DUMMY_HEIGHT.getValue());
         assertEquals(bmiDecimalFormat.format(bmi), p.getBmi());
-        
+
         p.getWeight().setUnit(WeightUnit.METRIC);
-        bmi = DUMMY_WEIGHT.getValue() * 1.0/(DUMMY_HEIGHT.getValue()*DUMMY_HEIGHT.getValue());
+        p.setHeight(new Height(p.getHeight().getValue(), HeightUnit.METRIC));
+        bmi = DUMMY_WEIGHT.getValue() * 1.0 / (Math.pow(DUMMY_HEIGHT.getValue() / 10.0, 2));
         assertEquals(bmiDecimalFormat.format(bmi), p.getBmi());
-        
+
         p.setWeight(new Weight());
         assertNull(p.getBmi());
     }
