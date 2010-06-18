@@ -240,7 +240,8 @@ public final class HL7ConversionUtils {
             } else {
                 DiseaseBean disease = new DiseaseBean();
                 disease.setCode(currCode.getCode());
-                disease.setDisplayName(currCode.getDisplayName());
+                disease.setDisplayName(currCode.getOriginalText());
+                disease.setAppDisplay(currCode.getDisplayName());
                 disease.setCodeSystemName(currCode.getCodeSystemName());
                 return disease;
             }
