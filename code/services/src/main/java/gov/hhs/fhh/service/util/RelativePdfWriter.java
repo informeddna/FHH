@@ -111,10 +111,11 @@ public class RelativePdfWriter {
      * Generates a PDF file.
      * 
      * @param p PdfDataContainer with the required information to create the pdf
+     * @param showPersonalInfo whether or not personal info should be shown
      * @return byte array of PDF
      */
     @SuppressWarnings("PMD.ExcessiveMethodLength")
-    public byte[] makeRelativePdf(PdfDataContainer p) {
+    public byte[] makeRelativePdf(PdfDataContainer p, boolean showPersonalInfo) {
 
         Document document = new Document(PageSize.LETTER.rotate());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -146,7 +147,7 @@ public class RelativePdfWriter {
 
             document.add(makeLegendChart(p.getLegendList()));
             document.newPage();
-            getChartHeader(document);
+            getChartHeader(document, p, showPersonalInfo);
             document.add(makeFamilyHistoryChart(p));
 
         } catch (Exception e) {
@@ -181,15 +182,53 @@ public class RelativePdfWriter {
 
     /**
      * @param document to which the header is added returns header for chart
+     * @param p the container from which to get the personal info if it is to be shown
+     * @param showPersonalInfo whether or not personal info should be shown
      * @throws DocumentException
      */
-    private Document getChartHeader(Document document) throws DocumentException {
+    @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
+    private Document getChartHeader(Document document, PdfDataContainer p, boolean showPersonalInfo) 
+                                                                            throws DocumentException {
 
         Paragraph myPhrase = new Paragraph(getTxtGetter().getText("fhh.title") + "-"
                 + getTxtGetter().getText("report.chart.head"), new Font(Font.HELVETICA, HEAD_FONTSIZE, Font.BOLD));
         document.add(myPhrase);
         Paragraph myDate = getPara(getTxtGetter().getText("report.date") + ": " + getFormattedDate());
         document.add(myDate);
+        
+        if (showPersonalInfo) {
+            myPhrase = getPara(getTxtGetter().getText("person.age") + ": " + p.getRelativeDraw().getMyAge());
+            document.add(myPhrase);
+
+            if (p.getRelativeDraw().getHeight() != null) {
+                StringBuilder heightText = new StringBuilder(getTxtGetter().getText("person.height") + ": ");
+                if (p.getRelativeDraw().getHeight().getValue() != null) {
+                    heightText.append(p.getRelativeDraw().getHeight().getValue() + " "
+                            + getTxtGetter().getText(p.getRelativeDraw().getHeight().getUnit().getResourceKey()));
+                }
+                myPhrase = getPara(heightText.toString());
+                document.add(myPhrase);
+            }
+
+            if (p.getRelativeDraw().getWeight() != null) {
+                StringBuilder weightText = new StringBuilder(getTxtGetter().getText("person.weight") + ": ");
+                if (p.getRelativeDraw().getWeight().getValue() != null) {
+                    weightText.append(p.getRelativeDraw().getWeight().getValue() + " "
+                            + getTxtGetter().getText(p.getRelativeDraw().getWeight().getUnit().getResourceKey()));
+                }
+                myPhrase = getPara(weightText.toString());
+                document.add(myPhrase);
+                if (p.getRelativeDraw().getHeight() != null) {
+                    StringBuilder bmiText = new StringBuilder(getTxtGetter().getText("person.bmi") + ": ");
+                    if (p.getRelativeDraw().getBmi() != null) {
+                        bmiText.append(p.getRelativeDraw().getBmi());
+                    }
+                    myPhrase = getPara(bmiText.toString());
+                    document.add(myPhrase);
+                }
+            }
+        }
+        
         myPhrase = getPara("* " + getTxtGetter().getText("report.unmatchedCondition.text"));
         document.add(myPhrase);
         document.add(new Paragraph(" "));
