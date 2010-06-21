@@ -30,7 +30,7 @@ public class HomePageWarnTest extends AbstractFHHSeleniumTest {
         Thread.sleep(1000);
         String alertText = selenium.getConfirmation();
         //TODO: needs to be changed once we get PT translation
-        Assert.assertTrue(alertText.contains("Returning to the home page will"));
+        Assert.assertTrue(alertText.contains("Se voltar \u00E0 p\u00E1gina inicial"));
         
         Thread.sleep(2000);
         Assert.assertTrue(selenium.isTextPresent("Preparar seu hist\u00F3rico de sa\u00FAde familiar"));
