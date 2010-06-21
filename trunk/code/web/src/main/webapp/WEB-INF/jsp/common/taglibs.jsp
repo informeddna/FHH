@@ -9,3 +9,4 @@
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
 <%@ taglib uri="http://ajaxtags.org/tags/ajax" prefix="ajax" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="fhh" %>
+<%@ taglib uri="/WEB-INF/mfhp-functions.tld" prefix="mfhpfn" %>

@@ -1,13 +1,22 @@
 <%@ include file="/WEB-INF/jsp/common/taglibs.jsp"%>
 <script type="text/javascript" language="javascript" charset="ISO-8859-1">
 // for multi-language support - this term is added dynamically by js when page is created
-var removeTxt = '<fmt:message key="button.remove" />';
-var DISEASE_NONE = '<fmt:message key="person.disease.none" />';
-var SELECT_DISEASE = '<fmt:message key="person.select.disease" />';
+<fmt:message key="button.remove" var="buttonRemove"/>
+var removeTxt = '${mfhpfn:escapeJavaScript(mfhpfn:unescapeHtml(buttonRemove))}';
+<fmt:message key="person.disease.none" var="personDiseaseNone"/>
+var DISEASE_NONE = '${mfhpfn:escapeJavaScript(mfhpfn:unescapeHtml(personDiseaseNone))}';
+<fmt:message key="person.select.disease" var="personSelectDisease"/>
+var SELECT_DISEASE = '${mfhpfn:escapeJavaScript(mfhpfn:unescapeHtml(personSelectDisease))}';
 var OTHER_DISEASE_ID = '16';
-var JS_DISEASE_REQUIRED = '<fmt:message key="person.disease.required"/>';
-var JS_DISEASE_OTHER_REQUIRED = '<fmt:message key="person.disease.other.required"/>';
-var JS_AGE_AT_DIAGNOSIS_REQUIRED = '<fmt:message key="person.ageAtDiagnosis.required"/>';
+<fmt:message key="person.disease.required" var="personDiseaseRequired"/>
+var JS_DISEASE_REQUIRED = '${mfhpfn:escapeJavaScript(mfhpfn:unescapeHtml(personDiseaseRequired))}';
+<fmt:message key="person.disease.other.required" var="personDiseaseOtherRequired"/>
+var JS_DISEASE_OTHER_REQUIRED = '${mfhpfn:escapeJavaScript(mfhpfn:unescapeHtml(personDiseaseOtherRequired))}';
+<fmt:message key="person.ageAtDiagnosis.required" var="personAgeAtDiagnosisRequired"/>
+var JS_AGE_AT_DIAGNOSIS_REQUIRED = '${mfhpfn:escapeJavaScript(mfhpfn:unescapeHtml(personAgeAtDiagnosisRequired))}';
+
+<fmt:message key="person.condition.selectedMessage" var="diseaseSelectedMessage"><fmt:param><fmt:message key="button.addDiseaseToList.js"/></fmt:param></fmt:message>
+var diseaseSelectedMessage = "${mfhpfn:escapeJavaScript(mfhpfn:unescapeHtml(diseaseSelectedMessage))}";
 </script>
 <script type="text/javascript" language="javascript" charset="ISO-8859-1" src="<c:url value='/scripts/addPerson.js'/>"></script>
 <script type="text/javascript" language="javascript" charset="ISO-8859-1" src="<c:url value='/scripts/ItemSelectorUtils.js'/>"></script>
@@ -25,7 +34,6 @@ var JS_AGE_AT_DIAGNOSIS_REQUIRED = '<fmt:message key="person.ageAtDiagnosis.requ
         <c:set var="editingRelative" value="false" scope="request"/>
     </c:otherwise>
 </c:choose>
-<fmt:message key="person.condition.selectedMessage" var="diseaseSelectedMessage"><fmt:param><fmt:message key="button.addDiseaseToList.js"/></fmt:param></fmt:message>
 <s:form action="%{#attr.actionUrl}" cssClass="form" method="post" id="personForm" theme="simple">
 <div class="submodalContainer">
     <!-- BEGIN ACCORDION SECTION = PERSONAL INFO -->
@@ -651,9 +659,6 @@ var JS_AGE_AT_DIAGNOSIS_REQUIRED = '<fmt:message key="person.ageAtDiagnosis.requ
 
     <!-- BEGIN INCLUDE = SAVE CANCEL BUTTONS -->
     <div class="buttonContainer">
-        <script type="text/javascript">
-            var diseaseSelectedMessage = "${diseaseSelectedMessage}";
-        </script>
        <c:choose>
             <c:when test="${editingRelative || person.completedForm}" >
                 <div class="buttonContainer">

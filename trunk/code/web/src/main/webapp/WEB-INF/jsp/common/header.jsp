@@ -9,7 +9,7 @@ homeWarn = function(locale) {
     if (locale == 'es') {
         var homeMessage = "Si regresa ahora a la página principal terminará la elaboración de su historia familiar. Cualquier cambio que haya hecho no sera registrado. Por favor, pulse el botón de cancelar si quiere continuar con su historia familiar, o pulse OK/Continuar para terminar su historia familiar y regresar a la página principal.";
     } else if (locale == 'pt') { 
-        var homeMessage = "Returning to the home page will close the current family history. Any changes you have made to your family history will be lost. Please press the Cancel button to return and continue with the current family history, or press OK/Continue to close the current history and return to the home page.";
+        var homeMessage = "Se voltar à página inicial, o histórico familiar atual vai fechar. Qualquer mudança que você tiver feito ao seu histórico será perdido. Clique no botão Cancelar para voltar e continuar com o histórico familiar atual, ou clique no botão OK/Continuar para fechar o histórico familiar atual e voltar à página inicial.";
     }else {
         var homeMessage = "Returning to the home page will close the current family history. Any changes you have made to your family history will be lost. Please press the Cancel button to return and continue with the current family history, or press OK/Continue to close the current history and return to the home page.";
     }    
