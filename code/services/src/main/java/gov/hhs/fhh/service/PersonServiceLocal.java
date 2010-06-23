@@ -37,6 +37,7 @@ import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Race;
+import gov.hhs.mfhp.model.Observation;
 
 import java.io.File;
 import java.util.List;
@@ -141,5 +142,79 @@ public interface PersonServiceLocal extends GenericServiceLocal {
      * @return the disease with the observation name of 'Other disease type'
      */
     Disease getOtherDisease();
+
+    /**
+     *  
+     * @param o observation to check
+     * @return true if observation has a parent of diabetestype.
+     */
+    boolean isDiabetes(Observation o);
+
+    /**
+     * 
+     * @return the disease with the observation name of 'Diabetes type'
+     */
+    Disease getDiabetesType();
+
+    /**
+     * 
+     * @param o an observation
+     * @return true if the observation is of type heart disease
+     */
+    boolean isHeartDisease(Observation o);
+
+    /**
+     * 
+     * @return the disease with the observation name 'Heart Disease type'
+     */
+    Disease getHeartDiseaseType();
+
+    /**
+     * 
+     * @return the disease with the observation name 'Stroke/Brain Attack'
+     */
+    Disease getStrokeBrainAttack();
+
+    /**
+     * 
+     * @param o an observation
+     * @return true if the observation is of type stroke or brain attak
+     */
+    boolean isStrokeOrBrainAttack(Observation o);
+
+    /**
+     * 
+     * @param o an observation
+     * @return true if the observation is considered colorectal cancer
+     */
+    boolean isColorectalCancer(Observation o);
+
+    /**
+     * 
+     * @return a list of cancers that qualify as colorectal cancers
+     */
+    List<Observation> getColorectalCancers();
+    
+    /**
+     * 
+     * @param codeName code for the disease to find
+     * @return a list of observations that match this code - should be 1 but might be multiple
+     */
+    List<Observation> getDiseaseByCode(String codeName);
+
+    /**
+     * 
+     * @param o observation to be tested
+     * @return true if this observation is breast cancer
+     */
+    boolean isBreastCancer(Observation o);
+
+    /**
+     * 
+     * @param o observation to be tested
+     * @return true if this observation
+     */
+    boolean isOvarianCancer(Observation o);
+
 
 }

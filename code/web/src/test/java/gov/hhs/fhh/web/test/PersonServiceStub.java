@@ -297,4 +297,51 @@ public class PersonServiceStub implements PersonServiceLocal {
         other.setDisplayNames(displayNames);
         return other;
     }
+
+    public boolean isDiabetes(Observation o) {
+        return false;
+    }
+
+    public Disease getDiabetesType() {
+        return null;
+    }
+
+    public boolean isHeartDisease(Observation o) {
+        return false;
+    }
+
+    public Disease getHeartDiseaseType() {
+        return null;
+    }
+
+    public Disease getStrokeBrainAttack() {
+        return null;
+    }
+
+    public boolean isStrokeOrBrainAttack(Observation o) {
+        return false;
+    }
+
+    public boolean isColorectalCancer(Observation o) {
+        return false;
+    }
+
+    public List<Observation> getColorectalCancers() {
+        return null;
+    }
+
+    public List<Observation> getDiseaseByCode(String codeName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isBreastCancer(Observation o) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean isOvarianCancer(Observation o) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

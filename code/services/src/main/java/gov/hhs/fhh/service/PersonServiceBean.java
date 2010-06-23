@@ -69,18 +69,19 @@ import com.fiveamsolutions.nci.commons.util.HibernateUtil;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@SuppressWarnings("PMD.TooManyMethods")
 public class PersonServiceBean extends GenericServiceBean implements PersonServiceLocal {
     private static final Logger LOG = Logger.getLogger(PersonServiceBean.class);
     private static final String ALL_DISEASES_CACHE_REGION = "AllDiseases.cache.region";
     private static final String DISEASE_SUB_TYPES_CACHE_REGION = "DiseaseSubTypes.cache.region";
-    private static final String DISEASES_CACHE_REGION = "Diseases.cache.region";
+    static final String DISEASES_CACHE_REGION = "Diseases.cache.region";
     private static final String HISPANIC_ETHNICITIES_CACHE_REGION = "HispanicEthnicities.cache.region";
     private static final String ETHNICITIES_CACHE_REGION = "Ethnicities.cache.region";
     private static final String HAWAIIAN_RACES_CACHE_REGION = "HawaiianRaces.cache.region";
     private static final String ASIAN_RACES_CACHE_REGION = "AsianRaces.cache.region";
     private static final String RACES_CACHE_REGION = "Races.cache.region";
     private static final String FROM = "from ";
-    private static final String UNCHECKED = "unchecked";
+    static final String UNCHECKED = "unchecked";
 
     /**
      * {@inheritDoc}
@@ -177,6 +178,8 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
                 "mfhp.observation.findOtherDisease").setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION).list();
         return (observations.isEmpty() ? null : observations.iterator().next());
     }
+    
+    
 
     /**
      * lame!
@@ -204,11 +207,20 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
         return convertToDiseases(query.list());
 
     }
-
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(UNCHECKED)
+    public List<Observation> getDiseaseByCode(String codeName) {
+        Query query =  HibernateUtil.getCurrentSession().getNamedQuery("mfhp.observation.findByCode");
+        query.setParameter("codeName", codeName);
+        return query.list();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings(UNCHECKED)
     public List<Ethnicity> getEthnicityByCodeAndCodeSystem(String code, String codeSystem) {
         String query = FROM + Ethnicity.class.getName() + " where code = '" + code + "' AND codeSystemName = '"
                 + codeSystem + "'";
@@ -219,7 +231,7 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(UNCHECKED)
     public List<Race> getRaceByCodeAndCodeSystem(String code, String codeSystem) {
         String query = FROM + Race.class.getName() + " where code = '" + code + "' AND codeSystemName = '" + codeSystem
                 + "'";
@@ -330,4 +342,111 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDiabetes(Observation o) {
+        
+        return o.getParent() != null ? o.getParent().equals(getDiabetesType()) : false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings(UNCHECKED)
+    public Disease getDiabetesType() {
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery(
+                "mfhp.observation.findDiabetesType").setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION).list();
+        return (observations.isEmpty() ? null : observations.iterator().next());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isHeartDisease(Observation o) {
+        return o.getParent().equals(getHeartDiseaseType());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings(UNCHECKED)
+    public Disease getHeartDiseaseType() {
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery(
+                "mfhp.observation.findHeartDiseaseType").setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION)
+                .list();
+        return (observations.isEmpty() ? null : observations.iterator().next());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings(UNCHECKED)
+    public Disease getStrokeBrainAttack() {
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery(
+                "mfhp.observation.findStrokeBrainAttack").setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION)
+                .list();
+        return (observations.isEmpty() ? null : observations.iterator().next());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isStrokeOrBrainAttack(Observation o) {
+        return o.equals(getStrokeBrainAttack());
+    }
+
+    // colorectal cancer- colon cancer, rectal cancer, familial multiple polyposis, hereditary non-polyposis colorectal
+    // cancer
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isColorectalCancer(Observation o) {
+        List<Observation> colorectalCancers = getColorectalCancers();
+        return colorectalCancers.indexOf(o) > -1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings(UNCHECKED)
+    public List<Observation> getColorectalCancers() {
+        return HibernateUtil.getCurrentSession().getNamedQuery("mfhp.observation.findColorectalCancers").setCacheable(
+                true).setCacheRegion(DISEASES_CACHE_REGION).list();
+    }
+
+    /**
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.service.PersonServiceLocal#isBreastCancer(gov.hhs.mfhp.model.Observation)
+     */
+    public boolean isBreastCancer(Observation o) {
+        return o.equals(getBreastCancer());
+    }
+
+    @SuppressWarnings(UNCHECKED)
+    private Disease getBreastCancer() {
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery(
+        "mfhp.observation.findBreastCancer").setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION)
+        .list();
+        return (observations.isEmpty() ? null : observations.iterator().next());
+    }
+
+    /**
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.service.PersonServiceLocal#isOvarianCancer(gov.hhs.mfhp.model.Observation)
+     */
+    public boolean isOvarianCancer(Observation o) {
+        return o.equals(getOvarianCancer());
+    }
+    @SuppressWarnings("unchecked")
+    private Disease getOvarianCancer() {
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery(
+        "mfhp.observation.findOvarianCancer").setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION)
+        .list();
+        return (observations.isEmpty() ? null : observations.iterator().next());
+    }
+    
+
 }

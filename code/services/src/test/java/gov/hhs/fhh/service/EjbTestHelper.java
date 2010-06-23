@@ -100,8 +100,8 @@ public class EjbTestHelper {
      *
      * @return the service
      */
-    public static PersonServiceBean getPersonServiceBean() {
-        PersonServiceBean personServiceBean = new PersonServiceBean();
+    public static PersonServiceLocal getPersonServiceBean() {
+        PersonServiceLocal personServiceBean = new PersonServiceBean();
         return personServiceBean;
     }
 
