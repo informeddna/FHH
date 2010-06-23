@@ -10,11 +10,11 @@
                 <jboss.hostname>domu-143.5amsolutions.com</jboss.hostname>
                 <jboss.configuration>default</jboss.configuration>
                 <database.url.prefix>jdbc:mysql://${jboss.hostname}:3306/</database.url.prefix>
-                <database.name>fhh</database.name>
+                <database.name>mfhp</database.name>
                 <admin.db.username>root</admin.db.username>
                 <admin.db.password>passw0rd</admin.db.password>
-                <jdbc.username>fhh</jdbc.username>
-                <jdbc.password>fhh</jdbc.password>
+                <jdbc.username>mfhpuser</jdbc.username>
+                <jdbc.password>mfhpuser</jdbc.password>
                 <test.selenium.server.port>62001</test.selenium.server.port>
                 <test.selenium.browser>*firefox /usr/local/firefox-3.5.7/firefox-bin</test.selenium.browser>
                 <showErrorStackTraces>true</showErrorStackTraces>
