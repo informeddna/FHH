@@ -38,4 +38,13 @@
         <comment>FHH-1247 - Adding Portugese language support</comment>
         <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1247.sql"/>
     </changeSet>
+    
+    <changeSet author="bhumphrey" id="FHH-1659">
+         <preConditions>
+            <dbms type="mysql" />
+        </preConditions>
+        <comment>FHH-1659 - Adding SNOMED code for unspecified conditions (unknown disease)</comment>
+        <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1659.sql"/>
+    </changeSet>
+    
 </databaseChangeLog>
