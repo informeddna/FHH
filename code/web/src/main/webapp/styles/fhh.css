@@ -1387,7 +1387,6 @@ table.dataListing, table.dataListing1 {
     background-color: #FFFFFF;
     margin: 0px;
     width: 100%;
-    border-collapse: collapse;
 }
 
 /* sets style for a data table (.dataListing). applied to <table>. */
