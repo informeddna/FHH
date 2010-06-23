@@ -35,6 +35,7 @@ package gov.hhs.fhh.data;
 
 import static org.junit.Assert.assertEquals;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
+import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.test.AbstractHibernateTestCase;
 
 import java.util.ArrayList;
@@ -103,34 +104,29 @@ public class RelativeReportTest extends AbstractHibernateTestCase {
 
     @Test
     public void testCreateRelativeReportFindDiabetes() {
-        UserEnteredDisease dis = new UserEnteredDisease();
-        dis.setDisplayName("DIA");
+        
         ClinicalObservation ci = new ClinicalObservation();
-        ci.setDisease(dis);
+        ci.setDisease(FhhRegistry.getPersonService().getDiseaseByCode("46635009").iterator().next());
         ci.setAgeRange(AgeRangeEnum.THIRTIES);
         List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
         observations.add(ci);
         DUMMY_RELATIVE.setObservations(observations);
         RelativeReport rr = new RelativeReport(DUMMY_RELATIVE);
         ClinicalObservation obs = new ClinicalObservation(ci);
-        assertEquals(dis, obs.getDisease());
         assertEquals(AgeRangeEnum.THIRTIES, obs.getAgeRange());
         assertEquals(rr.getDiabetes(),observations);
     }
 
     @Test
     public void testCreateRelativeReportFindHeartDisease() {
-        UserEnteredDisease dis = new UserEnteredDisease();
-        dis.setDisplayName("HD");
         ClinicalObservation ci = new ClinicalObservation();
-        ci.setDisease(dis);
+        ci.setDisease(FhhRegistry.getPersonService().getDiseaseByCode("53741008").iterator().next());
         ci.setAgeRange(AgeRangeEnum.THIRTIES);
         List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
         observations.add(ci);
         DUMMY_RELATIVE.setObservations(observations);
         RelativeReport rr = new RelativeReport(DUMMY_RELATIVE);
         ClinicalObservation obs = new ClinicalObservation(ci);
-        assertEquals(dis, obs.getDisease());
         assertEquals(AgeRangeEnum.THIRTIES, obs.getAgeRange());
         assertEquals(rr.getHeartDisease(),observations);
     }

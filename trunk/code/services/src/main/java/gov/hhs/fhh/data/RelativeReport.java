@@ -33,6 +33,9 @@
  */
 package gov.hhs.fhh.data;
 
+import gov.hhs.fhh.service.locator.FhhRegistry;
+import gov.hhs.mfhp.model.Observation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -57,12 +60,6 @@ public class RelativeReport extends Relative {
 
     private String highlightDiseaseAbbreviation = "";
 
-    private static final List<String> DIABETESCODES = getDiabetesCodes();
-    private static final List<String> HDCODES = getHeartDiseaseCodes();
-    private static final String CCCODE = "ColC";
-    private static final String BCCODE = "BrC";
-    private static final String OVCODE = "OvC";
-    private static final String STROKECODE = "SBA";
 
     /**
      * Default constructor.
@@ -93,11 +90,7 @@ public class RelativeReport extends Relative {
         cis.addAll(r.getObservations());
         for (ClinicalObservation ci : cis) {
             this.getLegendList().add(ci.getDisease());
-            if (ci.getDisease().getAbbreviation() != null) {
-                compareAbbreviations(ci);
-            } else {
-                this.getAdditionalDiseases().add(ci);
-            }
+            categorizeDiseases(ci);
         }
 
     }
@@ -105,49 +98,30 @@ public class RelativeReport extends Relative {
     /**
      * @param ci
      */
-    private void compareAbbreviations(ClinicalObservation ci) {
-        if (DIABETESCODES.contains(ci.getDisease().getAbbreviation().toString())) {
-            this.getDiabetes().add(ci);
-        } else if (HDCODES.contains(ci.getDisease().getAbbreviation().toString())) {
-            this.getHeartDisease().add(ci);
-        } else if (ci.getDisease().getAbbreviation().equals(CCCODE)) {
-            this.getColonCancer().add(ci);
-        } else if (ci.getDisease().getAbbreviation().equals(BCCODE)) {
-            this.getBreastCancer().add(ci);
-        } else if (ci.getDisease().getAbbreviation().equals(OVCODE)) {
-            this.getOvarianCancer().add(ci);
-        } else if (ci.getDisease().getAbbreviation().equals(STROKECODE)) {
-            this.getStroke().add(ci);
+    private void categorizeDiseases(ClinicalObservation ci) {
+        Disease d = ci.getDisease();
+        if (d instanceof Observation) {
+            Observation o = (Observation) d;
+            if (FhhRegistry.getPersonService().isDiabetes(o)) {
+                this.getDiabetes().add(ci);
+            } else if (FhhRegistry.getPersonService().isHeartDisease(o)) {
+                this.getHeartDisease().add(ci);
+            } else if (FhhRegistry.getPersonService().isColorectalCancer(o)) {
+                this.getColonCancer().add(ci);
+            } else if (FhhRegistry.getPersonService().isBreastCancer(o)) {
+                this.getBreastCancer().add(ci);
+            } else if (FhhRegistry.getPersonService().isOvarianCancer(o)) {
+                this.getOvarianCancer().add(ci);
+            } else if (FhhRegistry.getPersonService().isStrokeOrBrainAttack(o)) {
+                this.getStroke().add(ci);
+            } else {
+                this.additionalDiseases.add(ci);
+            }
         } else {
             this.getAdditionalDiseases().add(ci);
         }
     }
-
-    /**
-     * Method creates list of abbreviation codes that qualify as diabetes.
-     * 
-     * @return List of code values
-     */
-    private static List<String> getDiabetesCodes() {
-        ArrayList<String> codes = new ArrayList<String>();
-        codes.add("DIA");
-        codes.add("DIA1");
-        codes.add("DIA2");
-        codes.add("Gest");
-        return codes;
-    }
-
-    /**
-     * Method creates list of abbreviation codes that qualify as heart disease.
-     * 
-     * @return List of code values
-     */
-    private static List<String> getHeartDiseaseCodes() {
-        ArrayList<String> codes = new ArrayList<String>();
-        codes.add("HD");
-        codes.add("HA");
-        return codes;
-    }
+    
 
     /**
      * @return the diabetes

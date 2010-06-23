@@ -40,6 +40,7 @@ import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Race;
 import gov.hhs.fhh.test.AbstractHibernateTestCase;
+import gov.hhs.mfhp.model.Observation;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ import org.junit.Test;
  */
 public class PersonServiceBeanTest extends AbstractHibernateTestCase {
     private static final Logger LOG = Logger.getLogger(AbstractHibernateTestCase.class);
-    private PersonServiceBean personServiceBean = new PersonServiceBean();
+    private PersonServiceLocal personServiceBean = new PersonServiceBean();
 
     @Test
     public void testGetRaces() {
@@ -131,5 +132,70 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
         List diseases = personServiceBean.getDiseaseByName("Loud Music");
         assertTrue(diseases.isEmpty());
       
+    }
+    
+    @Test
+    public void testIsDiabetes() {
+        Observation o = personServiceBean.getDiseaseByCode("46635009").iterator().next();
+        assertTrue(personServiceBean.isDiabetes(o));
+        
+        o = personServiceBean.getDiseaseByCode("93880001").iterator().next();
+        assertFalse(personServiceBean.isDiabetes(o));
+    }
+    
+    @Test
+    public void testIsHeartDisease() {
+        Observation o = personServiceBean.getDiseaseByCode("53741008").iterator().next();
+        assertTrue(personServiceBean.isHeartDisease(o));
+        
+        o = personServiceBean.getDiseaseByCode("93880001").iterator().next();
+        assertFalse(personServiceBean.isHeartDisease(o));
+    }
+    @Test
+    public void testIsBreastCancer() {
+        Observation o = personServiceBean.getDiseaseByCode("254837009").iterator().next();
+        assertTrue(personServiceBean.isBreastCancer(o));
+        
+        o = personServiceBean.getDiseaseByCode("93880001").iterator().next();
+        assertFalse(personServiceBean.isBreastCancer(o));
+    }
+
+    @Test
+    public void testIsOvarianCancer() {
+        Observation o = personServiceBean.getDiseaseByCode("363443007").iterator().next();
+        assertTrue(personServiceBean.isOvarianCancer(o));
+        
+        o = personServiceBean.getDiseaseByCode("93880001").iterator().next();
+        assertFalse(personServiceBean.isOvarianCancer(o));
+    }
+    
+    @Test
+    public void testIsStrokeOrBrainAttack() {
+        Observation o = personServiceBean.getDiseaseByCode("116288000").iterator().next();
+        assertTrue("inactive code test", personServiceBean.isStrokeOrBrainAttack(o));
+        
+        o = personServiceBean.getDiseaseByCode("422504002").iterator().next();
+        assertTrue(personServiceBean.isStrokeOrBrainAttack(o));
+        
+        o = personServiceBean.getDiseaseByCode("93880001").iterator().next();
+        assertFalse(personServiceBean.isStrokeOrBrainAttack(o));
+    }
+    
+    @Test
+    public void testIsColorectalCancer() {
+        Observation o = personServiceBean.getDiseaseByCode("363406005").iterator().next();
+        assertTrue("inactive code test", personServiceBean.isColorectalCancer(o));
+
+        o = personServiceBean.getDiseaseByCode("254582000").iterator().next();
+        assertTrue(personServiceBean.isColorectalCancer(o));
+        
+        o = personServiceBean.getDiseaseByCode("72900001").iterator().next();
+        assertTrue(personServiceBean.isColorectalCancer(o));
+
+        o = personServiceBean.getDiseaseByCode("315058005").iterator().next();
+        assertTrue(personServiceBean.isColorectalCancer(o));
+        
+        o = personServiceBean.getDiseaseByCode("93880001").iterator().next();
+        assertFalse(personServiceBean.isColorectalCancer(o));
     }
 }

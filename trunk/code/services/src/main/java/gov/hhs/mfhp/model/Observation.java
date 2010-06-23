@@ -128,7 +128,21 @@ import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
                 + "observation as o left outer join o.displayNames as displayname "
                 + "where lower(displayname.text) like lower(:displayname)"),
         @NamedQuery(name = "mfhp.observation.findOtherDisease", 
-                query = "select o from observation as o where o.name = 'Other Disease type'") })
+                query = "select o from observation as o where o.name = 'Other Disease type'"),
+        @NamedQuery(name = "mfhp.observation.findHeartDiseaseType", 
+                query = "select o from observation as o where o.name = 'Heart Disease type'"),
+        @NamedQuery(name = "mfhp.observation.findStrokeBrainAttack", 
+                query = "select o from observation as o where o.name = 'Stroke/Brain Attack'"),
+        @NamedQuery(name = "mfhp.observation.findBreastCancer", 
+                query = "select o from observation as o where o.name = 'Breast Cancer'"),
+        @NamedQuery(name = "mfhp.observation.findOvarianCancer", 
+                query = "select o from observation as o where o.name = 'Ovarian Cancer'"),
+        @NamedQuery(name = "mfhp.observation.findColorectalCancers", 
+                query = "select o from observation as o where o.name in ('Colon Cancer'," 
+                + "'Rectal Cancer', 'Familial multiple polyposis syndrome'," 
+                + " 'Hereditary nonpolyposis colon cancer')"),
+        @NamedQuery(name = "mfhp.observation.findDiabetesType",
+                query = "select o from observation as o where o.name = 'Diabetes type'") })
 public class Observation implements PersistentObject, Disease {
 
     /**
@@ -255,7 +269,7 @@ public class Observation implements PersistentObject, Disease {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Observation)) {
+        if (obj instanceof Observation) {
             return equalsHelper((Observation) obj);
         }
         return false;
