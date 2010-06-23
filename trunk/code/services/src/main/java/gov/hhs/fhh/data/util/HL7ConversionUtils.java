@@ -246,7 +246,7 @@ public final class HL7ConversionUtils {
                 return disease;
             }
         } 
-        return DiseaseUtils.createOtherDiseaseType(currCode.getOriginalText());
+        return DiseaseUtils.findOrCreateNewDisease(currCode.getOriginalText());
     }
 
     /**
