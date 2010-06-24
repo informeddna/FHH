@@ -14,9 +14,8 @@ returnHomeFunc = function() {
 }
 
 addPersonOnclickFunc = function() {
-    handlePopup('${addPersonUrl}');
-    var closeImg = document.getElementById('popCloseBox');
-    closeImg.addEventListener('click', returnHomeFunc, false);
+    handlePopup('${addPersonUrl}'); 
+    //$('popCloseBox').addEventListener('click', returnHomeFunc, false);
 }
 
 </script>
@@ -35,6 +34,9 @@ addPersonOnclickFunc = function() {
                         <!-- if we don't have a person, show this button -->
                         
                         <div class="buttonContainer"><a id="addPersonAnchor" href="javascript://nop/" onclick="addPersonOnclickFunc();"><fmt:message key="button.createHistory"/></a></div>
+                        <script type="text/javascript">
+                               setFocusById("addPersonAnchor");
+                            </script>
                     </c:when>
                     <c:otherwise>
                         <h1><fmt:message key="familyHistory.title"/></h1>
@@ -72,11 +74,14 @@ addPersonOnclickFunc = function() {
                                 <a id="save_history" href="javascript://nop/" onclick="handlePopup('${saveFamilyHistoryUrl}');"><fmt:message key="button.saveXmlDocument"/></a>
                                 <a id="viewReport1" href="${viewReport}"><fmt:message key="menu.text.viewReport" /></a>
                             </div>
+                            <script type="text/javascript">
+                               setFocusById("addAnotherFamilyMember1");
+                            </script>
                         </c:if>
                         <c:if test="${!person.completedForm}">
                             <script type="text/javascript">
-                                document.getElementById('navReindex').hide();
-                                document.getElementById('navViewDiagram').hide();
+                                $('navReindex').hide();
+                                $('navViewDiagram').hide();
                             </script>
                             <img width="16" height="16" src="<s:url value="/images/icon_unmatched_condition.gif"/>" alt="<fmt:message key="button.unmatchedConditions"/>" title="<fmt:message key="button.unmatchedConditions"/>" />
                             <span class="errorMessage"><fmt:message key="familyHistory.family.text.incompleteForm.proband"/></span>
@@ -318,7 +323,7 @@ addPersonOnclickFunc = function() {
 </table>
 <div class="buttonContainer">
 <c:if test="${person.completedForm}">
-        <a id="addAnotherFamilyMember1" href="javascript://nop/" onclick="handlePopup('${selectRelativeUrl}');"><fmt:message key="button.addAnotherFamily"/></a>
+        <a id="addAnotherFamilyMember2" href="javascript://nop/" onclick="handlePopup('${selectRelativeUrl}');"><fmt:message key="button.addAnotherFamily"/></a>
         <a id="save_history2" href="javascript://nop/" onclick="handlePopup('${saveFamilyHistoryUrl}');"><fmt:message key="button.saveXmlDocument"/></a>
         <a id="viewReport2" href="${viewReport}"><fmt:message key="menu.text.viewReport" /></a>
 </c:if>
@@ -326,9 +331,8 @@ addPersonOnclickFunc = function() {
 
 
 </s:form>
-<script type="text/javascript">
-    setFocusById("addAnotherFamilyMember1");
-</script>
+
+
     
 
 

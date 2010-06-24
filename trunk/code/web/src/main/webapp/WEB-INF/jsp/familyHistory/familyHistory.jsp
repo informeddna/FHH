@@ -7,7 +7,7 @@
 <body>
     <script type="text/javascript" charset="ISO-8859-1">
         <s:url value="/popup/getHelp/helpDetailsUpdateFamilyHistory.action" id="helpUrl" />
-        document.getElementById('navHelpUrl').onclick = function(){popupWindow('${helpUrl}');};
+        $('navHelpUrl').onclick = function(){popupWindow('${helpUrl}');};
     </script>
     <div class="boxpad" id="familyHistoryDetail">
         <%@ include file="familyHistoryDetail.jsp" %>

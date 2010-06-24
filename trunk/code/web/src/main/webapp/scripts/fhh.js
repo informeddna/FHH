@@ -63,10 +63,10 @@ function submitDivOnReturn(e, addId) {
 }
 
 function setFocusById(divId) {
-    var div = document.getElementById(divId);
-    if (div != null) {
-        div.focus();
-    }
+	try {
+		$(divId).focus();
+	} catch(er) {
+	}
 }
 
 function setFocusToFirstControl() {
