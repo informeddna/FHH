@@ -49,13 +49,22 @@ public class AppResourcesTest {
         assertTrue("No keys are in common between the en and es files -- bad!!", enKeys.removeAll(es.keySet()));
         Set<String> esKeys = new HashSet(es.keySet());
         assertTrue("No keys are in common between the es and en files -- bad!!", esKeys.removeAll(en.keySet()));
+
+        assertEquals("EN extra keys vs ES " + enKeys.toString(), 0, enKeys.size());
+        assertEquals("ES extra keys vs EN" + esKeys.toString(), 0, esKeys.size());
+    }
+
+    @Test
+    public void ensureSameKeysPt() throws Exception {
+        Set<String> enKeys = new HashSet(en.keySet());
+        assertTrue("No keys are in common between the en and pt files -- bad!!", enKeys.removeAll(pt.keySet()));
         Set<String> ptKeys = new HashSet(pt.keySet());
         assertTrue("No keys are in common between the pt and en files -- bad!!", ptKeys.removeAll(en.keySet()));
 
-        assertEquals("EN extra keys " + enKeys.toString(), 0, enKeys.size());
-        assertEquals("ES extra keys " + esKeys.toString(), 0, esKeys.size());
-        assertEquals("PT extra keys " + ptKeys.toString(), 0, ptKeys.size());
+        assertEquals("EN extra keys vs PT " + enKeys.toString(), 0, enKeys.size());
+        assertEquals("PT extra keys vs EN " + ptKeys.toString(), 0, ptKeys.size());
     }
+
     
     @Test
     public void ensureSameKeysDataElements() throws Exception {
@@ -63,12 +72,20 @@ public class AppResourcesTest {
         assertTrue("No keys are in common between the en and es files -- bad!!", enKeys.removeAll(esData.keySet()));
         Set<String> esKeys = new HashSet(esData.keySet());
         assertTrue("No keys are in common between the es and pt files -- bad!!", esKeys.removeAll(enData.keySet()));
-        Set<String> ptKeys = new HashSet(ptData.keySet());
-        assertTrue("No keys are in common between the en and pt files -- bad!!", ptKeys.removeAll(enData.keySet()));
         
-        assertEquals("EN extra keys " + enKeys.toString(), 0, enKeys.size());
-        assertEquals("ES extra keys " + esKeys.toString(), 0, esKeys.size());
-        assertEquals("PT extra keys " + ptKeys.toString(), 0, ptKeys.size());
+        assertEquals("EN extra keys vs ES " + enKeys.toString(), 0, enKeys.size());
+        assertEquals("ES extra keys vs EN " + esKeys.toString(), 0, esKeys.size());
+    }
+
+    @Test
+    public void ensureSameKeysDataElementsPt() throws Exception {
+        Set<String> enKeys = new HashSet(enData.keySet());
+        assertTrue("No keys are in common between the en and pt files -- bad!!", enKeys.removeAll(ptData.keySet()));
+        Set<String> ptKeys = new HashSet(ptData.keySet());
+        assertTrue("No keys are in common between the pt and en files -- bad!!", ptKeys.removeAll(enData.keySet()));
+        
+        assertEquals("EN extra keys vs PT " + enKeys.toString(), 0, enKeys.size());
+        assertEquals("PT extra keys vs EN " + ptKeys.toString(), 0, ptKeys.size());
     }
 
     @Test

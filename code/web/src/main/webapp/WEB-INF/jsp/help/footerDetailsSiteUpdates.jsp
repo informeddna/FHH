@@ -6,6 +6,18 @@
 <table border="0" cellpadding="0" cellspacing="0" class="form" summary="<fmt:message key="footer.updates.table.summary"/>">
      
     <tr>
+        <td><strong><fmt:message key="footer.updates.text.date.july2010"/></strong></td>
+    </tr>
+    <tr>
+        <td>
+            <p><fmt:message key="footer.updates.text.revised"/></p>
+            <ol>
+               <li>footer.updates.text.july2010.item1</li>
+            </ol>
+        </td>
+   </tr>
+
+    <tr>
         <td><strong><fmt:message key="footer.updates.text.date.feb262010"/></strong></td>
     </tr>
     <tr>
