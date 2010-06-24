@@ -142,7 +142,7 @@ INSERT INTO observation (id, name, parent_id) VALUES (68,'Pancreatic cancer',2);
 INSERT INTO observation (id, name, parent_id) VALUES (69,'Liver cancer',2);
 INSERT INTO observation (id, name, parent_id) VALUES (70,'Brain Cancer',2);
 INSERT INTO observation (id, name, parent_id) VALUES (71,'Colorectal Cancer',2);
-INSERT INTO observation (id, name, parent_id) VALUES (72,'Familial multiple polyposis syndrome',2);
+INSERT INTO observation (id, name, parent_id) VALUES (72,'Familial adenomatous polyposis (FAP)',4);
 INSERT INTO observation (id, name, parent_id) VALUES (73,'Other Cancer',2);
 INSERT INTO observation (id, name, parent_id) VALUES (74,'Unknown Cancer',2);
 INSERT INTO observation (id, name, parent_id) VALUES (75,'Colon Polyp',4);
@@ -232,7 +232,7 @@ INSERT INTO displayname (id, language, text) VALUES (68,'en','Pancreatic cancer'
 INSERT INTO displayname (id, language, text) VALUES (69,'en','Liver cancer');
 INSERT INTO displayname (id, language, text) VALUES (70,'en','Brain Cancer');
 INSERT INTO displayname (id, language, text) VALUES (71,'en','Colorectal Cancer');
-INSERT INTO displayname (id, language, text) VALUES (72,'en','Familial multiple polyposis syndrome');
+INSERT INTO displayname (id, language, text) VALUES (72,'en','Familial adenomatous polyposis (FAP)');
 INSERT INTO displayname (id, language, text) VALUES (73,'en','Other Cancer');
 INSERT INTO displayname (id, language, text) VALUES (74,'en','Unknown Cancer');
 INSERT INTO displayname (id, language, text) VALUES (75,'en','Colon Polyp');

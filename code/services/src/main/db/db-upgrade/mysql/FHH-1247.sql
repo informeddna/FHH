@@ -299,7 +299,7 @@ INSERT INTO displayname (language, text) VALUES ('pt','Cancro Rectal');
 INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((select id from observation where name ='Rectal Cancer'), LAST_INSERT_ID());
 
 INSERT INTO displayname (language, text) VALUES ('pt','S&#237;ndrome da Polipose M&#250;ltipla Familiar');
-INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((select id from observation where name ='Familial multiple polyposis syndrome'), LAST_INSERT_ID());
+INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((select id from observation where name ='Familial adenomatous polyposis (FAP)'), LAST_INSERT_ID());
 
 INSERT INTO displayname (language, text) VALUES ('pt','Outro C&#226;ncer');
 INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((select id from observation where name ='Other Cancer'), LAST_INSERT_ID());
