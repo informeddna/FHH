@@ -71,10 +71,11 @@ public class AbstractHibernateTestCase {
          "/db-upgrade/mysql/2010-june-snomed-upgrades.sql",
          "/db-upgrade/mysql/FHH-1559.sql",
          "/db-upgrade/mysql/FHH-1635.sql",
-         "/db-upgrade/mysql/FHH-1247.sql"
-
+         "/db-upgrade/mysql/FHH-1247.sql",
+         "/db-upgrade/mysql/FHH-1659.sql",
+         "/db-upgrade/mysql/FHH-1669.sql"
     };
-
+    
     protected Transaction transaction;
 
     /**
