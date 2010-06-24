@@ -33,6 +33,7 @@
  */
 package gov.hhs.fhh.data;
 
+import gov.hhs.fhh.data.util.FormatUtils;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.model.mfhp.castor.RelationshipHolderNode;
 import gov.hhs.fhh.model.mfhp.castor.RelativeCodeNode;
@@ -117,6 +118,10 @@ public class Relative extends Person {
             this.birthTime = ((Relative) p).getBirthTime();
             this.motherId = ((Relative) p).getMotherId();
             this.fatherId = ((Relative) p).getFatherId();
+        } 
+        
+        if (p.getDateOfBirth() != null) {
+             this.birthTime = FormatUtils.format(p.getDateOfBirth());
         }
     }
 
@@ -137,6 +142,10 @@ public class Relative extends Person {
             this.ageAtDeath = ((Relative) p).getAgeAtDeath();
             this.birthTime = ((Relative) p).getBirthTime();
         }
+        
+        if (p.getDateOfBirth() != null) {
+            this.birthTime = FormatUtils.format(p.getDateOfBirth());
+       }
     }
 
     /**
