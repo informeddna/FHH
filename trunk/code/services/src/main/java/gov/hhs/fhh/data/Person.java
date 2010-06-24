@@ -60,7 +60,7 @@ import com.fiveamsolutions.hl7.model.mfhp.Weight;
 public class Person implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final int NAME_LENGTH = 255;
-    
+
     /**
      * String representing true used by Castor.
      */
@@ -81,7 +81,7 @@ public class Person implements Serializable {
     // to set completedForm to false on import.
     private boolean unmatchedCondition = false;
     private List<Relative> htmImportDroppedRelatives = new ArrayList<Relative>();
-    
+
     // this list will contain the unrelated relatives, possibly including the relatives in htmImportDroppedRelatives.
     private final List<Relative> unrelatedRelatives = new ArrayList<Relative>();
 
@@ -94,7 +94,7 @@ public class Person implements Serializable {
     private TwinStatus twinStatus = TwinStatus.NO;
 
     private Set<Relative> descendants = new ListOrderedSet();
-    
+
     private boolean xmlFileSaved;
 
     /**
@@ -126,6 +126,13 @@ public class Person implements Serializable {
         twinStatus = p.getTwinStatus();
         unmatchedCondition = p.isUnmatchedCondition();
         unrelatedRelatives.addAll(p.getUnrelatedRelatives());
+
+        if (p instanceof Relative && dateOfBirth == null) {
+            String formattedDate = ((Relative) p).getBirthTime();
+            if (FormatUtils.checkDateFormat(formattedDate)) {
+                dateOfBirth = FormatUtils.convertStringToDate(formattedDate);
+            }
+        }
     }
 
     /**
@@ -142,10 +149,9 @@ public class Person implements Serializable {
     }
 
     /**
-     * Get unit for height and weight - need inches and lbs OR meters and kg
-     *   formula for inches and lbs.
-     *   BMI = (weight in lbs * 703)/(height in inches)(height in inches).
-     *   BMI = (weight in kg)/(height in meters).
+     * Get unit for height and weight - need inches and lbs OR meters and kg formula for inches and lbs. BMI = (weight
+     * in lbs * 703)/(height in inches)(height in inches). BMI = (weight in kg)/(height in meters).
+     * 
      * @return the bmi
      */
     public String getBmi() {
@@ -168,7 +174,6 @@ public class Person implements Serializable {
         return getRelativeOfType(relCode, getRelatives());
     }
 
-    
     /**
      * @param relCode type of relatives to return
      * @return list of relatives of given type.
@@ -184,7 +189,7 @@ public class Person implements Serializable {
     public Relative getUnrelatedRelativeOfType(final RelativeCode relCode) {
         return getRelativeOfType(relCode, getUnrelatedRelatives());
     }
-    
+
     private Relative getRelativeOfType(RelativeCode relCode, List<Relative> relativeListToSearch) {
         final List<Relative> rels = getRelativesOfType(relCode, relativeListToSearch);
         if (rels.isEmpty()) {
@@ -205,7 +210,7 @@ public class Person implements Serializable {
         }
         return rels;
     }
-    
+
     /**
      * @param relName name of relative to return
      * @return the first relative with given name, or null if no relatives with that name found
@@ -218,7 +223,6 @@ public class Person implements Serializable {
         }
         return null;
     }
-    
 
     /**
      * recenters the family history on the relative with given index.
@@ -253,7 +257,7 @@ public class Person implements Serializable {
         }
         return raceIds;
     }
-    
+
     /**
      * @return calculated age of this person
      */
@@ -264,9 +268,9 @@ public class Person implements Serializable {
             final GregorianCalendar birthCal = new GregorianCalendar();
             birthCal.setTime(getDateOfBirth());
             age = currCal.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
-            if (birthCal.get(Calendar.MONTH) > currCal.get(Calendar.MONTH) 
+            if (birthCal.get(Calendar.MONTH) > currCal.get(Calendar.MONTH)
                     || birthCal.get(Calendar.MONTH) == birthCal.get(Calendar.MONTH)
-                            && birthCal.get(Calendar.DAY_OF_MONTH) > currCal.get(Calendar.DAY_OF_MONTH)) {
+                    && birthCal.get(Calendar.DAY_OF_MONTH) > currCal.get(Calendar.DAY_OF_MONTH)) {
                 age--;
             }
         }
@@ -275,7 +279,8 @@ public class Person implements Serializable {
 
     /**
      * Used in familyHistoryDetail.jsp to find if the Proband or any of the relatives contained unmatched conditions
-     *  after a legacy import (A user entered disease that did not match up with any FHH diseases).
+     * after a legacy import (A user entered disease that did not match up with any FHH diseases).
+     * 
      * @return boolean true if unmatched condition exists, otherwise false
      */
     public boolean isFamilyContainsUnmatchedCondition() {
@@ -290,23 +295,24 @@ public class Person implements Serializable {
         }
         return unmatched;
     }
-    
+
     /**
-     * Returns if the form has been completed for the Proband.  DOB is a required field, if it has been stored,
-     * form has been completed.
+     * Returns if the form has been completed for the Proband. DOB is a required field, if it has been stored, form has
+     * been completed.
+     * 
      * @return boolean indicating that form has been completed
      */
     public boolean isCompletedForm() {
         return dateOfBirth != null;
     }
-    
+
     /**
      * @return the gender
      */
     public Gender getGender() {
         return gender;
     }
-    
+
     /**
      * @param gender the gender to set
      */
@@ -356,7 +362,7 @@ public class Person implements Serializable {
     public void setAdopted(final boolean adopted) {
         this.adopted = adopted;
     }
-    
+
     /**
      * @return the observations
      */
@@ -426,7 +432,7 @@ public class Person implements Serializable {
     public void setDescendants(final Set<Relative> descendants) {
         this.descendants = descendants;
     }
-    
+
     /**
      * @return the races
      */
@@ -440,7 +446,7 @@ public class Person implements Serializable {
     public void setRaces(final List<Race> races) {
         this.races = races;
     }
-    
+
     /**
      * @return the ethnicities
      */
@@ -454,7 +460,7 @@ public class Person implements Serializable {
     public void setEthnicities(final List<Ethnicity> ethnicities) {
         this.ethnicities = ethnicities;
     }
-    
+
     /**
      * @return the consanguinityFlag
      */
@@ -566,7 +572,7 @@ public class Person implements Serializable {
     public UUID getUuid() {
         return uuid;
     }
-    
+
     /**
      * Method generates a new UUID.
      */
