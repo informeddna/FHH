@@ -110,7 +110,7 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
         for (Disease disease : diseases) {
             LOG.debug(disease.getId());
         }
-        assertEquals(90, diseases.size());
+        assertEquals(89, diseases.size());
     }
 
     @Test
@@ -193,7 +193,7 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
         assertTrue(personServiceBean.isColorectalCancer(o));
 
         o = personServiceBean.getDiseaseByCode("315058005").iterator().next();
-        assertTrue(personServiceBean.isColorectalCancer(o));
+        assertTrue(o.getName() + "isn't considered colorectal",personServiceBean.isColorectalCancer(o));
         
         o = personServiceBean.getDiseaseByCode("93880001").iterator().next();
         assertFalse(personServiceBean.isColorectalCancer(o));

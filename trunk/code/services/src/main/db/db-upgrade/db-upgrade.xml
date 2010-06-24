@@ -55,5 +55,7 @@
         <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1669.sql"/>
     </changeSet>
 
-    
+    <!-- 
+            Any changeSets added to this file need to also be added to AbstractHibernateTestCase
+     -->
 </databaseChangeLog>

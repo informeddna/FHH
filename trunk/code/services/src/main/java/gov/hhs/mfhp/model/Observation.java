@@ -139,8 +139,8 @@ import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
                 query = "select o from observation as o where o.name = 'Ovarian Cancer'"),
         @NamedQuery(name = "mfhp.observation.findColorectalCancers", 
                 query = "select o from observation as o where o.name in ('Colon Cancer'," 
-                + "'Rectal Cancer', 'Familial multiple polyposis syndrome'," 
-                + " 'Hereditary nonpolyposis colon cancer')"),
+                + "'Rectal Cancer', 'Familial adenomatous polyposis (FAP)'," 
+                + " 'Lynch Syndrome/Hereditary non-polyposis colon cancer' )"),
         @NamedQuery(name = "mfhp.observation.findDiabetesType",
                 query = "select o from observation as o where o.name = 'Diabetes type'") })
 public class Observation implements PersistentObject, Disease {
