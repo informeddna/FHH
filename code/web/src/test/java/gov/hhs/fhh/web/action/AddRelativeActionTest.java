@@ -155,7 +155,7 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
 
         action.prepare();
         assertEquals(DUMMY_DISEASE, action.getCauseOfDeath());
-        assertEquals(DUMMY_DISEASE_ORG_TEXT, action.getOtherCOD());
+        //assertEquals(DUMMY_DISEASE_ORG_TEXT, action.getOtherCOD());
         assertEquals(Gender.MALE, deceasedRelativeOther.getGender());
         assertEquals(DiseaseUtils.generateDiseaaseTableId(DUMMY_DISEASE, AgeRangeEnum.ADOLESCENCE), action.getLastAddedCOD());
         assertFalse(action.isCodSubTypesExist());

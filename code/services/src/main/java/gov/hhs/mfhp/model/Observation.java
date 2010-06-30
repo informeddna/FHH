@@ -449,8 +449,10 @@ public class Observation implements PersistentObject, Disease {
     @Transient
     public String getCode() {
 
-        final Code activeCode = getActiveCode();
-        return (activeCode == null ? null : activeCode.getCodeName());
+        if (getActiveCode() != null) {
+            return getActiveCode().getCodeName();
+        }
+        return null;
     }
 
     /**
@@ -461,7 +463,10 @@ public class Observation implements PersistentObject, Disease {
      */
     @Transient
     public String getCodeSystem() {
-        return getActiveCode().getCodeSystem().getName();
+        if (getActiveCode() != null) {
+            return getActiveCode().getCodeSystem().getName();
+        }
+        return null;
     }
 
     /**
@@ -472,7 +477,10 @@ public class Observation implements PersistentObject, Disease {
      */
     @Transient
     public String getCodeSystemName() {
-        return getActiveCode().getCodeSystem().getCommonName();
+        if (getActiveCode() != null) {
+            return getActiveCode().getCodeSystem().getCommonName();
+        }
+        return null;
     }
 
     /**
@@ -483,7 +491,10 @@ public class Observation implements PersistentObject, Disease {
      */
     @Transient
     public String getCodeSystemVersion() {
-        return getActiveCode().getCodeSystem().getVersion();
+        if (getActiveCode() != null) {
+            return getActiveCode().getCodeSystem().getVersion();
+        }
+        return null;
     }
 
     /**
