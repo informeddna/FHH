@@ -121,7 +121,7 @@ var diseaseSelectedMessage = "${mfhpfn:escapeJavaScript(mfhpfn:unescapeHtml(dise
                     
                     <%-- Display Relative Fields if adding Relative --%>
                     <c:if test="${editingRelative}">
-                    <s:hidden id="codSubTypesExist" name="codSubTypesExist" value="false"/>
+                    <s:hidden id="codSubTypesExist" name="codSubTypesExist"/>
                     <s:hidden name="selectedParentIndex" />
                     <s:hidden name="lastAddedCOD" id="lastAddedCOD" />
                     

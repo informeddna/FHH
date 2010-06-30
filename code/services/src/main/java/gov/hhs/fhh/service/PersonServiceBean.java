@@ -365,7 +365,7 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
      * {@inheritDoc}
      */
     public boolean isHeartDisease(Observation o) {
-        return o.getParent().equals(getHeartDiseaseType());
+        return o.getParent() != null ? o.getParent().equals(getHeartDiseaseType()) : false;
     }
 
     /**
