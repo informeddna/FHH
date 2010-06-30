@@ -154,6 +154,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
                 if (getRelative().getCauseOfDeath().isOther()) {
                     setOtherCOD(getRelative().getCauseOfDeath().getOriginalText());
                 }
+                
                 setLastAddedCOD(DiseaseUtils.generateDiseaaseTableId(getRelative().getCauseOfDeath(), 
                         getRelative().getAgeAtDeath()));
             } else {

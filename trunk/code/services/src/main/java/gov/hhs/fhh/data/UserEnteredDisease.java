@@ -143,7 +143,5 @@ public class UserEnteredDisease extends DiseaseBean implements Disease, Serializ
     }
     
     
-    
-    
 
 }
