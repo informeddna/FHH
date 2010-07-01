@@ -111,14 +111,27 @@ function codChanged() {
     var selectedCOD = $('personForm_causeOfDeath');
     var elementSelected = selectedCOD.options[selectedCOD.selectedIndex].text;
     var otherSelected = isOtherSelected(elementSelected);
-    //TODO: Why is this value == 16? and != 1? Magic numbers? 
-    if (selectedCOD.value == OTHER_DISEASE_ID  &&  !isOtherSelected(elementSelected)) {
+    if (selectedCOD.value == OTHER_DISEASE_ID  &&  !otherSelected) {
         $('otherCOD').value = elementSelected;
     } 
     
     //TODO: Why is the locale always 'en' ? Introduce parameter?
     ItemSelectorUtils.addCODToList('selectedDiseases', 'selectedDiseases', 'true', 'en');
 }
+
+function isOtherSelected(mySelection) {
+    var otherSelected = 0;
+    if (mySelection.length > 5) {
+        var subSection = mySelection.substring(5,0);
+        var eq1 = "Other";
+        var eq2 = "Otros";
+        var eq3 = "Outra";
+        return (subSection == eq1 || subSection == eq2 || subSection == eq3);
+    }
+    console.log("%s - %s", mySelection, otherSelected);
+    return otherSelected;
+}
+
 
 function finishRetrieveCODSubType() {
     if ($('personForm_selectedCODSubType').length == 1) {
@@ -129,6 +142,9 @@ function finishRetrieveCODSubType() {
         //TODO: Why is this value == 16? and == 1? Magic number? 
         if (selectedCOD.value == OTHER_DISEASE_ID &&  isOtherSelected(elementSelected)) {
             $('codOtherSpan', 'codOtherLabelSpan').invoke('show');
+        } else if (selectedCOD.value == OTHER_DISEASE_ID) {
+        	$('codOtherSpan', 'codOtherLabelSpan').invoke('hide');
+        	codChanged();
         } else {
             disableCODOther();
             // Add COD as Disease/Condition - no children

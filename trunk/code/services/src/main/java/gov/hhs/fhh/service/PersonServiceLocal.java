@@ -188,6 +188,13 @@ public interface PersonServiceLocal extends GenericServiceLocal {
      * @return true if the observation is considered colorectal cancer
      */
     boolean isColorectalCancer(Observation o);
+    
+    /**
+     * 
+     * @param o an observation
+     * @return true if the observation is considered of pseudo type other 
+     */
+    boolean isOtherPseudoType(Observation o);
 
     /**
      * 

@@ -1,14 +1,3 @@
-function isOtherSelected(mySelection) {
-    var otherSelected = 0;
-    if (mySelection.length > 5) {
-        var subSection = mySelection.substring(5,0);
-        var eq1 = "Other";
-        var eq2 = "Otros";
-        var eq3 = "Outra";
-        return (subSection == eq1 || subSection == eq2 || subSection == eq3);
-    }
-    return otherSelected;
-}
 
 
 var ItemSelectorUtils = {
