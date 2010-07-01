@@ -37,6 +37,7 @@ import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.UserEnteredDisease;
 import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.data.util.FormatUtils;
 import gov.hhs.fhh.data.util.LabelValue;
@@ -45,6 +46,7 @@ import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 import gov.hhs.fhh.web.util.RelativeToRelateTo;
+import gov.hhs.mfhp.model.Observation;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -67,10 +69,10 @@ import com.opensymphony.xwork2.validator.annotations.Validations;
 
 /**
  * @author bpickeral
- *
+ * 
  */
-@SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.ExcessiveClassLength", "PMD.TooManyFields", 
-    "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.ExcessiveClassLength", 
+    "PMD.TooManyFields", "PMD.TooManyMethods" })
 public class AddRelativeAction extends AddPersonAction implements Preparable {
     private static final long serialVersionUID = 1927846653L;
     private static final boolean TRUE = true;
@@ -92,7 +94,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
     private boolean needsRelating;
     private String relativeToSetAsParentUuid;
     private boolean relativeToSetAsParentHalfSiblingStatus;
-    
+
     /**
      * The UUID of the selected parent.
      */
@@ -100,7 +102,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
     private String relativeId;
     private String otherCOD;
     private String lastAddedCOD;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -145,34 +147,34 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
      * Sets the Cause of death to be displayed in the jsp for a Relative that is being edited.
      */
     public void setupCauseOfDeath() {
-        // The COD is added to the Disease List, store the ID of the row in the Disease List table of the last 
-        // added COD.  This is used to remove the COD when a new COD is entered.
+        // The COD is added to the Disease List, store the ID of the row in the Disease List table of the last
+        // added COD. This is used to remove the COD when a new COD is entered.
         setCodSubTypesExist(false);
         if (getRelative().getCauseOfDeath() != null) {
             if (getRelative().getCauseOfDeath().getParent() == null) {
                 setCauseOfDeath(getRelative().getCauseOfDeath());
-                if (getRelative().getCauseOfDeath().isOther()) {
+                if (getRelative().getCauseOfDeath().isOther()
+                        && (getRelative().getCauseOfDeath() instanceof UserEnteredDisease)) {
                     setOtherCOD(getRelative().getCauseOfDeath().getOriginalText());
                 }
-                
-                setLastAddedCOD(DiseaseUtils.generateDiseaaseTableId(getRelative().getCauseOfDeath(), 
-                        getRelative().getAgeAtDeath()));
+
+                setLastAddedCOD(DiseaseUtils.generateDiseaaseTableId(getRelative().getCauseOfDeath(), getRelative()
+                        .getAgeAtDeath()));
             } else {
                 setCauseOfDeath(getRelative().getCauseOfDeath().getParent());
                 setSelectedCODSubType(getRelative().getCauseOfDeath());
                 setCodSubTypesExist(TRUE);
-                setLastAddedCOD(DiseaseUtils.generateDiseaaseTableId(getSelectedCODSubType(), 
-                        getRelative().getAgeAtDeath()));
+                setLastAddedCOD(DiseaseUtils.generateDiseaaseTableId(getSelectedCODSubType(), getRelative()
+                        .getAgeAtDeath()));
             }
         }
     }
-    
+
     /**
      * Set the implied gender of the Relative when adding a new relative.
      */
     private void setupGender() {
-        if (!StringUtils.isEmpty(getSelectedCode())
-                && getRelative().getGender() == null 
+        if (!StringUtils.isEmpty(getSelectedCode()) && getRelative().getGender() == null
                 && RelativeCode.getByValue(getSelectedCode()).getImpliedGender() != null) {
             getRelative().setGender(RelativeCode.getByValue(getSelectedCode()).getImpliedGender());
         }
@@ -197,21 +199,18 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
 
     /**
      * Method is called after selecting a relative to call the add person page.
-     *
+     * 
      * @return path String
      */
-    @Validations(
-        requiredFields = { 
-            @RequiredFieldValidator(fieldName = "selectedCode",
-                key = REQUIRED_FIELD, message = "")
-            })
+    @Validations(requiredFields = { @RequiredFieldValidator(fieldName = "selectedCode", 
+            key = REQUIRED_FIELD, message = "") })
     public String addPerson() {
         RelativeCode code = RelativeCode.getByValue(getSelectedCode());
-        //Check for errors, return if errors are present
+        // Check for errors, return if errors are present
         checkSelectRelativeErrors(code);
         if (!getFieldErrors().isEmpty()) {
             return INPUT;
-        } 
+        }
         // Handle Maternal/Paternal codes
         if (code.isSpecifier()) {
             // Cousin specifies parent - set Maternal/Paternal
@@ -223,21 +222,20 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
                 } else {
                     setSelectedCode(code.getPaternalCode());
                 }
-            // All other codes specify Maternal/Paternal
+                // All other codes specify Maternal/Paternal
             } else if (RelativeCode.NMTH.toString().equals(getRelationshipSpecifier())) {
                 setSelectedCode(code.getMaternalCode());
             } else {
                 setSelectedCode(code.getPaternalCode());
             }
         }
-        
+
         return SUCCESS;
     }
-    
-    
+
     /**
-     * Method adds field errors for the addPerson Method called when selecting a relative to add
-     * to the family tree.
+     * Method adds field errors for the addPerson Method called when selecting a relative to add to the family tree.
+     * 
      * @param code of the relative being added
      */
     private void checkSelectRelativeErrors(RelativeCode code) {
@@ -346,8 +344,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
         } else {
             getRelative().setCode(getSelectedCode());
         }
-        
-      
+
         // Used in legacy import
         getRelative().setUnmatchedCondition(false);
         storeCauseOfDeath();
@@ -361,7 +358,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
         getPerson().setXmlFileSaved(false);
         return "submit";
     }
-    
+
     private void handleRelatingToRelative() {
         UUID parentUuid = UUID.fromString(getRelativeToSetAsParentUuid());
         if (isParentRelativeProband(parentUuid)) {
@@ -387,44 +384,44 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
         getPerson().getUnrelatedRelatives().remove(getRelative());
         getPerson().getRelatives().add(getRelative());
     }
-    
+
     private boolean isParentRelativeProband(UUID parentUuid) {
         return getPerson().getUuid().equals(parentUuid);
     }
-    
-    
+
     private void validateSubmitFields() {
         checkDateOfBirth();
         checkCauseOfDeath();
         validateRequiredObject("relative.gender", "relative.gender", getRelative().getGender());
     }
-    
+
     /**
      * Checks for DOB errors and adds fields errors if necessary.
      */
     private void checkDateOfBirth() {
-        if (!StringUtils.isEmpty(getDateOfBirthString()) 
+        if (!StringUtils.isEmpty(getDateOfBirthString())
                 && FormatUtils.convertStringToDate(getDateOfBirthString()) == null) {
             addFieldError("dateOfBirthString", getText("dateOfBirthString") + " " + getText("errors.invalid.date"));
         }
         validateIntegerField("relativeAge", "relative.age", getRelativeAge());
     }
+
     /**
      * Checks for cause of death errors and adds fields errors if necessary.
      */
     private void checkCauseOfDeath() {
         if (getCauseOfDeath() != null) {
             if (getCauseOfDeath().isOther() && StringUtils.isBlank(getOtherCOD())) {
-                addFieldError("otherCOD", 
-                        getText("struts.validator.causeOfDeath", new String[]{getText("person.otherCOD")}));
+                addFieldError("otherCOD", getText("struts.validator.causeOfDeath",
+                        new String[] {getText("person.otherCOD") }));
             }
             if (isCodSubTypesExist() && getSelectedCODSubType() == null) {
-                addFieldError("causeOfDeath", 
-                        getText("struts.validator.causeOfDeath", new String[]{getText("causeOfDeath")}));
+                addFieldError("causeOfDeath", getText("struts.validator.causeOfDeath",
+                        new String[] {getText("causeOfDeath") }));
             }
         }
     }
-    
+
     private boolean storeDOB() {
         // Store date of birth (priority)
         if (StringUtils.isNotBlank(getDateOfBirthString())) {
@@ -434,18 +431,19 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
             // Store birth year
             getRelative().setBirthTime(FormatUtils.convertAgeToYear(Integer.valueOf(getRelativeAge())));
             getRelative().setEstimatedAgeRange(null);
-        // If estimated age was not set, clear previous birth time
+            // If estimated age was not set, clear previous birth time
         } else if (getRelative().getEstimatedAgeRange() == null) {
             getRelative().setBirthTime(null);
-        } 
+        }
         return true;
     }
-    
+
     private void storeCauseOfDeath() {
         if (isCodSubTypesExist()) {
             getRelative().setCauseOfDeath(getSelectedCODSubType());
         } else if (getCauseOfDeath() != null) {
-            if (getCauseOfDeath().isOther()) {
+            if (getCauseOfDeath() instanceof Observation
+                    && FhhRegistry.getPersonService().isOtherPseudoType((Observation) getCauseOfDeath())) {
                 Disease userEnteredCauseOfDeath = DiseaseUtils.findOrCreateNewDisease(getOtherCOD());
                 FhhHttpSessionUtil.addUserEnteredDisease(userEnteredCauseOfDeath);
                 getRelative().setCauseOfDeath(userEnteredCauseOfDeath);
@@ -456,9 +454,8 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
     }
 
     /**
-     * Sets the parent of the relative if the selected parent index is set.
-     * Sets the Parents of the root person if the relative being added is the
-     * roots Mother or Father.
+     * Sets the parent of the relative if the selected parent index is set. Sets the Parents of the root person if the
+     * relative being added is the roots Mother or Father.
      */
     private void setRelativeParent() {
         // Set parent of relative when adding a relative
@@ -476,7 +473,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
 
     /**
      * Retrieves a list of sub types for the selected disease/condition.
-     *
+     * 
      * @return path to get disease sub types in XML form
      */
     @SkipValidation
@@ -489,7 +486,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
 
     /**
      * Get the set of retrieved sub types in XML for use by AjaxTags.
-     *
+     * 
      * @return the stream containing the XML encoding the set of disease sub types
      * @throws IllegalAccessException on error
      * @throws NoSuchMethodException on error
@@ -684,6 +681,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
 
     /**
      * Is really the Person.uuid as a String.
+     * 
      * @return the selectedParentIndex
      */
     public String getSelectedParentIndex() {
@@ -738,7 +736,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
     public void setRelativeAge(String relativeAge) {
         this.relativeAge = relativeAge;
     }
-    
+
     /**
      * @return - the list of parents it is possible to relate this unrelatedRelative to.
      */
@@ -768,8 +766,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
         }
         return retval;
     }
-    
-    
+
     /**
      * @return the relativeToSetAsParentUuid
      */

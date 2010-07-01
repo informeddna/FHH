@@ -198,4 +198,14 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
         o = personServiceBean.getDiseaseByCode("93880001").iterator().next();
         assertFalse(personServiceBean.isColorectalCancer(o));
     }
+    
+    @Test
+    public void testIsOther() {
+        Observation o = personServiceBean.getDiseaseByCode("363406005").iterator().next();
+        assertFalse("inactive code test", personServiceBean.isOtherPseudoType(o));
+        
+        o = (Observation) personServiceBean.getOtherDisease();
+        assertTrue(personServiceBean.isOtherPseudoType(o));
+        
+    }
 }

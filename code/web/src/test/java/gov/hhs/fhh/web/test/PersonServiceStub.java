@@ -344,4 +344,9 @@ public class PersonServiceStub implements PersonServiceLocal {
         // TODO Auto-generated method stub
         return false;
     }
+
+    public boolean isOtherPseudoType(Observation o) {
+        // TODO Auto-generated method stub
+        return getOtherDisease().equals(o);
+    }
 }

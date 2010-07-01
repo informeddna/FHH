@@ -351,6 +351,16 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
         return o.getParent() != null ? o.getParent().equals(getDiabetesType()) : false;
     }
 
+    
+    
+    /**
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.service.PersonServiceLocal#isOtherPseudoType(gov.hhs.mfhp.model.Observation)
+     */
+    public boolean isOtherPseudoType(Observation o) {
+        return o.equals(getOtherDisease());
+    }
+
     /**
      * {@inheritDoc}
      */
