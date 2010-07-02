@@ -12,7 +12,7 @@
         <td>
             <p><fmt:message key="footer.updates.text.revised"/></p>
             <ol>
-               <li>footer.updates.text.july2010.item1</li>
+               <li><fmt:message key="footer.updates.text.july2010.item1"/></li>
             </ol>
         </td>
    </tr>
