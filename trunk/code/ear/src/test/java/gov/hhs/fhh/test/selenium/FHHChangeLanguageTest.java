@@ -65,7 +65,7 @@ public class FHHChangeLanguageTest extends AbstractFHHSeleniumTest {
 		selenium.waitForPageToLoad("48000");
 		waitForText("Nombre");
 		selenium.click("popCloseBox");
-		waitForText("Preparar su historia familiar de salud");
+		waitForText("Crear Mi Historia");
 		//these can not occur anymore due to user getting sent back to the home page after cancelling creating a family history.
 //		selenium.click("navReindex");
 //		selenium.waitForPageToLoad("48000");

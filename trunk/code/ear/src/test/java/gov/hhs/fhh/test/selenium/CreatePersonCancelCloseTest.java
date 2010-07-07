@@ -27,7 +27,7 @@ public class CreatePersonCancelCloseTest extends AbstractFHHSeleniumTest {
         selenium.click("popCloseBox");
         Thread.sleep(4000);
         
-        Assert.assertTrue(selenium.isTextPresent("Using My Family Health Portrait you can:"));
+        Assert.assertTrue(selenium.isTextPresent("Create My History"));
     }
 
 }
