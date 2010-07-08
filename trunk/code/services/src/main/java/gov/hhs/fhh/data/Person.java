@@ -269,7 +269,7 @@ public class Person implements Serializable {
             birthCal.setTime(getDateOfBirth());
             age = currCal.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
             if (birthCal.get(Calendar.MONTH) > currCal.get(Calendar.MONTH)
-                    || birthCal.get(Calendar.MONTH) == birthCal.get(Calendar.MONTH)
+                    || birthCal.get(Calendar.MONTH) == currCal.get(Calendar.MONTH)
                     && birthCal.get(Calendar.DAY_OF_MONTH) > currCal.get(Calendar.DAY_OF_MONTH)) {
                 age--;
             }
