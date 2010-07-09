@@ -363,7 +363,7 @@ public class RelativePdfWriter {
      * @param relatives Set of RelativeReports from which to create chart. creates the family history chart/table.
      * @throws BadElementException
      */
-    @SuppressWarnings("PMD.AppendCharacterWithChar")
+    @SuppressWarnings({"PMD.AppendCharacterWithChar", "PMD.AvoidDeeplyNestedIfStmts"})
     private PdfPTable populateFamilyHistoryChart(PdfPTable table, PdfDataContainer p) throws BadElementException {
         RelativeDraw self = p.getRelativeDraw();
         boolean showNames = self.isShowNames();
@@ -376,7 +376,7 @@ public class RelativePdfWriter {
             name.append("(").append(getTxtGetter().getText(rel.getCodeEnum().getResourceKey())).append(")");
             table.addCell(getPara(name.toString()));
             //LivingStatus enum should be used in mfhp model
-            String i18nLivingStatusText = null;
+            StringBuffer i18nLivingStatusText = new StringBuffer();
             if (rel.getLivingStatus() != null) {
             LivingStatus livingStatus = null;
                 try {
@@ -385,10 +385,16 @@ public class RelativePdfWriter {
                     LOG.error(e);
                 }
                 if (livingStatus != null) {
-                    i18nLivingStatusText = getTxtGetter().getText(livingStatus.getResourceKey());
+                    i18nLivingStatusText.append(getTxtGetter().getText(livingStatus.getResourceKey()));
+                    if ( livingStatus == LivingStatus.NO) {
+                        i18nLivingStatusText.append(", ");
+                        i18nLivingStatusText.append(StringEscapeUtils.unescapeHtml(rel.getCauseOfDeath().getReportDisplay()));
+                        i18nLivingStatusText.append(" (" + ageRangeEnums.get(rel.getAgeAtDeath()) + ")");
+                        
+                    }
                 }
             }
-            table.addCell(i18nLivingStatusText);
+            table.addCell(i18nLivingStatusText.toString());
             table.addCell(handleClinicalObservation(rel, ageRangeEnums, rel.getHeartDisease()));
             table.addCell(handleClinicalObservation(rel, ageRangeEnums, rel.getStroke()));
             table.addCell(handleClinicalObservation(rel, ageRangeEnums, rel.getDiabetes()));
