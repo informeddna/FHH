@@ -98,7 +98,11 @@ public interface Disease extends Comparable<Disease>, Codeable, PersistentObject
     boolean isOther();
 
    
-
+    /**
+     * @param obj - object to compare to.
+     * @return if two diseases are equal.
+     */
+    boolean equals(Object obj);
     
 
 }

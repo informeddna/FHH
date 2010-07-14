@@ -31,13 +31,13 @@
                     <td>
                         <select name="selectedHighlightDisease" id="selectedHighlightDisease">
                             <option value=""><fmt:message key="reportOptions.select.header" /></option>
-                            <c:forEach var="item" items="${legendList}">
+                            <c:forEach var="item" items="${diseaseToAbreviation}">
                                 <c:choose>
-                                    <c:when test="${!empty selectedHighlightDisease && item.generatedAbbreviation == selectedHighlightDisease}">
-                                        <option selected="selected" value="${item.generatedAbbreviation}">${item.reportDisplay}</option>
+                                    <c:when test="${!empty selectedHighlightDisease && item.value == selectedHighlightDisease}">
+                                        <option selected="selected" value="${item.value}">${item.key.reportDisplay}</option>
                                     </c:when>
                                     <c:otherwise>
-                                        <option value="${item.generatedAbbreviation}">${item.reportDisplay}</option>
+                                        <option value="${item.value}">${item.key.reportDisplay}</option>
                                     </c:otherwise>
                                 </c:choose>
                             </c:forEach>

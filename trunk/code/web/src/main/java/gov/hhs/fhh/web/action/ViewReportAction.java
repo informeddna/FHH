@@ -33,12 +33,14 @@
  */
 package gov.hhs.fhh.web.action;
 
+import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeBranch;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.data.RelativeReport;
+import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.service.FhhWebException;
 import gov.hhs.fhh.service.util.PdfDataContainer;
@@ -49,10 +51,9 @@ import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,7 +81,11 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
     private Person person;
     private RelativeBranch relativeBranch;
     private Set<RelativeReport> relativeReports = new ListOrderedSet();
-    private Map<String, Disease> internalLegendList = new HashMap<String, Disease>();
+    // CHECKSTYLE:OFF hides a field
+    final private Set<Disease> allDiseases = new HashSet<Disease>();
+    private Map<Disease, String> diseaseToAbreviation = new HashMap<Disease, String>();
+    final private Map<String, Disease> abreviationToDisease = new HashMap<String, Disease>();
+    // CHECKSTYLE:ON
     private boolean showNames = true;
     private boolean showPersonalInfo = true;
     private boolean showChart = true;
@@ -111,6 +116,15 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
             addToRelativeReports(this.relativeBranch.getSiblings());
             addToRelativeReports(this.relativeBranch.getFatherBranch());
             addToRelativeReports(this.relativeBranch.getMotherBranch());
+            for (RelativeReport rr : getRelativeReports()) {
+                for (Disease d : rr.getLegendList()) {
+                    allDiseases.add(d);
+                }
+            }
+            diseaseToAbreviation = DiseaseUtils.getUniqueAbbreviationMap(allDiseases);
+            for (Disease d : diseaseToAbreviation.keySet()) {
+                abreviationToDisease.put(diseaseToAbreviation.get(d), d);
+            }
         }
         getRequestAttributes();
     }
@@ -164,9 +178,6 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
         for (Relative myrel : relatives) {
             RelativeReport rr = new RelativeReport(myrel);
             this.getRelativeReports().add(rr);
-            for (Disease d : rr.getLegendList()) {
-                getInternalLegendList().put(d.getGeneratedAbbreviation(), d);
-            }
         }
     }
 
@@ -241,7 +252,7 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
             p.getLegendLabels().putAll(createIntlLegendLabels());
             p.setRelativeDraw(selfDraw);
             p.getRelativeReports().addAll(getRelativeReports());
-            p.getLegendList().addAll(getLegendList());
+            p.getLegendList().addAll(allDiseases);
             return new ByteArrayInputStream(pdf.makeRelativePdf(p, isShowPersonalInfo()));
         } catch (Exception e) {
             LOG.error("exception generating pdf");
@@ -338,8 +349,19 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
             if (highlightDisease != null) {
                 selfDraw.setHighlightDisease(highlightDisease);
             }
+            
+            Set<Disease> diseaseSet = new HashSet<Disease>();
+            for (ClinicalObservation ci : person.getObservations()) {
+                diseaseSet.add(ci.getDisease());
+            }
+            for (Relative rel : person.getRelatives()) {
+                for (ClinicalObservation ci : rel.getObservations()) {
+                    diseaseSet.add(ci.getDisease());
+                }
+            }
 
-            retval = new ByteArrayInputStream(selfDraw.organizeFamilyTree(person));
+            retval = new ByteArrayInputStream(selfDraw.organizeFamilyTree(person, DiseaseUtils
+                    .getUniqueAbbreviationMap(diseaseSet)));
         } catch (Exception e) {
             throw new FhhWebException(e);
         }
@@ -387,29 +409,6 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
      */
     public void setRelativeReports(Set<RelativeReport> relativeReports) {
         this.relativeReports = relativeReports;
-    }
-
-    /**
-     * @return the legendList
-     */
-    public List<Disease> getLegendList() {
-        List<Disease> a = new ArrayList<Disease>();
-        a.addAll(getInternalLegendList().values());
-        return a;
-    }
-
-    /**
-     * @return the internalLegendList
-     */
-    public Map<String, Disease> getInternalLegendList() {
-        return internalLegendList;
-    }
-
-    /**
-     * @param internalLegendList the internalLegendList to set
-     */
-    public void setInternalLegendList(Map<String, Disease> internalLegendList) {
-        this.internalLegendList = internalLegendList;
     }
 
     /**
@@ -487,12 +486,8 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
      */
     // CHECKSTYLE:OFF hides a field
     public void setHighlightDisease(String selectedHighlightDisease) {
-        if (!getInternalLegendList().isEmpty()) {
-            Disease d = getInternalLegendList().get(selectedHighlightDisease);
-            if (d != null) {
-                setHighlightDisease(d);
-            }
-
+        if (!abreviationToDisease.isEmpty()) {
+            setHighlightDisease(abreviationToDisease.get(selectedHighlightDisease));
         }
     }
 
@@ -532,5 +527,25 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
     public void setIgnore(String ignore) {
         this.ignore = ignore;
     }
+    
+    /**
+     * @return the legendList
+     */
+    public Set<Disease> getLegendList() {
+        return allDiseases;
+    }
 
+    /**
+     * @return the abreviationToDisease
+     */
+    public Map<String, Disease> getAbreviationToDisease() {
+        return abreviationToDisease;
+    }
+
+    /**
+     * @return the diseaseToAbreviation
+     */
+    public Map<Disease, String> getDiseaseToAbreviation() {
+        return diseaseToAbreviation;
+    }
 }

@@ -39,12 +39,15 @@ import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.data.UserEnteredDisease;
+import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.web.util.RelativeRelatedTestUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -113,7 +116,14 @@ public class RelativeDrawTest {
         RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setCodeEnum(RelativeCode.SELF);
 
-        selfDraw.organizeFamilyTree(self);
+        Set<Disease> diseaseSet = new HashSet<Disease>();
+        for (Relative rel : rels) {
+            for (ClinicalObservation observation : rel.getObservations()) {
+                diseaseSet.add(observation.getDisease());
+            }
+        }
+
+        selfDraw.organizeFamilyTree(self, DiseaseUtils.getUniqueAbbreviationMap(diseaseSet));
         drawPicture(selfDraw, self, "basicFamilySiblings");
     }
 
@@ -139,7 +149,14 @@ public class RelativeDrawTest {
         RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setCodeEnum(RelativeCode.SELF);
 
-        selfDraw.organizeFamilyTree(self);
+        Set<Disease> diseaseSet = new HashSet<Disease>();
+        for (Relative rel : rels) {
+            for (ClinicalObservation observation : rel.getObservations()) {
+                diseaseSet.add(observation.getDisease());
+            }
+        }
+
+        selfDraw.organizeFamilyTree(self, DiseaseUtils.getUniqueAbbreviationMap(diseaseSet));
         drawPicture(selfDraw, self, "basicFamilyTwinSiblings");
     }
 
@@ -168,7 +185,14 @@ public class RelativeDrawTest {
         RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setCodeEnum(RelativeCode.SELF);
 
-        selfDraw.organizeFamilyTree(self);
+        Set<Disease> diseaseSet = new HashSet<Disease>();
+        for (Relative rel : rels) {
+            for (ClinicalObservation observation : rel.getObservations()) {
+                diseaseSet.add(observation.getDisease());
+            }
+        }
+
+        selfDraw.organizeFamilyTree(self, DiseaseUtils.getUniqueAbbreviationMap(diseaseSet));
         drawPicture(selfDraw, self, "basicFamilyTwinSiblings2");
     }
 
@@ -195,7 +219,14 @@ public class RelativeDrawTest {
         RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setCodeEnum(RelativeCode.SELF);
 
-        selfDraw.organizeFamilyTree(self);
+        Set<Disease> diseaseSet = new HashSet<Disease>();
+        for (Relative rel : rels) {
+            for (ClinicalObservation observation : rel.getObservations()) {
+                diseaseSet.add(observation.getDisease());
+            }
+        }
+
+        selfDraw.organizeFamilyTree(self, DiseaseUtils.getUniqueAbbreviationMap(diseaseSet));
         drawPicture(selfDraw, self, "basicFamilyTwinSibling");
     }
 
@@ -349,7 +380,14 @@ public class RelativeDrawTest {
         RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setCodeEnum(RelativeCode.SELF);
 
-        selfDraw.organizeFamilyTree(self);
+        Set<Disease> diseaseSet = new HashSet<Disease>();
+        for (Relative rel : rels) {
+            for (ClinicalObservation observation : rel.getObservations()) {
+                diseaseSet.add(observation.getDisease());
+            }
+        }
+
+        selfDraw.organizeFamilyTree(self, DiseaseUtils.getUniqueAbbreviationMap(diseaseSet));
         //drawPicture(selfDraw, self, "bigFamily");
     }
 
@@ -372,7 +410,14 @@ public class RelativeDrawTest {
         RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setCodeEnum(RelativeCode.SELF);
 
-        selfDraw.organizeFamilyTree(self);
+        Set<Disease> diseaseSet = new HashSet<Disease>();
+        for (Relative rel : rels) {
+            for (ClinicalObservation observation : rel.getObservations()) {
+                diseaseSet.add(observation.getDisease());
+            }
+        }
+
+        selfDraw.organizeFamilyTree(self, DiseaseUtils.getUniqueAbbreviationMap(diseaseSet));
 //        drawPicture(selfDraw, self, "halfSibs");
     }
     
@@ -603,7 +648,14 @@ public class RelativeDrawTest {
         RelativeDrawWrapper selfDraw = new RelativeDrawWrapper(new Relative(self));
         selfDraw.setCodeEnum(RelativeCode.SELF);
 
-        selfDraw.organizeFamilyTree(self);
+        Set<Disease> diseaseSet = new HashSet<Disease>();
+        for (Relative rel : rels) {
+            for (ClinicalObservation observation : rel.getObservations()) {
+                diseaseSet.add(observation.getDisease());
+            }
+        }
+
+        selfDraw.organizeFamilyTree(self, DiseaseUtils.getUniqueAbbreviationMap(diseaseSet));
         //drawPicture(selfDraw, self, "mixed");
 
 
@@ -677,11 +729,18 @@ public class RelativeDrawTest {
     private void drawPicture(RelativeDraw proband, Person probandPerson, String fileName) throws Exception {
         FileOutputStream file = null;
         try {
-            
-             // to create test files, indicate the local location where the files should be placed - uncomment above
+
+            // to create test files, indicate the local location where the files should be placed - uncomment above
             File img = new File("." + File.separator + "target" + File.separator + "img_" + fileName + ".png");
             file = new FileOutputStream(img);
-            file.write(proband.organizeFamilyTree(probandPerson));
+            Set<Disease> diseaseSet = new HashSet<Disease>();
+            for (Relative rel : probandPerson.getRelatives()) {
+                for (ClinicalObservation observation : rel.getObservations()) {
+                    diseaseSet.add(observation.getDisease());
+                }
+            }
+
+            file.write(proband.organizeFamilyTree(probandPerson, DiseaseUtils.getUniqueAbbreviationMap(diseaseSet)));
             // uncomment below
         } catch (Exception e) {
             throw new Exception("Error generating test graphic: Unexpected IO exception " + "writing to file "

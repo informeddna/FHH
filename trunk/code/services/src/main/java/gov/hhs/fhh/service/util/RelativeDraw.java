@@ -52,6 +52,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.map.MultiValueMap;
@@ -287,9 +288,11 @@ public class RelativeDraw extends Relative {
      * @param y the y position of the person on the image
      * @param r RelativeDraw whose children should be drawn
      * @param showNames boolean indicates whether names should be shown in the image
+     * @param abbreviationMap - abbreviations are global across all diseases of all family members, so this has to be passed around.
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
-    public void draw(final java.awt.Graphics2D g, final int x, final int y, final RelativeDraw r, final boolean showNames, final Disease highlight) {
+    public void draw(final java.awt.Graphics2D g, final int x, final int y, final RelativeDraw r, final boolean showNames, final Disease highlight, 
+            Map<Disease, String> abbreviationMap) {
         //insert hints to make a nice image
         final RenderingHints rh = g.getRenderingHints ();
         rh.put (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -299,7 +302,7 @@ public class RelativeDraw extends Relative {
         r.setYLoc(y);
         //unknown gender
         if (r.getGender() == null) {
-            final boolean highlighted = writeDiseaseCheckHighlight(g, r, highlight);
+            final boolean highlighted = writeDiseaseCheckHighlight(g, r, highlight, abbreviationMap);
             if (highlighted) {
                 drawDiamond(g, x, y, BLUE_HIGHLIGHT);
             } else if (r.getCode().equals(RelativeCode.SELF.toString())) {
@@ -310,10 +313,10 @@ public class RelativeDraw extends Relative {
             if (!r.isAutoDrawChildren()) {
                 return;
             }
-            drawChildrenOfFemaleOrNongendered(g, r, showNames, highlight);
+            drawChildrenOfFemaleOrNongendered(g, r, showNames, highlight, abbreviationMap);
         } else {
             if (r.getGender().equals(Gender.MALE)) {
-                final boolean highlighted = writeDiseaseCheckHighlight(g, r, highlight);
+                final boolean highlighted = writeDiseaseCheckHighlight(g, r, highlight, abbreviationMap);
                 if (highlighted) {
                     g.setColor(BLUE_HIGHLIGHT);
                     g.fillRect(x, y, PERSONSIZE, PERSONSIZE);
@@ -332,17 +335,17 @@ public class RelativeDraw extends Relative {
                 if (spouse != null && spouse != this || r.getSpouse() != null) {
                     // exception for mother of the father - she shows up twice if drawn here
                     if (!spouse.getCodeEnum().equals(RelativeCode.NMTH)) {
-                        spouse.draw(g, x + SPOUSEDISTANCE, y, spouse, showNames, highlight);
+                        spouse.draw(g, x + SPOUSEDISTANCE, y, spouse, showNames, highlight, abbreviationMap);
                     }
                 } else {
                     r.spouse = this;
                     r.setHasSpouse(false);
                 }
                 if (r.getKids().size() > 0 && r.isAutoDrawChildren()) {
-                    r.drawChildren(g, showNames, r, highlight);
+                    r.drawChildren(g, showNames, r, highlight, abbreviationMap);
                 }
             } else { // This is a female
-                final boolean highlighted = writeDiseaseCheckHighlight(g, r, highlight);
+                final boolean highlighted = writeDiseaseCheckHighlight(g, r, highlight, abbreviationMap);
                 if (highlighted) {
                     drawFemale(g, x, y, BLUE_HIGHLIGHT);
                 } else if (r.getCode().equals(RelativeCode.SELF.toString())) {
@@ -356,7 +359,7 @@ public class RelativeDraw extends Relative {
                 if (!r.isAutoDrawChildren()) {
                     return;
                 }
-                drawChildrenOfFemaleOrNongendered(g, r, showNames, highlight);
+                drawChildrenOfFemaleOrNongendered(g, r, showNames, highlight, abbreviationMap);
             }
         }
 
@@ -433,12 +436,13 @@ public class RelativeDraw extends Relative {
      * @param r RelativeDraw whose children should be drawn
      * @param showNames
      */
-    private void drawChildrenOfFemaleOrNongendered(final java.awt.Graphics2D g, final RelativeDraw r, final boolean showNames, final Disease highlight) {
+    private void drawChildrenOfFemaleOrNongendered(final java.awt.Graphics2D g, final RelativeDraw r, final boolean showNames, final Disease highlight, 
+            Map<Disease, String> abbreviationMap) {
         // female aunt or sibling (no spouse) - draw children
         if (r.getKids().size() > 0) {
             r.spouse = this;
             r.setHasSpouse(false);
-            r.drawChildren(g, showNames, r, highlight);
+            r.drawChildren(g, showNames, r, highlight, abbreviationMap);
         }
     }
 
@@ -482,7 +486,8 @@ public class RelativeDraw extends Relative {
      * @param showNames boolean indicates whether names will be printed on the chart
      * @param r RelaiveDraw whose children should be drawn
      */
-    public void drawChildren(final java.awt.Graphics2D g, final boolean showNames, final RelativeDraw r, final Disease highlight) {
+    public void drawChildren(final java.awt.Graphics2D g, final boolean showNames, final RelativeDraw r, final Disease highlight, 
+            Map<Disease, String> abbreviationMap) {
         // convert all descendants to RelativeDraws - shouldn't that have been done already?
         final List<RelativeDraw> l = new ArrayList<RelativeDraw>(r.getKids());
         r.setAutoDrawChildren(true);
@@ -520,7 +525,7 @@ public class RelativeDraw extends Relative {
             final RelativeDraw kid = l.get(0);
             final int kidX = (r.getXLoc() + r.getSpouse().getXLoc()) / 2;
             final int kidY = r.getYLoc() + PERSONSIZE / 2 + CHILDRENDISTANCE + CHILDRENBARLENGTH;
-            kid.draw(g, kidX, kidY, kid, showNames, highlight);
+            kid.draw(g, kidX, kidY, kid, showNames, highlight, abbreviationMap);
         } else {
             // more than one child
             int lineLength = r.getChildrenWidth(r) - PERSONSIZE - SIBLINGSPACING;
@@ -551,7 +556,7 @@ public class RelativeDraw extends Relative {
                 final RelativeDraw drawChild = l.get(lcv);
                 final int kidX = (int) (childBar.getX1() - PERSONSIZE / 2);
                 final int kidY = (int) childBar.getY2();
-                drawChild.draw(g, kidX, kidY, drawChild, showNames, highlight);
+                drawChild.draw(g, kidX, kidY, drawChild, showNames, highlight, abbreviationMap);
             }
             final int lineStart = l.get(0).getXLoc() + PERSONSIZE / 2;
             final int lineEnd = l.get(l.size() - 1).getXLoc() + PERSONSIZE / 2;
@@ -608,7 +613,7 @@ public class RelativeDraw extends Relative {
      * @return byte[] to be drawn
      * @throws Exception 
      */
-    public byte[] organizeFamilyTree(final Person self) throws Exception  {
+    public byte[] organizeFamilyTree(final Person self, Map<Disease, String> abbreviationMap) throws Exception  {
         try {
 
             RelativeDraw firstGen2 = null;
@@ -885,7 +890,7 @@ public class RelativeDraw extends Relative {
 
             paternalGrandfather.setXLoc(startPos);
             paternalGrandfather.setYLoc(yPos);
-            paternalGrandfather.draw(g, startPos, yPos, paternalGrandfather, showNames, getHighlightDisease());
+            paternalGrandfather.draw(g, startPos, yPos, paternalGrandfather, showNames, getHighlightDisease(), abbreviationMap);
 
             final int mg = paternalGrandfather.getXLoc()
                     + paternalGrandfather.getChildrenWidth(paternalGrandfather)
@@ -899,15 +904,15 @@ public class RelativeDraw extends Relative {
 
             maternalGrandfather.setXLoc(mg);
             maternalGrandfather.setYLoc(yPos);
-            maternalGrandfather.draw(g, mg, yPos, maternalGrandfather, showNames, getHighlightDisease());
-            father.drawChildren(g, showNames, father, getHighlightDisease());
+            maternalGrandfather.draw(g, mg, yPos, maternalGrandfather, showNames, getHighlightDisease(), abbreviationMap);
+            father.drawChildren(g, showNames, father, getHighlightDisease(), abbreviationMap);
 
             // Draw half siblings
             for (final RelativeDraw myrel : convertToRelativeDraw(paternalHalfSiblings)) {
                 if (myrel.getCode().equals(RelativeCode.HBRO.toString())
                         || myrel.getCode().equals(RelativeCode.HSIS.toString())) {
                     myrel.draw(g, firstSibling.getXLoc() - RelativeDraw.SIBLINGSPACING - RelativeDraw.PERSONSIZE,
-                            firstSibling.getYLoc(), myrel, showNames, getHighlightDisease());
+                            firstSibling.getYLoc(), myrel, showNames, getHighlightDisease(), abbreviationMap);
                     // think need to add this to draw, but not sure - don't know how to get dad's x and y locations
                     final java.awt.geom.Line2D.Double upline = new java.awt.geom.Line2D.Double(myrel.getXLoc()
                             + RelativeDraw.PERSONSIZE / 2, myrel.getYLoc(), father.getXLoc() + RelativeDraw.PERSONSIZE / 2,
@@ -920,7 +925,7 @@ public class RelativeDraw extends Relative {
                 if (myrel.getCode().equals(RelativeCode.HBRO.toString())
                         || myrel.getCode().equals(RelativeCode.HSIS.toString())) {
                     myrel.draw(g, lastSibling.getXLoc() + RelativeDraw.SIBLINGSPACING + RelativeDraw.PERSONSIZE,
-                            lastSibling.getYLoc(), myrel, showNames, getHighlightDisease());
+                            lastSibling.getYLoc(), myrel, showNames, getHighlightDisease(), abbreviationMap);
                     // think need to add this to draw, but not sure - don't know how to get dad's x and y locations
                     final java.awt.geom.Line2D.Double upline = new java.awt.geom.Line2D.Double(myrel.getXLoc()
                             + RelativeDraw.PERSONSIZE / 2, myrel.getYLoc(), mother.getXLoc() + RelativeDraw.PERSONSIZE / 2,
@@ -1019,7 +1024,7 @@ public class RelativeDraw extends Relative {
      * @param highlight the Disease to be highlighted
      * @return boolean whether this person has the highlighted disease
      */
-    public boolean writeDiseaseCheckHighlight(final java.awt.Graphics2D g, final RelativeDraw r, final Disease highlight) {
+    public boolean writeDiseaseCheckHighlight(final java.awt.Graphics2D g, final RelativeDraw r, final Disease highlight, Map<Disease, String> abbreviationMap) {
         boolean highlightMe = false;
         final int textAdd = 8;
         final int textSpacing = 9;
@@ -1028,13 +1033,19 @@ public class RelativeDraw extends Relative {
         g.setFont(new Font("Tahoma", Font.TRUETYPE_FONT, 10));
         int textPos = r.getYLoc() + textAdd;
         final List<ClinicalObservation> diseases = r.getObservations();
+        Set<Disease> diseaseObjects = new HashSet<Disease>(); 
+        for (final ClinicalObservation ci : diseases) {
+            if(!diseaseObjects.contains(ci.getDisease())){
+                diseaseObjects.add(ci.getDisease());
+            }
+        }
         if (r.getGender() == null) {
             for (final ClinicalObservation ci : diseases) {
                 final Disease d = ci.getDisease();
                 if (DiseaseUtils.compareHighlightDisease(d, highlight)) {
                     highlightMe = true;
                 }
-                final String abbrev = DiseaseUtils.getDiseaseAbbreviation(d);
+                final String abbrev = abbreviationMap.get(d);
                 g.drawString(abbrev, r.getXLoc() - textStartSpacing, textPos);
                 textPos += textSpacing;
             }
@@ -1045,7 +1056,7 @@ public class RelativeDraw extends Relative {
                     if (DiseaseUtils.compareHighlightDisease(d, highlight)) {
                         highlightMe = true;
                     }
-                    final String abbrev = DiseaseUtils.getDiseaseAbbreviation(d);
+                    final String abbrev = abbreviationMap.get(d);
                     g.drawString(abbrev, r.getXLoc() + textAdd + PERSONSIZE, textPos);
                     textPos += textSpacing;
                 }
@@ -1056,7 +1067,7 @@ public class RelativeDraw extends Relative {
                     if (DiseaseUtils.compareHighlightDisease(d, highlight)) {
                         highlightMe = true;
                     }
-                    final String abbrev = DiseaseUtils.getDiseaseAbbreviation(d);
+                    final String abbrev = abbreviationMap.get(d);
                     g.drawString(abbrev, r.getXLoc() - textStartSpacing, textPos);
                     textPos += textSpacing;
                 }

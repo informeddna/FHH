@@ -76,7 +76,7 @@
                     </c:when>
                  </c:choose>
                  <td>
-                    ${legendDisease.escapedGeneratedAbbreviation} =
+                    ${diseaseToAbreviation[legendDisease]} =
                     <%-- some diseases do not have displayName - use originalText instead --%>
                     ${legendDisease.escapedReportDisplay}
                 </td>
