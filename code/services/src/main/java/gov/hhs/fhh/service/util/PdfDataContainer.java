@@ -36,9 +36,8 @@ package gov.hhs.fhh.service.util;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.RelativeReport;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,7 +60,7 @@ public class PdfDataContainer {
     private Map<AgeRangeEnum, String> ageRangeEnums = new HashMap<AgeRangeEnum, String>();
     private Map<String, String> legendLabels = new HashMap<String, String>();
     private Set<RelativeReport> relativeReports = new ListOrderedSet();
-    private List<Disease> legendList = new ArrayList<Disease>();
+    private Set<Disease> legendList = new HashSet<Disease>();
 
     /**
      * @return the relativeDraw
@@ -122,14 +121,14 @@ public class PdfDataContainer {
     /**
      * @return the legendList
      */
-    public List<Disease> getLegendList() {
+    public Set<Disease> getLegendList() {
         return legendList;
     }
 
     /**
      * @param legendList the legendList to set
      */
-    public void setLegendList(List<Disease> legendList) {
+    public void setLegendList(Set<Disease> legendList) {
         this.legendList = legendList;
     }
 }

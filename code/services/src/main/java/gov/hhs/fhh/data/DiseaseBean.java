@@ -392,4 +392,20 @@ public class DiseaseBean implements Disease, Serializable {
         
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Disease && (obj == this || compareTo((Disease) obj) == 0);
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return 1;
+    }
+
 }

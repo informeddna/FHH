@@ -102,7 +102,7 @@ mvn nci-commons:jboss-undeploy (undeploys from the local jboss)
 mvn -f ear/pom.xml -Pci integration-test -Dtest=*SerializeXMLFilesTest* (run a single integration test)
 mvn -f ear/pom.xml -Pci-nostart-nodeploy integration-test -Dtest=*CreatePersonCancelCloseTest* (run a single integration test during development, when app is deployed locally)
 mvn -Ppre-compile -f web/pom.xml install (precompiles jsps)
-
+mvn -f services/pom.xml -Plocal -Dskip-liquibase=true clean generate-test-resources resources:resources resources:testResources compiler:compile compiler:testCompile
 
 
 mvn clean install cargo:deploy -Plocal,pre-compile  pre-compiles the jsps in the war phase

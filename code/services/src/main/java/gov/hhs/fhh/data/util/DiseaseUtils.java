@@ -38,8 +38,11 @@ import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.UserEnteredDisease;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -106,6 +109,30 @@ public class DiseaseUtils {
         return display;
     }
 
+    
+    /**
+     * @param diseases - list of diseases
+     * @return - a disease to unique abbreviation map
+     */
+    public static Map<Disease, String> getUniqueAbbreviationMap(Set<Disease> diseases) {
+        Map<Disease, String> retval = new HashMap<Disease, String>();
+        Map<String, Integer> nonUniqueValueToCount = new HashMap<String, Integer>();
+        for (Disease d : diseases) {
+            String abbreviation = getDiseaseAbbreviation(d);
+            String appendedInteger = "";
+            if (nonUniqueValueToCount.get(abbreviation) == null) {
+                nonUniqueValueToCount.put(abbreviation, 1);
+            } else {
+                int currentCount = nonUniqueValueToCount.get(abbreviation).intValue();
+                appendedInteger = String.valueOf(currentCount);
+                nonUniqueValueToCount.put(abbreviation, currentCount + 1);
+            }
+            retval.put(d, abbreviation + appendedInteger);
+        }
+
+        return retval;
+    }
+    
     /**
      * Method creates disease abbreviation.
      * 

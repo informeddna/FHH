@@ -37,6 +37,7 @@ import gov.hhs.fhh.data.ClinicalObservation;
 import gov.hhs.fhh.data.Disease;
 import gov.hhs.fhh.data.Relative;
 import gov.hhs.fhh.data.RelativeReport;
+import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 
 import java.io.ByteArrayOutputStream;
@@ -47,6 +48,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -138,7 +140,8 @@ public class RelativePdfWriter {
             document.add(diagramH2);
             Paragraph myDate = getPara(getTxtGetter().getText("report.date") + ": " + getFormattedDate());
             document.add(myDate);
-            Image png = Image.getInstance(self.organizeFamilyTree(self));
+            Image png = Image.getInstance(self.organizeFamilyTree(self, 
+                    DiseaseUtils.getUniqueAbbreviationMap(p.getLegendList())));
             png.setAlignment(Image.MIDDLE);
             // CHECKSTYLE:OFF magic numbers for page width/height (10.5, 7.5) in px
             png.scaleToFit(756, 540);
@@ -243,7 +246,7 @@ public class RelativePdfWriter {
      * @throws MalformedURLException
      * @throws BadElementException
      */
-    private PdfPTable makeLegendChart(List<Disease> legendList) throws BadElementException, IOException {
+    private PdfPTable makeLegendChart(Set<Disease> legendList) throws BadElementException, IOException {
         // CHECKSTYLE:OFF magic number
         int cols = 3;
         if (isHighlight()) {
@@ -259,10 +262,12 @@ public class RelativePdfWriter {
         // CHECKTYLE: ON
         getLegendImageCells(table);
 
+        
+        Map<Disease, String> abbreviationMap = DiseaseUtils.getUniqueAbbreviationMap(legendList);
         // add diseases for all people in the chart
         for (Disease d : legendList) {
             StringBuffer name = new StringBuffer();
-            name.append(d.getGeneratedAbbreviation()).append(" = ").append(
+            name.append(abbreviationMap.get(d)).append(" = ").append(
                     StringEscapeUtils.unescapeHtml(d.getReportDisplay()));
             table.addCell(getPara(name.append(" ").toString()));
         }
