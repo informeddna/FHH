@@ -122,7 +122,7 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
   
     @Test
     public void getDiseaseByName() {
-        List diseases = personServiceBean.getDiseaseByName("Cancer");
+        List diseases = personServiceBean.getDiseaseByName("Brain Cancer");
         assertFalse(diseases.isEmpty());
       
     }

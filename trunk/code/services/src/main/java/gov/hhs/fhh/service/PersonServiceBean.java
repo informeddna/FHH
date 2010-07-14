@@ -203,7 +203,7 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
     @SuppressWarnings(UNCHECKED)
     public List<Disease> getDiseaseByName(String diseaseName) {
         Query query = HibernateUtil.getCurrentSession().getNamedQuery("mfhp.observation.findByDisplayName");
-        query.setParameter("displayname", "%" + diseaseName + "%");
+        query.setParameter("displayname", diseaseName);
         return convertToDiseases(query.list());
 
     }
