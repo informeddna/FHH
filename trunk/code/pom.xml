@@ -53,9 +53,9 @@
 
     <!-- General Project information -->
     <scm>
-        <connection>https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</connection>
-        <developerConnection>https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</developerConnection>
-        <url>https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</url>
+        <connection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</connection>
+        <developerConnection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</developerConnection>
+        <url>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</url>
     </scm>
 
 
