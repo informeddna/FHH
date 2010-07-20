@@ -31,15 +31,19 @@ public abstract class AbstractHvTest extends AbstractFHHSeleniumTest {
     }
     
     protected void loginToMshv() throws InterruptedException {
-        // Try to enter email address if site doesn't recognize user.
-        if (selenium.isTextPresent("Enter your e-mail address")) {
-            selenium.type("ctl00_cphMainBody_txtEmail", TestProperties.getHVUserEmail());
-            clickAndWait("xpath=//a[@id='ctl00_cphMainBody_btnContinue']/div[2]");
+        if (selenium.isTextPresent("My Family Health Portrait requires a free HealthVault account")) {
+            selenium.click("ctl00_cphMainBody_continueButton");
+            Thread.sleep(10000);
+            if (selenium.isElementPresent("i1668")) {
+                selenium.click("i1668");
+                Thread.sleep(5000);
+            }
         }
+        
         selenium.type("i0116", TestProperties.getHVUserEmail());
         selenium.type("i0118", TestProperties.getHVUserPW());
-        clickAndWait("i0011");
-        Thread.sleep(9000);
+        clickAndWait("idSIButton9");
+        Thread.sleep(15000);
     }
     
     protected void prepareLoadFromMSHV() throws InterruptedException {
