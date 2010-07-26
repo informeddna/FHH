@@ -17,7 +17,7 @@ INSERT INTO observation_code (observation_id, codes_id) VALUES ((select id from 
 INSERT INTO displayname (language, text) VALUES('en', 'Rectal Cancer'); 
 INSERT INTO observation_displayname (observation_id, displaynames_id) VALUES ((select id from observation where name ='Rectal Cancer'), LAST_INSERT_ID());
 
-INSERT INTO displayname (language, text) VALUES('es', 'C&aacute;ncer rectal'); 
+INSERT INTO displayname (language, text) VALUES('es', 'C&#225;ncer Rectal'); 
 INSERT INTO observation_displayname (observation_id, displaynames_id) VALUES ((select id from observation where name ='Rectal Cancer'), LAST_INSERT_ID());
 
 
