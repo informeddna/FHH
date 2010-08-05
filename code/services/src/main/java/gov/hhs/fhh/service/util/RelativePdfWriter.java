@@ -391,7 +391,7 @@ public class RelativePdfWriter {
                 }
                 if (livingStatus != null) {
                     i18nLivingStatusText.append(getTxtGetter().getText(livingStatus.getResourceKey()));
-                    if ( livingStatus == LivingStatus.NO) {
+                    if ( livingStatus == LivingStatus.NO && rel.getCauseOfDeath() != null) {
                         i18nLivingStatusText.append(", ");
                         i18nLivingStatusText.append(StringEscapeUtils.unescapeHtml(rel.getCauseOfDeath().getReportDisplay()));
                         i18nLivingStatusText.append(" (" + ageRangeEnums.get(rel.getAgeAtDeath()) + ")");
