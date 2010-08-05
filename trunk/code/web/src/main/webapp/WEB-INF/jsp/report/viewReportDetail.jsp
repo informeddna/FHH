@@ -189,7 +189,7 @@
                     <td>
                         <c:if test="${!empty currRelative.livingStatusEnum}">
                             <fmt:message bundle="${der}" key="${currRelative.livingStatusEnum.resourceKey}"/>
-                            <c:if test="${currRelative.livingStatusEnum.htmValue == \"No\"}">
+                            <c:if test="${currRelative.livingStatusEnum.htmValue == \"No\" && not empty currRelative.ageAtDeath}">
 	                            , ${currRelative.causeOfDeath.escapedReportDisplay}
 	                            (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currRelative.ageAtDeath.resourceKey}" /> )
                             </c:if> 
