@@ -1,3 +1,5 @@
-#Tue Jan 27 15:32:26 EST 2009
+#Mon Dec 13 14:44:15 EST 2010
 eclipse.preferences.version=1
+encoding//web/src/main/resources/ApplicationResources_it.properties=UTF-8
+encoding//web/src/main/resources/DataElementResources_it.properties=UTF-8
 encoding//web/src/main/webapp/scripts/ItemSelectorUtils.js=ISO-8859-1

@@ -66,6 +66,10 @@ public class CustomI18nInterceptor extends AbstractInterceptor {
          */
         PT("pt"),
         /**
+         * ITALIAN.
+         */
+        IT("it"),
+        /**
          * ENGLISH.
          */
         EN("en");

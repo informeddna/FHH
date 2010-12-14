@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
@@ -23,69 +24,81 @@ public class AppResourcesTest {
     private Properties en = new Properties();
     private Properties es = new Properties();
     private Properties pt = new Properties();
+    private Properties it = new Properties();
     private Properties enData = new Properties();
     private Properties esData = new Properties();
     private Properties ptData = new Properties();
+    private Properties itData = new Properties();
     private URL enUrl;
     private URL esUrl;
     private URL ptUrl;
+    private URL itUrl;
 
     @Before
     public void init() throws Exception {
         enUrl = this.getClass().getClassLoader().getResource("ApplicationResources.properties");
         esUrl = this.getClass().getClassLoader().getResource("ApplicationResources_es.properties");
         ptUrl = this.getClass().getClassLoader().getResource("ApplicationResources_pt.properties");
+        itUrl = this.getClass().getClassLoader().getResource("ApplicationResources_it.properties");
         en.load(this.getClass().getClassLoader().getResourceAsStream("ApplicationResources.properties"));
         es.load(this.getClass().getClassLoader().getResourceAsStream("ApplicationResources_es.properties"));
         pt.load(this.getClass().getClassLoader().getResourceAsStream("ApplicationResources_pt.properties"));
+        it.load(this.getClass().getClassLoader().getResourceAsStream("ApplicationResources_it.properties"));
         enData.load(this.getClass().getClassLoader().getResourceAsStream("DataElementResources.properties"));
         esData.load(this.getClass().getClassLoader().getResourceAsStream("DataElementResources_es.properties"));
         ptData.load(this.getClass().getClassLoader().getResourceAsStream("DataElementResources_pt.properties"));
+        itData.load(this.getClass().getClassLoader().getResourceAsStream("DataElementResources_it.properties"));
     }
 
-    @Test
-    public void ensureSameKeys() throws Exception {
-        Set<String> enKeys = new HashSet(en.keySet());
-        assertTrue("No keys are in common between the en and es files -- bad!!", enKeys.removeAll(es.keySet()));
-        Set<String> esKeys = new HashSet(es.keySet());
-        assertTrue("No keys are in common between the es and en files -- bad!!", esKeys.removeAll(en.keySet()));
+    
+    private void ensureSameKeys(Properties enProperties, Properties other, final String locale) throws Exception {
+        Set<String> enKeys = new HashSet(enProperties.keySet());
+        assertTrue("No keys are in common between the en and "+ locale +" files -- bad!!", enKeys.removeAll(other.keySet()));
+        Set<String> otherKeys = new HashSet(other.keySet());
+        assertTrue("No keys are in common between the " + locale +" and en files -- bad!!", otherKeys.removeAll(enProperties.keySet()));
 
-        assertEquals("EN extra keys vs ES " + enKeys.toString(), 0, enKeys.size());
-        assertEquals("ES extra keys vs EN" + esKeys.toString(), 0, esKeys.size());
+        StringWriter sw = new StringWriter();
+        if ( enKeys.size() != 0) {
+            for(String key : enKeys) {
+                sw.write(key + "=" + enProperties.getProperty(key) + "\n");
+            }
+        }
+        assertEquals("EN extra keys vs " + locale + ":\n\n" + sw.toString() + "\n", 0, enKeys.size());
+        assertEquals(locale + " extra keys vs EN" + otherKeys.toString(), 0, otherKeys.size());
+    }
+    
+    
+    @Test
+    public void ensureSameKeysES() throws Exception {
+        ensureSameKeys(en, es, "es");
     }
 
     @Test
     public void ensureSameKeysPt() throws Exception {
-        Set<String> enKeys = new HashSet(en.keySet());
-        assertTrue("No keys are in common between the en and pt files -- bad!!", enKeys.removeAll(pt.keySet()));
-        Set<String> ptKeys = new HashSet(pt.keySet());
-        assertTrue("No keys are in common between the pt and en files -- bad!!", ptKeys.removeAll(en.keySet()));
-
-        assertEquals("EN extra keys vs PT " + enKeys.toString(), 0, enKeys.size());
-        assertEquals("PT extra keys vs EN " + ptKeys.toString(), 0, ptKeys.size());
+        ensureSameKeys(en, pt, "pt");
+    }
+    
+    @Test
+    public void ensureSameKeysIt() throws Exception {
+        ensureSameKeys(en, it, "it");
     }
 
     
     @Test
-    public void ensureSameKeysDataElements() throws Exception {
-        Set<String> enKeys = new HashSet(enData.keySet());
-        assertTrue("No keys are in common between the en and es files -- bad!!", enKeys.removeAll(esData.keySet()));
-        Set<String> esKeys = new HashSet(esData.keySet());
-        assertTrue("No keys are in common between the es and pt files -- bad!!", esKeys.removeAll(enData.keySet()));
-        
-        assertEquals("EN extra keys vs ES " + enKeys.toString(), 0, enKeys.size());
-        assertEquals("ES extra keys vs EN " + esKeys.toString(), 0, esKeys.size());
+    public void ensureSameKeysDataElementsES() throws Exception {
+        ensureSameKeys(enData, esData, "es");
     }
 
     @Test
     public void ensureSameKeysDataElementsPt() throws Exception {
-        Set<String> enKeys = new HashSet(enData.keySet());
-        assertTrue("No keys are in common between the en and pt files -- bad!!", enKeys.removeAll(ptData.keySet()));
-        Set<String> ptKeys = new HashSet(ptData.keySet());
-        assertTrue("No keys are in common between the pt and en files -- bad!!", ptKeys.removeAll(enData.keySet()));
+        ensureSameKeys(enData, ptData, "pt");
         
-        assertEquals("EN extra keys vs PT " + enKeys.toString(), 0, enKeys.size());
-        assertEquals("PT extra keys vs EN " + ptKeys.toString(), 0, ptKeys.size());
+    }
+    
+    @Test
+    public void ensureSameKeysDataElementsIt() throws Exception {
+        ensureSameKeys(enData, itData, "it");
+        
     }
 
     @Test

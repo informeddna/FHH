@@ -20,7 +20,7 @@
         <hibernate.annotations.version>3.2.0.ga</hibernate.annotations.version>
 
         <!-- Java version properties -->
-        <compileSource>1.5</compileSource>
+        <compileSource>1.6</compileSource>
 
         <!-- JBoss Configuration properties -->
         <jboss.home>C:/dev/app_servers/jboss-4.0.5.GA</jboss.home>
@@ -145,7 +145,6 @@
                 <configuration>
                     <source>${compileSource}</source>
                     <target>${compileSource}</target>
-                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
