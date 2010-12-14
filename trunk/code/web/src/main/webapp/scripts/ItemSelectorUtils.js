@@ -13,7 +13,7 @@ var ItemSelectorUtils = {
         // Remove the previous COD from the Disease table if one was added.
         ItemSelectorUtils.removeLastAddedCOD(baseId, lastAddedCOD);
         var id = ItemSelectorUtils.addItemToList(baseId, listFieldName, multiple, locale, false, 
-                'personForm_causeOfDeath', 'personForm_selectedCODSubType', 'personForm_relative_ageAtDeath', 
+                'personForm_causeOfDeath', 'personForm_selectedCODSubType', 'personForm_COD_age', 
                 'otherCOD');
         // Set hidden field to the last added COD ID, used for removing the previous COD when a new COD is added.
         if (id != "") {

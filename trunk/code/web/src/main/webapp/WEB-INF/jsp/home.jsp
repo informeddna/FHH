@@ -5,6 +5,9 @@
 <s:elseif test="#request.locale.language == 'pt'">
     <fmt:setLocale value="pt" scope="session" />
 </s:elseif>
+<s:elseif test="#request.locale.language == 'it'">
+    <fmt:setLocale value="it" scope="session" />
+</s:elseif>
 <s:else>
     <fmt:setLocale value="en" scope="session" />
 </s:else>
@@ -68,6 +71,10 @@
                             <s:param name="request_locale" value="'pt'"/>
                             <s:param name="maintainState" value="true"/>
                         </s:url>
+                        <s:url id="it" action="home.action">
+                            <s:param name="request_locale" value="'it'"/>
+                            <s:param name="maintainState" value="true"/>
+                        </s:url>
                         <s:if test="#request.locale.language != 'en'">
                         <s:a id="en" href="%{en}"><fmt:message key="menu.text.inEnglish" /></s:a>
                         <br/>
@@ -78,6 +85,10 @@
                         </s:if>
                         <s:if test="#request.locale.language != 'pt' ">
                         <s:a id="pt" href="%{pt}"><fmt:message key="menu.text.enPortugues" /></s:a>
+                        <br/>
+                        </s:if>
+                        <s:if test="#request.locale.language != 'it' ">
+                        <s:a id="it" href="%{it}"><fmt:message key="menu.text.inItaliano" /></s:a>
                         <br/>
                         </s:if>
                     </div>
@@ -96,6 +107,9 @@
                                     </s:if> 
                                     <s:if test="#request.locale.language != 'pt' ">
                                         [<s:a id="js_pt" href="%{pt}"><fmt:message key="menu.text.enPortugues" /></s:a>]
+                                    </s:if> 
+                                    <s:if test="#request.locale.language != 'it' ">
+                                        [<s:a id="js_it" href="%{it}"><fmt:message key="menu.text.inItaliano" /></s:a>]
                                     </s:if> 
                                     </span>
                             </h1>
