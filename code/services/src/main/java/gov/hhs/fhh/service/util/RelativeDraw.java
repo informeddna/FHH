@@ -65,11 +65,11 @@ import com.fiveamsolutions.hl7.model.mfhp.Gender;
  * @author hniedner
  */
 // CHECKSTYLE:OFF legacy code slightly updated
-@SuppressWarnings({"PMD.ExcessiveClassLength","PMD.CyclomaticComplexity","PMD.TooManyMethods",
-    "PMD.LooseCoupling","PMD.ExcessiveMethodLength","PMD.UnusedPrivateField","PMD.NPathComplexity",
-    "PMD.AvoidReassigningParameters","PMD.CollapsibleIfStatements","PMD.UnusedLocalVariable",
-    "PMD.NcssMethodCount","PMD.ImmutableField","PMD.TooManyFields",
-    "PMD.SignatureDeclareThrowsException","PMD.AvoidThrowingRawExceptionTypes","PMD.SystemPrintln"})
+@SuppressWarnings({ "PMD.ExcessiveClassLength", "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.LooseCoupling",
+        "PMD.ExcessiveMethodLength", "PMD.UnusedPrivateField", "PMD.NPathComplexity", "PMD.AvoidReassigningParameters",
+        "PMD.CollapsibleIfStatements", "PMD.UnusedLocalVariable", "PMD.NcssMethodCount", "PMD.ImmutableField",
+        "PMD.TooManyFields", "PMD.SignatureDeclareThrowsException", "PMD.AvoidThrowingRawExceptionTypes",
+        "PMD.SystemPrintln" })
 public class RelativeDraw extends Relative {
     private static final long serialVersionUID = 1L;
 
@@ -77,10 +77,10 @@ public class RelativeDraw extends Relative {
      * Yellow Color for highlighting proband.
      */
     public static final Color YELLOW_HIGHLIGHT = new Color(234, 237, 99);
-    
-   /**
-    * Red Color for highlighting.
-    */
+
+    /**
+     * Red Color for highlighting.
+     */
     public static final Color RED_HIGHLIGHT = new Color(209, 35, 35);
     /**
      * Blue Color for highlighted diseases.
@@ -105,13 +105,12 @@ public class RelativeDraw extends Relative {
     public final static int CHILDRENBARLENGTH = 30;
     public final static int SIBLINGSPACING = 70;
 
-    
     private final MultiValueMap parents = createMultiMap(); // person->their parents
     private final MultiValueMap children = createMultiMap(); // person->their children
     private final MultiValueMap siblings = createMultiMap(); // person->their siblings
     private List<RelativeDraw> kids = new ArrayList<RelativeDraw>();
     private TextGetter textGetter;
-    
+
     /**
      * Copy constructor.
      * 
@@ -274,7 +273,7 @@ public class RelativeDraw extends Relative {
         if (p.getKids().size() == 0 || !includeChildren) {
             return PERSONSIZE + SIBLINGSPACING;
         }
-        for (final RelativeDraw rel: p.getKids()) {
+        for (final RelativeDraw rel : p.getKids()) {
             ret += getChildrenWidth(rel);
         }
         return ret;
@@ -288,19 +287,20 @@ public class RelativeDraw extends Relative {
      * @param y the y position of the person on the image
      * @param r RelativeDraw whose children should be drawn
      * @param showNames boolean indicates whether names should be shown in the image
-     * @param abbreviationMap - abbreviations are global across all diseases of all family members, so this has to be passed around.
+     * @param abbreviationMap - abbreviations are global across all diseases of all family members, so this has to be
+     *            passed around.
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
-    public void draw(final java.awt.Graphics2D g, final int x, final int y, final RelativeDraw r, final boolean showNames, final Disease highlight, 
-            Map<Disease, String> abbreviationMap) {
-        //insert hints to make a nice image
-        final RenderingHints rh = g.getRenderingHints ();
-        rh.put (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHints (rh);
-        //set coords
+    public void draw(final java.awt.Graphics2D g, final int x, final int y, final RelativeDraw r,
+            final boolean showNames, final Disease highlight, Map<Disease, String> abbreviationMap) {
+        // insert hints to make a nice image
+        final RenderingHints rh = g.getRenderingHints();
+        rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHints(rh);
+        // set coords
         r.setXLoc(x);
         r.setYLoc(y);
-        //unknown gender
+        // unknown gender
         if (r.getGender() == null) {
             final boolean highlighted = writeDiseaseCheckHighlight(g, r, highlight, abbreviationMap);
             if (highlighted) {
@@ -327,11 +327,11 @@ public class RelativeDraw extends Relative {
                     g.setColor(Color.BLACK);
                 }
                 g.drawRect(x, y, PERSONSIZE, PERSONSIZE);
-                
+
                 if (r.getCode().equals(RelativeCode.SELF.toString())) {
                     ShapeUtil.drawRightDirectedArrow(g, x + 7 * PERSONSIZE / 8, y + PERSONSIZE / 2);
                 }
-                
+
                 if (spouse != null && spouse != this || r.getSpouse() != null) {
                     // exception for mother of the father - she shows up twice if drawn here
                     if (!spouse.getCodeEnum().equals(RelativeCode.NMTH)) {
@@ -377,7 +377,7 @@ public class RelativeDraw extends Relative {
         String relativeDisplay = getText(rc);
         // remove maternal and paternal for length
         if (relativeDisplay.startsWith("Paternal ") || relativeDisplay.startsWith("Maternal ")) {
-            relativeDisplay = relativeDisplay.substring(9,relativeDisplay.length());
+            relativeDisplay = relativeDisplay.substring(9, relativeDisplay.length());
         }
         if (relativeDisplay.endsWith("por parte de madre") || relativeDisplay.endsWith("por parte de padre")) {
             relativeDisplay = relativeDisplay.substring(0, relativeDisplay.indexOf("por") - 1);
@@ -402,8 +402,8 @@ public class RelativeDraw extends Relative {
                     + g.getFontMetrics().getHeight());
         }
     }
-    
-    //female family member
+
+    // female family member
     private void drawFemale(final Graphics2D g, final int x, final int y, final Color highlight) {
         final Ellipse2D circle = makeCircle(x, y);
         if (highlight != null) {
@@ -414,7 +414,7 @@ public class RelativeDraw extends Relative {
         g.draw(circle);
     }
 
-    //unknown gender family member
+    // unknown gender family member
     private void drawDiamond(final Graphics2D g, final int x, final int y, final Color highlight) {
         final Polygon diamond = makeDiamond(x, y);
         if (highlight != null) {
@@ -436,8 +436,8 @@ public class RelativeDraw extends Relative {
      * @param r RelativeDraw whose children should be drawn
      * @param showNames
      */
-    private void drawChildrenOfFemaleOrNongendered(final java.awt.Graphics2D g, final RelativeDraw r, final boolean showNames, final Disease highlight, 
-            Map<Disease, String> abbreviationMap) {
+    private void drawChildrenOfFemaleOrNongendered(final java.awt.Graphics2D g, final RelativeDraw r,
+            final boolean showNames, final Disease highlight, Map<Disease, String> abbreviationMap) {
         // female aunt or sibling (no spouse) - draw children
         if (r.getKids().size() > 0) {
             r.spouse = this;
@@ -473,12 +473,12 @@ public class RelativeDraw extends Relative {
      */
     private Ellipse2D.Double makeCircle(final int x, final int y) {
         final Ellipse2D.Double circle;
-        //same width and height = radius
+        // same width and height = radius
         final double radius = PERSONSIZE;
         circle = new Ellipse2D.Double(x, y, radius, radius);
         return circle;
     }
-    
+
     /**
      * Method draws the children of this relative.
      * 
@@ -486,12 +486,12 @@ public class RelativeDraw extends Relative {
      * @param showNames boolean indicates whether names will be printed on the chart
      * @param r RelaiveDraw whose children should be drawn
      */
-    public void drawChildren(final java.awt.Graphics2D g, final boolean showNames, final RelativeDraw r, final Disease highlight, 
-            Map<Disease, String> abbreviationMap) {
+    public void drawChildren(final java.awt.Graphics2D g, final boolean showNames, final RelativeDraw r,
+            final Disease highlight, Map<Disease, String> abbreviationMap) {
         // convert all descendants to RelativeDraws - shouldn't that have been done already?
         final List<RelativeDraw> l = new ArrayList<RelativeDraw>(r.getKids());
         r.setAutoDrawChildren(true);
-       
+
         java.awt.geom.Line2D.Double connectorLine;
         // connect the parents
         if (!r.isHasSpouse() || spouse == this) {
@@ -504,10 +504,9 @@ public class RelativeDraw extends Relative {
             final RelativeDraw spouse = r.getSpouse();
             g.drawLine(r.getXLoc() + PERSONSIZE, r.getYLoc() + PERSONSIZE / 2, spouse.getXLoc(), spouse.getYLoc()
                     + PERSONSIZE / 2);
-            connectorLine = new java.awt.geom.Line2D.Double((r.getXLoc() + r.getSpouse().getXLoc() + PERSONSIZE) / 2, r
-                    .getYLoc()
-                    + PERSONSIZE / 2, (r.getXLoc() + r.getSpouse().getXLoc() + PERSONSIZE) / 2, r.getYLoc()
-                    + PERSONSIZE / 2 + CHILDRENDISTANCE);
+            connectorLine = new java.awt.geom.Line2D.Double((r.getXLoc() + r.getSpouse().getXLoc() + PERSONSIZE) / 2,
+                    r.getYLoc() + PERSONSIZE / 2, (r.getXLoc() + r.getSpouse().getXLoc() + PERSONSIZE) / 2, r.getYLoc()
+                            + PERSONSIZE / 2 + CHILDRENDISTANCE);
         }
         g.draw(connectorLine);
 
@@ -532,11 +531,9 @@ public class RelativeDraw extends Relative {
             // get the last child and see if that child has children - this sets the size of this child grouping
             if (l.get((l.size() - 1)).getKids().size() > 1) {
                 if (l.get(0).getKids().size() > 1) {
-                    lineLength -= r.getChildrenWidth(l.get(0)) / 2 - PERSONSIZE / 2 - SIBLINGSPACING
-                            / 2;
+                    lineLength -= r.getChildrenWidth(l.get(0)) / 2 - PERSONSIZE / 2 - SIBLINGSPACING / 2;
                 }
-                lineLength -= r.getChildrenWidth(l.get(l.size() - 1)) / 2 - PERSONSIZE / 2
-                        - SIBLINGSPACING / 2;
+                lineLength -= r.getChildrenWidth(l.get(l.size() - 1)) / 2 - PERSONSIZE / 2 - SIBLINGSPACING / 2;
             }
             double lastChild = 0;
             for (int lcv = 0; lcv < l.size(); lcv++) {
@@ -547,8 +544,8 @@ public class RelativeDraw extends Relative {
                     final int lastWidth = r.getChildrenWidth(l.get(lcv - 1));
                     childX = lastChild + lastWidth / 2 + r.getChildrenWidth(l.get(lcv)) / 2;
                 }
-                final java.awt.geom.Line2D.Double childBar = new java.awt.geom.Line2D.Double(childX, connectorLine.getY2(),
-                        childX, connectorLine.getY2() + CHILDRENBARLENGTH);
+                final java.awt.geom.Line2D.Double childBar = new java.awt.geom.Line2D.Double(childX,
+                        connectorLine.getY2(), childX, connectorLine.getY2() + CHILDRENBARLENGTH);
                 lastChild = childX;
                 // draw the bar that connects all of the children
                 g.draw(childBar);
@@ -560,8 +557,8 @@ public class RelativeDraw extends Relative {
             }
             final int lineStart = l.get(0).getXLoc() + PERSONSIZE / 2;
             final int lineEnd = l.get(l.size() - 1).getXLoc() + PERSONSIZE / 2;
-            final java.awt.geom.Line2D.Double crossLine = new java.awt.geom.Line2D.Double(lineStart, connectorLine
-                    .getY2(), lineEnd, connectorLine.getY2());
+            final java.awt.geom.Line2D.Double crossLine = new java.awt.geom.Line2D.Double(lineStart,
+                    connectorLine.getY2(), lineEnd, connectorLine.getY2());
             g.draw(crossLine);
             // draw the line between any twins - this could stand refactoring
             final List<RelativeDraw> theTwins = new ArrayList<RelativeDraw>();
@@ -604,234 +601,226 @@ public class RelativeDraw extends Relative {
                 (lastTwin.getXLoc() + PERSONSIZE / 2 + midPoint) / 2, firstTwin.getYLoc() - CHILDRENBARLENGTH / 2);
     }
 
-    
-
     /**
      * Organizes family and creates drawing for the proband.
      * 
      * @param self Person (proband) to be organized
      * @return byte[] to be drawn
-     * @throws Exception 
+     * @throws Exception
      */
-    public byte[] organizeFamilyTree(final Person self, Map<Disease, String> abbreviationMap) throws Exception  {
+    public byte[] organizeFamilyTree(final Person self, Map<Disease, String> abbreviationMap) throws Exception {
         try {
 
             RelativeDraw firstGen2 = null;
             RelativeDraw firstGen3 = null;
             final Set<RelativeDraw> family = new ListOrderedSet();
 
-                // Map family = new HashMap();
-                final List<Relative> maternalHalfSiblings = new ArrayList<Relative>();
-                final List<Relative> paternalHalfSiblings = new ArrayList<Relative>();
-                final List originalRelatives = self.getRelatives();
-                final List<RelativeDraw> relatives = new ArrayList(convertToRelativeDraw(originalRelatives));
-                
+            // Map family = new HashMap();
+            final List<Relative> maternalHalfSiblings = new ArrayList<Relative>();
+            final List<Relative> paternalHalfSiblings = new ArrayList<Relative>();
+            final List originalRelatives = self.getRelatives();
+            final List<RelativeDraw> relatives = new ArrayList(convertToRelativeDraw(originalRelatives));
 
-                final Relative proband = new Relative(self, RelativeCode.SELF);
-                //RelativeDraw selfDraw = new RelativeDraw(proband);
-                Relative pGrandfather = new Relative();
-                Relative pGrandmother = new Relative();
-                Relative mGrandfather = new Relative();
-                Relative mGrandmother = new Relative();
-                Relative dad = null;
-                Relative mom = null;
-                
-                final List<Relative> fatherSiblings = new ArrayList<Relative>();
-                final List<Relative> motherSiblings = new ArrayList<Relative>();
-                
-                boolean probandGrandkids = false;
+            final Relative proband = new Relative(self, RelativeCode.SELF);
+            // RelativeDraw selfDraw = new RelativeDraw(proband);
+            Relative pGrandfather = new Relative();
+            Relative pGrandmother = new Relative();
+            Relative mGrandfather = new Relative();
+            Relative mGrandmother = new Relative();
+            Relative dad = null;
+            Relative mom = null;
 
-                int cousinCount = 0; // used for determining size of drawing
-                
-                final List<RelativeDraw> myRels = new ArrayList<RelativeDraw>(convertToRelativeDraw(self.getRelatives()));
-                // go through the relatives and slap them into the sets
-                for (final Relative rel : self.getRelatives()) {
-                    switch (rel.getCodeEnum()) {
-                    case MAUNT:
-                    case MUNCLE:
-                        motherSiblings.add(rel);
-                        addSiblings(self.getMother(), rel);
-                        break;
-                    case PAUNT:
-                        fatherSiblings.add(rel);
-                        addSiblings(self.getFather(), rel);
-                        break;
-                    case PUNCLE:
-                        firstGen2 = copy(rel);
-                        fatherSiblings.add(rel);
-                        addSiblings(self.getFather(), rel);
-                        break;
-                    case MCOUSN:
-                    case PCOUSN:
-                        if (rel.getMother() != null) {
-                            addParentChild(rel, rel.getMother());
-                        } else {
-                            addParentChild(rel, rel.getFather());
-                        }
-                        cousinCount++;
-                        break;
-                    case GRNDAU:
-                        probandGrandkids = true;
-                    case GRNSON:
-                        probandGrandkids = true;
-                    case NEPHEW:
-                    case NIECE:
-                        if (rel.getMother() != null) {
-                            addParentChild(rel, rel.getMother());
-                        } else {
-                            addParentChild(rel, rel.getFather());
-                        }                
-                        break;
-                    case HBRO:
-                    case HSIS:
-                        if (rel.getMother() != null) {
-                            addParentChild(rel, rel.getMother());
-                            maternalHalfSiblings.add(rel);
-                        } else {
-                            addParentChild(rel, rel.getFather());
-                            paternalHalfSiblings.add(rel);
-                        }                
-                        break;
-                    case DAU:
-                    case SON:
-                        addParentChild(rel, proband);
-                        break;
-                    case PGRFTH:
-                        pGrandfather = rel;
-                        addParentChild(self.getFather(), rel);
-                        break;
-                    case PGRMTH:
-                        pGrandmother = rel;
-                        break;
-                    case MGRFTH:
-                        mGrandfather = rel;
-                        addParentChild(self.getMother(), rel);
-                        break;
-                    case MGRMTH:
-                        mGrandmother = rel;
-                        break;
-                    case NBRO:
-                        addParentChild(rel, self.getMother());
-                        addParentChild(rel, self.getFather());
-                        addSiblings(proband, rel);
-                        break;
-                    case NSIS:
-                        addParentChild(rel, self.getMother());
-                        addParentChild(rel, self.getFather());
-                        addSiblings(proband, rel);
-                        break;
-                    case NFTH:
-                        dad = rel;
-                        addParentChild(proband, rel);
-                        break;
-                    case NMTH:
-                        mom = rel;
-                        break;
-                        default:
-                        throw new IllegalStateException("A specifier was encountered as relative code");    
+            final List<Relative> fatherSiblings = new ArrayList<Relative>();
+            final List<Relative> motherSiblings = new ArrayList<Relative>();
+
+            boolean probandGrandkids = false;
+
+            int cousinCount = 0; // used for determining size of drawing
+
+            final List<RelativeDraw> myRels = new ArrayList<RelativeDraw>(convertToRelativeDraw(self.getRelatives()));
+            // go through the relatives and slap them into the sets
+            for (final Relative rel : self.getRelatives()) {
+                switch (rel.getCodeEnum()) {
+                case MAUNT:
+                case MUNCLE:
+                    motherSiblings.add(rel);
+                    addSiblings(self.getMother(), rel);
+                    break;
+                case PAUNT:
+                    fatherSiblings.add(rel);
+                    addSiblings(self.getFather(), rel);
+                    break;
+                case PUNCLE:
+                    firstGen2 = copy(rel);
+                    fatherSiblings.add(rel);
+                    addSiblings(self.getFather(), rel);
+                    break;
+                case MCOUSN:
+                case PCOUSN:
+                    if (rel.getMother() != null) {
+                        addParentChild(rel, rel.getMother());
+                    } else {
+                        addParentChild(rel, rel.getFather());
                     }
-                }
-
-                if (firstGen2 == null) {
-                    firstGen2 = copy(dad);
-                }
-                    
-                final RelativeDraw father = copy(dad);
-                final RelativeDraw selfDraw = copy(proband);
-                boolean haveKidsOrNiecesNephews = false;
-                boolean haveGrandkids = false;
-                // organize my own kids and grandkids) as descendant of dad
-                for (final Relative myKid: getChildren(proband)) {
-                    for (final Relative myGrandkid: getChildren(myKid)) {
-                        myKid.getDescendants().add(myGrandkid);
-                        haveGrandkids = true;
+                    cousinCount++;
+                    break;
+                case GRNDAU:
+                    probandGrandkids = true;
+                case GRNSON:
+                    probandGrandkids = true;
+                case NEPHEW:
+                case NIECE:
+                    if (rel.getMother() != null) {
+                        addParentChild(rel, rel.getMother());
+                    } else {
+                        addParentChild(rel, rel.getFather());
                     }
+                    break;
+                case HBRO:
+                case HSIS:
+                    if (rel.getMother() != null) {
+                        addParentChild(rel, rel.getMother());
+                        maternalHalfSiblings.add(rel);
+                    } else {
+                        addParentChild(rel, rel.getFather());
+                        paternalHalfSiblings.add(rel);
+                    }
+                    break;
+                case DAU:
+                case SON:
+                    addParentChild(rel, proband);
+                    break;
+                case PGRFTH:
+                    pGrandfather = rel;
+                    addParentChild(self.getFather(), rel);
+                    break;
+                case PGRMTH:
+                    pGrandmother = rel;
+                    break;
+                case MGRFTH:
+                    mGrandfather = rel;
+                    addParentChild(self.getMother(), rel);
+                    break;
+                case MGRMTH:
+                    mGrandmother = rel;
+                    break;
+                case NBRO:
+                    addParentChild(rel, self.getMother());
+                    addParentChild(rel, self.getFather());
+                    addSiblings(proband, rel);
+                    break;
+                case NSIS:
+                    addParentChild(rel, self.getMother());
+                    addParentChild(rel, self.getFather());
+                    addSiblings(proband, rel);
+                    break;
+                case NFTH:
+                    dad = rel;
+                    addParentChild(proband, rel);
+                    break;
+                case NMTH:
+                    mom = rel;
+                    break;
+                default:
+                    throw new IllegalStateException("A specifier was encountered as relative code");
+                }
+            }
+
+            if (firstGen2 == null) {
+                firstGen2 = copy(dad);
+            }
+
+            final RelativeDraw father = copy(dad);
+            final RelativeDraw selfDraw = copy(proband);
+            boolean haveKidsOrNiecesNephews = false;
+            boolean haveGrandkids = false;
+            // organize my own kids and grandkids) as descendant of dad
+            for (final Relative myKid : getChildren(proband)) {
+                for (final Relative myGrandkid : getChildren(myKid)) {
+                    myKid.getDescendants().add(myGrandkid);
+                    haveGrandkids = true;
+                }
+                haveKidsOrNiecesNephews = true;
+                final RelativeDraw kid = copy(myKid);
+                kid.setKids(convertToRelativeDraw(myKid.getDescendants()));
+                selfDraw.getKids().add(kid);
+            }
+            // organize my siblings (and their kids) as descendants of dad
+            // brothers on left, then proband, then sisters on right
+            // set first and last siblings to account for half siblings
+            RelativeDraw firstSibling = null;
+            RelativeDraw lastSibling = null;
+            final ArrayList<RelativeDraw> holdingSisters = new ArrayList<RelativeDraw>();
+            for (final Relative r : getSiblings(proband)) {
+                for (final Relative nieceNephew : getChildren(r)) {
+                    r.getDescendants().add(nieceNephew);
                     haveKidsOrNiecesNephews = true;
-                    final RelativeDraw kid = copy(myKid);
-                    kid.setKids(convertToRelativeDraw(myKid.getDescendants()));
-                    selfDraw.getKids().add(kid);
                 }
-                // organize my siblings (and their kids) as descendants of dad
-                // brothers on left, then proband, then sisters on right
-                // set first and last siblings to account for half siblings
-                RelativeDraw firstSibling = null;
-                RelativeDraw lastSibling = null;
-                final ArrayList<RelativeDraw> holdingSisters = new ArrayList<RelativeDraw>();
-                for (final Relative r: getSiblings(proband)) {
-                    for (final Relative nieceNephew: getChildren(r)) {
-                        r.getDescendants().add(nieceNephew);
-                        haveKidsOrNiecesNephews = true;
+                final RelativeDraw rel = copy(r);
+                rel.setKids(convertToRelativeDraw(r.getDescendants()));
+                if (r.getCodeEnum().equals(RelativeCode.NBRO)) {
+                    if (firstSibling == null) {
+                        firstSibling = rel;
                     }
+                    father.getKids().add(rel);
+                } else {
+                    holdingSisters.add(rel);
+                }
+            }
+            // add self
+            father.getKids().add(selfDraw);
+            lastSibling = selfDraw;
+            // add sisters
+            father.getKids().addAll(holdingSisters);
+            if (!holdingSisters.isEmpty()) {
+                lastSibling = holdingSisters.get(holdingSisters.size() - 1);
+            }
+            if (firstSibling == null) {
+                firstSibling = selfDraw;
+            }
+
+            final RelativeDraw paternalGrandfather = copy(pGrandfather);
+            // organize father's siblings as descendants of paternal grandfather
+            // brother on left, then sisters, and father on far right
+            // father should be last
+            for (final Relative r : fatherSiblings) {
+                final RelativeDraw rel = copy(r);
+                if (!r.getCodeEnum().equals(RelativeCode.NFTH)) {
+                    for (final Relative cousin : getChildren(r)) {
+                        r.getDescendants().add(cousin);
+                        rel.setKids(convertToRelativeDraw(r.getDescendants()));
+                    }
+                    paternalGrandfather.getKids().add(rel);
+                }
+            }
+            final RelativeDraw mother = copy(mom);
+            father.setSpouse(mother);
+            // set father to not automatically draw children - we'll do this manually
+            father.setAutoDrawChildren(false);
+            paternalGrandfather.getKids().add(father);
+
+            // organize mother's siblings as descendants of paternal grandfather
+            // mother should be first
+            final RelativeDraw maternalGrandfather = copy(mGrandfather);
+            maternalGrandfather.getKids().add(mother);
+            for (final Relative r : motherSiblings) {
+                if (!r.getCodeEnum().equals(RelativeCode.NMTH)) {
                     final RelativeDraw rel = copy(r);
-                    rel.setKids(convertToRelativeDraw(r.getDescendants()));
-                    if (r.getCodeEnum().equals(RelativeCode.NBRO)) {
-                        if (firstSibling == null) {
-                            firstSibling = rel;
-                        }
-                        father.getKids().add(rel);
+                    for (final Relative cousin : getChildren(r)) {
+                        r.getDescendants().add(cousin);
+                        rel.setKids(convertToRelativeDraw(r.getDescendants()));
                     }
-                    else {
-                        holdingSisters.add(rel);
-                    }
+                    maternalGrandfather.getKids().add(rel);
                 }
-                // add self
-                father.getKids().add(selfDraw);
-                lastSibling = selfDraw;
-                // add sisters
-                father.getKids().addAll(holdingSisters);
-                if (!holdingSisters.isEmpty()) {
-                    lastSibling = holdingSisters.get(holdingSisters.size()-1);
-                }
-                if (firstSibling == null) {
-                    firstSibling = selfDraw;
-                }
+            }
 
-                final RelativeDraw paternalGrandfather = copy(pGrandfather);
-                // organize father's siblings as descendants of paternal grandfather
-                // brother on left, then sisters, and father on far right
-                // father should be last
-                for (final Relative r: fatherSiblings) {
-                    final RelativeDraw rel = copy(r);
-                    if (!r.getCodeEnum().equals(RelativeCode.NFTH)) {
-                        for (final Relative cousin: getChildren(r)) {
-                            r.getDescendants().add(cousin);
-                            rel.setKids(convertToRelativeDraw(r.getDescendants()));
-                        }
-                        paternalGrandfather.getKids().add(rel);
-                    }
-                }
-                final RelativeDraw mother = copy(mom);
-                father.setSpouse(mother);
-                // set father to not automatically draw children - we'll do this manually
-                father.setAutoDrawChildren(false);
-                paternalGrandfather.getKids().add(father);
+            final RelativeDraw paternalGrandmother = copy(pGrandmother);
+            final RelativeDraw maternalGrandmother = copy(mGrandmother);
+            paternalGrandfather.setSpouse(paternalGrandmother);
+            maternalGrandfather.setSpouse(maternalGrandmother);
 
-                // organize mother's siblings as descendants of paternal grandfather
-                // mother should be first
-                final RelativeDraw maternalGrandfather = copy(mGrandfather);
-                maternalGrandfather.getKids().add(mother);
-                for (final Relative r: motherSiblings) {
-                    if (!r.getCodeEnum().equals(RelativeCode.NMTH)) {
-                        final RelativeDraw rel = copy(r);
-                        for (final Relative cousin: getChildren(r)) {
-                            r.getDescendants().add(cousin);
-                            rel.setKids(convertToRelativeDraw(r.getDescendants()));
-                        }
-                        maternalGrandfather.getKids().add(rel);
-                    }
-                }
-
-                final RelativeDraw paternalGrandmother = copy(pGrandmother);
-                final RelativeDraw maternalGrandmother = copy(mGrandmother);
-                paternalGrandfather.setSpouse(paternalGrandmother);
-                maternalGrandfather.setSpouse(maternalGrandmother);
-                
-
-                final int halfSiblingSpace = Math.max(paternalHalfSiblings.size(), maternalHalfSiblings.size()) * 2
-                        * (PERSONSIZE + SIBLINGSPACING);
-                
-                
-
+            final int halfSiblingSpace = Math.max(paternalHalfSiblings.size(), maternalHalfSiblings.size()) * 2
+                    * (PERSONSIZE + SIBLINGSPACING);
 
             // ---------------- Start Drawing -------------------------------------
             final int widthSpacer = 20;
@@ -841,8 +830,8 @@ public class RelativeDraw extends Relative {
 
             int floatUnderSpace = 0;
             if (cousinCount == 0) {
-                floatUnderSpace = Math.min(paternalGrandfather.getChildrenWidth(paternalGrandfather), maternalGrandfather
-                        .getChildrenWidth(maternalGrandfather));
+                floatUnderSpace = Math.min(paternalGrandfather.getChildrenWidth(paternalGrandfather),
+                        maternalGrandfather.getChildrenWidth(maternalGrandfather));
             }
 
             int height = 300;
@@ -853,7 +842,7 @@ public class RelativeDraw extends Relative {
                 height = 550;
             }
             final int imageWidth = Math.max(width, 700);
-            //int imageSize = width;
+            // int imageSize = width;
 
             final java.awt.image.BufferedImage image = new java.awt.image.BufferedImage(imageWidth, height,
                     java.awt.image.BufferedImage.TYPE_INT_RGB);
@@ -890,7 +879,8 @@ public class RelativeDraw extends Relative {
 
             paternalGrandfather.setXLoc(startPos);
             paternalGrandfather.setYLoc(yPos);
-            paternalGrandfather.draw(g, startPos, yPos, paternalGrandfather, showNames, getHighlightDisease(), abbreviationMap);
+            paternalGrandfather.draw(g, startPos, yPos, paternalGrandfather, showNames, getHighlightDisease(),
+                    abbreviationMap);
 
             final int mg = paternalGrandfather.getXLoc()
                     + paternalGrandfather.getChildrenWidth(paternalGrandfather)
@@ -904,7 +894,8 @@ public class RelativeDraw extends Relative {
 
             maternalGrandfather.setXLoc(mg);
             maternalGrandfather.setYLoc(yPos);
-            maternalGrandfather.draw(g, mg, yPos, maternalGrandfather, showNames, getHighlightDisease(), abbreviationMap);
+            maternalGrandfather.draw(g, mg, yPos, maternalGrandfather, showNames, getHighlightDisease(),
+                    abbreviationMap);
             father.drawChildren(g, showNames, father, getHighlightDisease(), abbreviationMap);
 
             // Draw half siblings
@@ -915,8 +906,8 @@ public class RelativeDraw extends Relative {
                             firstSibling.getYLoc(), myrel, showNames, getHighlightDisease(), abbreviationMap);
                     // think need to add this to draw, but not sure - don't know how to get dad's x and y locations
                     final java.awt.geom.Line2D.Double upline = new java.awt.geom.Line2D.Double(myrel.getXLoc()
-                            + RelativeDraw.PERSONSIZE / 2, myrel.getYLoc(), father.getXLoc() + RelativeDraw.PERSONSIZE / 2,
-                            father.getYLoc() + RelativeDraw.PERSONSIZE);
+                            + RelativeDraw.PERSONSIZE / 2, myrel.getYLoc(), father.getXLoc() + RelativeDraw.PERSONSIZE
+                            / 2, father.getYLoc() + RelativeDraw.PERSONSIZE);
                     g.draw(upline);
                     firstSibling = myrel;
                 }
@@ -928,8 +919,8 @@ public class RelativeDraw extends Relative {
                             lastSibling.getYLoc(), myrel, showNames, getHighlightDisease(), abbreviationMap);
                     // think need to add this to draw, but not sure - don't know how to get dad's x and y locations
                     final java.awt.geom.Line2D.Double upline = new java.awt.geom.Line2D.Double(myrel.getXLoc()
-                            + RelativeDraw.PERSONSIZE / 2, myrel.getYLoc(), mother.getXLoc() + RelativeDraw.PERSONSIZE / 2,
-                            mother.getYLoc() + RelativeDraw.PERSONSIZE);
+                            + RelativeDraw.PERSONSIZE / 2, myrel.getYLoc(), mother.getXLoc() + RelativeDraw.PERSONSIZE
+                            / 2, mother.getYLoc() + RelativeDraw.PERSONSIZE);
                     g.draw(upline);
                     lastSibling = myrel;
                 }
@@ -937,17 +928,15 @@ public class RelativeDraw extends Relative {
             final PngEncoderB encoder = new PngEncoderB(image);
             encoder.setCompressionLevel(5);
             return encoder.pngEncode();
-            
-        }
-        finally { 
-            final int x=0; 
+
+        } finally {
+            final int x = 0;
         }
     }
 
     protected RelativeDraw copy(final Relative pGrandmother) {
         return new RelativeDraw(pGrandmother, textGetter);
     }
-
 
     /**
      * Method converts list of Relative objects to RelativeDraw objects. Also assigns Gender to Relatives from which
@@ -958,11 +947,11 @@ public class RelativeDraw extends Relative {
     protected List<RelativeDraw> convertToRelativeDraw(final Collection<Relative> relatives) {
         final List<RelativeDraw> r = new ArrayList<RelativeDraw>();
         for (final Relative myrel : relatives) {
-//            Shouldn't be needed!
-//            myrel.setUuid(UUIDFieldHandler.createUuidFromId(relatives.indexOf(myrel)));
+            // Shouldn't be needed!
+            // myrel.setUuid(UUIDFieldHandler.createUuidFromId(relatives.indexOf(myrel)));
             // assign gender in rd if we can intuit it
-            if (myrel.getGender() == null
-                    || !myrel.getGender().equals(Gender.FEMALE) || !myrel.getGender().equals(Gender.MALE)) {
+            if (myrel.getGender() == null || !myrel.getGender().equals(Gender.FEMALE)
+                    || !myrel.getGender().equals(Gender.MALE)) {
                 getImpliedGender(myrel);
             }
             final RelativeDraw rd = copy(myrel);
@@ -971,22 +960,20 @@ public class RelativeDraw extends Relative {
         return r;
     }
 
-    
     /**
      * @param myrel
      */
     protected void getImpliedGender(final Relative myrel) {
-            if (myrel instanceof Relative && myrel.getCodeEnum().getImpliedGender() != null) {
-                myrel.setGender(myrel.getCodeEnum().getImpliedGender());
-            }
+        if (myrel instanceof Relative && myrel.getCodeEnum().getImpliedGender() != null) {
+            myrel.setGender(myrel.getCodeEnum().getImpliedGender());
+        }
     }
 
-    
     private void addSiblings(final Relative sibling1, final Person sibling2) {
         siblings.put(sibling1, sibling2);
         siblings.put(sibling2, sibling1);
     }
-    
+
     private MultiValueMap createMultiMap() {
         return MultiValueMap.decorate(new HashMap<Object, Object>(), HashSet.class); // NOPMD
     }
@@ -995,7 +982,7 @@ public class RelativeDraw extends Relative {
         parents.put(child, parent);
         children.put(parent, child);
     }
-    
+
     @SuppressWarnings("unchecked")
     private Set<Relative> getRelatives(final MultiValueMap relMap, final Relative rel) {
         Set<Relative> coll = (Set<Relative>) relMap.getCollection(rel);
@@ -1013,8 +1000,6 @@ public class RelativeDraw extends Relative {
     private Set<Relative> getSiblings(final Relative relative) {
         return getRelatives(siblings, relative);
     }
-    
-    
 
     /**
      * Method writes the diseases that this person has.
@@ -1024,21 +1009,28 @@ public class RelativeDraw extends Relative {
      * @param highlight the Disease to be highlighted
      * @return boolean whether this person has the highlighted disease
      */
-    public boolean writeDiseaseCheckHighlight(final java.awt.Graphics2D g, final RelativeDraw r, final Disease highlight, Map<Disease, String> abbreviationMap) {
+    public boolean writeDiseaseCheckHighlight(final java.awt.Graphics2D g, final RelativeDraw r,
+            final Disease highlight, Map<Disease, String> abbreviationMap) {
         boolean highlightMe = false;
         final int textAdd = 8;
         final int textSpacing = 9;
         final int textStartSpacing = 30;
         final Font f = g.getFont();
-        g.setFont(new Font("Tahoma", Font.TRUETYPE_FONT, 10));
         int textPos = r.getYLoc() + textAdd;
         final List<ClinicalObservation> diseases = r.getObservations();
-        Set<Disease> diseaseObjects = new HashSet<Disease>(); 
-        for (final ClinicalObservation ci : diseases) {
-            if(!diseaseObjects.contains(ci.getDisease())){
-                diseaseObjects.add(ci.getDisease());
-            }
+        // Set<Disease> diseaseObjects = new HashSet<Disease>();
+        // for (final ClinicalObservation ci : diseases) {
+        // if(!diseaseObjects.contains(ci.getDisease())){
+        // diseaseObjects.add(ci.getDisease());
+        // }
+        // }
+        Disease cod = r.getCauseOfDeath();
+        if (cod != null) {
+            g.setFont(new Font("Tahoma", Font.ITALIC, 10));
+            final String abbrev = abbreviationMap.get(cod);
+            g.drawString(abbrev, r.getXLoc() - textStartSpacing, textPos);
         }
+        g.setFont(new Font("Tahoma", Font.TRUETYPE_FONT, 10));
         if (r.getGender() == null) {
             for (final ClinicalObservation ci : diseases) {
                 final Disease d = ci.getDisease();
@@ -1076,28 +1068,17 @@ public class RelativeDraw extends Relative {
         g.setFont(f);
         return highlightMe;
     }
-    
+
     /**
      * @param relatives list of this person's relatives
      * @param relative this relative whose children we're looking for
      */
     /*
-    private Relative getChildren(List<Relative> relatives, Relative potentialParent) {
-        for (Relative myrel : relatives) {
-            myrel.setId(Long.valueOf(relatives.indexOf(myrel)));
-            Relative parent = new Relative();
-            if (myrel.getFather() != null) {
-                parent = myrel.getFather();
-            }
-            if (myrel.getMother() != null) {
-                parent = myrel.getMother();
-            }
-            if (parent != null && parent.equals(potentialParent)) {
-                RelativeDraw rd = new RelativeDraw(myrel);
-                potentialParent.getDescendants().add(rd);
-            }
-        }
-        return potentialParent;
-    } */
+     * private Relative getChildren(List<Relative> relatives, Relative potentialParent) { for (Relative myrel :
+     * relatives) { myrel.setId(Long.valueOf(relatives.indexOf(myrel))); Relative parent = new Relative(); if
+     * (myrel.getFather() != null) { parent = myrel.getFather(); } if (myrel.getMother() != null) { parent =
+     * myrel.getMother(); } if (parent != null && parent.equals(potentialParent)) { RelativeDraw rd = new
+     * RelativeDraw(myrel); potentialParent.getDescendants().add(rd); } } return potentialParent; }
+     */
 }
 // CHECKSTYLE:ON
