@@ -650,8 +650,11 @@
 <c:url var="getDiseaseSubTypes" value="/popup/addPerson/retrieveDiseaseSubTypes.action" />
 <ajax:select baseUrl="${getDiseaseSubTypes}" source="selectedDiseasesSelectedItem" target="selectedSubType"
     parameters="currentDiseaseValue={selectedDiseasesSelectedItem}" postFunction="finishRetrieveSubType" />
+<%--
+see FHH-1707
 <ajax:autocomplete baseUrl="${getAutoComplete}" className="autocompleter" minimumCharacters="3" source="otherDisease"
     target="otherDisease" parameters="autocompleteDisease={otherDisease}" />
+ --%>
 <c:if test="${editingRelative}">
     <script type="text/javascript">
 	window.onload = function() {
