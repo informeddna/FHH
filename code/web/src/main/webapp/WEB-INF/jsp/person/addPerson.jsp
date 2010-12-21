@@ -253,8 +253,7 @@
                     <tr>
                         <th><label for="personForm_relative_ageAtDeath"><fmt:message
                             key="relative.ageAtDeath" />:</label></th>
-                        <td><select name="relative.ageAtDeath" id="personForm_relative_ageAtDeath"
-                             tabindex="6">
+                        <td><select name="relative.ageAtDeath" id="personForm_relative_ageAtDeath" tabindex="6">
                             <option value=""><fmt:message key="relative.select.ageAtDeath" /></option>
                             <c:forEach var="item" items="${ageRangeEnums}">
                                 <c:choose>
@@ -331,14 +330,14 @@
             </tr>
             <tr>
                 <th><fmt:message key="person.height" />:</th>
-                <td><input id="heightUnit1" name="heightUnit1" type="text" size="6" value="${heightUnit1}"
+                <td><s:textfield id="heightUnit1" theme="simple" name="heightUnit1" size="6" value="%{heightUnit1}"
                     tabindex="13" onblur="clearMetric()" /> <label for="heightUnit1"><fmt:message
-                    key="person.height.Unit1" /></label> &nbsp;&nbsp;<input id="heightUnit2" name="heightUnit2" type="text"
-                    size="6" value="${heightUnit2}" tabindex="13" onblur="clearMetric()" /> <label for="heightUnit2"><fmt:message
-                    key="person.height.Unit2" /></label> <span class="or"><fmt:message key="person.height.or" /></span> <input
-                    id="heightMetric" name="heightMetric" type="text" size="6" value="${heightMetric}" tabindex="14"
-                    onblur="clearUS()" /> <label for="heightMetric"><fmt:message key="person.height.Metric" /></label>
-                </td>
+                    key="person.height.Unit1" /></label> &nbsp;&nbsp;<s:textfield id="heightUnit2" theme="simple"
+                    name="heightUnit2" size="6" value="%{heightUnit2}" tabindex="13" onblur="clearMetric()" /> <label
+                    for="heightUnit2"><fmt:message key="person.height.Unit2" /></label> <span class="or"><fmt:message
+                    key="person.height.or" /></span> <s:textfield id="heightMetric" theme="simple" name="heightMetric"
+                    size="6" value="%{heightMetric}" tabindex="14" onblur="clearUS()" /> <label for="heightMetric"><fmt:message
+                    key="person.height.Metric" /></label></td>
             </tr>
             <tr errorfor="personForm_weightString">
                 <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['weightString'] != null">

@@ -55,6 +55,22 @@
         <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1669.sql"/>
     </changeSet>
 
+    <changeSet author="bhumphrey" id="FHH-1390">
+         <preConditions>
+            <dbms type="mysql" />
+        </preConditions>
+        <comment>FHH-1390 - italian version</comment>
+        <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1390.sql"/>
+    </changeSet>
+
+    <changeSet author="bhumphrey" id="healthy">
+         <preConditions>
+            <dbms type="mysql" />
+        </preConditions>
+        <comment>adding a healthy disease</comment>
+        <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/healthy.sql"/>
+    </changeSet>
+
     <!-- 
             Any changeSets added to this file need to also be added to AbstractHibernateTestCase
      -->
