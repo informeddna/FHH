@@ -144,6 +144,7 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
 
         return convertToDiseases(observations);
     }
+    
 
     /**
      * {@inheritDoc}
@@ -179,6 +180,16 @@ public class PersonServiceBean extends GenericServiceBean implements PersonServi
         return (observations.isEmpty() ? null : observations.iterator().next());
     }
     
+    /**
+     * {@inheritDoc} 
+     * @see gov.hhs.fhh.service.PersonServiceLocal#getNoDisease()
+     */
+    @SuppressWarnings(UNCHECKED)
+    public Disease getNoDisease() {
+        List<Observation> observations = HibernateUtil.getCurrentSession().getNamedQuery(
+        "mfhp.observation.findNoDisease").setCacheable(true).setCacheRegion(DISEASES_CACHE_REGION).list();
+        return (observations.isEmpty() ? null : observations.iterator().next());
+    }
     
 
     /**

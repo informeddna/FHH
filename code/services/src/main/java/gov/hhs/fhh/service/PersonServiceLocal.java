@@ -223,5 +223,10 @@ public interface PersonServiceLocal extends GenericServiceLocal {
      */
     boolean isOvarianCancer(Observation o);
 
+    /**
+     * @return the disease with the observation name of 'no current problems or disability'
+     */
+    Disease getNoDisease();
+
 
 }
