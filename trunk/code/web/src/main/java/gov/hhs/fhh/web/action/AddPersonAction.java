@@ -208,18 +208,29 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         this.hawaiianRaces = FhhRegistry.getPersonService().getHawaiianRaces();
         this.diseases = FhhRegistry.getPersonService().getDiseases();
         Collections.sort(diseases);
-        //find the the disease
+        //find the other disease
         int otherIndex = Collections.binarySearch(diseases, FhhRegistry.getPersonService().getOtherDisease());
+        //find the healthy 
+        int healthyIndex = Collections.binarySearch(diseases, FhhRegistry.getPersonService().getNoDisease());
+        
         if (FhhHttpSessionUtil.getUserEnteredDiseases() != null) {
             List<Disease> userEnteredDiseases = new ArrayList<Disease>(FhhHttpSessionUtil.getUserEnteredDiseases()
                     .values());
             Collections.sort(userEnteredDiseases);
             diseases.addAll(userEnteredDiseases);
         }
-        //move the other disease to the end.
+        
+        //move the no disease to the end.
         if (otherIndex >= 0) {
             diseases.add(diseases.remove(otherIndex));
         }
+        
+        //move the other disease to the end.
+        if (healthyIndex >= 0) {
+            diseases.add(0, diseases.remove(healthyIndex));
+        }
+        
+        
         
         this.ethnicities = FhhRegistry.getPersonService().getEthnicities();
         this.hispanicEthnicities = FhhRegistry.getPersonService().getHispanicEthnicities();

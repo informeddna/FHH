@@ -129,6 +129,8 @@ import com.fiveamsolutions.nci.commons.data.persistent.PersistentObject;
                 + "where lower(displayname.text) like lower(:displayname)"),
         @NamedQuery(name = "mfhp.observation.findOtherDisease", 
                 query = "select o from observation as o where o.name = 'Other Disease type'"),
+        @NamedQuery(name = "mfhp.observation.findNoDisease", 
+                query = "select o from observation as o where o.name = 'no current problems or disability'"),
         @NamedQuery(name = "mfhp.observation.findHeartDiseaseType", 
                 query = "select o from observation as o where o.name = 'Heart Disease type'"),
         @NamedQuery(name = "mfhp.observation.findStrokeBrainAttack", 

@@ -349,4 +349,18 @@ public class PersonServiceStub implements PersonServiceLocal {
         // TODO Auto-generated method stub
         return getOtherDisease().equals(o);
     }
+
+    public Disease getNoDisease() {
+        Observation other = new Observation();
+        other.setId(105L);
+        other.setName("no current problems or disability");
+        other.setCodes(new HashSet<Code>());
+        Set<DisplayName> displayNames = new HashSet<DisplayName>();
+        DisplayName otherDisplayname = new DisplayName();
+        otherDisplayname.setLanguage("en");
+        otherDisplayname.setText("Healthy");
+        displayNames.add(otherDisplayname);
+        other.setDisplayNames(displayNames);
+        return other;
+    }
 }
