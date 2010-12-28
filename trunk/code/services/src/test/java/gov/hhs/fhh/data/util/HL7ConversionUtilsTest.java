@@ -142,10 +142,15 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
         //Add Consanguinity
         p.setConsanguinityFlag(TRUE);
         
+        //
+        // NOTE: Weak tests! requires the exact knowledge of were the condes are. -bh
+        //
+        
+        
         // check adopted observation
         p.getObservations().clear();
         observationsNode = HL7ConversionUtils.createClinicalObservationsNode(p);
-        codeNode = observationsNode.getObservations().get(0).getCode();
+        codeNode = observationsNode.getObservations().get(1).getCode();
         assertEquals(ClinicalObservationCode.ADOPTED.getCode(), codeNode.getCode());
         assertEquals(ClinicalObservationCode.ADOPTED.getCodeSystemName(), 
                 codeNode.getCodeSystemName());
@@ -153,8 +158,8 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 codeNode.getDisplayName());
         
         // check weight observation
-        codeNode = observationsNode.getObservations().get(1).getCode();
-        assertEquals(DUMMY_WEIGHT.getValue().toString(), observationsNode.getObservations().get(1)
+        codeNode = observationsNode.getObservations().get(2).getCode();
+        assertEquals(DUMMY_WEIGHT.getValue().toString(), observationsNode.getObservations().get(2)
                 .getValueNode().getValue());
         assertEquals(ClinicalObservationCode.WEIGHT.getCode(), codeNode.getCode());
         assertEquals(ClinicalObservationCode.WEIGHT.getCodeSystemName(), 
@@ -163,8 +168,8 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 codeNode.getDisplayName());
         
         // check height observation
-        codeNode = observationsNode.getObservations().get(2).getCode();
-        assertEquals(DUMMY_HEIGHT.getValue().toString(), observationsNode.getObservations().get(2)
+        codeNode = observationsNode.getObservations().get(3).getCode();
+        assertEquals(DUMMY_HEIGHT.getValue().toString(), observationsNode.getObservations().get(3)
                 .getValueNode().getValue());
         assertEquals(ClinicalObservationCode.HEIGHT.getCode(), codeNode.getCode());
         assertEquals(ClinicalObservationCode.HEIGHT.getCodeSystemName(), 
@@ -173,7 +178,7 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 codeNode.getDisplayName());
         
         // check consanguinity observation
-        codeNode = observationsNode.getObservations().get(3).getCode();
+        codeNode = observationsNode.getObservations().get(4).getCode();
         assertEquals(ClinicalObservationCode.CONSANGUINITY_ORG_TEXT, codeNode.getOriginalText());
         
         p.getObservations().clear();
@@ -183,7 +188,7 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
         
         // check twin status - fraternal
         observationsNode = HL7ConversionUtils.createClinicalObservationsNode(p);
-        codeNode = observationsNode.getObservations().get(0).getCode();
+        codeNode = observationsNode.getObservations().get(1).getCode();
         assertEquals(TwinStatus.FRATERNAL.getCode(), codeNode.getCode());
         assertEquals(TwinStatus.FRATERNAL.getCodeSystemName(), 
                 codeNode.getCodeSystemName());
@@ -194,7 +199,7 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
         // check twin status identical
         p.setTwinStatus(TwinStatus.IDENTICAL);
         observationsNode = HL7ConversionUtils.createClinicalObservationsNode(p);
-        codeNode = observationsNode.getObservations().get(0).getCode();
+        codeNode = observationsNode.getObservations().get(1).getCode();
         assertEquals(TwinStatus.IDENTICAL.getCode(), codeNode.getCode());
         assertEquals(TwinStatus.IDENTICAL.getCodeSystemName(), 
                 codeNode.getCodeSystemName());
@@ -204,27 +209,49 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
     
     @Test
     public void testExtractClinicalObservationsNode() {
-        Person person = new Person();
         Map<String, Disease> diseaseMap = FhhDataUtils.getCodeToDiseaseMap();
         assertTrue(!diseaseMap.isEmpty());
-        assertEquals(diseaseMap.get("55822004").getCode(), "55822004");
+        assertEquals("55822004", diseaseMap.get("55822004").getCode());
         // Test for user defined disease
+        
+    }
+    @Test
+    public void testOtherClinicalObservationsNode() {
+        Person person = new Person();
         ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
         CodeNode codeNode = new CodeNode();
         
         codeNode.setDisplayName(DiseaseUtils.OTHER_DISEASE_DISPLAY);
-        codeNode.setOriginalText(DUMMY_DISEASE_USER_DEFINED);
         observationsNode.setObservations(new ArrayList<ClinicalObservation>());
         observationsNode.getObservations().add(new ClinicalObservation());
         observationsNode.getObservations().get(0).setCode(codeNode);
         assertEquals(observationsNode.getObservations().get(0).getCode(), codeNode);
-        
-        // Test setClinicalObservationsNode for user defined disease
+    }
+    
+    @Test
+    public void testSetClinicalObservationsNodeForUserDefinedDisease() {
+        Person person = new Person();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        CodeNode codeNode = new CodeNode();
+
+        codeNode.setOriginalText(DUMMY_DISEASE_USER_DEFINED);
+        codeNode.setDisplayName(DiseaseUtils.OTHER_DISEASE_DISPLAY);
+        observationsNode.setObservations(new ArrayList<ClinicalObservation>());
+        observationsNode.getObservations().add(new ClinicalObservation());
+        observationsNode.getObservations().get(0).setCode(codeNode);
         person.getObservations().clear();
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
         Disease disease = person.getObservations().get(0).getDisease();
         assertEquals(DUMMY_DISEASE_USER_DEFINED, disease.getOriginalText());
-        
+    }
+    
+
+    @Test
+    public void testUnknownCancer() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        Person person = new Person();
+
         codeNode.setDisplayName("Unknown Cancer");
         codeNode.setOriginalText("Unknown Cancer");
 //        codeNode.setId(78L);
@@ -234,22 +261,41 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
 
         person.getObservations().clear();
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
-        disease = person.getObservations().get(0).getDisease();
+        Disease disease = person.getObservations().get(0).getDisease();
         assertEquals("Unknown Cancer", disease.getOriginalText());
         
-        // Test setClinicalObservationsNode for system defined disease
+    }
+    
+    @Test
+    public void testSetClinicalObservationsNodeForSystemDefinedDisease() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        
         codeNode.setOriginalText(null);
         codeNode.setCode("10001005");
         codeNode.setDisplayName(DUMMY_DISEASE_DISPLAY);
         codeNode.setCodeSystemName(DUMMY_DISEASE_CSN);
+
+        observationsNode.setObservations(new ArrayList<ClinicalObservation>());
+        observationsNode.getObservations().add(new ClinicalObservation());
+        observationsNode.getObservations().get(0).setCode(codeNode);
+
+        Person person = new Person();
+        
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
-        disease = person.getObservations().get(0).getDisease();
+        Disease disease = person.getObservations().get(0).getDisease();
         assertEquals("10001005", disease.getCode());
 //        assertEquals(DUMMY_DISEASE_CSN, disease.getCodeSystemName());
         assertEquals("Septicemia", disease.getDisplayName());
         assertNotNull(disease.getOriginalText());
+    }
+    
+    @Test
+    public void testSetClinicalObservationsNodeForAdopted() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        Person person = new Person();
         
-        // Test setClinicalObservationsNode for adopted
         observationsNode.getObservations().clear();
         observationsNode.getObservations().add(new ClinicalObservation());
         observationsNode.getObservations().get(0).setCode(new CodeNode(
@@ -258,8 +304,15 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 ClinicalObservationCode.ADOPTED.getDisplayName()));
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
         assertTrue(person.isAdopted());
-        
-        // Test setClinicalObservationsNode for weight
+    }
+    
+    @Test
+    public void testSetClinicalObservationsNodeForWeight() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        Person person = new Person();
+
+       
         observationsNode.getObservations().clear();
         observationsNode.getObservations().add(new ClinicalObservation());
         observationsNode.getObservations().get(0).setCode(new CodeNode(
@@ -276,15 +329,21 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
         assertEquals(DUMMY_WEIGHT.getValue(), person.getWeight().getValue());
         assertEquals(DUMMY_WEIGHT.getUnit(), person.getWeight().getUnit());
-        
-        // Test setClinicalObservationsNode for height
+    }
+    
+    @Test
+    public void testSetClinicalObservationsNodeForHeight() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        Person person = new Person();
+
         observationsNode.getObservations().clear();
         observationsNode.getObservations().add(new ClinicalObservation());
         observationsNode.getObservations().get(0).setCode(new CodeNode(
                 ClinicalObservationCode.HEIGHT.getCode(), 
                 ClinicalObservationCode.HEIGHT.getCodeSystemName(),
                 ClinicalObservationCode.HEIGHT.getDisplayName()));
-        valueNode = new ValueNode();
+        ValueNode valueNode = new ValueNode();
         observationsNode.getObservations().get(0).setValueNode(valueNode);
         valueNode.setUnit(DUMMY_HEIGHT.getUnit().getDisplayName());
         valueNode.setValue(DUMMY_HEIGHT.getValue().toString());
@@ -292,8 +351,15 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
         assertEquals(DUMMY_HEIGHT.getValue(), person.getHeight().getValue());
         assertEquals(DUMMY_HEIGHT.getUnit(), person.getHeight().getUnit());
+    }
+    
+    @Test 
+    public void testSetClinicalObservationsNodeForTwinIdentical() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        Person person = new Person();
+
         
-        // Test setClinicalObservationsNode for twin - identical
         observationsNode.getObservations().clear();
         observationsNode.getObservations().add(new ClinicalObservation());
         observationsNode.getObservations().get(0).setCode(new CodeNode(
@@ -302,8 +368,14 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 TwinStatus.IDENTICAL.getDisplayName()));
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
         assertEquals(TwinStatus.IDENTICAL, person.getTwinStatus());
-        
-        // Test setClinicalObservationsNode for twin - fraternal
+    }
+    
+    @Test
+    public void testSetClinicalObservationsNodeForTwinFraternal() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        Person person = new Person();
+
         observationsNode.getObservations().clear();
         observationsNode.getObservations().add(new ClinicalObservation());
         observationsNode.getObservations().get(0).setCode(new CodeNode(
@@ -312,8 +384,14 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 TwinStatus.FRATERNAL.getDisplayName()));
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
         assertEquals(TwinStatus.FRATERNAL, person.getTwinStatus());  
-        
-        // Test setClinicalObservationsNode for adopted
+    }
+    
+    @Test
+    public void testSetClinicalObservationsNodeForConsanguinity() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        Person person = new Person();
+
         observationsNode.getObservations().clear();
         observationsNode.getObservations().add(new ClinicalObservation());
         observationsNode.getObservations().get(0).setCode(new CodeNode());

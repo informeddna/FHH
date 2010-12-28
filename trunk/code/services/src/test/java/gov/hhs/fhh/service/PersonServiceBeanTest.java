@@ -101,7 +101,7 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
     @Test
     public void testGetDiseases() {
         List<Disease> diseases = personServiceBean.getDiseases();
-        assertEquals(17, diseases.size());
+        assertEquals(18, diseases.size());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class PersonServiceBeanTest extends AbstractHibernateTestCase {
         for (Disease disease : diseases) {
             LOG.debug(disease.getId());
         }
-        assertEquals(89, diseases.size());
+        assertEquals(90, diseases.size());
     }
 
     @Test

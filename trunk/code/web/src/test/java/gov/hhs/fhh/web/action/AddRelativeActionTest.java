@@ -47,11 +47,11 @@ import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.data.util.FhhDataUtils;
 import gov.hhs.fhh.data.util.PersonUtils;
 import gov.hhs.fhh.service.PersonServiceLocal;
+import gov.hhs.fhh.service.PersonServiceStub;
 import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.test.MockServiceLocator;
-import gov.hhs.fhh.web.test.PersonServiceStub;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 import gov.hhs.fhh.web.util.RelativeToRelateTo;
 

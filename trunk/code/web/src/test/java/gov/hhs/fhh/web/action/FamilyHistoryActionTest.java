@@ -42,8 +42,8 @@ import gov.hhs.fhh.data.RelativeBranch;
 import gov.hhs.fhh.data.RelativeCode;
 import gov.hhs.fhh.service.ImportException;
 import gov.hhs.fhh.service.PersonServiceLocal;
+import gov.hhs.fhh.service.PersonServiceStub;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
-import gov.hhs.fhh.web.test.PersonServiceStub;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
 import java.io.File;

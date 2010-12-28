@@ -37,6 +37,7 @@ import gov.hhs.fhh.service.GenericServiceLocal;
 import gov.hhs.fhh.service.HealthVaultLocal;
 import gov.hhs.fhh.service.MessagingGatewayLocal;
 import gov.hhs.fhh.service.PersonServiceLocal;
+import gov.hhs.fhh.service.PersonServiceStub;
 import gov.hhs.fhh.service.locator.ServiceLocator;
 
 /**

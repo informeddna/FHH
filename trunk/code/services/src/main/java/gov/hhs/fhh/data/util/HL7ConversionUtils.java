@@ -42,6 +42,7 @@ import gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode;
 import gov.hhs.fhh.model.mfhp.castor.ValueNode;
 import gov.hhs.fhh.xml.PatientPerson;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -116,14 +117,29 @@ public final class HL7ConversionUtils {
      */
     public static ClinicalObservationsNode createClinicalObservationsNode(Person p) {
         ClinicalObservationsNode node = new ClinicalObservationsNode();
-        for (ClinicalObservation currObservation : p.getObservations()) {
+
+        final List<ClinicalObservation> observations = p.getObservations();
+        if (observations.isEmpty()) {
+            ClinicalObservation o = new ClinicalObservation();
+            o.setDisease(getNoConditions());
+            observations.add(o);
+        }
+        for (ClinicalObservation currObservation : observations) {
             Disease currDisease = currObservation.getDisease();
             currObservation.setCode(new CodeNode(currDisease.getCode(), currDisease.getCodeSystemName(), currDisease
                     .getDisplayName(), null, currDisease.getOriginalText()));
         }
-        node.getObservations().addAll(p.getObservations());
+        node.getObservations().addAll(observations);
         addAttributesAsObservations(p, node);
         return node;
+    }
+
+    private static Disease getNoConditions() {
+        DiseaseBean d = new DiseaseBean();
+        d.setCode("160245001");
+        d.setCodeSystem("SNOMED_CT");
+        d.setDisplayName("no current problems or disability");
+        return d;
     }
 
     /**
@@ -245,7 +261,7 @@ public final class HL7ConversionUtils {
                 disease.setCodeSystemName(currCode.getCodeSystemName());
                 return disease;
             }
-        } 
+        }
         return DiseaseUtils.findOrCreateNewDisease(currCode.getOriginalText());
     }
 
@@ -260,13 +276,19 @@ public final class HL7ConversionUtils {
      */
     private static void setupObservationWithoutOriginalText(Person p, ClinicalObservation observation,
             Map<String, Disease> diseaseMap, String snomedCode) {
-        Disease systemDisease = diseaseMap.get(snomedCode);
-        // System Disease
-        if (systemDisease != null) {
-            observation.setDisease(systemDisease);
-            p.getObservations().add(observation);
-        } else {
-            setupAttributeObservation(p, observation);
+
+        // ignore the no current condition code
+        if (!DiseaseUtils.NO_CURRENT_CONDITION_CODE.equals(snomedCode)) {
+
+            Disease systemDisease = diseaseMap.get(snomedCode);
+
+            // System Disease
+            if (systemDisease != null) {
+                observation.setDisease(systemDisease);
+                p.getObservations().add(observation);
+            } else {
+                setupAttributeObservation(p, observation);
+            }
         }
     }
 

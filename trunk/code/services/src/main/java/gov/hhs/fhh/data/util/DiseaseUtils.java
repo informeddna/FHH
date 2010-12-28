@@ -78,6 +78,11 @@ public class DiseaseUtils {
      * Ovarian Cancer id.
      */
     public static final String OVARIAN_CANCER_CODE = "363443007";
+    
+    /**
+     * No current condition id.
+     */
+    public static final String NO_CURRENT_CONDITION_CODE = "160245001";
 
     /**
      * Other Disease Display Name.

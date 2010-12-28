@@ -73,7 +73,9 @@ public class AbstractHibernateTestCase {
          "/db-upgrade/mysql/FHH-1635.sql",
          "/db-upgrade/mysql/FHH-1247.sql",
          "/db-upgrade/mysql/FHH-1659.sql",
-         "/db-upgrade/mysql/FHH-1669.sql"
+         "/db-upgrade/mysql/FHH-1669.sql",
+         "/db-upgrade/mysql/FHH-1390.sql",
+         "/db-upgrade/mysql/healthy.sql"
     };
     
     protected Transaction transaction;
