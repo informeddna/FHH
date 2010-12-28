@@ -48,10 +48,10 @@ import gov.hhs.fhh.data.util.DiseaseUtils;
 import gov.hhs.fhh.data.util.FhhDataUtils;
 import gov.hhs.fhh.data.util.FormatUtils;
 import gov.hhs.fhh.service.PersonServiceLocal;
+import gov.hhs.fhh.service.PersonServiceStub;
 import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.test.MockServiceLocator;
-import gov.hhs.fhh.web.test.PersonServiceStub;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
 import java.text.SimpleDateFormat;

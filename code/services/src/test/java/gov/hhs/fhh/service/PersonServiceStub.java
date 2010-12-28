@@ -31,7 +31,7 @@
  * TRADEMARK OR OTHER PROPRIETARY RIGHTS.
  * 
  */
-package gov.hhs.fhh.web.test;
+package gov.hhs.fhh.service;
 
 import gov.hhs.fhh.data.AbstractCodeable;
 import gov.hhs.fhh.data.Codeable;
@@ -153,6 +153,7 @@ public class PersonServiceStub implements PersonServiceLocal {
         displayName.setLanguage("en");
         displayName.setText(text);
         o.getDisplayNames().add(displayName);
+        o.setName(text);
         return o;
     }
 
@@ -191,6 +192,7 @@ public class PersonServiceStub implements PersonServiceLocal {
         diseases.add(createObservation(DiseaseUtils.BREAST_CANCER_CODE, "Breast Cancer"));
         diseases.add(createObservation(DiseaseUtils.OVARIAN_CANCER_CODE, "Ovarian Cancer"));
         diseases.add(createObservation(DiseaseUtils.HEART_DISEASE_CODE, "Heart Disease"));
+        diseases.add(createObservation("55822004", "Mystery Disease"));
         return diseases;
     }
 
@@ -351,16 +353,6 @@ public class PersonServiceStub implements PersonServiceLocal {
     }
 
     public Disease getNoDisease() {
-        Observation other = new Observation();
-        other.setId(105L);
-        other.setName("no current problems or disability");
-        other.setCodes(new HashSet<Code>());
-        Set<DisplayName> displayNames = new HashSet<DisplayName>();
-        DisplayName otherDisplayname = new DisplayName();
-        otherDisplayname.setLanguage("en");
-        otherDisplayname.setText("Healthy");
-        displayNames.add(otherDisplayname);
-        other.setDisplayNames(displayNames);
-        return other;
+        return createObservation("160245001", "no current problems or disability");
     }
 }

@@ -38,6 +38,7 @@ package gov.hhs.fhh.data;
  * Enum containing the codes of single value clinical observations used
  * when generating the XML.
  */
+@Deprecated
 public enum ClinicalObservationCode {
     /**
      * Adopted Observation.
