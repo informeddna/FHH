@@ -211,7 +211,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         //find the other disease
         int otherIndex = Collections.binarySearch(diseases, FhhRegistry.getPersonService().getOtherDisease());
         //find the healthy 
-        int healthyIndex = Collections.binarySearch(diseases, FhhRegistry.getPersonService().getNoDisease());
+        int noConditionsIndex = Collections.binarySearch(diseases, FhhRegistry.getPersonService().getNoDisease());
         
         if (FhhHttpSessionUtil.getUserEnteredDiseases() != null) {
             List<Disease> userEnteredDiseases = new ArrayList<Disease>(FhhHttpSessionUtil.getUserEnteredDiseases()
@@ -226,8 +226,8 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         }
         
         //move the other disease to the end.
-        if (healthyIndex >= 0) {
-            diseases.add(0, diseases.remove(healthyIndex));
+        if (noConditionsIndex >= 0) {
+            diseases.remove(noConditionsIndex);
         }
         
         
