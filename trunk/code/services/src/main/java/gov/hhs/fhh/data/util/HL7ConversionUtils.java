@@ -42,6 +42,7 @@ import gov.hhs.fhh.model.mfhp.castor.ClinicalObservationsNode;
 import gov.hhs.fhh.model.mfhp.castor.ValueNode;
 import gov.hhs.fhh.xml.PatientPerson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -118,7 +119,8 @@ public final class HL7ConversionUtils {
     public static ClinicalObservationsNode createClinicalObservationsNode(Person p) {
         ClinicalObservationsNode node = new ClinicalObservationsNode();
 
-        final List<ClinicalObservation> observations = p.getObservations();
+        final List<ClinicalObservation> observations = new ArrayList<ClinicalObservation>();
+        observations.addAll(p.getObservations());
         if (observations.isEmpty()) {
             ClinicalObservation o = new ClinicalObservation();
             o.setDisease(getNoConditions());
@@ -138,6 +140,7 @@ public final class HL7ConversionUtils {
         DiseaseBean d = new DiseaseBean();
         d.setCode("160245001");
         d.setCodeSystem("SNOMED_CT");
+        d.setCodeSystemName("SNOMED_CT");
         d.setDisplayName("no current problems or disability");
         return d;
     }

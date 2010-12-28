@@ -358,6 +358,9 @@ public class ViewReportAction extends ActionSupport implements Preparable, Servl
                 for (ClinicalObservation ci : rel.getObservations()) {
                     diseaseSet.add(ci.getDisease());
                 }
+                if (rel.getCauseOfDeath() != null) {
+                    diseaseSet.add(rel.getCauseOfDeath());
+                }
             }
 
             retval = new ByteArrayInputStream(selfDraw.organizeFamilyTree(person, DiseaseUtils
