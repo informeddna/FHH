@@ -95,7 +95,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     private List<String> otherDiseaseValues = new ArrayList<String>();
     private String currentDiseaseValue;
     private String autocompleteDisease;
-
+    
     private String selectedCode;
     private String heightUnit1;
     private String heightUnit2;
@@ -260,6 +260,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
      * @return path String
      */
     public String submitPerson() {
+        
         validateSubmitFields();
         if (this.getFieldErrors().size() > 0) {
             return INPUT;

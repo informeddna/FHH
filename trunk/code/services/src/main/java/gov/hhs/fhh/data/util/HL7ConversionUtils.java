@@ -141,7 +141,7 @@ public final class HL7ConversionUtils {
         d.setCode("160245001");
         d.setCodeSystem("SNOMED_CT");
         d.setCodeSystemName("SNOMED_CT");
-        d.setDisplayName("no current problems or disability");
+        d.setDisplayName("No current problems or disability");
         return d;
     }
 
