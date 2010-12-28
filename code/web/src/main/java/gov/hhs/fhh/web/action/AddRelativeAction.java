@@ -147,6 +147,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
      * Sets the Cause of death to be displayed in the jsp for a Relative that is being edited.
      */
     public void setupCauseOfDeath() {
+        setCauseOfDeath(null);
         // The COD is added to the Disease List, store the ID of the row in the Disease List table of the last
         // added COD. This is used to remove the COD when a new COD is entered.
         setCodSubTypesExist(false);
@@ -439,6 +440,7 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
     }
 
     private void storeCauseOfDeath() {
+        
         if (isCodSubTypesExist()) {
             getRelative().setCauseOfDeath(getSelectedCODSubType());
         } else if (getCauseOfDeath() != null) {
@@ -450,6 +452,9 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
             } else {
                 getRelative().setCauseOfDeath(getCauseOfDeath());
             }
+        } else {
+            getRelative().setCauseOfDeath(null);
+            
         }
     }
 
