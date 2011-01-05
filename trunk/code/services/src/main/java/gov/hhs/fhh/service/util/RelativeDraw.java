@@ -1025,48 +1025,46 @@ public class RelativeDraw extends Relative {
         // }
         // }
         Disease cod = r.getCauseOfDeath();
+
         if (cod != null) {
             g.setFont(new Font("Tahoma", Font.ITALIC, 10));
             final String abbrev = abbreviationMap.get(cod);
-            g.drawString(abbrev, r.getXLoc() - textStartSpacing, textPos);
+            g.drawString(abbrev, getXLocForDisease(r, textStartSpacing), textPos);
+            textPos += textSpacing;
         }
         g.setFont(new Font("Tahoma", Font.TRUETYPE_FONT, 10));
-        if (r.getGender() == null) {
-            for (final ClinicalObservation ci : diseases) {
-                final Disease d = ci.getDisease();
-                if (DiseaseUtils.compareHighlightDisease(d, highlight)) {
-                    highlightMe = true;
-                }
-                final String abbrev = abbreviationMap.get(d);
-                g.drawString(abbrev, r.getXLoc() - textStartSpacing, textPos);
-                textPos += textSpacing;
+        for (final ClinicalObservation ci : diseases) {
+            final Disease d = ci.getDisease();
+            if (DiseaseUtils.compareHighlightDisease(d, highlight)) {
+                highlightMe = true;
             }
-        } else {
-            if (r.getGender().equals(Gender.FEMALE)) {
-                for (final ClinicalObservation ci : diseases) {
-                    final Disease d = ci.getDisease();
-                    if (DiseaseUtils.compareHighlightDisease(d, highlight)) {
-                        highlightMe = true;
-                    }
-                    final String abbrev = abbreviationMap.get(d);
-                    g.drawString(abbrev, r.getXLoc() + textAdd + PERSONSIZE, textPos);
-                    textPos += textSpacing;
-                }
-            }
-            if (r.getGender().equals(Gender.MALE)) {
-                for (final ClinicalObservation ci : diseases) {
-                    final Disease d = ci.getDisease();
-                    if (DiseaseUtils.compareHighlightDisease(d, highlight)) {
-                        highlightMe = true;
-                    }
-                    final String abbrev = abbreviationMap.get(d);
-                    g.drawString(abbrev, r.getXLoc() - textStartSpacing, textPos);
-                    textPos += textSpacing;
-                }
-            }
+            final String abbrev = abbreviationMap.get(d);
+            g.drawString(abbrev, getXLocForDisease(r, textStartSpacing), textPos);
+            textPos += textSpacing;
         }
+
         g.setFont(f);
         return highlightMe;
+    }
+
+    /**
+     * @param r
+     * @param textStartSpacing
+     * @return
+     */
+    private int getXLocForDisease(final RelativeDraw r, final int textStartSpacing) {
+        final int textAdd = 8;
+        if (r.getGender() == null) {
+            return r.getXLoc() - textStartSpacing;
+        }
+        if (r.getGender().equals(Gender.FEMALE)) {
+            return r.getXLoc() + textAdd + PERSONSIZE;
+        }
+        if (r.getGender().equals(Gender.MALE)) {
+            return r.getXLoc() - textStartSpacing;
+        } else {
+            return r.getXLoc() - textStartSpacing;
+        }
     }
 
     /**
