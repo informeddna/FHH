@@ -189,8 +189,10 @@
                     <td>
                         <c:if test="${!empty currRelative.livingStatusEnum}">
                             <fmt:message bundle="${der}" key="${currRelative.livingStatusEnum.resourceKey}"/>
-                            <c:if test="${currRelative.livingStatusEnum.htmValue == \"No\" && not empty currRelative.ageAtDeath}">
+                            <c:if test="${currRelative.livingStatusEnum.htmValue == \"No\" }" >
 	                            , ${currRelative.causeOfDeath.escapedReportDisplay}
+                            </c:if>
+                            <c:if test="${ not empty currRelative.ageAtDeath}">
 	                            (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currRelative.ageAtDeath.resourceKey}" /> )
                             </c:if> 
                             &nbsp;
@@ -207,7 +209,9 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
+                                 <c:if test="${ not empty currCo.ageRange}">
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )
+                                </c:if><br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -223,7 +227,9 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
+                                <c:if test="${ not empty currCo.ageRange}">
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )
+                                </c:if><br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -239,7 +245,9 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
+                                <c:if test="${ not empty currCo.ageRange}">
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )
+                                </c:if><br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -255,7 +263,9 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
+                                <c:if test="${ not empty currCo.ageRange}">
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )
+                                </c:if><br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -271,7 +281,9 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
+                                <c:if test="${ not empty currCo.ageRange}">
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )
+                                </c:if><br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -287,7 +299,9 @@
                                         ${currCo.disease.reportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
+                                <c:if test="${ not empty currCo.ageRange}">
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )
+                                </c:if><br />
                             </c:forEach>
                         </c:if>
                         &nbsp;
@@ -306,7 +320,9 @@
                                         ${currCo.disease.escapedReportDisplay}
                                     </c:otherwise>
                                 </c:choose>
-                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )<br />
+                                <c:if test="${ not empty currCo.ageRange}">
+                                (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currCo.ageRange.resourceKey}" /> )
+                                </c:if><br />
                             </c:forEach>
                         </c:if>
                         &nbsp;

@@ -88,10 +88,16 @@ public class RelativeReport extends Relative {
     private void setDiseases(Relative r) {
         ArrayList<ClinicalObservation> cis = new ArrayList();
         cis.addAll(r.getObservations());
+        if (r.getCauseOfDeath() != null) {
+            ClinicalObservation cod = new ClinicalObservation();
+            cod.setDisease(r.getCauseOfDeath());
+            cis.add(cod);
+        }
         for (ClinicalObservation ci : cis) {
             this.getLegendList().add(ci.getDisease());
             categorizeDiseases(ci);
         }
+        
 
     }
 
