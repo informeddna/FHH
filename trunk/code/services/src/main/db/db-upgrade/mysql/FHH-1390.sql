@@ -1,4 +1,4 @@
-insert into displaystring (appDisplay, displayName, language) values ('Indiano o nativo americano dell&#225;Alaska', 'American Indian or Alaska Native', 'it');
+insert into displaystring (appDisplay, displayName, language) values ('Indiano o Nativo americano dell&#8217;Alaska', 'American Indian or Alaska Native', 'it');
 insert into race_displaystring (Race_id, displayStrings_id) values ((select id from race where code = '1002-5'), LAST_INSERT_ID());
 
 insert into displaystring (appDisplay, displayName, language) values ('Asiatico', 'Asian', 'it');
@@ -7,7 +7,7 @@ insert into race_displaystring (Race_id, displayStrings_id) values ((select id f
 insert into displaystring (appDisplay, displayName, language) values ('Africano-Americano', 'Il nero o African-American', 'it');
 insert into race_displaystring (Race_id, displayStrings_id) values ((select id from race where code = '2054-5'), LAST_INSERT_ID());
 
-insert into displaystring (appDisplay, displayName, language) values ('Isolano hawaiano o altro pacifico natale', 'Native Hawaiian or Other Pacific Islander', 'it');
+insert into displaystring (appDisplay, displayName, language) values ('Isolano delle Hawaii o altre isole Pacifico', 'Native Hawaiian or Other Pacific Islander', 'it');
 insert into race_displaystring (Race_id, displayStrings_id) values ((select id from race where code = '1000001'), LAST_INSERT_ID());
 
 insert into displaystring (appDisplay, displayName, language) values ('Bianco', 'White', 'it');
@@ -56,7 +56,7 @@ insert into race_displaystring (Race_id, displayStrings_id) values ((select id f
 insert into displaystring (appDisplay, displayName, language) values ('Latino-americano o Latino', 'Hispanic or Latino', 'it');
 insert into ethnicity_displaystring (Ethnicity_id, displayStrings_id) values ((select id from ethnicity where code = '2135-2'), LAST_INSERT_ID());
 
-insert into displaystring (appDisplay, displayName, language) values ('Ashkenazi ebreo', 'Ashkenazi Jewish', 'it');
+insert into displaystring (appDisplay, displayName, language) values ('Ebreo Ashkenazi', 'Ashkenazi Jewish', 'it');
 insert into ethnicity_displaystring (Ethnicity_id, displayStrings_id) values ((select id from ethnicity where code = '81706006'), LAST_INSERT_ID());
 
 insert into displaystring (appDisplay, displayName, language) values ('Non latino-americano o Latino', 'Not Hispanic or Latino', 'it');
@@ -102,7 +102,7 @@ INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((s
 INSERT INTO displayname (language, text) VALUES ('it','Colesterolo Alto');
 INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((select id from observation where name ='High Cholesterol'), LAST_INSERT_ID());
 
-INSERT INTO displayname (language, text) VALUES ('it','Ipertenosione');
+INSERT INTO displayname (language, text) VALUES ('it','Ipertensione');
 INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((select id from observation where name ='Hypertension'), LAST_INSERT_ID());
 
 INSERT INTO displayname (language, text) VALUES ('it','Malattia Renale   (ulteriori opzioni...)');
@@ -129,7 +129,7 @@ INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((s
 INSERT INTO displayname (language, text) VALUES ('it','Sindrome di Morte Improvvisa del Lattante (SIDS)');
 INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((select id from observation where name ='Sudden Infant Death Syndrome'), LAST_INSERT_ID());
 
-INSERT INTO displayname (language, text) VALUES ('it','Altro Ð Aggiungi Nuovo');
+INSERT INTO displayname (language, text) VALUES ('it','Altro / Aggiungi Nuovo');
 INSERT INTO observation_displayname (observation_id, displayNames_id) VALUES ((select id from observation where name ='Other Disease type'), LAST_INSERT_ID());
 
 INSERT INTO displayname (language, text) VALUES ('it','Malattia Sconosciuta');
