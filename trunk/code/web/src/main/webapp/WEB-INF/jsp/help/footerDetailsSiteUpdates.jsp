@@ -13,11 +13,7 @@
             <p><fmt:message key="footer.updates.text.revised"/></p>
             <ol>
                <li><fmt:message key="footer.updates.text.jan2011.item1"/></li>
-            </ol>
-            <ol>
                <li><fmt:message key="footer.updates.text.jan2011.item2"/></li>
-            </ol>
-            <ol>
                <li><fmt:message key="footer.updates.text.jan2011.item3"/></li>
             </ol>
         </td>
