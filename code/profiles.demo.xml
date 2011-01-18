@@ -7,7 +7,7 @@
             </activation>
             <properties>
                 <jboss.home>/usr/local/jboss-4.0.5.GA-ejb3</jboss.home>
-                <jboss.hostname>domu-143.5amsolutions.com</jboss.hostname>
+                <jboss.hostname>sfo-fhh-demo-01.5amsolutions.com</jboss.hostname>
                 <jboss.configuration>default</jboss.configuration>
                 <database.url.prefix>jdbc:mysql://${jboss.hostname}:3306/</database.url.prefix>
                 <database.name>mfhp</database.name>
