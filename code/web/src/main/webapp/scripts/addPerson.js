@@ -129,7 +129,6 @@ function isOtherSelected(mySelection) {
         var eq4 = "Altro";
         return (subSection == eq1 || subSection == eq2 || subSection == eq3 || subSection == eq4);
     }
-    console.log("%s - %s", mySelection, otherSelected);
     return otherSelected;
 }
 
