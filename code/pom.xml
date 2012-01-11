@@ -119,12 +119,12 @@
         <repository>
             <id>5AM-Releases</id>
             <name>5AM Releases</name>
-            <url>dav:http://maven.5amsolutions.com/archiva/repository/internal/</url>
+            <url>http://nexus.5amsolutions.com/nexus/content/repositories/internal/</url>
         </repository>
         <snapshotRepository>
             <id>5AM-Snapshots</id>
             <name>5AM Snapshots</name>
-            <url>dav:http://maven.5amsolutions.com/archiva/repository/snapshots/</url>
+            <url>http://nexus.5amsolutions.com/nexus/content/repositories/snapshots/</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
@@ -209,7 +209,7 @@
                 <version>2.4</version>
                 <executions>
                     <execution>
-                        <!-- 
+                        <!--
 	                    <id>clean</id>
 	                    <phase>pre-site</phase> -->
                         <goals>
@@ -217,7 +217,7 @@
                             <goal>check</goal>
                         </goals>
                     </execution>
-                    <!-- 
+                    <!--
                     <execution>
 	                    <id>cobertura</id>
 	                    <phase>site</phase>
@@ -354,7 +354,7 @@
     <repositories>
         <repository>
             <id>5AM-Releases</id>
-            <url>http://maven.5amsolutions.com/archiva/repository/internal/</url>
+            <url>http://nexus.5amsolutions.com/nexus/content/repositories/internal/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -364,7 +364,7 @@
         </repository>
         <repository>
             <id>5AM-Snapshots</id>
-            <url>http://maven.5amsolutions.com/archiva/repository/snapshots/</url>
+            <url>http://nexus.5amsolutions.com/nexus/content/repositories/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -372,28 +372,12 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
-        <repository>
-            <id>maven</id>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-        <repository>
-            <id>jboss</id>
-            <url>http://repository.jboss.com/maven2</url>
-        </repository>
-        <repository>
-	    <id>sonatype</id>
-	    <url>https://oss.sonatype.org/content/groups/public/</url>
-	</repository>
 
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>5AM-Releases</id>
-            <url>http://maven.5amsolutions.com/archiva/repository/internal/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>maven</id>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>http://nexus.5amsolutions.com/nexus/content/repositories/internal/</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -405,7 +389,7 @@
             <version>3.1</version>
             <scope>compile</scope>
         </dependency>
-        
+
         <!-- Testing only jars -->
         <dependency>
             <groupId>junit</groupId>
@@ -466,7 +450,7 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.9.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
