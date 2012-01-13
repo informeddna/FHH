@@ -25,8 +25,6 @@
                 class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.XSSFilterInterceptor" />
 			<interceptor name="exception"
 				class="gov.hhs.fhh.web.interceptor.FHHExceptionInterceptor" />
-            <interceptor name="redirectMessages"
-                class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.RedirectMessageInterceptor" />
 
 			<interceptor-stack name="fhhParamsPrepareParamsStack">
 				<interceptor-ref name="logger" />
@@ -41,7 +39,6 @@
 				<interceptor-ref name="fileUpload" />
 				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
-                <interceptor-ref name="redirectMessages" />
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />
@@ -71,7 +68,6 @@
 				<interceptor-ref name="fileUpload" />
 				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
-                <interceptor-ref name="redirectMessages" />
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />
@@ -99,7 +95,6 @@
 				<interceptor-ref name="fileUpload" />
 				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
-                <interceptor-ref name="redirectMessages" />
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />
