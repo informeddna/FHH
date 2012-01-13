@@ -7,12 +7,12 @@
 	<constant name="struts.devMode" value="true" />
 	<constant name="struts.ui.theme" value="css_xhtml" />
     <constant name="struts.url.includeParams" value="none" />
-    
+
 
 	<package name="default" extends="struts-default">
 		<interceptors>
-			<interceptor name="nci-commonsParams"
-				class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.DisplayTagParametersInterceptor" />
+            <interceptor name="nciCommonsParams"
+                class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.DisplayTagParametersInterceptor" />
 			<interceptor name="nullCollectionElements"
 				class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.NullCollectionElementInterceptor" />
 			<interceptor name="parameterTrim"
@@ -25,21 +25,23 @@
                 class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.XSSFilterInterceptor" />
 			<interceptor name="exception"
 				class="gov.hhs.fhh.web.interceptor.FHHExceptionInterceptor" />
+            <interceptor name="redirectMessages"
+                class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.RedirectMessageInterceptor" />
 
 			<interceptor-stack name="fhhParamsPrepareParamsStack">
 				<interceptor-ref name="logger" />
 				<interceptor-ref name="exception" />
 				<interceptor-ref name="alias" />
-				<interceptor-ref name="nci-commonsParams" />
+                <interceptor-ref name="nciCommonsParams" />
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="prepare" />
 				<interceptor-ref name="i18n" />
-				<interceptor-ref name="customI18n" />
+                <interceptor-ref name="customI18n" />
 				<interceptor-ref name="chain" />
 				<interceptor-ref name="fileUpload" />
 				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
-				<interceptor-ref name="nci-commonsParams" />
+                <interceptor-ref name="redirectMessages" />
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />
@@ -58,17 +60,18 @@
 				<interceptor-ref name="logger" />
 				<interceptor-ref name="exception" />
 				<interceptor-ref name="alias" />
+                <interceptor-ref name="nciCommonsParams" />
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="prepare" />
 				<interceptor-ref name="i18n" />
-				<interceptor-ref name="customI18n" />
+                <interceptor-ref name="customI18n" />
 				<interceptor-ref name="chain" />
 				<interceptor-ref name="debugging" />
 				<interceptor-ref name="profiling" />
 				<interceptor-ref name="fileUpload" />
 				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
-				<interceptor-ref name="nci-commonsParams" />
+                <interceptor-ref name="redirectMessages" />
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />
@@ -87,16 +90,16 @@
 				<interceptor-ref name="logger" />
 				<interceptor-ref name="exception" />
 				<interceptor-ref name="alias" />
-				<interceptor-ref name="nci-commonsParams" />
+                <interceptor-ref name="nciCommonsParams" />
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="prepare" />
 				<interceptor-ref name="i18n" />
-				<interceptor-ref name="customI18n" />
+                <interceptor-ref name="customI18n" />
 				<interceptor-ref name="chain" />
 				<interceptor-ref name="fileUpload" />
 				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
-				<interceptor-ref name="nci-commonsParams" />
+                <interceptor-ref name="redirectMessages" />
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />
@@ -130,7 +133,7 @@
 		<action name="logout"
 			class="com.fiveamsolutions.nci.commons.web.struts2.action.LogoutAction"
 			method="logout">
-			<result type="redirect-action">home</result>
+			<result type="redirectAction">home</result>
 		</action>
 		<action name="viewReport/*" class="gov.hhs.fhh.web.action.ViewReportAction"
 			method="{1}">
@@ -167,7 +170,7 @@
 			</result>
 		</action>
 		<action name="popup/familyHistory/paramlessLoaded">
-			<result type="redirect-action">
+			<result type="redirectAction">
 				<param name="actionName">familyHistory/familyHistory.action</param>
 				<param name="popup">closePopup</param>
 			</result>
@@ -219,10 +222,10 @@
 		<action name="healthvault/*" class="gov.hhs.fhh.web.action.HealthvaultAction"
 			method="{1}">
 			<result name="success">/WEB-INF/jsp/healthvault/{1}.jsp</result>
-			<result name="saveToHV" type="redirect-action">
+			<result name="saveToHV" type="redirectAction">
 				<param name="actionName">familyHistory/familyHistory.action</param>
 			</result>
-			<result name="failHvConnectToSaveError" type="redirect-action">
+			<result name="failHvConnectToSaveError" type="redirectAction">
                 <param name="actionName">familyHistory/familyHistory.action</param>
             </result>
 			<result name="previewChartResult" type="stream">
@@ -230,7 +233,7 @@
 				<param name="inputName">previewChart</param>
 				<param name="bufferSize">4096</param>
 			</result>
-			<result name="loadedPreviewedPedigree" type="redirect-action">
+			<result name="loadedPreviewedPedigree" type="redirectAction">
 				<param name="actionName">familyHistory/familyHistory.action</param>
 			</result>
 		</action>
@@ -240,17 +243,17 @@
 			</result>
 			<result name="successLoad">/WEB-INF/jsp/familyHistory/familyHistory.jsp
 			</result>
-			<result name="failHvConnectToLoadError" type="redirect-action">
+			<result name="failHvConnectToLoadError" type="redirectAction">
                 <param name="actionName">home.action</param>
             </result>
-			<result name="healthVaultPedigreeLoadError" type="redirect-action">
+			<result name="healthVaultPedigreeLoadError" type="redirectAction">
 				<param name="actionName">home.action</param>
 			</result>
-			<result name="healthVaultPedigreeLoaded" type="redirect-action">
+			<result name="healthVaultPedigreeLoaded" type="redirectAction">
 				<param name="actionName">home.action</param>
 			</result>
 			<result name="success">/WEB-INF/jsp/healthvault/{1}.jsp</result>
-			<result name="failedToSaveToMshv" type="redirect-action">
+			<result name="failedToSaveToMshv" type="redirectAction">
 				<param name="actionName">popup/saveFamilyHistory/step1.action</param>
 			</result>
 			<result name="saveLoadHV">/WEB-INF/jsp/healthvault/confirmSaveToHealthVault.jsp
@@ -262,7 +265,7 @@
 			<result name="input">/WEB-INF/jsp/person/addPerson.jsp</result>
 			<result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
 			<result name="submit">/WEB-INF/jsp/person/close.jsp</result>
-			<result name="addFamilyTree" type="redirect-action">popup/addFamilyTree/addFamilyTree
+			<result name="addFamilyTree" type="redirectAction">popup/addFamilyTree/addFamilyTree
 			</result>
 			<result name="xmlDiseaseSubTypes" type="stream">
 				<param name="contentType">text/xml;charset=UTF-8</param>

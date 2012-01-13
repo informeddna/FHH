@@ -1,9 +1,9 @@
 In order to configure your development environment for this project, you must perform the following steps:
 
-1.  Download and Install Maven 2.0.10 from http://maven.apache.org/
+1.  Download and Install Maven 2.2.1 from http://maven.apache.org/
 
-2.  Download and install Java 1.5.0_21 (or a later version of 1.5.0):
-http://java.sun.com/javase/downloads/index_jdk5.jsp
+2.  Download and install Java 1.6.0_29 (or a later version of 1.6.0):
+http://www.oracle.com/technetwork/java/archive-139210.html
 
 3.  Download and install JBoss 4.0.5 with EJB3 support:
 http://sourceforge.net/projects/jboss/files/JEMS-Installer/jems-installer-1.2.0.GA/jems-installer-1.2.0.GA.jar/download
@@ -16,13 +16,10 @@ The install location of jboss-4.0.5-ejb is subsequently referred to as $JBOSS_HO
 cd $JBOSS_HOME/server/
 cp -R $JBOSS_HOME/server/default $JBOSS_HOME/server/fhh
 
-4.1  Install the mysql driver in to your JBoss instance, $JBOSS_HOME/server/fhh/lib directory, 
-either manually download the jar from http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
-or use the commandline (in the $JBOSS_HOME/server/fhh/lib directory)
-LINUX  wget http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
-MACOSX curl -O http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
+4.1  Install the mysql driver in to your JBoss instance, $JBOSS_HOME/server/fhh/lib directory,
+Manually download the jar from http://www.mysql.com/downloads/mirror.php?id=404190
 
-4.2  Install the EHCache v1.2.4 in to your Jboss instance, $JBOSS_HOME/server/fhh/lib directory, 
+4.2  Install the EHCache v1.2.4 in to your Jboss instance, $JBOSS_HOME/server/fhh/lib directory,
 either manually download the jar from http://mirrors.ibiblio.org/pub/mirrors/maven2/net/sf/ehcache/ehcache/1.2.4/ehcache-1.2.4.jar
 or use the commandline (in the $JBOSS_HOME/server/fhh/lib directory)
 LINUX  wget http://mirrors.ibiblio.org/pub/mirrors/maven2/net/sf/ehcache/ehcache/1.2.4/ehcache-1.2.4.jar
@@ -31,27 +28,15 @@ MACOSX curl -O http://mirrors.ibiblio.org/pub/mirrors/maven2/net/sf/ehcache/ehca
 4.3 Install two JAXB jars (jaxb-api-2.1.jar, jaxb-impl-2.1.4.jar) into your JBoss instance, $JBOSS_HOME/server/fhh/lib directory,
 either manually download the jar from http://mirrors.ibiblio.org/pub/mirrors/maven2/net/sf/ehcache/ehcache/1.2.4/ehcache-1.2.4.jar
 or use the commandline (in the $JBOSS_HOME/server/fhh/lib directory)
-LINUX  
+LINUX
 wget http://mirrors.ibiblio.org/pub/mirrors/maven2/net/sf/ehcache/ehcache/1.2.4/ehcache-1.2.4.jar
 wget https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar
-MACOSX 
+MACOSX
 curl -O https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/com/sun/xml/bind/jaxb-impl/2.1.4/jaxb-impl-2.1.4.jar
 curl -O https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar
 
-4.4 Upgrade the log4j libs for jboss 4.0.5
-log4j.jar comes bundled with jboss-4.0.5.EJB in version 2.1.8, but the fhh application required log4j in version 2.1.14.
-//change to $JBOSS_HOME/lib
-cd $JBOSS_HOME/lib
-//download Log4J v1.2.14 from https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/log4j/log4j/1.2.14/log4j-1.2.14.jar
-LINUX  wget https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/log4j/log4j/1.2.14/log4j-1.2.14.jar
-MACOSX curl -O https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/log4j/log4j/1.2.14/log4j-1.2.14.jar
-//Overwrite the JBOSS_HOME/lib/log4j-boot.jar with the downloaded log4j-1.2.14.jar
-mv log4j-1.2.14.jar log4j-boot.jar
-//Remove the log4j.jar from the server instance - this jar does NOT need to be replaced
-rm $JBOSS_HOME/server/fhh/lib
-
-4.5 Securing the (jboss) tomcat instance 
-Edit your $JBOSS_HOME/server/fhh/deploy/jbossweb-tomcat55.sar/server.xml 
+4.4 Securing the (jboss) tomcat instance
+Edit your $JBOSS_HOME/server/fhh/deploy/jbossweb-tomcat55.sar/server.xml
 change all occurrences of emptySessionPath="true" TO emptySessionPath="false"
 
 5. Adapt the installation for your local environment:
@@ -108,7 +93,7 @@ mvn -f services/pom.xml -Plocal -Dskip-liquibase=true clean generate-test-resour
 mvn clean install cargo:deploy -Plocal,pre-compile  pre-compiles the jsps in the war phase
 
 Running selenium tests from inside of eclipse:
-Download the selenium-remote-control, 
+Download the selenium-remote-control,
 cd selenium-remote-control-1.0.1/selenium-server-1.0.1/
 java -jar selenium-server.jar -port 60001 (leave this shell tab alone, selenium should keep running)
 Start your jboss thats running fhh

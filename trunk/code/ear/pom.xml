@@ -111,6 +111,18 @@
             <version>${jdbc.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>weka</groupId>
+            <artifactId>weka</artifactId>
+            <version>3.4.13</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <pluginRepositories>
@@ -302,7 +314,7 @@
                             <contextRoot>/fhh-web</contextRoot>
                             <bundleFileName>fhh-web.war</bundleFileName>
                         </webModule>
-                        
+
                         <jarModule>
                             <groupId>net.sf.ehcache</groupId>
                             <artifactId>ehcache</artifactId>
