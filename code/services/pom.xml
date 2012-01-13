@@ -17,9 +17,6 @@
         <hbm2ddl.drop.table>false</hbm2ddl.drop.table>
         <hbm2ddl.create.table>true</hbm2ddl.create.table>
 
-        <admin.db.username>root</admin.db.username>
-        <admin.db.password>passw0rd</admin.db.password>
-
         <test.jdbc.url>jdbc:hsqldb:mem:fhh-test</test.jdbc.url>
         <test.jdbc.username>sa</test.jdbc.username>
         <test.jdbc.password />
