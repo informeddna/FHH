@@ -121,7 +121,7 @@
         <repository>
             <id>5AM-Releases</id>
             <name>5AM Releases</name>
-            <url>http://nexus.5amsolutions.com/nexus/content/repositories/internal/</url>
+            <url>http://nexus.5amsolutions.com/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <id>5AM-Snapshots</id>
@@ -356,7 +356,7 @@
     <repositories>
         <repository>
             <id>5AM-Releases</id>
-            <url>http://nexus.5amsolutions.com/nexus/content/repositories/internal/</url>
+            <url>http://nexus.5amsolutions.com/nexus/content/repositories/releases/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -379,7 +379,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>5AM-Releases</id>
-            <url>http://nexus.5amsolutions.com/nexus/content/repositories/internal/</url>
+            <url>http://nexus.5amsolutions.com/nexus/content/repositories/releases/</url>
         </pluginRepository>
     </pluginRepositories>
 
