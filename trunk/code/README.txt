@@ -5,9 +5,9 @@ In order to configure your development environment for this project, you must pe
 2.  Download and install Java 1.6.0_29 (or a later version of 1.6.0):
 http://www.oracle.com/technetwork/java/archive-139210.html
 
-3.  Download and install JBoss 4.0.5 with EJB3 support:
-http://sourceforge.net/projects/jboss/files/JEMS-Installer/jems-installer-1.2.0.GA/jems-installer-1.2.0.GA.jar/download
-The install location of jboss-4.0.5-ejb is subsequently referred to as $JBOSS_HOME
+3.  Download and install JBoss 5.1.0.GA with EJB3 support:
+http://sourceforge.net/projects/jboss/files/JBoss/JBoss-5.1.0.GA
+The install location of jboss-5.1.0.GA is subsequently referred to as $JBOSS_HOME
 
 4.  Prepare Jboss Instance
 4.0 Create a copy of the default server instance, we suggest to call it fhh (and use this name for the remainder of this document).

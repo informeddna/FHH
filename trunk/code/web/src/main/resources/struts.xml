@@ -11,14 +11,10 @@
 
 	<package name="default" extends="struts-default">
 		<interceptors>
-            <interceptor name="nciCommonsParams"
-                class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.DisplayTagParametersInterceptor" />
 			<interceptor name="nullCollectionElements"
 				class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.NullCollectionElementInterceptor" />
 			<interceptor name="parameterTrim"
 				class="com.fiveamsolutions.nci.commons.web.struts2.interceptor.ParameterTrimInterceptor" />
-			<interceptor name="i18n"
-				class="com.opensymphony.xwork2.interceptor.I18nInterceptor" />
 			<interceptor name="customI18n"
 				class="gov.hhs.fhh.web.interceptor.CustomI18nInterceptor" />
             <interceptor name="xssFilterInterceptor"
@@ -30,15 +26,25 @@
 				<interceptor-ref name="logger" />
 				<interceptor-ref name="exception" />
 				<interceptor-ref name="alias" />
-                <interceptor-ref name="nciCommonsParams" />
+                <interceptor-ref name="checkbox" />
+                <interceptor-ref name="multiselect"/>
+                <interceptor-ref name="params">
+                    <param name="excludeParams">
+                        _,d-\d+?-[sop]
+                    </param>
+                </interceptor-ref>
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="prepare" />
 				<interceptor-ref name="i18n" />
                 <interceptor-ref name="customI18n" />
 				<interceptor-ref name="chain" />
 				<interceptor-ref name="fileUpload" />
-				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
+                <interceptor-ref name="params">
+                    <param name="excludeParams">
+                        _,d-\d+?-[sop]
+                    </param>
+                </interceptor-ref>
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />
@@ -57,7 +63,13 @@
 				<interceptor-ref name="logger" />
 				<interceptor-ref name="exception" />
 				<interceptor-ref name="alias" />
-                <interceptor-ref name="nciCommonsParams" />
+                <interceptor-ref name="checkbox" />
+                <interceptor-ref name="multiselect"/>
+                <interceptor-ref name="params">
+                    <param name="excludeParams">
+                        _,d-\d+?-[sop]
+                    </param>
+                </interceptor-ref>
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="prepare" />
 				<interceptor-ref name="i18n" />
@@ -66,8 +78,12 @@
 				<interceptor-ref name="debugging" />
 				<interceptor-ref name="profiling" />
 				<interceptor-ref name="fileUpload" />
-				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
+                <interceptor-ref name="params">
+                    <param name="excludeParams">
+                        _,d-\d+?-[sop]
+                    </param>
+                </interceptor-ref>
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />
@@ -86,15 +102,27 @@
 				<interceptor-ref name="logger" />
 				<interceptor-ref name="exception" />
 				<interceptor-ref name="alias" />
-                <interceptor-ref name="nciCommonsParams" />
+                <interceptor-ref name="checkbox" />
+                <interceptor-ref name="multiselect"/>
+                <interceptor-ref name="params">
+                    <param name="excludeParams">
+                        _,d-\d+?-[sop]
+                    </param>
+                </interceptor-ref>
 				<interceptor-ref name="servletConfig" />
-				<interceptor-ref name="prepare" />
+				<interceptor-ref name="prepare">
+                    <param name="excludeMethods">retrieveDiseaseSubTypes,retrieveCODSubTypes</param>
+                </interceptor-ref>
 				<interceptor-ref name="i18n" />
                 <interceptor-ref name="customI18n" />
 				<interceptor-ref name="chain" />
 				<interceptor-ref name="fileUpload" />
-				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="staticParams" />
+                <interceptor-ref name="params">
+                    <param name="excludeParams">
+                        _,d-\d+?-[sop]
+                    </param>
+                </interceptor-ref>
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="nullCollectionElements" />
                 <interceptor-ref name="xssFilterInterceptor" />

@@ -143,7 +143,7 @@ public class XSSFilterTest extends AbstractFHHSeleniumTest {
         openFHH();
         importXMLFile("XSS_filter_FamilyHistory.xml");
         waitForText("Update My Family History");
-        assertTrue(selenium.isTextPresent(NCICommonsUtils.performXSSFilter(MALICIOUS_INPUT)));
+        assertTrue(selenium.isTextPresent(NCICommonsUtils.performXSSFilter(MALICIOUS_INPUT, true, true)));
         
         // Check that page is rendered correctly for relative and proband      
         checkProband("4");
@@ -159,7 +159,7 @@ public class XSSFilterTest extends AbstractFHHSeleniumTest {
         openFHH();
         importXMLFile("XSS_Filter_HTM.htm");
         waitForText("Update My Family History");
-        assertTrue(selenium.isTextPresent(NCICommonsUtils.performXSSFilter(MALICIOUS_INPUT)));
+        assertTrue(selenium.isTextPresent(NCICommonsUtils.performXSSFilter(MALICIOUS_INPUT, true, true)));
         
         // Check that page is rendered correctly for relative and proband      
         checkProband("3");

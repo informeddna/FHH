@@ -604,7 +604,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     /**
      * @return the relationshipSpecifier
      */
-    public LivingStatus[] getlivingStatusEnums() {
+    public LivingStatus[] getLivingStatusEnums() {
         return LivingStatus.values();
     }
 
