@@ -336,7 +336,7 @@ public class AddPersonActionTest extends AbstractFhhWebTest {
 
 	@Test
     public void testGetlivingStatusEnums() {
-	    assertNotNull(action.getlivingStatusEnums());
+	    assertNotNull(action.getLivingStatusEnums());
 	}
 
 	@Test
