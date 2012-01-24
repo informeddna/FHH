@@ -159,6 +159,11 @@ public final class HL7ConversionUtils {
             adoptedObs.setCode(new CodeNode(ClinicalObservationCode.ADOPTED));
             node.getObservations().add(adoptedObs);
         }
+        if (p.isExerciseMoreThanPeers()) {
+            ClinicalObservation adoptedObs = new ClinicalObservation();
+            adoptedObs.setCode(new CodeNode(ClinicalObservationCode.EXERCISE));
+            node.getObservations().add(adoptedObs);
+        }
         TwinStatus twinStatus = p.getTwinStatus();
         if (twinStatus != null && !TwinStatus.NO.equals(twinStatus)) {
             ClinicalObservation twinStatusObs = new ClinicalObservation();
@@ -315,6 +320,8 @@ public final class HL7ConversionUtils {
         String code = observation.getCode().getCode().trim();
         if (code.equals(ClinicalObservationCode.ADOPTED.getCode())) {
             p.setAdopted(true);
+        } else if (code.equals(ClinicalObservationCode.EXERCISE.getCode())) {
+            p.setExerciseMoreThanPeers(true);
         } else if (code.equals(ClinicalObservationCode.WEIGHT.getCode())) {
             p.setWeight(new Weight(Integer.valueOf(observation.getValueNode().getValue()), WeightUnit
                     .fromUnit(observation.getValueNode().getUnit())));
