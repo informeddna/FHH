@@ -112,6 +112,7 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
         p.setRaces(new ArrayList<Race>());
         p.getRaces().add(DUMMY_RACE);
         p.setAdopted(TRUE);
+        p.setExerciseMoreThanPeers(TRUE);
     }
 
     @Test
@@ -161,9 +162,17 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
         assertEquals(ClinicalObservationCode.ADOPTED.getDisplayName(),
                 codeNode.getDisplayName());
 
-        // check weight observation
+        // check exercise observation
         codeNode = observationsNode.getObservations().get(2).getCode();
-        assertEquals(DUMMY_WEIGHT.getValue().toString(), observationsNode.getObservations().get(2)
+        assertEquals(ClinicalObservationCode.EXERCISE.getCode(), codeNode.getCode());
+        assertEquals(ClinicalObservationCode.EXERCISE.getCodeSystemName(),
+                codeNode.getCodeSystemName());
+        assertEquals(ClinicalObservationCode.EXERCISE.getDisplayName(),
+                codeNode.getDisplayName());
+
+        // check weight observation
+        codeNode = observationsNode.getObservations().get(3).getCode();
+        assertEquals(DUMMY_WEIGHT.getValue().toString(), observationsNode.getObservations().get(3)
                 .getValueNode().getValue());
         assertEquals(ClinicalObservationCode.WEIGHT.getCode(), codeNode.getCode());
         assertEquals(ClinicalObservationCode.WEIGHT.getCodeSystemName(),
@@ -172,8 +181,8 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 codeNode.getDisplayName());
 
         // check height observation
-        codeNode = observationsNode.getObservations().get(3).getCode();
-        assertEquals(DUMMY_HEIGHT.getValue().toString(), observationsNode.getObservations().get(3)
+        codeNode = observationsNode.getObservations().get(4).getCode();
+        assertEquals(DUMMY_HEIGHT.getValue().toString(), observationsNode.getObservations().get(4)
                 .getValueNode().getValue());
         assertEquals(ClinicalObservationCode.HEIGHT.getCode(), codeNode.getCode());
         assertEquals(ClinicalObservationCode.HEIGHT.getCodeSystemName(),
@@ -182,8 +191,8 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 codeNode.getDisplayName());
 
         // check waist circumference observation
-        codeNode = observationsNode.getObservations().get(4).getCode();
-        assertEquals(DUMMY_WAIST_CIRCUMFERENCE.getValue().toString(), observationsNode.getObservations().get(4)
+        codeNode = observationsNode.getObservations().get(5).getCode();
+        assertEquals(DUMMY_WAIST_CIRCUMFERENCE.getValue().toString(), observationsNode.getObservations().get(5)
                 .getValueNode().getValue());
         assertEquals(ClinicalObservationCode.WAIST_CIRCUMFERENCE.getCode(), codeNode.getCode());
         assertEquals(ClinicalObservationCode.WAIST_CIRCUMFERENCE.getCodeSystemName(),
@@ -192,13 +201,14 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 codeNode.getDisplayName());
 
         // check consanguinity observation
-        codeNode = observationsNode.getObservations().get(5).getCode();
+        codeNode = observationsNode.getObservations().get(6).getCode();
         assertEquals(ClinicalObservationCode.CONSANGUINITY_ORG_TEXT, codeNode.getOriginalText());
 
         p.getObservations().clear();
         // Add twin status - fraternal
         p.setTwinStatus(TwinStatus.FRATERNAL);
         p.setAdopted(false);
+        p.setExerciseMoreThanPeers(false);
 
         // check twin status - fraternal
         observationsNode = HL7ConversionUtils.createClinicalObservationsNode(p);
@@ -318,6 +328,22 @@ public class HL7ConversionUtilsTest extends AbstractHibernateTestCase{
                 ClinicalObservationCode.ADOPTED.getDisplayName()));
         HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
         assertTrue(person.isAdopted());
+    }
+
+    @Test
+    public void testSetClinicalObservationsNodeForExercise() {
+        CodeNode codeNode = new CodeNode();
+        ClinicalObservationsNode observationsNode = new ClinicalObservationsNode();
+        Person person = new Person();
+
+        observationsNode.getObservations().clear();
+        observationsNode.getObservations().add(new ClinicalObservation());
+        observationsNode.getObservations().get(0).setCode(new CodeNode(
+                ClinicalObservationCode.EXERCISE.getCode(),
+                ClinicalObservationCode.EXERCISE.getCodeSystemName(),
+                ClinicalObservationCode.EXERCISE.getDisplayName()));
+        HL7ConversionUtils.extractClinicalObservationsNode(person, observationsNode);
+        assertTrue(person.isExerciseMoreThanPeers());
     }
 
     @Test

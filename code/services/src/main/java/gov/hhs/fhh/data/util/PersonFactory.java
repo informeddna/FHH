@@ -249,6 +249,7 @@ public final class PersonFactory {
         person.setName(demographics.getName());
         person.setAdopted(demographics.isAdopted());
         person.setTwinStatus(demographics.getTwinStatus());
+        person.setExerciseMoreThanPeers(demographics.isExerciseMoreThanPeers());
 
     }
 
