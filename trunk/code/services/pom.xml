@@ -256,6 +256,12 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>com.fiveamsolutions</groupId>
+            <artifactId>hl7-commons</artifactId>
+            <version>1.0.13-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>1.4</version>
