@@ -120,6 +120,7 @@ public class Person implements Serializable {
         dateOfBirth = p.getDateOfBirth();
         weight = new Weight(p.getWeight().getValue(), p.getWeight().getUnit());
         height = p.getHeight();
+        waistCircumference = p.getWaistCircumference();
         gender = p.getGender();
         ethnicities = p.getEthnicities();
         races = p.getRaces();
