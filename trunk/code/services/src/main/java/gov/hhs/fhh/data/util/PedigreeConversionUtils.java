@@ -223,6 +223,7 @@ public final class PedigreeConversionUtils {
         demographics.setAdopted(dataRelative.isAdopted());
         demographics.setHeight(dataRelative.getHeight());
         demographics.setWeight(dataRelative.getWeight());
+        demographics.setWaistCircumference(dataRelative.getWaistCircumference());
         addRaces(demographics, dataRelative);
         addEthnicities(demographics, dataRelative);
         return demographics;

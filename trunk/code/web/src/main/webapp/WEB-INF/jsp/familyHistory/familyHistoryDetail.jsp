@@ -6,6 +6,7 @@
 <s:url value="/popup/selectRelative/selectRelative.action" id="selectRelativeUrl" />
 <s:url value="/popup/saveFamilyHistory/saveFamilyHistory.action" id="saveFamilyHistoryUrl" />
 <c:url value="/viewReport/viewReport.action" var="viewReport" />
+<c:url value="/risk/risk.action" var="risk" />
 <c:url value="/home.action" var="homeUrl" />
 <script type="text/javascript" charset="ISO-8859-1">
 
@@ -14,7 +15,7 @@ returnHomeFunc = function() {
 }
 
 addPersonOnclickFunc = function() {
-    handlePopup('${addPersonUrl}'); 
+    handlePopup('${addPersonUrl}');
     //$('popCloseBox').addEventListener('click', returnHomeFunc, false);
 }
 
@@ -32,7 +33,7 @@ addPersonOnclickFunc = function() {
                         <p><fmt:message key="familyHistory.create.text"/></p>
                         <hr />
                         <!-- if we don't have a person, show this button -->
-                        
+
                         <div class="buttonContainer"><a id="addPersonAnchor" href="javascript://nop/" onclick="addPersonOnclickFunc();"><fmt:message key="button.createHistory"/></a></div>
                         <script type="text/javascript">
                                setFocusById("addPersonAnchor");
@@ -53,15 +54,15 @@ addPersonOnclickFunc = function() {
                         </s:else>
                         <p><fmt:message key="familyHistory.family.text.youCan"/></p>
                         <ul>
-                            <li><fmt:message key="familyHistory.family.text.item.editInfo1"/> 
-                                <img src="<s:url value="/images/icon_edit.gif"/>" alt="<fmt:message key="button.update"/>" title="<fmt:message key="button.update"/>" height="14" width="14" /> 
+                            <li><fmt:message key="familyHistory.family.text.item.editInfo1"/>
+                                <img src="<s:url value="/images/icon_edit.gif"/>" alt="<fmt:message key="button.update"/>" title="<fmt:message key="button.update"/>" height="14" width="14" />
                                 (<fmt:message key="button.update"/>) <fmt:message key="familyHistory.family.text.item.editInfo2"/></li>
                             <li><fmt:message key="familyHistory.family.text.item.addInfo"/>
-                                <img src="<s:url value="/images/icon_add.gif"/>" alt="<fmt:message key="button.add"/>" title="<fmt:message key="button.add"/>" height="14" width="14" /> 
+                                <img src="<s:url value="/images/icon_add.gif"/>" alt="<fmt:message key="button.add"/>" title="<fmt:message key="button.add"/>" height="14" width="14" />
                                 (<fmt:message key="button.add"/>) <fmt:message key="familyHistory.family.text.item.editInfo2"/></li>
                             <li><fmt:message key="familyHistory.family.text.item.addRel"/> "<fmt:message key="button.addAnotherFamily"/>."</li>
                             <li><fmt:message key="familyHistory.family.text.item.removeRel"/>
-                                <img src="<s:url value="/images/icon_trash.gif"/>" alt="<fmt:message key="button.remove"/>" title="<fmt:message key="button.remove"/>" height="14" width="14" /> 
+                                <img src="<s:url value="/images/icon_trash.gif"/>" alt="<fmt:message key="button.remove"/>" title="<fmt:message key="button.remove"/>" height="14" width="14" />
                                 (<fmt:message key="button.remove"/>) <fmt:message key="familyHistory.family.text.item.editInfo2"/>
                                 <fmt:message key="familyHistory.family.text.item.removeRel2"/></li>
                         </ul>
@@ -73,6 +74,7 @@ addPersonOnclickFunc = function() {
                                 <a id="addAnotherFamilyMember1" href="javascript://nop/" onclick="handlePopup('${selectRelativeUrl}');"><fmt:message key="button.addAnotherFamily"/></a>
                                 <a id="save_history" href="javascript://nop/" onclick="handlePopup('${saveFamilyHistoryUrl}');"><fmt:message key="button.saveXmlDocument"/></a>
                                 <a id="viewReport1" href="${viewReport}"><fmt:message key="menu.text.viewReport" /></a>
+                                <a id="risk1" href="${risk}"><fmt:message key="menu.text.risk" /></a>
                             </div>
                             <script type="text/javascript">
                                setFocusById("addAnotherFamilyMember1");
@@ -154,7 +156,7 @@ addPersonOnclickFunc = function() {
     </table>
 </c:if>
     <p>               </p>
-    
+
     <table border="0" cellpadding="0" cellspacing="0" class="datatableWrapper" id="familyHistoryDataTable">
     <tbody>
         <tr>
@@ -197,7 +199,7 @@ addPersonOnclickFunc = function() {
                     <tr class="relative">
                         <td scope="row"><table cellpadding="0" cellspacing="0">${person.mother.name}</table></td>
                         <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="relativeCode.nmth"/></table></td>
-                        <fhh:fhhTableButtons completedForm="${person.mother.completedForm}" unmatchedCondition="${person.mother.unmatchedCondition}" editUrl="${editRelativeUrl}" />                        
+                        <fhh:fhhTableButtons completedForm="${person.mother.completedForm}" unmatchedCondition="${person.mother.unmatchedCondition}" editUrl="${editRelativeUrl}" />
                     </tr>
                 </c:if>
                 <!-- self -->
@@ -303,7 +305,7 @@ addPersonOnclickFunc = function() {
                 </s:url>
                 <tr class="relative">
                     <td scope="row">${currRelative.name}</td>
-                    <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="${currRelative.codeEnum.resourceKey}"/></table></td>     
+                    <td><table cellpadding="0" cellspacing="0"><fmt:message bundle="${der}" key="${currRelative.codeEnum.resourceKey}"/></table></td>
                     <c:choose>
                         <c:when test="${currRelative.removable}">
                             <fhh:fhhTableButtons completedForm="${currRelative.completedForm}" unmatchedCondition="${currRelative.unmatchedCondition}" editUrl="${editRelativeUrl}" removeUrl="${removeRelativeUrl}" />
@@ -333,7 +335,7 @@ addPersonOnclickFunc = function() {
 </s:form>
 
 
-    
+
 
 
 <%@ include file="openPopupOnload.jsp" %>

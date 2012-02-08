@@ -235,6 +235,14 @@
 				<param name="bufferSize">4096</param>
 			</result>
 		</action>
+        <action name="risk/*" class="gov.hhs.fhh.web.action.RiskAction"
+            method="{1}">
+            <result name="success">/WEB-INF/jsp/risk/{1}.jsp</result>
+        </action>
+        <action name="popup/risk/*" class="gov.hhs.fhh.web.action.RiskAction"
+            method="{1}">
+            <result name="success">/WEB-INF/jsp/risk/{1}.jsp</result>
+        </action>
 		<action name="popup/leavingFhhWarn">
 			<result>/WEB-INF/jsp/healthvault/leavingFhh.jsp</result>
 		</action>
