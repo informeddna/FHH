@@ -98,7 +98,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-
 		<!-- Dependencies that will be provided in the ear or by JBoss -->
 		<dependency>
 			<groupId>${pom.parent.groupId}</groupId>

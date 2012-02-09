@@ -34,6 +34,7 @@
 package gov.hhs.fhh.web.action;
 
 import gov.hhs.fhh.data.Person;
+import gov.hhs.fhh.service.util.RiskUtils;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -48,6 +49,7 @@ public class RiskAction extends ActionSupport implements Preparable {
 
     private Person person;
     private String fileName;
+    private String downloadRiskLink;
 
     /**
      * {@inheritDoc}
@@ -74,6 +76,7 @@ public class RiskAction extends ActionSupport implements Preparable {
      * @return path String
      */
     public String colorectal() {
+        setDownloadRiskLink(RiskUtils.getInstance().calculateColorectalRisk(person));
         return SUCCESS;
     }
 
@@ -104,5 +107,19 @@ public class RiskAction extends ActionSupport implements Preparable {
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    /**
+     * @return the downloadRiskLink
+     */
+    public String getDownloadRiskLink() {
+        return downloadRiskLink;
+    }
+
+    /**
+     * @param downloadRiskLink the downloadRiskLink to set
+     */
+    public void setDownloadRiskLink(String downloadRiskLink) {
+        this.downloadRiskLink = downloadRiskLink;
     }
 }

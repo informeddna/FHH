@@ -35,11 +35,34 @@ package gov.hhs.fhh.web.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import gov.hhs.fhh.data.ClinicalObservation;
+import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
+import gov.hhs.fhh.data.Race;
+import gov.hhs.fhh.data.Relative;
+import gov.hhs.fhh.data.RelativeCode;
+import gov.hhs.fhh.data.UserEnteredDisease;
+import gov.hhs.fhh.model.mfhp.LivingStatus;
+import gov.hhs.fhh.model.mfhp.castor.ExportUtils;
+import gov.hhs.fhh.service.FhhWebException;
+import gov.hhs.fhh.service.util.FhhUtils;
+import gov.hhs.fhh.service.util.RiskUtils;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+
+import org.apache.commons.lang.StringUtils;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.Weight;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
@@ -47,9 +70,29 @@ import org.junit.Test;
  */
 public class RiskActionTest extends AbstractFhhWebTest {
     private final RiskAction action = new RiskAction();
+    private final Person p = new Person();
 
     private final String SUCCESS = "success";
     private final String MIN_HEX = "80000000";
+
+    private final String DUMMY_NAME = "John Doe";
+    public static final String DUMMY_KEY = "80000000";
+    private final Gender DUMMY_GENDER = Gender.MALE;
+    private final GregorianCalendar DUMMY_DATE = new GregorianCalendar(1970, 10, 7, 0, 0, 0);
+    public static final String IMPORT_COMPLETE = "importComplete";
+    public static final String BASIC_IMPORT_TEST = "/Basic_Test_FamilyHistory.xml";
+    private final Weight BASIC_TEST_WEIGHT = new Weight(180, WeightUnit.METRIC);
+
+    @Before
+    public void before() throws FhhWebException {
+        p.setName(DUMMY_NAME);
+
+        p.setDateOfBirth(DUMMY_DATE.getTime());
+        p.setWeight(BASIC_TEST_WEIGHT);
+        p.setGender(DUMMY_GENDER);
+
+        FhhUtils.addRequiredRelativesToTree(p);
+    }
 
     @Test
     public void testPrepare() {
@@ -57,7 +100,6 @@ public class RiskActionTest extends AbstractFhhWebTest {
         action.prepare();
         assertNull(action.getPerson());
 
-        Person p = new Person();
         FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, p);
         FhhHttpSessionUtil.getSession().setAttribute(FhhHttpSessionUtil.ROOT_KEY, MIN_HEX);
 
@@ -71,7 +113,9 @@ public class RiskActionTest extends AbstractFhhWebTest {
     }
 
     @Test
-    public void colorectal() {
+    public void colorectal() throws Exception {
+        action.setPerson(p);
         assertEquals(SUCCESS, action.colorectal());
+        assertTrue(StringUtils.contains(action.getDownloadRiskLink(), "lowUnder50.html"));
     }
 }
