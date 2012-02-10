@@ -34,8 +34,13 @@
 package gov.hhs.fhh.web.action;
 
 import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.service.util.RiskUtils;
+import gov.hhs.fhh.data.util.PersonUtils;
+import gov.hhs.fhh.service.util.RiskClient;
+import gov.hhs.fhh.service.util.RiskResponseBuilder;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
@@ -48,8 +53,7 @@ public class RiskAction extends ActionSupport implements Preparable {
     private static final long serialVersionUID = 316273314L;
 
     private Person person;
-    private String fileName;
-    private String downloadRiskLink;
+    private InputStream riskFile;
 
     /**
      * {@inheritDoc}
@@ -76,8 +80,36 @@ public class RiskAction extends ActionSupport implements Preparable {
      * @return path String
      */
     public String colorectal() {
-        setDownloadRiskLink(RiskUtils.getInstance().calculateColorectalRisk(person));
         return SUCCESS;
+    }
+
+    /**
+     * Method invokes the reindex page.
+     *
+     * @return path String
+     */
+    public String downloadColorectalRisk() {
+        final RiskResponseBuilder builder = new RiskResponseBuilder();
+        RiskClient.getInstance().calculateRisk(person, builder);
+        riskFile = new ByteArrayInputStream(RiskClient.getInstance().getRiskFile(builder.getPatient()));
+        return "downloadColorectalRiskFile";
+    }
+
+    /**
+     * Method returns the risk/physician letter pdf as an input stream.
+     *
+     * @return input stream containing the combined risk pdf
+     */
+    public InputStream getDownloadFile() {
+        return riskFile;
+    }
+
+    /**
+     *  Gets file name for colorectal risk file.
+     * @return colorectal risk file name
+     */
+    public String getColorectalFileName() {
+        return PersonUtils.getFileNameForPerson(person, "Colorectal_Risk.pdf");
     }
 
 
@@ -95,31 +127,4 @@ public class RiskAction extends ActionSupport implements Preparable {
         this.person = person;
     }
 
-    /**
-     * @return the fileName
-     */
-    public String getFileName() {
-        return fileName;
-    }
-
-    /**
-     * @param fileName the fileName to set
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    /**
-     * @return the downloadRiskLink
-     */
-    public String getDownloadRiskLink() {
-        return downloadRiskLink;
-    }
-
-    /**
-     * @param downloadRiskLink the downloadRiskLink to set
-     */
-    public void setDownloadRiskLink(String downloadRiskLink) {
-        this.downloadRiskLink = downloadRiskLink;
-    }
 }
