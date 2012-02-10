@@ -34,32 +34,19 @@
 package gov.hhs.fhh.web.action;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import gov.hhs.fhh.data.ClinicalObservation;
-import gov.hhs.fhh.data.Ethnicity;
 import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.data.Race;
-import gov.hhs.fhh.data.Relative;
-import gov.hhs.fhh.data.RelativeCode;
-import gov.hhs.fhh.data.UserEnteredDisease;
-import gov.hhs.fhh.model.mfhp.LivingStatus;
-import gov.hhs.fhh.model.mfhp.castor.ExportUtils;
 import gov.hhs.fhh.service.FhhWebException;
 import gov.hhs.fhh.service.util.FhhUtils;
-import gov.hhs.fhh.service.util.RiskUtils;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang.StringUtils;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
 import com.fiveamsolutions.hl7.model.mfhp.Gender;
 import com.fiveamsolutions.hl7.model.mfhp.Weight;
 import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
@@ -114,8 +101,20 @@ public class RiskActionTest extends AbstractFhhWebTest {
 
     @Test
     public void colorectal() throws Exception {
+        assertEquals(SUCCESS, action.colorectal());
+    }
+
+    @Test
+    public void downloadColorectalRisk() throws Exception {
         action.setPerson(p);
         assertEquals(SUCCESS, action.colorectal());
-        assertTrue(StringUtils.contains(action.getDownloadRiskLink(), "lowUnder50.html"));
+        assertEquals("downloadColorectalRiskFile", action.downloadColorectalRisk());
+        assertNotNull(action.getDownloadFile());
+    }
+
+    @Test
+    public void getColorectalFileName() throws Exception {
+        action.setPerson(p);
+        assertEquals("John_Doe_Colorectal_Risk.pdf", action.getColorectalFileName());
     }
 }

@@ -242,6 +242,12 @@
         <action name="popup/risk/*" class="gov.hhs.fhh.web.action.RiskAction"
             method="{1}">
             <result name="success">/WEB-INF/jsp/risk/{1}.jsp</result>
+            <result name="downloadColorectalRiskFile" type="stream">
+                <param name="contentType">application/download</param>
+                <param name="inputName">downloadFile</param>
+                <param name="bufferSize">4096</param>
+                <param name="contentDisposition">attachment;filename="${colorectalFileName}"</param>
+            </result>
         </action>
 		<action name="popup/leavingFhhWarn">
 			<result>/WEB-INF/jsp/healthvault/leavingFhh.jsp</result>

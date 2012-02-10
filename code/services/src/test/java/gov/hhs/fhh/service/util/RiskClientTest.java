@@ -1,21 +1,26 @@
-package gov.hhs.fhh.test.util;
+package gov.hhs.fhh.service.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.service.FhhWebException;
-import gov.hhs.fhh.service.util.FhhUtils;
-import gov.hhs.fhh.service.util.RiskUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang.StringUtils;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.fiveamsolutions.drc.util.ValidRiskFileNames;
 import com.fiveamsolutions.hl7.model.mfhp.Gender;
 import com.fiveamsolutions.hl7.model.mfhp.Weight;
 import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
-public class RiskUtilsTest {
+public class RiskClientTest {
+
+    private final Person p = new Person();
 
     private final String DUMMY_NAME = "John Doe";
     public static final String DUMMY_KEY = "80000000";
@@ -25,9 +30,8 @@ public class RiskUtilsTest {
     public static final String BASIC_IMPORT_TEST = "/Basic_Test_FamilyHistory.xml";
     private final Weight BASIC_TEST_WEIGHT = new Weight(180, WeightUnit.METRIC);
 
-    @Test
-    public void testCreateXMLFile() throws FhhWebException {
-        final Person p = new Person();
+    @Before
+    public void before() {
         p.setName(DUMMY_NAME);
 
         p.setDateOfBirth(DUMMY_DATE.getTime());
@@ -35,8 +39,20 @@ public class RiskUtilsTest {
         p.setGender(DUMMY_GENDER);
 
         FhhUtils.addRequiredRelativesToTree(p);
-
-        assertTrue(StringUtils.contains(RiskUtils.getInstance().calculateColorectalRisk(p), "lowUnder50.html"));
     }
 
+    @Test
+    public void calculateRisk() throws FhhWebException {
+        final RiskResponseBuilder builder = new RiskResponseBuilder();
+        RiskClient.getInstance().calculateRisk(p, builder);
+        assertEquals(ValidRiskFileNames.LOW_UNDER_50.getName(), builder.getPatient());
+        assertEquals(ValidRiskFileNames.LOW_UNDER_50.getName(), builder.getMessage());
+        assertEquals(ValidRiskFileNames.PHY_LOW.getName(), builder.getPhysician());
+    }
+
+    @Test
+    public void getRiskFile() throws Exception {
+        byte[] b = RiskClient.getInstance().getRiskFile(ValidRiskFileNames.LOW_UNDER_50.getName());
+        assertTrue(b.length > 0);
+    }
 }
