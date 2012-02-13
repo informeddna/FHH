@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <preConditions>
-        <dbms type="mysql" /> 
+        <dbms type="mysql" />
     </preConditions>
     <changeSet author="smatyas" id="FHH-1606">
         <preConditions>
@@ -22,7 +22,7 @@
         <comment>https://jira.5amsolutions.com/browse/FHH-1559</comment>
         <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1559.sql"/>
     </changeSet>
-    
+
     <changeSet author="bhumphrey" id="FHH-1635">
          <preConditions>
             <dbms type="mysql" />
@@ -30,7 +30,7 @@
         <comment>https://jira.5amsolutions.com/browse/FHH-1635</comment>
         <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1635.sql"/>
     </changeSet>
-    
+
     <changeSet author="smatyas" id="FHH-1247">
          <preConditions>
             <dbms type="mysql" />
@@ -38,7 +38,7 @@
         <comment>FHH-1247 - Adding Portugese language support</comment>
         <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/FHH-1247.sql"/>
     </changeSet>
-    
+
     <changeSet author="bhumphrey" id="FHH-1659">
          <preConditions>
             <dbms type="mysql" />
@@ -71,7 +71,15 @@
         <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/healthy.sql"/>
     </changeSet>
 
-    <!-- 
+    <changeSet author="pickeralbl" id="DRC-18">
+         <preConditions>
+            <dbms type="mysql" />
+        </preConditions>
+        <comment>Adding additional Diabetes types</comment>
+        <sqlFile stripComments="true" splitStatements="true" path="${db-upgrade.run.dir}/mysql/DRC-18.sql"/>
+    </changeSet>
+
+    <!--
             Any changeSets added to this file need to also be added to AbstractHibernateTestCase
      -->
 </databaseChangeLog>
