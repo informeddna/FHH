@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.service.FhhWebException;
+import gov.nih.nci.drc.util.ValidRiskFileNames;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,7 +14,6 @@ import java.util.GregorianCalendar;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fiveamsolutions.drc.util.ValidRiskFileNames;
 import com.fiveamsolutions.hl7.model.mfhp.Gender;
 import com.fiveamsolutions.hl7.model.mfhp.Weight;
 import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;

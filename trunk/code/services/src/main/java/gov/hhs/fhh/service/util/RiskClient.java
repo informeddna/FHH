@@ -83,6 +83,7 @@
 package gov.hhs.fhh.service.util;
 
 import gov.hhs.fhh.data.Person;
+import gov.nih.nci.drc.util.RiskFileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -101,7 +102,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import com.fiveamsolutions.drc.util.RiskFileUtils;
 
 /**
  * @author bpickeral

@@ -84,11 +84,11 @@ package gov.hhs.fhh.service.util;
 
 import org.apache.log4j.Logger;
 
-import com.fiveamsolutions.drc.calculator.RiskCalculator;
-import com.fiveamsolutions.drc.model.ColorectalAssesmentEvaluator;
 
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.model.mfhp.castor.ExportUtils;
+import gov.nih.nci.drc.calculator.RiskCalculator;
+import gov.nih.nci.drc.model.ColorectalAssesmentEvaluator;
 
 /**
  * @author bpickeral
