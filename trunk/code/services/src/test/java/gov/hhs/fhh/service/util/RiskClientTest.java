@@ -4,11 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.service.FhhWebException;
-import gov.nih.nci.drc.util.ValidRiskFileNames;
+import gov.nih.nci.drc.util.FileLanguageCode;
+import gov.nih.nci.drc.util.ValidCRCRAFileNames;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.GregorianCalendar;
 
 import org.junit.Before;
@@ -45,14 +43,19 @@ public class RiskClientTest {
     public void calculateRisk() throws FhhWebException {
         final RiskResponseBuilder builder = new RiskResponseBuilder();
         RiskClient.getInstance().calculateRisk(p, builder);
-        assertEquals(ValidRiskFileNames.LOW_UNDER_50.getName(), builder.getPatient());
-        assertEquals(ValidRiskFileNames.LOW_UNDER_50.getName(), builder.getMessage());
-        assertEquals(ValidRiskFileNames.PHY_LOW.getName(), builder.getPhysician());
+        assertEquals(ValidCRCRAFileNames.constructFileName(
+                ValidCRCRAFileNames.LOW_UNDER_50, ValidCRCRAFileNames.PDF_EXT), builder.getPatient());
+        assertEquals(ValidCRCRAFileNames.constructFileName(
+                ValidCRCRAFileNames.LOW_UNDER_50, ValidCRCRAFileNames.HTML_EXT), builder.getMessage());
+        assertEquals(ValidCRCRAFileNames.constructFileName(
+                ValidCRCRAFileNames.PHY_LOW, ValidCRCRAFileNames.PDF_EXT), builder.getPhysician());
     }
 
     @Test
     public void getRiskFile() throws Exception {
-        byte[] b = RiskClient.getInstance().getRiskFile(ValidRiskFileNames.LOW_UNDER_50.getName());
+        byte[] b = RiskClient.getInstance().getRiskFile(ValidCRCRAFileNames.constructFileName(
+                ValidCRCRAFileNames.LOW_UNDER_50, ValidCRCRAFileNames.PDF_EXT),
+                FileLanguageCode.EN);
         assertTrue(b.length > 0);
     }
 }

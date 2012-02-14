@@ -5,18 +5,16 @@
         <h1>
             <fmt:message key="colorectal.download.title" />
         </h1>
-        <p><fmt:message key="risk.colorectal.download.text"/></p>
-        <div class="buttonContainer">
-            <s:url id="saveRiskUrl" value="/popup/risk/downloadColorectalRisk.action"/>
-            <div class="centered"><a id="downloadRisk" href="${saveRiskUrl}"><fmt:message key="risk.colorectal.button.downloadAll" /></a></div>
-        </div>
+        ${riskHTML}
+        <s:url id="saveRiskUrl" value="/popup/risk/downloadColorectalRisk.action"/>
+        <p><fmt:message key="risk.colorectal.downloadRisk"/> <a id="downloadRisk" href="${saveRiskUrl}"><fmt:message key="risk.colorectal.downloadRisk.link" /></a></p>
+        <s:url id="saveRiskUrl" value="/popup/risk/downloadColorectalLetter.action"/>
+        <p><fmt:message key="risk.colorectal.downloadLetter"/> <a id="downloadRisk" href="${saveRiskUrl}"><fmt:message key="risk.colorectal.downloadLetter.link" /></a></p>
         <br/>
-        <div class="centered">
-            <fmt:message key="risk.adobe.text" /><br/>
-            <a href="http://get.adobe.com/reader/" target="_blank"><fmt:message key="risk.adobe.download"/></a>
-        </div>
+        <br/>
+        <p><fmt:message key="risk.adobe.text" /><br/><a href="http://get.adobe.com/reader/" target="_blank"><fmt:message key="risk.adobe.download"/></a></p>
         <div class="buttonContainer">
-            <a id="cancel" href="javascript:;" onclick="window.top.hidePopWin()"><fmt:message key="saveInformation.button.cancel" /></a>
+            <a id="cancel" href="javascript:;" onclick="window.top.hidePopWin()"><fmt:message key="risk.button.close" /></a>
         </div>
     </fhh:accordianContainer>
 </div>

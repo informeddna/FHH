@@ -83,6 +83,7 @@
 package gov.hhs.fhh.service.util;
 
 import gov.hhs.fhh.data.Person;
+import gov.nih.nci.drc.util.FileLanguageCode;
 import gov.nih.nci.drc.util.RiskFileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -223,10 +224,11 @@ public final class RiskClient {
      * Gets the risk file from DRC.
      *
      * @param fileName of file
+     * @param code File language code
      * @return file in byte array
      */
-    public byte[] getRiskFile(String fileName) {
-        return RiskFileUtils.getInstance().loadFile(fileName);
+    public byte[] getRiskFile(String fileName, FileLanguageCode code) {
+        return RiskFileUtils.getInstance().loadFile(fileName, code);
     }
 
 }
