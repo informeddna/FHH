@@ -35,9 +35,11 @@ package gov.hhs.fhh.web.action;
 
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.data.util.PersonUtils;
+import gov.hhs.fhh.service.util.CurrentLanguageHolder;
 import gov.hhs.fhh.service.util.RiskClient;
 import gov.hhs.fhh.service.util.RiskResponseBuilder;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+import gov.nih.nci.drc.util.FileLanguageCode;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -54,6 +56,8 @@ public class RiskAction extends ActionSupport implements Preparable {
 
     private Person person;
     private InputStream riskFile;
+    private String riskHTML;
+    private String fileName;
 
     /**
      * {@inheritDoc}
@@ -62,6 +66,9 @@ public class RiskAction extends ActionSupport implements Preparable {
         Person rootPerson = FhhHttpSessionUtil.getRootPerson();
         if (rootPerson != null) {
             setPerson(rootPerson);
+            final RiskResponseBuilder builder = new RiskResponseBuilder();
+            RiskClient.getInstance().calculateRisk(person, builder);
+            riskHTML = new String(RiskClient.getInstance().getRiskFile(builder.getMessage(), getFileLanguageCode()));
         }
     }
 
@@ -91,8 +98,32 @@ public class RiskAction extends ActionSupport implements Preparable {
     public String downloadColorectalRisk() {
         final RiskResponseBuilder builder = new RiskResponseBuilder();
         RiskClient.getInstance().calculateRisk(person, builder);
-        riskFile = new ByteArrayInputStream(RiskClient.getInstance().getRiskFile(builder.getPatient()));
+        riskFile = new ByteArrayInputStream(RiskClient.getInstance().getRiskFile(builder.getPatient(),
+                getFileLanguageCode()));
+        fileName = PersonUtils.getFileNameForPerson(person, "Colorectal_Risk.pdf");
         return "downloadColorectalRiskFile";
+    }
+
+    /**
+     * Method invokes the reindex page.
+     *
+     * @return path String
+     */
+    public String downloadColorectalLetter() {
+        final RiskResponseBuilder builder = new RiskResponseBuilder();
+        RiskClient.getInstance().calculateRisk(person, builder);
+        riskFile = new ByteArrayInputStream(RiskClient.getInstance().getRiskFile(builder.getPhysician(),
+                getFileLanguageCode()));
+        fileName = PersonUtils.getFileNameForPerson(person, "Colorectal_Risk_Physician_Letter.pdf");
+        return "downloadColorectalRiskFile";
+    }
+
+    private FileLanguageCode getFileLanguageCode() {
+        FileLanguageCode languageCode = FileLanguageCode.EN;
+        if (CurrentLanguageHolder.getCurrentLanguage().equals(FileLanguageCode.ES.getCode())) {
+            languageCode = FileLanguageCode.ES;
+        }
+        return languageCode;
     }
 
     /**
@@ -102,14 +133,6 @@ public class RiskAction extends ActionSupport implements Preparable {
      */
     public InputStream getDownloadFile() {
         return riskFile;
-    }
-
-    /**
-     *  Gets file name for colorectal risk file.
-     * @return colorectal risk file name
-     */
-    public String getColorectalFileName() {
-        return PersonUtils.getFileNameForPerson(person, "Colorectal_Risk.pdf");
     }
 
 
@@ -125,6 +148,27 @@ public class RiskAction extends ActionSupport implements Preparable {
      */
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    /**
+     * @return the riskHTML
+     */
+    public String getRiskHTML() {
+        return riskHTML;
+    }
+
+    /**
+     * @param riskHTML the riskHTML to set
+     */
+    public void setRiskHTML(String riskHTML) {
+        this.riskHTML = riskHTML;
+    }
+
+    /**
+     * @return the fileName
+     */
+    public String getFileName() {
+        return fileName;
     }
 
 }

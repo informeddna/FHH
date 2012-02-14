@@ -36,14 +36,17 @@ package gov.hhs.fhh.web.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.service.FhhWebException;
+import gov.hhs.fhh.service.util.CurrentLanguageHolder;
 import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
 import java.util.GregorianCalendar;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -92,6 +95,8 @@ public class RiskActionTest extends AbstractFhhWebTest {
 
         action.prepare();
         assertEquals(p, action.getPerson());
+
+        assertTrue(StringUtils.contains(action.getRiskHTML(), "not elevated"));
     }
 
     @Test
@@ -110,11 +115,25 @@ public class RiskActionTest extends AbstractFhhWebTest {
         assertEquals(SUCCESS, action.colorectal());
         assertEquals("downloadColorectalRiskFile", action.downloadColorectalRisk());
         assertNotNull(action.getDownloadFile());
+        assertEquals("John_Doe_Colorectal_Risk.pdf", action.getFileName());
+    }
+    @Test
+    public void downloadColorectalRiskEspanol() throws Exception {
+        action.setPerson(p);
+        CurrentLanguageHolder.setCurrentLanguage("es");
+        assertEquals(SUCCESS, action.colorectal());
+        assertEquals("downloadColorectalRiskFile", action.downloadColorectalRisk());
+        assertNotNull(action.getDownloadFile());
+        assertEquals("John_Doe_Colorectal_Risk.pdf", action.getFileName());
     }
 
     @Test
-    public void getColorectalFileName() throws Exception {
+    public void downloadPhysicianLetter() throws Exception {
         action.setPerson(p);
-        assertEquals("John_Doe_Colorectal_Risk.pdf", action.getColorectalFileName());
+        assertEquals(SUCCESS, action.colorectal());
+        assertEquals("downloadColorectalRiskFile", action.downloadColorectalLetter());
+        assertNotNull(action.getDownloadFile());
+        assertEquals("John_Doe_Colorectal_Risk_Physician_Letter.pdf", action.getFileName());
     }
+
 }
