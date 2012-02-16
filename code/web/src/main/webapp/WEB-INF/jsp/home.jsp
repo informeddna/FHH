@@ -35,7 +35,7 @@
         </table>
     </div>
   <!-- END INCLUDE - headerHome -->
-  
+
   <!-- BEGIN CONTENT -->
   <div class="contentContainerHome">
         <div class="bannerHome"><img src="<s:url value="/images/banner_homepage.gif"/>" width="550" height="60" alt="<fmt:message key="home.banner.text.tool" />" /></div>
@@ -99,18 +99,18 @@
                                     <span>
                                     <s:if test="#request.locale.language != 'en'">
                                         [<s:a id="js_en" href="%{en}"><fmt:message key="menu.text.inEnglish" /></s:a>]
-                                        | 
+                                        |
                                     </s:if>
                                     <s:if test="#request.locale.language != 'es'">
                                         [<s:a id="js_es" href="%{es}"><fmt:message key="menu.text.enEspanol" /></s:a>]
                                         |
-                                    </s:if> 
+                                    </s:if>
                                     <s:if test="#request.locale.language != 'pt' ">
                                         [<s:a id="js_pt" href="%{pt}"><fmt:message key="menu.text.enPortugues" /></s:a>]
-                                    </s:if> 
+                                    </s:if>
                                     <s:if test="#request.locale.language != 'it' ">
                                         [<s:a id="js_it" href="%{it}"><fmt:message key="menu.text.inItaliano" /></s:a>]
-                                    </s:if> 
+                                    </s:if>
                                     </span>
                             </h1>
                             <p><fmt:message key="home.js.p1" /></p>
