@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/common/taglibs.jsp"%>
 <div class="submodalContainer" id="colorectalRisk">
-    <s:url value="/popup/getHelp/helpDetailsRisk.action" id="helpUrl" />
+    <s:url value="/popup/getHelp/helpDetailsColorectalRisk.action" id="helpUrl" />
     <fhh:accordianContainer helpUrl="${helpUrl}" titleTextKey="colorectal.title">
         <h1>
             <fmt:message key="colorectal.download.title" />

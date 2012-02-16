@@ -18,8 +18,8 @@
 /* ************************************* */
 
 /* ALL PAGES: makes pages that don't scroll the same width as pages that do scroll */
-:root {
-overflow-y:scroll;
+:root { 
+overflow-y:scroll; 
 }
 
 body {
@@ -28,7 +28,7 @@ body {
     font-size: 86%;
     padding: 10px;
     text-align: center;
-    min-width:900px;
+    min-width:900px; 
 }
 
 * html #wrapper /* IE6 min-width dynamic expression (hack) */
@@ -148,31 +148,31 @@ div.mainContainer {
     width: 90%;
 }
 
-.noscript_panel {
-    background:#ffc;
-    padding:5px 20px 20px 20px;
-    border:8px solid #333;
-    width:740px;
-    height:160px;
-    top:370px;
+.noscript_panel { 
+    background:#ffc; 
+    padding:5px 20px 20px 20px; 
+    border:8px solid #333; 
+    width:740px; 
+    height:160px; 
+    top:370px; 
     left:50%;
-    margin-left:-400px;
-    position:absolute;
-    z-index:100000;
+    margin-left:-400px; 
+    position:absolute; 
+    z-index:100000; 
     opacity:0.94;
-    filter:alpha(opacity=94);
-    -moz-box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-    -webkit-box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    filter:alpha(opacity=94); 
+    -moz-box-shadow: 0 2px 12px rgba(0,0,0,0.2); 
+    -webkit-box-shadow: 0 2px 12px rgba(0,0,0,0.2); 
 }
 
-.noscript_panel H1 {
-    color:#000;
-    font-family:Arial,Helvetica,sans-serif;
+.noscript_panel H1 { 
+    color:#000; 
+    font-family:Arial,Helvetica,sans-serif; 
 }
 
-.noscript_panel H1 SPAN {
-    margin-left:15px;
-    font-size:12px;
+.noscript_panel H1 SPAN { 
+    margin-left:15px; 
+    font-size:12px; 
 }
 
 
@@ -276,7 +276,7 @@ div.headerContainer table.mainNavTable td.mainNavTd {
     padding: 0px;
     text-align: left;
     white-space: nowrap;
-
+    
 }
 
 /* SUBPAGES: sets table cell container for utility navigation. applied to <td>. */
@@ -341,8 +341,8 @@ td.mainNavTd a.selected {
     color:#000;
 }
 
-/* HOMEPAGE + SUBPAGES: sets basic style for text links within mainNavTd and utilNavTd. applies to <a href="">. */
-td.mainNavTd a:link, td.mainNavTd a:visited,
+/* HOMEPAGE + SUBPAGES: sets basic style for text links within mainNavTd and utilNavTd. applies to <a href="">. */ 
+td.mainNavTd a:link, td.mainNavTd a:visited, 
 td.utilNavTd a:link, td.utilNavTd a:visited {
     color: #DAEFFB;
     text-decoration: none;
@@ -457,7 +457,7 @@ div.footerTdLogos {
 
 /* ----- BUTTON CONTAINER STYLES ----- */
 /* makes an anchor link look like an input button.  applied to <a>. */
-div.buttonContainer a, div.buttonContainer a:link, div.buttonContainer a:visited,
+div.buttonContainer a, div.buttonContainer a:link, div.buttonContainer a:visited, 
 a.button, a.button:link, a.button:visited  {
     background-color: #E6E6E6;
     background-image: url(../images/bkgd_button.gif);
@@ -470,8 +470,8 @@ a.button, a.button:link, a.button:visited  {
     text-decoration: none;
 }
 
-/* sets hover style for an anchor link look like an input button.  applied to <a>. */
-div.buttonContainer a:hover, div.buttonContainer a:active,
+/* sets hover style for an anchor link look like an input button.  applied to <a>. */ 
+div.buttonContainer a:hover, div.buttonContainer a:active, 
 a.button:hover, a.button:active {
     background-color: #AAD7FF;
     background-image: url(../images/bkgd_button_over.gif);
@@ -481,11 +481,11 @@ a.button:hover, a.button:active {
     text-decoration: none;
 }
 
-/* sets focus style for an anchor link to look like an input button.  applied to <a>. */
+/* sets focus style for an anchor link to look like an input button.  applied to <a>. */ 
 div.buttonContainer a:focus, a.button:focus {
     outline: #99CCFF solid thick;
 }
-/* sets focus style for all anchor links inside the submodal.  applied to <a>. */
+/* sets focus style for all anchor links inside the submodal.  applied to <a>. */ 
 .submodalContainer a:focus, a.button:focus {
     outline: 1px dotted #333;
 }
@@ -507,7 +507,7 @@ div.contentContainer {
     border: 1px solid #003366;
     margin: 0px;
     padding: 10px;
-
+    
 }
 
 /* HOMEPAGE: creates a layout table for the content, buttons, and main photo. applied to <table>. */
@@ -602,8 +602,8 @@ div.contentContainerHome div.languagebuttonContainer {
 }
 
 /* HOMEPAGE: sets style for Create New + Open Saved buttons.  applies to <a>. */
-.homeTdContent div.buttonContainer a,
-.homeTdContent div.buttonContainer a:link,
+.homeTdContent div.buttonContainer a, 
+.homeTdContent div.buttonContainer a:link, 
 .homeTdContent div.buttonContainer a:visited {
     background-color: #E29C1B;
     background-image: url(../images/bkgd_homeButton.gif);
@@ -622,8 +622,8 @@ div.contentContainerHome div.languagebuttonContainer {
 }
 
 /* HOMEPAGE: sets style for Language button.  applies to <a>. */
-.homeTdContent div.languagebuttonContainer a,
-.homeTdContent div.languagebuttonContainer a:link,
+.homeTdContent div.languagebuttonContainer a, 
+.homeTdContent div.languagebuttonContainer a:link, 
 .homeTdContent div.languagebuttonContainer a:visited {
     background-color: #1d4157;
     background-image: url(../images/bkgd_homeSpanishButton.gif);
@@ -643,11 +643,11 @@ div.contentContainerHome div.languagebuttonContainer {
 }
 
 /* HOMEPAGE: sets style for Create New + Open Saved and Language buttons.  applies to <a>. */
-.homeTdContent div.buttonContainer a:hover,
-.homeTdContent div.buttonContainer a:active,
+.homeTdContent div.buttonContainer a:hover, 
+.homeTdContent div.buttonContainer a:active, 
 .homeTdContent div.buttonContainer a:focus,
-.homeTdContent div.languagebuttonContainer a:hover,
-.homeTdContent div.languagebuttonContainer a:active,
+.homeTdContent div.languagebuttonContainer a:hover, 
+.homeTdContent div.languagebuttonContainer a:active, 
 .homeTdContent div.languagebuttonContainer a:focus{
     background-image: url(../images/bkgd_button_over.gif);
     outline: #FFFF99 solid thick;
@@ -679,10 +679,10 @@ div.orangeBox {
     font-size: 0.92em;
     margin: 0px;
     padding: 3px 10px;
-}
+} 
 
 div.orangeBox p {
-    margin: 0.7em 0em 0.5em 0em;
+    margin: 0.7em 0em 0.5em 0em; 
 }
 
 /* HOMEPAGE: sets basic style for text links within div.orangeBox. applies to <a href="">. */
@@ -800,7 +800,7 @@ div.bannerPopup {
     padding: 0px;
     text-align: left;
     width: 100%;
-}
+} 
 
 
 /* POPUP: creates titlebar at top of Help popup window within helpContainer.  applied to <div>. */
@@ -891,7 +891,7 @@ td.submodalTitleTdBtn {
 
 /* SUBMODAL: creates layout table for the titlebar on all submodals */
 div.submodalTitlebar {
-    background-color: #FFCC00;
+    background-color: #FFCC00; 
     border-bottom: 1px solid #003366;
     display: table;
     margin: 0px;
@@ -1012,14 +1012,14 @@ table.accordianTitlebarClosed td.accordianTitleTdBtn a {
     text-decoration: none;
 }
 
-/* SUBMODAL: sets basic style for Get Help link within accordianTitleTdBtn. applies to <a href="">. */
+/* SUBMODAL: sets basic style for Get Help link within accordianTitleTdBtn. applies to <a href="">. */ 
 td.accordianTitleTdBtn a:link, td.accordianTitleTdBtn a:visited {
     color: #003366;
     text-decoration: none;
 }
 
 /* SUBMODAL: sets hover style for Get Help link within OPENED accordianTitlebar.  applies to <a href=""> within <td class="accordianTitleTdBtn">. */
-table.accordianTitlebarOpened td.accordianTitleTdBtn a:hover,
+table.accordianTitlebarOpened td.accordianTitleTdBtn a:hover, 
 table.accordianTitlebarOpened td.accordianTitleTdBtn a:active {
     background-image: url(../images/bkgd_accNavOpened_over.gif);
     background-repeat: repeat-x;
@@ -1027,7 +1027,7 @@ table.accordianTitlebarOpened td.accordianTitleTdBtn a:active {
 }
 
 /* SUBMODAL: sets hover style for Get Help link within CLOSED accordianTitlebar.  applies to <a href=""> within <td class="accordianTitleTdBtn">. */
-table.accordianTitlebarClosed td.accordianTitleTdBtn a:hover,
+table.accordianTitlebarClosed td.accordianTitleTdBtn a:hover, 
 table.accordianTitlebarClosed td.accordianTitleTdBtn a:active {
     background-image: url(../images/bkgd_accNavClosed_over.gif);
     background-repeat: repeat-x;
@@ -1046,10 +1046,10 @@ table.accordianTitlebarOpened td.accordianTitleTd h2 {
 }
 
 /* SUBMODAL: sets header link within OPENED accordianTitlebar. */
-table.accordianTitlebarOpened td.accordianTitleTd h2 a,
-table.accordianTitlebarOpened td.accordianTitleTd h2 a:link,
-table.accordianTitlebarOpened td.accordianTitleTd h2 a:visited,
-table.accordianTitlebarOpened td.accordianTitleTd h2 a:hover,
+table.accordianTitlebarOpened td.accordianTitleTd h2 a, 
+table.accordianTitlebarOpened td.accordianTitleTd h2 a:link, 
+table.accordianTitlebarOpened td.accordianTitleTd h2 a:visited, 
+table.accordianTitlebarOpened td.accordianTitleTd h2 a:hover, 
 table.accordianTitlebarOpened td.accordianTitleTd h2 a:active {
     color: #003366;
     text-decoration: none;
@@ -1067,10 +1067,10 @@ table.accordianTitlebarClosed td.accordianTitleTd h2 {
 }
 
 /* SUBMODAL: sets header link within CLOSED accordianTitlebar. */
-table.accordianTitlebarClosed td.accordianTitleTd h2 a,
-table.accordianTitlebarClosed td.accordianTitleTd h2 a:link,
-table.accordianTitlebarClosed td.accordianTitleTd h2 a:visited,
-table.accordianTitlebarClosed td.accordianTitleTd h2 a:hover,
+table.accordianTitlebarClosed td.accordianTitleTd h2 a, 
+table.accordianTitlebarClosed td.accordianTitleTd h2 a:link, 
+table.accordianTitlebarClosed td.accordianTitleTd h2 a:visited, 
+table.accordianTitlebarClosed td.accordianTitleTd h2 a:hover,  
 table.accordianTitlebarClosed td.accordianTitleTd h2 a:active {
     color: #396B9D;
     text-decoration: none;
@@ -1108,7 +1108,7 @@ div.submodalContainer div.buttonContainer {
 }
 
 /* ------- Modified 01/11/2010 - SAVE WIZARD PROCESS ------- */
-a.toggledisplay
+a.toggledisplay 
 {  background:url("../images/ico_plus.gif") no-repeat 0 3px; padding:0 0 0 12px; }
 #process_steps
 { margin:10px auto; width:500px; height:50px; text-align:center; font-weight:bold }
@@ -1141,7 +1141,7 @@ a.toggledisplay
 .box_noshade .btn_float
 { float:left; width:260px;  }
 .btn_right
-{ float:right; width:470px; }
+{ float:right; width:470px; } 
 .btn_right .btn_float
 { width:210px; padding:10px 0; }
 .box_noshade .btn_float_right
@@ -1151,7 +1151,7 @@ a.toggledisplay
 .box_noshade .text_float
 { float:left; width:280px; white-space:nowrap; padding:0; margin:0 }
 /* sets alignment of Save, Cancel, etc. buttons within a gray box within a submodal. */
-div.submodalContainer .box_noshade div.buttonContainer
+div.submodalContainer .box_noshade div.buttonContainer 
 {   width:94%; text-align:left; margin: 0; padding: 10px 40px 10px 0;  }
 div.buttonContainer A
 { white-space:normal }
@@ -1167,7 +1167,7 @@ P.small
 { font-size:120%; margin:5px 0 10px 0; }
 IMG.float_ico
 { float:left; padding-right:8px; padding-bottom:150px }
-div.submodalContainer .colOne div.buttonContainer, div.submodalContainer .colTwo div.buttonContainer
+div.submodalContainer .colOne div.buttonContainer, div.submodalContainer .colTwo div.buttonContainer 
 { float:left; padding:10px 0; margin:-5px 0 0 -4px; }
 div.long_buttonCentered
 { padding-right:25%; }
@@ -1337,8 +1337,8 @@ table.form td input[type="button"], table.form td button {
 }
 
 /* sets hover style for input buttons that are within a form table... not in <div class="buttonContainer">. applies to <input> */
-table.form td input[type="button"]:hover, table.form td input[type="button"]:active,
-table.form td button:hover, table.form td button:active {
+table.form td input[type="button"]:hover, table.form td input[type="button"]:active, 
+table.form td button:hover, table.form td button:active {   
     padding: 0px 5px;
     background-color: #AAD7FF;
     background-image: url(../images/bkgd_button_over.gif);
@@ -1349,7 +1349,7 @@ table.form td button:hover, table.form td button:active {
 }
 
 /* sets focus style for input buttons that are within a form table... not in <div class="buttonContainer">. applies to <input> */
-table.form td input[type="button"]:focus,
+table.form td input[type="button"]:focus, 
 table.form td button:focus {
     outline: 2px solid #99CCFF;
 }
@@ -1381,7 +1381,7 @@ table.form td.buttonContainer a:hover, table.form td.buttonContainer a:active  {
 /* sets focus style for anchor links within a form table cells that look like an input button.  apply class="buttonContainer" to the <td> that contains the anchor link. */
 table.form td.buttonContainer a:focus {
     outline: 2px solid #99CCFF;
-}
+} 
 
 /* sets style for basic data table listing. applied to <table>. */
 table.dataListing, table.dataListing1 {
@@ -1391,7 +1391,7 @@ table.dataListing, table.dataListing1 {
 }
 
 /* sets style for a data table (.dataListing). applied to <table>. */
-.datatableWrapper {
+.datatableWrapper {  
     border: 1px solid #666666;
     width: 80%;
     margin:0 auto;
@@ -1511,14 +1511,14 @@ table.dataListing td.action, table.dataListing .action {
 }
 
 /* sets style for a side-by-side (two column) table layout. */
-.twoCol {
+.twoCol { 
     border-collapse: collapse;
     margin:10px 0;
     min-width:600px;
 }
 
 /* sets style for the first TD within a side-by-side (two column) table layout. */
-.twoCol .colOne {
+.twoCol .colOne { 
     padding:0 15px 15px 15px;
     width:50%;
     vertical-align:top;
@@ -1526,19 +1526,19 @@ table.dataListing td.action, table.dataListing .action {
 }
 
 /* sets style for the second TD within a side-by-side (two column) table layout. */
-.twoCol .colTwo {
+.twoCol .colTwo { 
     padding:0 15px 15px 15px;
     vertical-align:top;
 }
 
 
 /* sets style for a side-by-side (two column) table layout. */
-.twoColSimple {
+.twoColSimple { 
     border-collapse: collapse;
 }
 
 /* sets style for the first TD within a side-by-side (two column) table layout. */
-.twoColSimple .colOneSimple {
+.twoColSimple .colOneSimple { 
     padding:0 15px 0px 15px;
     width:50%;
     vertical-align:top;
@@ -1546,7 +1546,7 @@ table.dataListing td.action, table.dataListing .action {
 }
 
 /* sets style for the second TD within a side-by-side (two column) table layout. */
-.twoColSimple .colTwoSimple {
+.twoColSimple .colTwoSimple { 
     padding:0 15px 0px 15px;
     vertical-align:top;
 }
@@ -1557,14 +1557,14 @@ table.dataListing td.action, table.dataListing .action {
 /* ----- HEALTH HISTORY FORM TABLE STYLES ----- */
 /* ******************************************** */
 
-#healthHistoryTable {
-    border:1px solid #000;
+#healthHistoryTable { 
+    border:1px solid #000; 
     width:98%;
     margin:-10px auto 20px auto;
     min-width:600px;
-}
+} 
 
-#healthHistoryTableForm, #healthHistoryTableList {
+#healthHistoryTableForm, #healthHistoryTableList { 
     border-collapse: collapse;
 }
 
@@ -1572,7 +1572,7 @@ table.dataListing td.action, table.dataListing .action {
     background-color: #FFF0B5;
 }
 
-#healthHistoryTableForm td, #healthHistoryTableList th, #healthHistoryTableList td {
+#healthHistoryTableForm td, #healthHistoryTableList th, #healthHistoryTableList td { 
     border-right: 1px solid #999;
     border-top: 1px solid #999;
 }
@@ -1597,13 +1597,13 @@ table.dataListing td.action, table.dataListing .action {
 
 .diseaseCol {
     width:45%
-}
+}   
 
 .ageCol {
     width:40%
 }
 
-.actionCol {
+.actionCol { 
     width:15%
 }
 
@@ -1630,7 +1630,7 @@ table.dataListing td.action, table.dataListing .action {
     font-weight: bold;
     width:4em;
     text-align: center;
-    display: block;
+    display: block; 
 }
 
 /* sets hover style for anchor links within the health history form table cells that looks like an input button.  apply class="buttonContainer" to the <td> that contains the anchor link. */
@@ -1652,7 +1652,7 @@ table.dataListing td.action, table.dataListing .action {
 .hvButtonContainer .btn_float_right {
     float: right;
     width: 190px;
-
+    
 }
 
 
@@ -1691,7 +1691,7 @@ table.dataListing td.action, table.dataListing .action {
 
 /* used mainly to set color on sample form field data entry format. applied to <span>. */
 .gray, .grey, .example {
-    color: #808080;
+    color: #808080; 
 }
 
 /* creates a paragraph with 1/2 the normal <p> element margin.  applied to <p> or <div>. */
@@ -1700,27 +1700,27 @@ table.dataListing td.action, table.dataListing .action {
 }
 
 /* applies style to a large icon image. applied to <img> */
-.largeIcon {
+.largeIcon {  
     margin:0px 10px 5px 0px;
-    padding:0;
+    padding:0;  
     height: 65px;
     border:0;
 }
 
 /* applies style to a large icon image. applied to <a> */
-a.largeIcon {
+a.largeIcon {  
     margin: 0px 10px 5px 0px;
-    padding: 0;
+    padding: 0;  
     border: 0;
     display: block;
     width: 147px;
-    float: left
+    float: left    
 }
 
 /* applies style to an h4 when an icon is floated next to it */
-h4.h4_with_icon {
+h4.h4_with_icon { 
     float: left;
-    width: 200px
+    width: 200px 
 }
 
 /* aligns Personal Info stats on report page.  applied to <span> or <div>. */
@@ -1730,7 +1730,7 @@ h4.h4_with_icon {
 }
 
 /* sets the style for OR when between two form input groups.  applied to <span>. */
-span.or {
+span.or {  
     font-size:11px;
     padding:5px;
     margin:0 20px;
@@ -1741,8 +1741,8 @@ span.or {
 
 /* makes a struts submit button look consistent with all other input buttons.  applies to <s:submit cssClass="enableEnterSubmit" />.  */
 /* This is the same style used for <a> within div.buttonContainer listed below.  */
-div.buttonContainer .enableEnterSubmit,
-div.buttonContainer .enableEnterSubmit:link,
+div.buttonContainer .enableEnterSubmit, 
+div.buttonContainer .enableEnterSubmit:link, 
 div.buttonContainer .enableEnterSubmit:visited {
     background-color: #E6E6E6;
     background-image: url(../images/bkgd_button.gif);
@@ -1756,8 +1756,8 @@ div.buttonContainer .enableEnterSubmit:visited {
 }
 
 /* sets hover style for struts submit buttons to look consistent with all other input buttons.  applies to <s:submit cssClass="enableEnterSubmit" />.  */
-/* This is the same style used for <a> within div.buttonContainer listed below.  */
-div.buttonContainer .enableEnterSubmit:hover,
+/* This is the same style used for <a> within div.buttonContainer listed below.  */ 
+div.buttonContainer .enableEnterSubmit:hover, 
 div.buttonContainer .enableEnterSubmit:active {
     background-color: #AAD7FF;
     background-image: url(../images/bkgd_button_over.gif);
@@ -1768,10 +1768,10 @@ div.buttonContainer .enableEnterSubmit:active {
 }
 
 /* sets focus style for struts submit buttons to look consistent with all other input buttons.  applies to <s:submit cssClass="enableEnterSubmit" />.  */
-/* This is the same style used for <a> within div.buttonContainer listed below.  */
+/* This is the same style used for <a> within div.buttonContainer listed below.  */ 
 div.buttonContainer .enableEnterSubmit:focus {
     outline: #99CCFF solid thick;
-
+    
 }
 
 
@@ -1814,7 +1814,7 @@ input:focus {
 }
 
 /* creates a scrolling box that hides the portion of the diagram so the image doesn't extend beyond the template. applied to <div> */
-.scrollingBox {
+.scrollingBox { 
     width: 99%;
     height: 420px;
     overflow: auto;
@@ -1823,25 +1823,26 @@ input:focus {
 }
 
 /* creates a way to handle wrapping buttons, for example, on the view diagram page. applied to <div> */
-.boxpad div.buttonContainer {
-    margin:0 auto;
-    padding:0;
+.boxpad div.buttonContainer { 
+    margin:0 auto; 
+    padding:0; 
     line-height:3em;
 /* DRC/CR Calculator: Added rounded corners <div> */
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
-border-radius: 4px;
+border-radius: 4px; 
 }
-.boxpad div.buttonContainer a {
-    background-color:#efefef;
+
+.boxpad div.buttonContainer a {  
+    background-color:#efefef; 
     white-space:nowrap
     /* DRC/CR Calculator: Added rounded corners <div> */
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
-border-radius: 4px;
+border-radius: 4px; 
 }
-.boxpad div.buttonContainer a:hover {
-    background-color:#76c4ff;
+.boxpad div.buttonContainer a:hover { 
+    background-color:#76c4ff; 
 }
 /* creates a way to handle wrapping buttons, for example, on the view diagram page. applied to <div> */
 .boxpad div.buttonContainer { line-height: 2em; }
@@ -1864,7 +1865,7 @@ div.updateContainer {
         /* DRC/CR Calculator: Added rounded corners <div> */
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
-border-radius: 4px;
+border-radius: 4px; 
 }
 
 /* basic update container type */
@@ -1889,7 +1890,7 @@ div.assessmentContainer {
         /* DRC/CR Calculator: Added rounded corners <div> */
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
-border-radius: 4px;
+border-radius: 4px; 
 }
 
 /* div hover. */
@@ -1904,6 +1905,138 @@ margin-top: -54px;
 
 }
 
+/* ----- BUTTON CONTAINER STYLES FOR RISK ASSESSMENT ----- */
+/* makes an anchor link look like an input button.  applied to <a>. */
+div.buttonContainer_risk a, div.buttonContainer_risk a:link, div.buttonContainer_risk a:visited, 
+a.button, a.button:link, a.button:visited  {
+    background-color: #E6E6E6;
+    background-image: url(../images/bkgd_button.gif);
+    background-repeat: repeat-x;
+    border: 1px solid #666666;
+    color: #000000;
+    font-size: 1.1em;
+    margin: 5px;
+    padding: 5px 25px;
+    text-decoration: none;
+}
+
+/* sets hover style for an anchor link look like an input button.  applied to <a>. */ 
+div.buttonContainer_risk a:hover, div.buttonContainer_risk a:active, 
+a.button:hover, a.button:active {
+    background-color: #AAD7FF;
+    background-image: url(../images/bkgd_button_over.gif);
+    background-repeat: repeat-x;
+    border: 1px solid #0066CC;
+    margin: 5px;
+    text-decoration: none;
+}
+
+/* sets focus style for an anchor link to look like an input button.  applied to <a>. */ 
+div.buttonContainer_risk a:focus, a.button:focus {
+    outline: #99CCFF solid thick;
+}
+/* sets focus style for all anchor links inside the submodal.  applied to <a>. */ 
+.submodalContainer_risk a:focus, a.button:focus {
+    outline: 1px dotted #333;
+}
+
+/* creates a way to handle wrapping buttons, for example, on the view diagram page. applied to <div> */
+.boxpad div.buttonContainer_risk { 
+    margin:0 auto; 
+    padding:0; 
+    line-height:3em;
+/* DRC/CR Calculator: Added rounded corners <div> */
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px; 
+float:right;
+margin-top:-60px;
+}
+
+.boxpad div.buttonContainer_risk a {  
+    background-color:#efefef; 
+    white-space:nowrap
+    /* DRC/CR Calculator: Added rounded corners <div> */
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px; 
+}
+
+.boxpad div.buttonContainer_risk a:hover { 
+    background-color:#76c4ff; 
+}
+/* creates a way to handle wrapping buttons, for example, on the view diagram page. applied to <div> */
+.boxpad div.buttonContainer_risk { line-height: 2em; }
+.boxpad div.buttonContainer_risk a { white-space: nowrap; display:inline-block; padding: 0 15px; }
+.boxpad div.buttonContainer_risk a:hover { padding: 0 15px; }
+
+
+
+/* ----- BUTTON CONTAINER STYLES FOR UPDATE ----- */
+/* makes an anchor link look like an input button.  applied to <a>. */
+div.buttonContainer_update a, div.buttonContainer_update a:link, div.buttonContainer_update a:visited, 
+a.button, a.button:link, a.button:visited  {
+    background-color: #E6E6E6;
+    background-image: url(../images/bkgd_button.gif);
+    background-repeat: repeat-x;
+    border: 1px solid #666666;
+    color: #000000;
+    font-size: 1.1em;
+    margin: 5px;
+    padding: 5px 25px;
+    text-decoration: none;
+}
+
+/* sets hover style for an anchor link look like an input button.  applied to <a>. */ 
+div.buttonContainer_update a:hover, div.buttonContainer_update a:active, 
+a.button:hover, a.button:active {
+    background-color: #AAD7FF;
+    background-image: url(../images/bkgd_button_over.gif);
+    background-repeat: repeat-x;
+    border: 1px solid #0066CC;
+    margin: 5px;
+    text-decoration: none;
+}
+
+/* sets focus style for an anchor link to look like an input button.  applied to <a>. */ 
+div.buttonContainer_update a:focus, a.button:focus {
+    outline: #99CCFF solid thick;
+}
+/* sets focus style for all anchor links inside the submodal.  applied to <a>. */ 
+.submodalContainer_update a:focus, a.button:focus {
+    outline: 1px dotted #333;
+}
+
+/* creates a way to handle wrapping buttons, for example, on the view diagram page. applied to <div> */
+.boxpad div.buttonContainer_update { 
+    margin:0 auto; 
+    padding:0; 
+    line-height:3em;
+/* DRC/CR Calculator: Added rounded corners <div> */
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px; 
+float:right;
+margin-top:-41px;
+}
+
+.boxpad div.buttonContainer_update a {  
+    background-color:#efefef; 
+    white-space:nowrap
+    /* DRC/CR Calculator: Added rounded corners <div> */
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px; 
+}
+
+.boxpad div.buttonContainer_update a:hover { 
+    background-color:#76c4ff; 
+}
+/* creates a way to handle wrapping buttons, for example, on the view diagram page. applied to <div> */
+.boxpad div.buttonContainer_update { line-height: 2em; }
+.boxpad div.buttonContainer_update a { white-space: nowrap; display:inline-block; padding: 0 15px; }
+.boxpad div.buttonContainer_update a:hover { padding: 0 15px; }
+
 
 /* ******************************** */
 /* -------- PRINTER OUTPUT -------- */
@@ -1911,10 +2044,10 @@ margin-top: -54px;
 
 @media print {
     /* displays the entire diagram when printed as opposed to a scrolling box */
-    .scrollingBox {
-        display: block;
-        width: auto;
-        height: auto;
+    .scrollingBox { 
+        display: block; 
+        width: auto; 
+        height: auto; 
     }
     /* hides page elements for print */
     .buttonContainer, footerTdLinks {
