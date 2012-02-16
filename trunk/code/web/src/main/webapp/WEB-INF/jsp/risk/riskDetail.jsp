@@ -17,13 +17,18 @@
 	<fmt:message key="risk.calculate.info3" />
 </p>
 
-<div class="buttonContainer">
-    <fmt:message key="risk.calculate.update" />
-    <c:url value="/familyHistory/familyHistory.action" var="familyHistory" />
-    <a id="navFamilyHistory" href="${familyHistory}"><fmt:message key="risk.button.editHistory" /></a>
+<div class="updateContainer">
+    <p><fmt:message key="risk.calculate.update" /></p>
+	<div class="buttonContainer">
+	    <c:url value="/familyHistory/familyHistory.action" var="familyHistory" />
+	    <a id="navFamilyHistory" href="${familyHistory}" class="updatebtn"><fmt:message key="risk.button.editHistory" /></a>
+	</div>
 </div>
-<div class="buttonContainer">
-    <fmt:message key="risk.colorectal.calculate" />
-    <c:url value="/popup/risk/colorectal.action" var="calculateColorectal" />
-    <a id="addAnotherFamilyMember1" href="javascript://nop/" onclick="handlePopup('${calculateColorectal}');"><fmt:message key="risk.button.calculate"/></a>
+<div class="assessmentContainer">
+    <h3><fmt:message key="risk.colorectal.calculate" /></h3>
+    <p><fmt:message key="risk.colorectal.riskCalculator" /></p>
+	<div class="buttonContainer">
+	    <c:url value="/popup/risk/colorectal.action" var="calculateColorectal" />
+	    <a id="addAnotherFamilyMember1" href="javascript://nop/" onclick="handlePopup('${calculateColorectal}');" class="assessmentbtn"><fmt:message key="risk.button.calculate"/></a>
+	</div>
 </div>
