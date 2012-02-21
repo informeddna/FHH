@@ -40,8 +40,7 @@ Edit your $JBOSS_HOME/server/fhh/deploy/jbossweb-tomcat55.sar/server.xml
 change all occurrences of emptySessionPath="true" TO emptySessionPath="false"
 
 5. Adapt the installation for your local environment:
-5.1 Configure your profiles.xml by copying profiles.xml.example to profiles.xml and overwriting any build property needed.
-Copy profiles.xml.mac.example to profiles.xml and specify the correct properties for your local setup:
+5.1 Configure your ~/.m2/settings.xml by copying settings/settings.ci.xml to ~/.m2/settings.xml and overwriting any build property needed.
 most importantly check the values for: jboss.home, admin.db.username, admin.db.password
 
 5.2 login into mysql and create a db called mfhp if it does not already exist
