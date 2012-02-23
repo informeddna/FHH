@@ -27,8 +27,12 @@ displayConfirm = function(message) {
 
 
 </script>
+<!-- Provide screen readers a way to skip navigation -->
 
 <!-- BEGIN INCLUDE - header -->
+<div id="skipNavBegin" style="width: 0; height: 0; overflow: hidden;">
+    <a href="#skipNavEnd" accesskey="n">Skip navigation</a>
+</div>
 <div class="headerContainer">
     <table border="0" cellpadding="0" cellspacing="0" class="bannerTable">
         <tr>
@@ -47,3 +51,5 @@ displayConfirm = function(message) {
     </table>
 </div>
 <!-- END INCLUDE - header -->
+<!-- Screen readers can skip to this point on the screen -->
+<div id="skipNavEnd"></div>
