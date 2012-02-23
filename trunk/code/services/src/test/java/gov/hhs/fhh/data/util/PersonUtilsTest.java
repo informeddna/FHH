@@ -112,16 +112,16 @@ public class PersonUtilsTest {
         p.setHeight(new Height(HEIGHT_IN_INCHES));
         p.setWeight(new Weight(WEIGHT_IN_POUNDS, WeightUnit.US));
 
-        double bmi = WEIGHT_IN_POUNDS * 703.0 / (HEIGHT_IN_INCHES * HEIGHT_IN_INCHES);
+        double bmi = WEIGHT_IN_POUNDS * PersonUtils.US_BMI_NUMERATOR / (HEIGHT_IN_INCHES * HEIGHT_IN_INCHES);
         assertEquals(PersonUtils.calculateBmi(p), format.format(bmi));
 
         p.setHeight(new Height(HEIGHT_IN_CMS, HeightUnit.METRIC));
         p.setWeight(new Weight(WEIGHT_IN_KILOS, WeightUnit.METRIC));
 
 
-        bmi = WEIGHT_IN_KILOS / (Math.pow((HEIGHT_IN_CMS / 10.0), 2));
+        bmi = WEIGHT_IN_KILOS / (Math.pow((HEIGHT_IN_CMS / 100.0), 2));
 
-        assertEquals(PersonUtils.calculateBmi(p), format.format(bmi));
+        assertEquals(format.format(bmi), PersonUtils.calculateBmi(p));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class PersonUtilsTest {
         p.setHeight(new Height(HEIGHT_IN_INCHES));
         p.setWeight(new Weight(WEIGHT_IN_KILOS, WeightUnit.METRIC));
 
-        final double bmi = WEIGHT_IN_KILOS / Math.pow((HEIGHT_IN_INCHES * PersonUtils.INCH_TO_CMS) / 10.0, 2.0);
+        final double bmi = WEIGHT_IN_KILOS / Math.pow((HEIGHT_IN_INCHES * PersonUtils.INCH_TO_CMS) / 100.0, 2.0);
         assertEquals(format.format(bmi), PersonUtils.calculateBmi(p));
 
     }
@@ -152,7 +152,7 @@ public class PersonUtilsTest {
         final Person p = new Person();
         p.setHeight(new Height(60));
 
-        assertEquals(232.2576, PersonUtils.getMetricHeightSquared(p), 0.01);
+        assertEquals(2.322576, PersonUtils.getMetricHeightSquared(p), 0.01);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class PersonUtilsTest {
 
 
         p.setHeight(new Height(HEIGHT_IN_CMS, HeightUnit.METRIC));
-        bmi = WEIGHT_IN_POUNDS * PersonUtils.LB_TO_KG_CONVERSION / Math.pow(HEIGHT_IN_CMS * PersonUtils.CM_TO_INCHES, 2.0);
+        bmi = WEIGHT_IN_POUNDS * PersonUtils.US_BMI_NUMERATOR / Math.pow(HEIGHT_IN_CMS / PersonUtils.INCH_TO_CMS, 2.0);
         assertEquals(PersonUtils.calculateUSBmi(p), bmi, 0.01);
 
 
@@ -190,13 +190,13 @@ public class PersonUtilsTest {
         p.setWeight(new Weight(WEIGHT_IN_KILOS, WeightUnit.METRIC));
 
 
-        double bmi = WEIGHT_IN_KILOS  / (Math.pow(HEIGHT_IN_CMS / 10.0, 2));
-        assertEquals(PersonUtils.calculateMetricBmi(p), bmi, 0.01);
+        double bmi = WEIGHT_IN_KILOS  / (Math.pow(HEIGHT_IN_CMS / 100.0, 2));
+        assertEquals(bmi, PersonUtils.calculateMetricBmi(p), 0.01);
 
         p.setHeight(new Height(HEIGHT_IN_INCHES));
 
-        bmi = WEIGHT_IN_KILOS / Math.pow((HEIGHT_IN_INCHES * PersonUtils.INCH_TO_CMS) / 10, 2.0);
-        assertEquals(PersonUtils.calculateMetricBmi(p), bmi, 0.01);
+        bmi = WEIGHT_IN_KILOS / Math.pow((HEIGHT_IN_INCHES * PersonUtils.INCH_TO_CMS) / 100.0, 2.0);
+        assertEquals(bmi, PersonUtils.calculateMetricBmi(p), 0.01);
 
     }
 
