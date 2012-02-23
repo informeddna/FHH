@@ -92,6 +92,7 @@
 
 <h4><fmt:message key="help.learnMore.text.h4.hipaaPrivacy" /></h4>
 <p><fmt:message key="help.learnMore.text.p1.hipaaPrivacy" /> <a href="http://www.hhs.gov/ocr/privacy/familyhealthhistoryfaqs.pdf" target="_blank"><fmt:message key="help.learnMore.text.p1.hipaaPrivacy.url" /></a><fmt:message key="text.dot" /></p>
+<p><fmt:message key="help.learnMore.text.p1.hipaaPrivacy.pdfReader" /><br /><a href="http://get.adobe.com/reader/" target="_blank"><fmt:message key="risk.adobe.download"/></a></p>
 
 <h4><fmt:message key="help.learnMore.text.h4.interoperable" /></h4>
 <p><fmt:message key="help.learnMore.text.p1.interoperable" /></p>
