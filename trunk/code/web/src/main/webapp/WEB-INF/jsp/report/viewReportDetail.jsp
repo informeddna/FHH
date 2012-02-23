@@ -41,6 +41,7 @@
         <c:set var="cols" value="3"/>
     </c:otherwise>
 </c:choose>
+
 <c:url value="/viewReport/retrieveImage.action" var="retrieveImageUrl" >
     <c:param name="ignore" value="${now.time}"/>
 </c:url>
@@ -62,7 +63,7 @@
             <td><img src="<s:url value="/images/icon_maleFemaleHighlight.gif"/>" alt="<fmt:message key="icon.report.diseased"/>" />
             <fmt:message key="report.legend.familyDisease"/></td>
         </c:if>
-            
+
         <td><img src="<s:url value="/images/icon_maleFemaleDec.gif"/>" alt="<fmt:message key="icon.report.deceased"/>" />
         <fmt:message key="report.legend.deceased"/></td>
     </tr>
@@ -194,9 +195,9 @@
                             </c:if>
                             <c:if test="${ not empty currRelative.ageAtDeath}">
 	                            (<fmt:message key="report.dx.term"/> <fmt:message bundle="${der}" key="${currRelative.ageAtDeath.resourceKey}" /> )
-                            </c:if> 
+                            </c:if>
                             &nbsp;
-                        </c:if> 
+                        </c:if>
                     </td>
                     <td>
                         <c:if test="${!empty currRelative.heartDisease}">

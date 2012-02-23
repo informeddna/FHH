@@ -58,17 +58,21 @@ public class RiskAction extends ActionSupport implements Preparable {
     private InputStream riskFile;
     private String riskHTML;
     private String fileName;
+    private boolean showCalculateButton;
 
     /**
      * {@inheritDoc}
      */
     public void prepare() {
         Person rootPerson = FhhHttpSessionUtil.getRootPerson();
-        if (rootPerson != null) {
+        if (rootPerson != null && rootPerson.isCompletedForm()) {
+            showCalculateButton = true;
             setPerson(rootPerson);
             final RiskResponseBuilder builder = new RiskResponseBuilder();
             RiskClient.getInstance().calculateRisk(person, builder);
             riskHTML = new String(RiskClient.getInstance().getRiskFile(builder.getMessage(), getFileLanguageCode()));
+        } else {
+            showCalculateButton = false;
         }
     }
 
@@ -169,6 +173,13 @@ public class RiskAction extends ActionSupport implements Preparable {
      */
     public String getFileName() {
         return fileName;
+    }
+
+    /**
+     * @return the showCalculateButton
+     */
+    public boolean isShowCalculateButton() {
+        return showCalculateButton;
     }
 
 }

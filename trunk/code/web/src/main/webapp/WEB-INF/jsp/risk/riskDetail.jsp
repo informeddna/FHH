@@ -17,11 +17,13 @@
 	    <a id="navFamilyHistory" href="${familyHistory}"><fmt:message key="risk.button.editHistory" /></a>
 	</div>
 </div>
-<div class="assessmentContainer">
-    <h3><fmt:message key="risk.colorectal.calculate" /></h3>
-    <p><fmt:message key="risk.colorectal.riskCalculator" /></p>
-	<div class="buttonContainer_risk">
-	    <c:url value="/popup/risk/colorectal.action" var="calculateColorectal" />
-	    <a id="calculateColrectalRisk" href="javascript://nop/" onclick="handlePopup('${calculateColorectal}');"><fmt:message key="risk.button.calculate"/></a>
+<c:if test="${showCalculateButton}">
+	<div class="assessmentContainer">
+	    <h3><fmt:message key="risk.colorectal.calculate" /></h3>
+	    <p><fmt:message key="risk.colorectal.riskCalculator" /></p>
+		<div class="buttonContainer_risk">
+		    <c:url value="/popup/risk/colorectal.action" var="calculateColorectal" />
+		    <a id="calculateColrectalRisk" href="javascript://nop/" onclick="handlePopup('${calculateColorectal}');"><fmt:message key="risk.button.calculate"/></a>
+		</div>
 	</div>
-</div>
+</c:if>

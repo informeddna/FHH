@@ -12,19 +12,19 @@
 <h2><fmt:message key="help.saveHistoryFile.text.additionalInstructions"/> <fmt:message key="help.saveHistoryFile.text.firefoxWin"/></h2>
 <ol>
 	<li>
-    	<fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.afterClicking"/> 
-        <strong><fmt:message key="button.saveXmlDocument"/></strong> 
-        <fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.button1"/> 
-        <fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.onlySelect"/> 
-        <strong><fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.saveToDisk"/></strong> 
-        <fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.radioButton"/> 
-        <strong><fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.ok"/></strong> 
+    	<fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.afterClicking"/>
+        <strong><fmt:message key="button.saveXmlDocument"/></strong>
+        <fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.button1"/>
+        <fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.onlySelect"/>
+        <strong><fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.saveToDisk"/></strong>
+        <fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.radioButton"/>
+        <strong><fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.ok"/></strong>
         <fmt:message key="help.saveHistoryFile.text.firefoxWin.item1.button2"/>
     </li>
 	<li><fmt:message key="help.saveHistoryFile.text.item2"/></li>
 </ol>
 <br />
-<img src="<s:url value="/images/screen_saveFile_firefoxWin.gif"/>" alt="<fmt:message key="screenshot.saveHistoryFile.firefoxWin"/>" />
+<img src="<s:url value="/images/screenshot_saveHistory_firefoxWin.gif"/>" alt="<fmt:message key="screenshot.saveHistoryFile.firefoxWin"/>" />
 <div><a href="#top"><fmt:message key="text.backToTop"/></a></div>
 
 <hr />
@@ -32,17 +32,17 @@
 <h2><fmt:message key="help.saveHistoryFile.text.additionalInstructions"/> <fmt:message key="help.saveHistoryFile.text.ieWin"/></h2>
 <ol>
 	<li>
-    	<fmt:message key="help.saveHistoryFile.text.item1.afterClicking"/> 
-        <strong><fmt:message key="button.saveXmlDocument"/></strong> 
-        <fmt:message key="help.saveHistoryFile.text.item1.button1"/> 
-        <fmt:message key="help.saveHistoryFile.text.item1.onlyClick"/> 
-        <strong><fmt:message key="help.saveHistoryFile.text.item1.save"/></strong> 
+    	<fmt:message key="help.saveHistoryFile.text.item1.afterClicking"/>
+        <strong><fmt:message key="button.saveXmlDocument"/></strong>
+        <fmt:message key="help.saveHistoryFile.text.item1.button1"/>
+        <fmt:message key="help.saveHistoryFile.text.item1.onlyClick"/>
+        <strong><fmt:message key="help.saveHistoryFile.text.item1.save"/></strong>
         <fmt:message key="help.saveHistoryFile.text.item1.button2"/>
     </li>
 	<li><fmt:message key="help.saveHistoryFile.text.item2"/></li>
 </ol>
 <br />
-<img src="<s:url value="/images/screen_saveFile_ieWin.gif"/>" alt="<fmt:message key="screenshot.saveHistoryFile.ieWin"/>" />
+<img src="<s:url value="/images/screenshot_saveHistory_ieWin.gif"/>" alt="<fmt:message key="screenshot.saveHistoryFile.ieWin"/>" />
 <div><a href="#top"><fmt:message key="text.backToTop"/></a></div>
 
 <hr />
@@ -50,17 +50,17 @@
 <h2><fmt:message key="help.saveHistoryFile.text.additionalInstructions"/> <fmt:message key="help.saveHistoryFile.text.safariWin"/></h2>
 <ol>
 	<li>
-    	<fmt:message key="help.saveHistoryFile.text.item1.afterClicking"/> 
-        <strong><fmt:message key="button.saveXmlDocument"/></strong> 
-        <fmt:message key="help.saveHistoryFile.text.item1.button1"/> 
-        <fmt:message key="help.saveHistoryFile.text.item1.onlyClick"/> 
-        <strong><fmt:message key="help.saveHistoryFile.text.item1.save"/></strong> 
+    	<fmt:message key="help.saveHistoryFile.text.item1.afterClicking"/>
+        <strong><fmt:message key="button.saveXmlDocument"/></strong>
+        <fmt:message key="help.saveHistoryFile.text.item1.button1"/>
+        <fmt:message key="help.saveHistoryFile.text.item1.onlyClick"/>
+        <strong><fmt:message key="help.saveHistoryFile.text.item1.save"/></strong>
         <fmt:message key="help.saveHistoryFile.text.item1.button2"/>
     </li>
 	<li><fmt:message key="help.saveHistoryFile.text.item2"/></li>
 </ol>
 <br />
-<img src="<s:url value="/images/screen_saveFile_safariWin.gif"/>" alt="<fmt:message key="screenshot.saveHistoryFile.safariWin"/>" />
+<img src="<s:url value="/images/screenshot_saveHistory_safariWin.gif"/>" alt="<fmt:message key="screenshot.saveHistoryFile.safariWin"/>" />
 <div><a href="#top"><fmt:message key="text.backToTop"/></a></div>
 
 
