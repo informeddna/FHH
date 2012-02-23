@@ -62,16 +62,11 @@ public final class PersonUtils {
     static final double INCH_TO_CMS = 2.54;
 
     /**
-     * 1 centimeter = 0.393700787 inches.
-     */
-    static final double CM_TO_INCHES = 0.393700787;
-
-    /**
      * Integer to multiply by when converting kilograms to pounds.
      */
-    public static final double LB_TO_KG_CONVERSION = 703.0;
+    public static final double US_BMI_NUMERATOR = 703.0;
 
-    private static final int CM_TO_METERS = 10;
+    private static final int METERS_TO_CM = 100;
 
 
     /**
@@ -121,7 +116,7 @@ public final class PersonUtils {
      * Get unit for height and weight - need inches and lbs OR meters and kg
      *   formula for inches and lbs.
      *   BMI = (weight in lbs * 703)/(height in inches)(height in inches).
-     *   BMI = (weight in kg)/(height in meters).
+     *   BMI = (weight in kg)/(height in meters)(height in meters).
      * @param p <code>Person</code> Object used to calculate BMI
      * @return the bmi
      */
@@ -144,7 +139,7 @@ public final class PersonUtils {
     }
 
     /**
-     * Converts the Height of Centimeters and raises it by a power of 2.
+     * Converts the Height of Centimeters and multiplies it by a power of 2.
      * @param p person
      * @return (height in m)^2
      */
@@ -158,17 +153,17 @@ public final class PersonUtils {
                 metricHeight = v * INCH_TO_CMS;
             }
 
-            sqr = Math.pow(metricHeight / CM_TO_METERS, 2.0);
+            sqr = Math.pow(metricHeight / METERS_TO_CM, 2.0);
         }
         return sqr;
     }
 
     static double calculateUSBmi(final Person p) {
-        return p.getWeight().getValue() * LB_TO_KG_CONVERSION / getUSHeightSquared(p);
+        return p.getWeight().getValue() * US_BMI_NUMERATOR / getUSHeightSquared(p);
     }
 
     /**
-     * Converts the Height of the person to inches and raises it to a power of 2.
+     * Converts the Height of the person to inches and multiplies it by a power of 2.
      * @param p
      * @return (height in inches)^2
      */
@@ -180,7 +175,7 @@ public final class PersonUtils {
 
             //do the conversion if the unit isn't US
             if (HeightUnit.METRIC.equals(p.getHeight().getUnit())) {
-                usHeight = v * CM_TO_INCHES;
+                usHeight = v / INCH_TO_CMS;
             }
 
             sqr = Math.pow(usHeight, 2.0);
