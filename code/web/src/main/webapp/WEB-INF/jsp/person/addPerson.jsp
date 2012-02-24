@@ -88,7 +88,7 @@
         <%-- Display Relationship if adding Relative --%>
         <c:if test="${editingRelative}">
             <tr>
-                <th><label for="personRelationship"><fmt:message key="person.relationship" />:</label></th>
+                <th><label for="selectedCode"><fmt:message key="person.relationship" />:</label></th>
                 <td><fmt:message bundle="${der}" key="${selectedCodeEnum.resourceKey}" /><s:hidden
                     name="selectedCode" /></td>
             </tr>
@@ -104,7 +104,7 @@
         </tr>
 
         <tr>
-            <th><span class="required">*</span><fmt:message key="person.gender" />:</th>
+            <th><span class="required">*</span><label for="personForm_relative_genderMALE"><fmt:message key="person.gender" /></label>:</th>
             <td><s:radio key="person.gender" name="%{#attr.personLabel}.gender" list="genderEnums" listKey="name"
                 listValue="%{getText(resourceKey)}" theme="simple" tabindex="2" /></td>
         </tr>
@@ -239,7 +239,7 @@
                         <s:textfield id="otherCOD" name="otherCOD" tabindex="9" size="45" maxlength="255"
                             onblur="codChanged()" /> </span></td>
                     </tr>
-                    <%-- 
+                    <%--
                     <tr>
                         <th><label for="personForm_COD_age"><fmt:message key="" /></label></th>
                         <td><select id="selectCODAge" tabindex="6" onchange="codChanged()">
@@ -295,9 +295,9 @@
         <%-- Twin + Adopted + Height + Weight (Self & Relative)  --%>
         <tr>
             <th><c:if test="${editingRelative}">
-                <fmt:message key="relative.twinStatus" />
+                <label for="twinStatusNO"><fmt:message key="relative.twinStatus" /></label>
             </c:if> <c:if test="${!editingRelative}">
-                <fmt:message key="person.twinStatus" />
+                <label for="twinStatusNO"><fmt:message key="person.twinStatus" /></label>
             </c:if></th>
             <td><s:radio key="" id="twinStatus" name="%{#attr.personLabel}.twinStatus" list="twinStatusEnums"
                 listValue="%{getText(resourceKey)}" theme="simple" tabindex="11" /></td>
@@ -329,7 +329,7 @@
                 </s:if></td>
             </tr>
             <tr>
-                <th><fmt:message key="person.height" />:</th>
+                <th><label for="heightUnit1"><fmt:message key="person.height" /></label>:</th>
                 <td><s:textfield id="heightUnit1" theme="simple" name="heightUnit1" size="6" value="%{heightUnit1}"
                     tabindex="13" onblur="clearMetric()" /> <label for="heightUnit1"><fmt:message
                     key="person.height.Unit1" /></label> &nbsp;&nbsp;<s:textfield id="heightUnit2" theme="simple"
@@ -493,7 +493,7 @@
                     <input <c:if test="${isChecked == 'checked'}">checked="checked"</c:if> tabindex="21"
                         name="selectedRaces" value="${currentRace.id}" id="selectedRaces-${status.index + 1}"
                         onclick="raceChanged()" type="checkbox">
-                    <!--  
+                    <!--
                                 <c:choose>
                                     <c:when test="${isChecked == 'checked'}">
                                         <input checked="checked" tabindex="21" name="selectedRaces" value="${currentRace.id}" id="selectedRaces-${status.index + 1}" onclick="raceChanged()" type="checkbox">
