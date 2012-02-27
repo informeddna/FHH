@@ -29,11 +29,11 @@
             <table border="0" cellpadding="0" cellspacing="0" class="form" summary="<fmt:message key="form.addrel.table.summary"/>">
                 <%-- Select type of relative to add --%>
                 <tr>
-                    <th>
+                    <th scope="row">
                         <label for="relativeForm_selectedCode" class="label"><fmt:message key="person.relationship"/></label>
                     </th>
                     <c:set var="relationshipHeader" scope="request"><fmt:message key="person.select.relationship"/></c:set>
-                    
+
                     <td>
                         <%-- Using html select tag to fix Spanish characters in windows --%>
                         <select name="selectedCode" id="relativeForm_selectedCode">
@@ -49,13 +49,13 @@
                                 </c:choose>
                             </c:forEach>
                         </select>
-            
+
                     </td>
                 </tr>
-                
+
                 <%-- Error message for Maternal/Paternal Specifier --%>
                 <tr errorfor="relativeForm_relationshipSpecifier">
-                    <td colspan="2" valign="top" align="center">
+                    <td scope="row" colspan="2" valign="top" align="center">
                         <s:if test="fieldErrors['relationshipSpecifier'] != null">
                             <span class="errorMessage">${fieldErrors['relationshipSpecifier'][0]}</span>
                         </s:if>
@@ -63,7 +63,7 @@
                 </tr>
                 <%-- Select Maternal/Paternal Specifier --%>
                 <tr>
-                    <th>
+                    <th scope="row">
                         <div id="familyRelationTitleDiv" style="display: none">
                             <fmt:message key="person.familyRelation1"/>&nbsp;<span id="relationTextSpan"></span>&nbsp;<fmt:message key="person.familyRelation2"/>:
                         </div>
@@ -74,18 +74,18 @@
                         </div>
                     </td>
                 </tr>
-                
+
                <tr errorfor="relativeForm_selectedCode">
-                    <td colspan="2" valign="top" align="center">
+                    <td scope="row" colspan="2" valign="top" align="center">
                         <s:if test="fieldErrors['selectedCode'] != null">
                             <span class="errorMessage">${fieldErrors['selectedCode'][0]}</span>
                         </s:if>
                     </td>
                 </tr>
-                
+
                 <%-- Error message for select Parent --%>
                 <tr errorfor="relativeForm_parent">
-                    <td colspan="2" valign="top" align="center">
+                    <td scope="row" colspan="2" valign="top" align="center">
                         <s:if test="fieldErrors['selectedParentIndex'] != null">
                             <span class="errorMessage">${fieldErrors['selectedParentIndex'][0]}</span>
                         </s:if>
@@ -93,7 +93,7 @@
                 </tr>
                 <%-- Select Parent --%>
                 <tr>
-                    <th>
+                    <th scope="row">
                         <div id="parentTitleDiv" style="display: none">
                             <fmt:message key="person.parentRelation1"/>
                             <span id="parentTextSpan"></span>
@@ -115,13 +115,13 @@
         &nbsp;&nbsp;&nbsp;
         <a id="cancelRelative" class="enableEnterSubmit" href="javascript:;" onclick="window.top.hidePopWin()"><fmt:message key="button.cancel"/></a>
 </div>
-<%-- Pass existingRelativeCodes via AJAX --%>    
+<%-- Pass existingRelativeCodes via AJAX --%>
 <span style="display: none">
     <select id="existingRelativeCodes" name="existingRelativeCodes" multiple="true">
         <c:forEach items="${existingRelativeCodes}" var="currentItem">
             <option selected="selected" value="${currentItem}"></option>
         </c:forEach>
-    </select>   
+    </select>
 </span>
 </s:form>
 <s:if test="fieldErrors['relationshipSpecifier'] != null">
@@ -132,12 +132,12 @@
 </s:if>
 <c:url var="checkRelativeCode" value="/popup/addRelative/retrieveRelationshipSpecifiers.action" />
 <ajax:select baseUrl="${checkRelativeCode}"
-    source="relativeForm_selectedCode" target="relativeForm_relationshipSpecifier" parameters="selectedCodeValue={relativeForm_selectedCode}, existingRelativeCodes={existingRelativeCodes}" 
+    source="relativeForm_selectedCode" target="relativeForm_relationshipSpecifier" parameters="selectedCodeValue={relativeForm_selectedCode}, existingRelativeCodes={existingRelativeCodes}"
     postFunction="finishRetrieveSpecifier" executeOnLoad="${rsExecOnLoad}" />
 
 <c:url var="retrieveParents" value="/popup/addRelative/retrieveParents.action" />
 <ajax:select baseUrl="${retrieveParents}"
-    source="relativeForm_selectedCode" target="relativeForm_parent" parameters="selectedCodeValue={relativeForm_selectedCode}" 
+    source="relativeForm_selectedCode" target="relativeForm_parent" parameters="selectedCodeValue={relativeForm_selectedCode}"
     postFunction="finishRetrieveParents" executeOnLoad="${parentExecOnLoad}"/>
 
 

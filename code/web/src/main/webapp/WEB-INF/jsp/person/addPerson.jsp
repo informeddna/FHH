@@ -88,7 +88,7 @@
         <%-- Display Relationship if adding Relative --%>
         <c:if test="${editingRelative}">
             <tr>
-                <th><label for="selectedCode"><fmt:message key="person.relationship" />:</label></th>
+                <th scope="row"><label for="selectedCode"><fmt:message key="person.relationship" />:</label></th>
                 <td><fmt:message bundle="${der}" key="${selectedCodeEnum.resourceKey}" /><s:hidden
                     name="selectedCode" /></td>
             </tr>
@@ -96,7 +96,7 @@
 
         <%-- Error message for Gender --%>
         <tr>
-            <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['person.gender'] != null">
+            <td colspan="2" valign="top" align="center"  scope="row"><s:if test="fieldErrors['person.gender'] != null">
                 <span class="errorMessage">${fieldErrors['person.gender'][0]}</span>
             </s:if> <s:if test="fieldErrors['relative.gender'] != null">
                 <span class="errorMessage">${fieldErrors['relative.gender'][0]}</span>
@@ -104,7 +104,7 @@
         </tr>
 
         <tr>
-            <th><span class="required">*</span><label for="personForm_relative_genderMALE"><fmt:message key="person.gender" /></label>:</th>
+            <th scope="row"><span class="required">*</span><label for="personForm_relative_genderMALE"><fmt:message key="person.gender" /></label>:</th>
             <td><s:radio key="person.gender" name="%{#attr.personLabel}.gender" list="genderEnums" listKey="name"
                 listValue="%{getText(resourceKey)}" theme="simple" tabindex="2" /></td>
         </tr>
@@ -116,7 +116,7 @@
             <s:hidden name="lastAddedCOD" id="lastAddedCOD" />
 
             <tr>
-                <th><label for="personForm_relative_livingStatusYES"><fmt:message
+                <th scope="row"><label for="personForm_relative_livingStatusYES"><fmt:message
                     key="relative.livingStatus" /></label></th>
                 <td><s:radio key="" name="relative.livingStatus" onclick="livingStatusChanged()"
                     list="livingStatusEnums" listValue="%{getText(resourceKey)}" theme="simple" tabindex="3" /> <%-- living = yes --%>
@@ -124,36 +124,36 @@
                 <div class="p"><fmt:message key="relative.livingStatus.helpText" /></div>
                 <table border="0" cellpadding="0" cellspacing="0" class="subOptions">
                     <tr errorfor="personForm_dateOfBirthString">
-                        <td colspan="2" valign="top" align="center"><s:if
+                        <td scope="row" colspan="2" valign="top" align="center"><s:if
                             test="fieldErrors['dateOfBirthString'] != null">
                             <span class="errorMessage">${fieldErrors['dateOfBirthString'][0]}</span>
                         </s:if></td>
                     </tr>
                     <tr>
-                        <th><label for="personForm_dateOfBirthString"><fmt:message key="person.dateOfBirth" /></label>:</th>
+                        <th scope="row"><label for="personForm_dateOfBirthString"><fmt:message key="person.dateOfBirth" /></label>:</th>
                         <td><s:textfield key="person.dateOfBirth" name="dateOfBirthString" size="30"
                             maxlength="255" theme="simple" tabindex="4" />
                         <div><fmt:message key="default.date.format" /></div>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2"><span class="or"><fmt:message key="person.height.or" /></span></td>
+                        <td colspan="2"  scope="row"><span class="or"><fmt:message key="person.height.or" /></span></td>
                     </tr>
                     <tr errorfor="personForm_relativeAge">
-                        <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['relativeAge'] != null">
+                        <td scope="row" colspan="2" valign="top" align="center"><s:if test="fieldErrors['relativeAge'] != null">
                             <span class="errorMessage">${fieldErrors['relativeAge'][0]}</span>
                         </s:if></td>
                     </tr>
                     <tr>
-                        <th><label for="personForm_relativeAge"><fmt:message key="relative.age" /></label>:</th>
+                        <th scope="row"><label for="personForm_relativeAge"><fmt:message key="relative.age" /></label>:</th>
                         <td><s:textfield key="relative.age" name="relativeAge" size="30" maxlength="255"
                             theme="simple" tabindex="5" /></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><span class="or"><fmt:message key="person.height.or" /></span></td>
+                        <td scope="row" colspan="2"><span class="or"><fmt:message key="person.height.or" /></span></td>
                     </tr>
                     <tr>
-                        <th><label for="personForm_relativeEstimatedAge"><fmt:message
+                        <th scope="row"><label for="personForm_relativeEstimatedAge"><fmt:message
                             key="person.estimatedAgeRange" /></label>:</th>
                         <td><select name="relative.estimatedAgeRange" id="personForm_relativeEstimatedAge"
                             tabindex="10">
@@ -179,14 +179,14 @@
                 <div id="livingStatusNoSpan" style="display: none;" class="dynamicPanel">
                 <table border="0" cellpadding="0" cellspacing="0" class="subOptions">
                     <tr errorfor="personForm_causeOfDeath">
-                        <td colspan="2" valign="top" align="center"><s:if
+                        <td scope="row" colspan="2" valign="top" align="center"><s:if
                             test="fieldErrors['causeOfDeath'] != null">
                             <span class="errorMessage">${fieldErrors['causeOfDeath'][0]}</span>
                         </s:if></td>
                     </tr>
 
                     <tr>
-                        <th><label for="personForm_causeOfDeath"><fmt:message key="relative.causeOfDeath" />:</label></th>
+                        <th scope="row"><label for="personForm_causeOfDeath"><fmt:message key="relative.causeOfDeath" />:</label></th>
                         <td><select name="causeOfDeath" id="personForm_causeOfDeath" tabindex="7">
                             <option value=""><fmt:message key="relative.select.causeOfDeath" /></option>
                             <c:forEach var="item" items="${diseases}">
@@ -204,7 +204,7 @@
                     <%-- COD suboptions --%>
                     <c:set var="noCODSubTypesExist" value="${!codSubTypesExist}" />
                     <tr>
-                        <th><span id="codSubTypeLabelSpan"
+                        <th scope="row"><span id="codSubTypeLabelSpan"
                             <c:if test="${noCODSubTypesExist}">style="display:none;"</c:if>> <label
                             for="personForm_selectedCODSubType"><fmt:message
                             key="multipleItemSelector.pleaseSpecify" />:</label> </span></th>
@@ -226,14 +226,14 @@
                         </select> </span></td>
                     </tr>
                     <tr errorfor="personForm_otherCOD">
-                        <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['otherCOD'] != null">
+                        <td scope="row" colspan="2" valign="top" align="center"><s:if test="fieldErrors['otherCOD'] != null">
                             <span class="errorMessage">${fieldErrors['otherCOD'][0]}</span>
                         </s:if></td>
                     </tr>
                     <c:set var="isCODOther" value="${!empty otherCOD or !empty fieldErrors['otherCOD']}" />
                     <c:set var="noCODOther" value="${!isCODOther}" />
                     <tr>
-                        <th><span id="codOtherLabelSpan" <c:if test="${noCODOther}">style="display:none;"</c:if>>
+                        <th scope="row"><span id="codOtherLabelSpan" <c:if test="${noCODOther}">style="display:none;"</c:if>>
                         <label for="codOther"><fmt:message key="multipleItemSelector.pleaseSpecify" />:</label> </span></th>
                         <td><span id="codOtherSpan" <c:if test="${noCODOther}">style="display:none;"</c:if>>
                         <s:textfield id="otherCOD" name="otherCOD" tabindex="9" size="45" maxlength="255"
@@ -251,7 +251,7 @@
                     </tr>
                     --%>
                     <tr>
-                        <th><label for="personForm_relative_ageAtDeath"><fmt:message
+                        <th scope="row"><label for="personForm_relative_ageAtDeath"><fmt:message
                             key="relative.ageAtDeath" />:</label></th>
                         <td><select name="relative.ageAtDeath" id="personForm_relative_ageAtDeath" tabindex="6">
                             <option value=""><fmt:message key="relative.select.ageAtDeath" /></option>
@@ -279,12 +279,12 @@
         <c:if test="${!editingRelative}">
             <%-- Error message for date of birth --%>
             <tr errorfor="personForm_dateOfBirthString">
-                <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['dateOfBirthString'] != null">
+                <td scope="row" colspan="2" valign="top" align="center"><s:if test="fieldErrors['dateOfBirthString'] != null">
                     <span class="errorMessage">${fieldErrors['dateOfBirthString'][0]}</span>
                 </s:if></td>
             </tr>
             <tr>
-                <th><span class="required">*</span><label for="personForm_dateOfBirthString"><fmt:message
+                <th scope="row"><span class="required">*</span><label for="personForm_dateOfBirthString"><fmt:message
                     key="person.dateOfBirth" /></label>:</th>
                 <td><s:textfield key="person.dateOfBirth" name="dateOfBirthString" size="30" maxlength="255"
                     theme="simple" tabindex="10" />
@@ -294,7 +294,7 @@
         </c:if>
         <%-- Twin + Adopted + Height + Weight (Self & Relative)  --%>
         <tr>
-            <th><c:if test="${editingRelative}">
+            <th scope="row"><c:if test="${editingRelative}">
                 <label for="twinStatusNO"><fmt:message key="relative.twinStatus" /></label>
             </c:if> <c:if test="${!editingRelative}">
                 <label for="twinStatusNO"><fmt:message key="person.twinStatus" /></label>
@@ -303,7 +303,7 @@
                 listValue="%{getText(resourceKey)}" theme="simple" tabindex="11" /></td>
         </tr>
         <tr>
-            <th><label for="personAdopted"> <c:if test="${editingRelative}">
+            <th scope="row"><label for="personAdopted"> <c:if test="${editingRelative}">
                 <fmt:message key="relative.adoptedStatus" />
             </c:if> <c:if test="${!editingRelative}">
                 <fmt:message key="person.adoptedStatus" />
@@ -314,22 +314,22 @@
         <c:if test="${!editingRelative}">
             <%-- Error message for height --%>
             <tr errorfor="heightUnit1">
-                <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['heightUnit1'] != null">
+                <td colspan="2" valign="top" align="center" scope="row"><s:if test="fieldErrors['heightUnit1'] != null">
                     <span class="errorMessage">${fieldErrors['heightUnit1'][0]}</span>
                 </s:if></td>
             </tr>
             <tr errorfor="heightUnit2">
-                <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['heightUnit2'] != null">
+                <td colspan="2" valign="top" align="center" scope="row"><s:if test="fieldErrors['heightUnit2'] != null">
                     <span class="errorMessage">${fieldErrors['heightUnit2'][0]}</span>
                 </s:if></td>
             </tr>
             <tr errorfor="heightMetric">
-                <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['heightMetric'] != null">
+                <td colspan="2" valign="top" align="center" scope="row"><s:if test="fieldErrors['heightMetric'] != null">
                     <span class="errorMessage">${fieldErrors['heightMetric'][0]}</span>
                 </s:if></td>
             </tr>
             <tr>
-                <th><label for="heightUnit1"><fmt:message key="person.height" /></label>:</th>
+                <th scope="row"><label for="heightUnit1"><fmt:message key="person.height" /></label>:</th>
                 <td><s:textfield id="heightUnit1" theme="simple" name="heightUnit1" size="6" value="%{heightUnit1}"
                     tabindex="13" onblur="clearMetric()" /> <label for="heightUnit1"><fmt:message
                     key="person.height.Unit1" /></label> &nbsp;&nbsp;<s:textfield id="heightUnit2" theme="simple"
@@ -340,12 +340,12 @@
                     key="person.height.Metric" /></label></td>
             </tr>
             <tr errorfor="personForm_weightString">
-                <td colspan="2" valign="top" align="center"><s:if test="fieldErrors['weightString'] != null">
+                <td scope="row" colspan="2" valign="top" align="center"><s:if test="fieldErrors['weightString'] != null">
                     <span class="errorMessage">${fieldErrors['weightString'][0]}</span>
                 </s:if></td>
             </tr>
             <tr>
-                <th><label for="weightString"><fmt:message key="person.weight" />:</label></th>
+                <th scope="row"><label for="weightString"><fmt:message key="person.weight" />:</label></th>
                 <td><s:textfield key="person.weight.value" name="weightString" value="%{person.weight.value}"
                     size="5" maxlength="4" theme="simple" tabindex="15" /> <s:select key="person.weight.unit"
                     name="person.weight.unit" value="%{person.weight.unit}" list="weightUnitEnums"
@@ -354,11 +354,11 @@
         </c:if>
         <c:if test="${needsRelating}">
             <tr>
-                <td colspan="2"><span class="errorMessage"><fmt:message
+                <td scope="row" colspan="2"><span class="errorMessage"><fmt:message
                     key="familyHistory.family.text.unrelatedRelative" /></span></td>
             </tr>
             <tr>
-                <th><span class="required">*</span><fmt:message key="addperson.choose.parent" /></th>
+                <th scope="row"><span class="required">*</span><fmt:message key="addperson.choose.parent" /></th>
                 <td><span id="relateParentSpan"> <select name="relativeToSetAsParentUuid"
                     id="personForm_relativeToSetAsParentUuid">
                     <option value="" onclick="relativeToRelateToSelected('false')"><fmt:message
@@ -382,7 +382,7 @@
         <colgroup span="1" />
         <colgroup span="1" width="0*" />
         <tr>
-            <td class="accordianTitleTd"><c:if test="${editingRelative}">
+            <td scope="row" class="accordianTitleTd"><c:if test="${editingRelative}">
                 <h2><fmt:message key="addPerson.accordian.titlebar.hi.relative1" /><fmt:message bundle="${der}"
                     key="${selectedCodeEnum.possessiveResourceKey}" /><fmt:message
                     key="addPerson.accordian.titlebar.hi.relative2" /></h2>
@@ -432,7 +432,7 @@
         <colgroup span="1" />
         <colgroup span="1" width="0*" />
         <tr>
-            <td class="accordianTitleTd"><c:if test="${editingRelative}">
+            <td scope="row" class="accordianTitleTd"><c:if test="${editingRelative}">
                 <h2><fmt:message key="addPerson.accordian.titlebar.bi.relative1" /><fmt:message bundle="${der}"
                     key="${selectedCodeEnum.possessiveResourceKey}" /><fmt:message
                     key="addPerson.accordian.titlebar.bi.relative2" /></h2>
@@ -454,7 +454,7 @@
         <c:if test="${!editingRelative}">
             <tbody id="consanguinity">
                 <tr>
-                    <td colspan="2">
+                    <td scope="row" colspan="2">
                     <div class="p"><label for="personForm_person_consanguinityFlag"><fmt:message
                         key="person.consanguinity" /></label> <s:checkbox name="%{#attr.personLabel}.consanguinityFlag"
                         tabindex="20" /></div>
@@ -466,14 +466,14 @@
         <!-- BEGIN RACE / ETHNICITY INFO -->
         <tbody id="raceEthnicity">
             <tr>
-                <td colspan="2">
+                <td scope="row" colspan="2">
                 <div class="p"><fmt:message key="person.multipleRaces" /></div>
                 </td>
             </tr>
             <%-- race --%>
             <%--See setTabIndexesForCheckboxLists() for tabindexes of races and ethnicities --%>
             <tr>
-                <th><fmt:message key="person.race" />:</th>
+                <th scope="row"><fmt:message key="person.race" />:</th>
                 <td><%-- Using html checkboxlist tag to fix Spanish characters in windows --%> <c:forEach
                     items="${races}" var="currentRace" varStatus="status">
                     <c:choose>
@@ -506,7 +506,7 @@
                 </c:forEach></td>
             </tr>
             <tr>
-                <th>
+                <th scope="row">
                 <div id="asianRaceLabelDiv" style="display: none;"><label><fmt:message
                     key="multipleItemSelector.pleaseSpecify" />:</label></div>
                 </th>
@@ -535,7 +535,7 @@
                 </td>
             </tr>
             <tr>
-                <th>
+                <th scope="row">
                 <div id="hawaiianRaceLabelDiv" style="display: none;"><label><fmt:message
                     key="multipleItemSelector.pleaseSpecify" />:</label></div>
                 </th>
@@ -565,7 +565,7 @@
             </tr>
             <%-- ethnicity --%>
             <tr>
-                <th><fmt:message key="person.ethnicity" />:</th>
+                <th scope="row"><fmt:message key="person.ethnicity" />:</th>
                 <td><c:forEach items="${ethnicities}" var="currentEthnicity" varStatus="status">
                     <c:choose>
                         <c:when test="${status.index % 3==0 && status.index ne 0}">
@@ -588,7 +588,7 @@
                 </c:forEach></td>
             </tr>
             <tr>
-                <td class="tdLabel">
+                <td class="tdLabel" scope="row">
                 <div id="hispanicEthnicityLabelDiv" style="display: none;"><label class="label"><fmt:message
                     key="multipleItemSelector.pleaseSpecify" />:</label></div>
                 </td>
