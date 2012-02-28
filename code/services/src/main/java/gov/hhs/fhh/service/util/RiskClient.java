@@ -169,9 +169,25 @@ public final class RiskClient {
      * @param person the person
      * @param builder a callback to send the links back.
      */
-    public void calculateRisk(Person person, RiskResponseBuilder builder) {
+    public void calculateColorectalRisk(Person person, RiskResponseBuilder builder) {
         try {
             final String response = RiskUtils.getInstance().calculateColorectalRisk(person);
+            final Document document = getPatientDocument(response);
+            parseResponse(document, builder);
+        } catch (Exception e) {
+            LOG.error("Error when calculating risk.", e);
+        }
+    }
+
+    /**
+     * calls the remote webservice passing in the the person and builder.
+     *
+     * @param person the person
+     * @param builder a callback to send the links back.
+     */
+    public void calculateDiabetesRisk(Person person, RiskResponseBuilder builder) {
+        try {
+            final String response = RiskUtils.getInstance().calculateDiabetesRisk(person);
             final Document document = getPatientDocument(response);
             parseResponse(document, builder);
         } catch (Exception e) {

@@ -89,6 +89,7 @@ import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.model.mfhp.castor.ExportUtils;
 import gov.nih.nci.drc.calculator.RiskCalculator;
 import gov.nih.nci.drc.model.ColorectalAssesmentEvaluator;
+import gov.nih.nci.drc.model.DiabetesAssesmentEvaluator;
 
 /**
  * @author bpickeral
@@ -121,6 +122,21 @@ public final class RiskUtils {
             final String xmlString = ExportUtils.createXMLFile(p, true);
             return RiskCalculator.getInstance().calculateColorectalRisk(xmlString,
                     ColorectalAssesmentEvaluator.getRiskAlgorithm());
+        } catch (Exception e) {
+            LOG.error(ERROR_MESSAGE, e);
+            return ERROR_MESSAGE;
+        }
+    }
+
+    /**
+     * Calls colorectal risk calculator, returns risk link.
+     * @param p Person with information used to calculate risk
+     * @return risk
+     */
+    public String calculateDiabetesRisk(Person p) {
+        try {
+            return RiskCalculator.getInstance().calculateDiabetesRisk(p,
+                    DiabetesAssesmentEvaluator.getRiskAlgorithm());
         } catch (Exception e) {
             LOG.error(ERROR_MESSAGE, e);
             return ERROR_MESSAGE;

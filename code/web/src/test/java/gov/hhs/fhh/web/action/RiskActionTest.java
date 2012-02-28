@@ -34,25 +34,14 @@
 package gov.hhs.fhh.web.action;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+
+import java.util.Date;
+
 import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.service.FhhWebException;
-import gov.hhs.fhh.service.util.CurrentLanguageHolder;
-import gov.hhs.fhh.service.util.FhhUtils;
 import gov.hhs.fhh.web.test.AbstractFhhWebTest;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 
-import java.util.GregorianCalendar;
-
-import org.apache.commons.lang.StringUtils;
-import org.junit.Before;
 import org.junit.Test;
-
-import com.fiveamsolutions.hl7.model.mfhp.Gender;
-import com.fiveamsolutions.hl7.model.mfhp.Weight;
-import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 
 /**
  * @author bpickeral
@@ -65,75 +54,23 @@ public class RiskActionTest extends AbstractFhhWebTest {
     private final String SUCCESS = "success";
     private final String MIN_HEX = "80000000";
 
-    private final String DUMMY_NAME = "John Doe";
-    public static final String DUMMY_KEY = "80000000";
-    private final Gender DUMMY_GENDER = Gender.MALE;
-    private final GregorianCalendar DUMMY_DATE = new GregorianCalendar(1970, 10, 7, 0, 0, 0);
-    public static final String IMPORT_COMPLETE = "importComplete";
-    public static final String BASIC_IMPORT_TEST = "/Basic_Test_FamilyHistory.xml";
-    private final Weight BASIC_TEST_WEIGHT = new Weight(180, WeightUnit.METRIC);
-
-    @Before
-    public void before() throws FhhWebException {
-        p.setName(DUMMY_NAME);
-
-        p.setDateOfBirth(DUMMY_DATE.getTime());
-        p.setWeight(BASIC_TEST_WEIGHT);
-        p.setGender(DUMMY_GENDER);
-
-        FhhUtils.addRequiredRelativesToTree(p);
-    }
-
     @Test
     public void testPrepare() {
         // Test prepare with no person set in session
         action.prepare();
-        assertNull(action.getPerson());
+        assertEquals(action.isShowCalculateButton(), false);
 
+        p.setDateOfBirth(new Date());
         FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, p);
         FhhHttpSessionUtil.getSession().setAttribute(FhhHttpSessionUtil.ROOT_KEY, MIN_HEX);
 
         action.prepare();
-        assertEquals(p, action.getPerson());
-
-        assertTrue(StringUtils.contains(action.getRiskHTML(), "not elevated"));
+        assertEquals(action.isShowCalculateButton(), true);
     }
 
     @Test
     public void risk() {
         assertEquals(SUCCESS, action.risk());
-    }
-
-    @Test
-    public void colorectal() throws Exception {
-        assertEquals(SUCCESS, action.colorectal());
-    }
-
-    @Test
-    public void downloadColorectalRisk() throws Exception {
-        action.setPerson(p);
-        assertEquals(SUCCESS, action.colorectal());
-        assertEquals("downloadColorectalRiskFile", action.downloadColorectalRisk());
-        assertNotNull(action.getDownloadFile());
-        assertEquals("John_Doe_Colorectal_Risk.pdf", action.getFileName());
-    }
-    @Test
-    public void downloadColorectalRiskEspanol() throws Exception {
-        action.setPerson(p);
-        CurrentLanguageHolder.setCurrentLanguage("es");
-        assertEquals(SUCCESS, action.colorectal());
-        assertEquals("downloadColorectalRiskFile", action.downloadColorectalRisk());
-        assertNotNull(action.getDownloadFile());
-        assertEquals("John_Doe_Colorectal_Risk.pdf", action.getFileName());
-    }
-
-    @Test
-    public void downloadPhysicianLetter() throws Exception {
-        action.setPerson(p);
-        assertEquals(SUCCESS, action.colorectal());
-        assertEquals("downloadColorectalRiskFile", action.downloadColorectalLetter());
-        assertNotNull(action.getDownloadFile());
-        assertEquals("John_Doe_Colorectal_Risk_Physician_Letter.pdf", action.getFileName());
     }
 
 }

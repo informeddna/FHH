@@ -239,12 +239,22 @@
             method="{1}">
             <result name="success">/WEB-INF/jsp/risk/{1}.jsp</result>
         </action>
-        <action name="popup/risk/*" class="gov.hhs.fhh.web.action.RiskAction"
+        <action name="popup/colorectalRisk/*" class="gov.hhs.fhh.web.action.ColorectalRiskAction"
             method="{1}">
             <result name="success">/WEB-INF/jsp/risk/{1}.jsp</result>
             <result name="downloadColorectalRiskFile" type="stream">
                 <param name="contentType">application/download</param>
-                <param name="inputName">downloadFile</param>
+                <param name="inputName">riskFile</param>
+                <param name="bufferSize">4096</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+            </result>
+        </action>
+        <action name="popup/diabetesRisk/*" class="gov.hhs.fhh.web.action.DiabetesRiskAction"
+            method="{1}">
+            <result name="success">/WEB-INF/jsp/risk/{1}.jsp</result>
+            <result name="downloadDiabetesRiskFile" type="stream">
+                <param name="contentType">application/download</param>
+                <param name="inputName">riskFile</param>
                 <param name="bufferSize">4096</param>
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
             </result>
