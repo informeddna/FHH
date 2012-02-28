@@ -6,9 +6,9 @@
             <fmt:message key="colorectal.download.title" />
         </h1>
         ${riskHTML}
-        <s:url id="saveRiskUrl" value="/popup/risk/downloadColorectalRisk.action"/>
+        <s:url id="saveRiskUrl" value="/popup/colorectalRisk/downloadColorectalRisk.action"/>
         <p><fmt:message key="risk.colorectal.downloadRisk"/> <a id="downloadRisk" href="${saveRiskUrl}"><fmt:message key="risk.colorectal.downloadRisk.link" /></a></p>
-        <s:url id="saveRiskUrl" value="/popup/risk/downloadColorectalLetter.action"/>
+        <s:url id="saveRiskUrl" value="/popup/colorectalRisk/downloadColorectalLetter.action"/>
         <p><fmt:message key="risk.colorectal.downloadLetter"/> <a id="downloadRisk" href="${saveRiskUrl}"><fmt:message key="risk.colorectal.downloadLetter.link" /></a></p>
         <br/>
         <br/>

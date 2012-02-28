@@ -35,10 +35,6 @@ MACOSX
 curl -O https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/com/sun/xml/bind/jaxb-impl/2.1.4/jaxb-impl-2.1.4.jar
 curl -O https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar
 
-4.4 Securing the (jboss) tomcat instance
-Edit your $JBOSS_HOME/server/fhh/deploy/jbossweb-tomcat55.sar/server.xml
-change all occurrences of emptySessionPath="true" TO emptySessionPath="false"
-
 5. Adapt the installation for your local environment:
 5.1 Configure your ~/.m2/settings.xml by copying settings/settings.ci.xml to ~/.m2/settings.xml and overwriting any build property needed.
 most importantly check the values for: jboss.home, admin.db.username, admin.db.password
@@ -49,7 +45,7 @@ most importantly check the values for: jboss.home, admin.db.username, admin.db.p
 A keystore file is located in fhh_checkout_location/services/src/main/resources/keystore-demo
 We recommend creating a hidden directory .fhh in the user home directory and copy the file in there.
 
-6.  Make sure your JAVA_HOME and PATH variables are set to use Java 1.5.0_14
+6.  Make sure your JAVA_HOME and PATH variables are set to use Java 1.6.0_29
 
 7.  Run a 1 time DB creation
 
@@ -60,7 +56,7 @@ mvn -Pnuke-db,local -f services/pom.xml sql:execute
 
 8.  For a basic build, run this command, which will build the project into an EAR file which can then be dropped into JBoss and deployed:
 
-mvn install (compiles code, builds packages, tests and verifies coding
+mvn clean install (compiles code, builds packages, tests and verifies coding
             metrics - the most commonly used target)
 
 9.  The following commands are important to know during development:

@@ -33,47 +33,72 @@
  */
 package gov.hhs.fhh.web.action;
 
-import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+import gov.hhs.fhh.data.util.PersonUtils;
+import gov.hhs.fhh.service.util.CurrentLanguageHolder;
+import gov.hhs.fhh.service.util.RiskClient;
+import gov.nih.nci.drc.util.FileLanguageCode;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.Preparable;
+import java.io.ByteArrayInputStream;
 
 /**
  * @author bpickeral
  *
  */
-public class RiskAction extends ActionSupport implements Preparable {
+public class ColorectalRiskAction extends AbstractRiskAction {
     private static final long serialVersionUID = 316273314L;
-
-    private boolean showCalculateButton;
 
     /**
      * {@inheritDoc}
      */
-    public void prepare() {
-        Person rootPerson = FhhHttpSessionUtil.getRootPerson();
-        if (rootPerson != null && rootPerson.isCompletedForm()) {
-            showCalculateButton = true;
-        } else {
-            showCalculateButton = false;
-        }
+    @Override
+    protected void calculateRisk() {
+        RiskClient.getInstance().calculateColorectalRisk(getPerson(), getBuilder());
     }
 
     /**
-     * Method invokes the calculate risk page.
+     * {@inheritDoc}
+     */
+    @Override
+    protected FileLanguageCode getFileLanguageCode() {
+        FileLanguageCode languageCode = FileLanguageCode.EN;
+        if (CurrentLanguageHolder.getCurrentLanguage().equals(FileLanguageCode.ES.getCode())) {
+            languageCode = FileLanguageCode.ES;
+        }
+        return languageCode;
+    }
+
+    /**
+     * Method invokes the colorectal risk page.
      *
      * @return path String
      */
-    public String risk() {
+    public String colorectal() {
         return SUCCESS;
     }
 
     /**
-     * @return the showCalculateButton
+     * Downloads colorectal risk assessment.
+     *
+     * @return path String
      */
-    public boolean isShowCalculateButton() {
-        return showCalculateButton;
+    public String downloadColorectalRisk() {
+        setRiskFile(new ByteArrayInputStream(RiskClient.getInstance().getRiskFile(getBuilder().getPatient(),
+                getFileLanguageCode())));
+        setFileName(PersonUtils.getFileNameForPerson(getPerson(), "Colorectal_Risk.pdf"));
+        return "downloadColorectalRiskFile";
     }
+
+    /**
+     * Download physician risk letter.
+     *
+     * @return path String
+     */
+    public String downloadColorectalLetter() {
+        setRiskFile(new ByteArrayInputStream(RiskClient.getInstance().getRiskFile(getBuilder().getPhysician(),
+                getFileLanguageCode())));
+        setFileName(PersonUtils.getFileNameForPerson(getPerson(), "Colorectal_Risk_Physician_Letter.pdf"));
+        return "downloadColorectalRiskFile";
+    }
+
 
 }

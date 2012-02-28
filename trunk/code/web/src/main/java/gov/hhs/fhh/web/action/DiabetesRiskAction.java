@@ -33,47 +33,69 @@
  */
 package gov.hhs.fhh.web.action;
 
-import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+import gov.hhs.fhh.data.util.PersonUtils;
+import gov.hhs.fhh.service.util.RiskClient;
+import gov.nih.nci.drc.util.FileLanguageCode;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.Preparable;
+import java.io.ByteArrayInputStream;
 
 /**
  * @author bpickeral
  *
  */
-public class RiskAction extends ActionSupport implements Preparable {
+public class DiabetesRiskAction extends AbstractRiskAction {
     private static final long serialVersionUID = 316273314L;
-
-    private boolean showCalculateButton;
 
     /**
      * {@inheritDoc}
      */
-    public void prepare() {
-        Person rootPerson = FhhHttpSessionUtil.getRootPerson();
-        if (rootPerson != null && rootPerson.isCompletedForm()) {
-            showCalculateButton = true;
-        } else {
-            showCalculateButton = false;
-        }
+    @Override
+    protected void calculateRisk() {
+        RiskClient.getInstance().calculateDiabetesRisk(getPerson(), getBuilder());
     }
 
     /**
-     * Method invokes the calculate risk page.
+     * {@inheritDoc}
+     */
+    @Override
+    protected FileLanguageCode getFileLanguageCode() {
+        // Multilingual pdfs not currently supported for DRC
+        return FileLanguageCode.EN;
+    }
+
+    /**
+     * Method invokes the Diabetes risk page.
      *
      * @return path String
      */
-    public String risk() {
+    public String diabetesAdditionalInformation() {
         return SUCCESS;
     }
 
     /**
-     * @return the showCalculateButton
+     * Downloads diabetes risk assessment.
+     *
+     * @return path String
      */
-    public boolean isShowCalculateButton() {
-        return showCalculateButton;
+    public String downloadDiabetesRisk() {
+        RiskClient.getInstance().calculateDiabetesRisk(getPerson(), getBuilder());
+        setRiskFile(new ByteArrayInputStream(RiskClient.getInstance().getRiskFile(getBuilder().getPatient(),
+                getFileLanguageCode())));
+        setFileName(PersonUtils.getFileNameForPerson(getPerson(), "Diabetes_Risk.pdf"));
+        return "downloadDiabetesRiskFile";
+    }
+
+    /**
+     * Download physician risk letter.
+     *
+     * @return path String
+     */
+    public String downloadDiabetesLetter() {
+        RiskClient.getInstance().calculateDiabetesRisk(getPerson(), getBuilder());
+        setRiskFile(new ByteArrayInputStream(RiskClient.getInstance().getRiskFile(getBuilder().getPhysician(),
+                getFileLanguageCode())));
+        setFileName(PersonUtils.getFileNameForPerson(getPerson(), "Diabetes_Risk_Physician_Letter.pdf"));
+        return "downloadDiabetesRiskFile";
     }
 
 }

@@ -26,7 +26,7 @@ public class RiskUtilsTest {
     private final Weight BASIC_TEST_WEIGHT = new Weight(180, WeightUnit.METRIC);
 
     @Test
-    public void testCreateXMLFile() throws FhhWebException {
+    public void calculateColorectalRisk() throws FhhWebException {
         final Person p = new Person();
         p.setName(DUMMY_NAME);
 
@@ -37,6 +37,20 @@ public class RiskUtilsTest {
         FhhUtils.addRequiredRelativesToTree(p);
 
         assertTrue(StringUtils.contains(RiskUtils.getInstance().calculateColorectalRisk(p), "lowUnder50"));
+    }
+
+    @Test
+    public void calculateDiabetesRisk() throws FhhWebException {
+        final Person p = new Person();
+        p.setName(DUMMY_NAME);
+
+        p.setDateOfBirth(DUMMY_DATE.getTime());
+        p.setWeight(BASIC_TEST_WEIGHT);
+        p.setGender(DUMMY_GENDER);
+
+        FhhUtils.addRequiredRelativesToTree(p);
+
+        assertTrue(StringUtils.contains(RiskUtils.getInstance().calculateDiabetesRisk(p), "diabetesLow"));
     }
 
 }

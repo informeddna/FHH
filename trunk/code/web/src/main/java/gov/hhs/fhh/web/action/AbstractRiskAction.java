@@ -34,7 +34,12 @@
 package gov.hhs.fhh.web.action;
 
 import gov.hhs.fhh.data.Person;
+import gov.hhs.fhh.service.util.RiskClient;
+import gov.hhs.fhh.service.util.RiskResponseBuilder;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+import gov.nih.nci.drc.util.FileLanguageCode;
+
+import java.io.InputStream;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
@@ -43,10 +48,14 @@ import com.opensymphony.xwork2.Preparable;
  * @author bpickeral
  *
  */
-public class RiskAction extends ActionSupport implements Preparable {
+public abstract class AbstractRiskAction extends ActionSupport implements Preparable {
     private static final long serialVersionUID = 316273314L;
 
-    private boolean showCalculateButton;
+    private Person person;
+    private InputStream riskFile;
+    private String riskHTML;
+    private String fileName;
+    private RiskResponseBuilder builder = new RiskResponseBuilder();
 
     /**
      * {@inheritDoc}
@@ -54,26 +63,93 @@ public class RiskAction extends ActionSupport implements Preparable {
     public void prepare() {
         Person rootPerson = FhhHttpSessionUtil.getRootPerson();
         if (rootPerson != null && rootPerson.isCompletedForm()) {
-            showCalculateButton = true;
-        } else {
-            showCalculateButton = false;
+            setPerson(rootPerson);
+            calculateRisk();
+            riskHTML = new String(RiskClient.getInstance().getRiskFile(builder.getMessage(), getFileLanguageCode()));
         }
     }
 
     /**
-     * Method invokes the calculate risk page.
-     *
-     * @return path String
+     * Calculates risk for the person.
      */
-    public String risk() {
-        return SUCCESS;
+    protected abstract void calculateRisk();
+
+    /**
+     * Gets File language code based on current language of the user.
+     * @return file language code
+     */
+    protected abstract FileLanguageCode getFileLanguageCode();
+
+    /**
+     * @return the person
+     */
+    public Person getPerson() {
+        return person;
     }
 
     /**
-     * @return the showCalculateButton
+     * @param person the person to set
      */
-    public boolean isShowCalculateButton() {
-        return showCalculateButton;
+    public void setPerson(Person person) {
+        this.person = person;
     }
+
+    /**
+     * @return the riskHTML
+     */
+    public String getRiskHTML() {
+        return riskHTML;
+    }
+
+    /**
+     * @param riskHTML the riskHTML to set
+     */
+    public void setRiskHTML(String riskHTML) {
+        this.riskHTML = riskHTML;
+    }
+
+    /**
+     * @return the fileName
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * @param fileName the fileName to set
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    /**
+     * @return the builder
+     */
+    public RiskResponseBuilder getBuilder() {
+        return builder;
+    }
+
+    /**
+     * @param builder the builder to set
+     */
+    public void setBuilder(RiskResponseBuilder builder) {
+        this.builder = builder;
+    }
+
+    /**
+     * @return the riskFile
+     */
+    public InputStream getRiskFile() {
+        return riskFile;
+    }
+
+    /**
+     * @param riskFile the riskFile to set
+     */
+    public void setRiskFile(InputStream riskFile) {
+        this.riskFile = riskFile;
+    }
+
+
 
 }

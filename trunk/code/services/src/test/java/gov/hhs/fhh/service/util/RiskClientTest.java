@@ -6,6 +6,7 @@ import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.service.FhhWebException;
 import gov.nih.nci.drc.util.FileLanguageCode;
 import gov.nih.nci.drc.util.ValidCRCRAFileNames;
+import gov.nih.nci.drc.util.ValidDRCFileNames;
 
 import java.util.GregorianCalendar;
 
@@ -40,15 +41,27 @@ public class RiskClientTest {
     }
 
     @Test
-    public void calculateRisk() throws FhhWebException {
+    public void calculateColorectalRisk() throws FhhWebException {
         final RiskResponseBuilder builder = new RiskResponseBuilder();
-        RiskClient.getInstance().calculateRisk(p, builder);
+        RiskClient.getInstance().calculateColorectalRisk(p, builder);
         assertEquals(ValidCRCRAFileNames.constructFileName(
                 ValidCRCRAFileNames.LOW_UNDER_50, ValidCRCRAFileNames.PDF_EXT), builder.getPatient());
         assertEquals(ValidCRCRAFileNames.constructFileName(
                 ValidCRCRAFileNames.LOW_UNDER_50, ValidCRCRAFileNames.HTML_EXT), builder.getMessage());
         assertEquals(ValidCRCRAFileNames.constructFileName(
                 ValidCRCRAFileNames.PHY_LOW, ValidCRCRAFileNames.PDF_EXT), builder.getPhysician());
+    }
+
+    @Test
+    public void calculateDiabetesRisk() throws FhhWebException {
+        final RiskResponseBuilder builder = new RiskResponseBuilder();
+        RiskClient.getInstance().calculateDiabetesRisk(p, builder);
+        assertEquals(ValidDRCFileNames.constructFileName(
+                ValidDRCFileNames.RISK_LOW, ValidDRCFileNames.PDF_EXT), builder.getPatient());
+        assertEquals(ValidDRCFileNames.constructFileName(
+                ValidDRCFileNames.RISK_LOW, ValidDRCFileNames.HTML_EXT), builder.getMessage());
+        assertEquals(ValidDRCFileNames.constructFileName(
+                ValidDRCFileNames.PHY_LOW, ValidDRCFileNames.PDF_EXT), builder.getPhysician());
     }
 
     @Test
