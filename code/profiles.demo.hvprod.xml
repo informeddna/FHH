@@ -12,7 +12,6 @@
                 <database.url.prefix>jdbc:mysql://${jboss.hostname}:3306/</database.url.prefix>
                 <database.name>fhh</database.name>
                 <admin.db.username>root</admin.db.username>
-                <admin.db.password>passw0rd</admin.db.password>
                 <jdbc.username>fhh</jdbc.username>
                 <jdbc.password>fhh</jdbc.password>
                 <test.selenium.server.port>62001</test.selenium.server.port>
@@ -20,12 +19,11 @@
                 <showErrorStackTraces>true</showErrorStackTraces>
                 <mshv.keystore.filename>/home/jboss405/keystore-nci</mshv.keystore.filename>
 		<mshv.keystore.keyname>mfhp</mshv.keystore.keyname>
-		<mshv.keystore.password>5ams0lutions</mshv.keystore.password>
+		<mshv.keystore.password>CHANGEME</mshv.keystore.password>
         <mshv.shell.url>https://account.healthvault.com</mshv.shell.url>
                 <mshv.app.id>4f0cc940-7bdb-436e-abc6-9f000f51cf1e</mshv.app.id>
                 <application.base.url>https://demo.5amsolutions.com/fhh-web/</application.base.url>
                 <test.mshv.user.email>FHH.tester.ci@gmail.com</test.mshv.user.email>
-                <test.mshv.user.pw>fhht3sterci</test.mshv.user.pw>
                 <test.mshv.user.display.name>fhh testerci</test.mshv.user.display.name>
             </properties>
         </profile>

@@ -33,31 +33,30 @@
         <database.url.prefix>jdbc:mysql://localhost:3306/</database.url.prefix>
         <database.name>mfhp</database.name>
         <admin.db.username>root</admin.db.username>
-        <admin.db.password>passw0rd</admin.db.password>
+        <admin.db.password>CHANGEME</admin.db.password>
         <jdbc.url>${database.url.prefix}${database.name}</jdbc.url>
         <jdbc.username>mfhpuser</jdbc.username>
-        <jdbc.password>mfhpuser</jdbc.password>
+        <jdbc.password>CHANGEME</jdbc.password>
         <jdbc.groupId>mysql</jdbc.groupId>
         <jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
         <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
         <jdbc.version>5.1.6</jdbc.version>
         <application.base.url>http://${jboss.hostname}:${jboss.port}/fhh-web/</application.base.url>
-        <mshv.app.id>REPLACE</mshv.app.id>
+        <mshv.app.id>CHANGEME</mshv.app.id>
         <mshv.shell.url>https://account.healthvault-ppe.com</mshv.shell.url>
         <mshv.service.endpoint.url>https://platform.healthvault-ppe.com/platform/wildcat.ashx</mshv.service.endpoint.url>
         <mshv.keystore.keyname>fhh</mshv.keystore.keyname>
-        <mshv.keystore.password>Canc3rizbad</mshv.keystore.password>
+        <mshv.keystore.password>CHANGEME</mshv.keystore.password>
         <test.mshv.user.email>FHH.tester.prod@gmail.com</test.mshv.user.email>
-        <test.mshv.user.pw>fhht3sterprod</test.mshv.user.pw>
+        <test.mshv.user.pw>CHANGEME</test.mshv.user.pw>
         <test.mshv.user.display.name>fhh tester</test.mshv.user.display.name>
 		<show.mshv.ui>true</show.mshv.ui>
     </properties>
 
     <!-- General Project information -->
     <scm>
-        <connection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</connection>
-        <developerConnection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</developerConnection>
-        <url>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code/</url>
+        <connection>scm:svn:https://ncisvn.nci.nih.gov/svn/mvn-quickstart-archetype/trunk</connection>
+        <developerConnection>scm:svn:https://ncisvn.nci.nih.gov/svn/mvn-quickstart-archetype/trunk</developerConnection>
     </scm>
 
 
@@ -127,8 +126,12 @@
             <id>snapshots</id>
             <name>snapshots</name>
             <url>https://ncimvn.nci.nih.gov/nexus/content/repositories/snapshots</url>
-            <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
+        <site>
+            <id>systems-sites</id>
+            <name>SCM Project Sites</name>
+            <url>dav:https://ncisvn.nci.nih.gov/nexus/content/sites/system-site-repo/nciscm/mvn-quickstart-archetype</url>
+        </site>
     </distributionManagement>
 
     <!-- Sub projects -->
@@ -238,6 +241,25 @@
                     <deployDirectory>${jboss.home}/server/${jboss.configuration}/tmp/deploy</deployDirectory>
                     <deployDirectoryPattern>tmp*fhh.ear-contents</deployDirectoryPattern>
                     <deploySubDirectory>fhh-web-exp.war</deploySubDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.2</version>
+                <configuration>
+                    <preparationGoals>clean install</preparationGoals>
+                    <arguments>-Dskip-liquibase=true</arguments>
+                    <tagBase>https://ncisvn.nci.nih.gov/svn/mvn-quickstart-archetype/releases</tagBase>
+                    <stagingRepository>releases::default::https://ncimvn.nci.nih.gov/nexus/service/local/staging/deploy/maven2</stagingRepository>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <username>nciscm</username>
                 </configuration>
             </plugin>
         </plugins>

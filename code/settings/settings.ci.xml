@@ -10,15 +10,9 @@
             </activation>
 
             <properties>
-                <jboss.home>/Applications/jboss-5.1.0.GA</jboss.home>
                 <jboss.configuration>drc</jboss.configuration>
                 <log.level.fhh>WARN</log.level.fhh>
                 <log.level.default>WARN</log.level.default>
-                <mshv.keystore.filename>/Users/path/to/keystore-demo</mshv.keystore.filename>
-                <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>
-                <test.mshv.user.email>FHH.tester.ci@gmail.com</test.mshv.user.email>
-                <test.mshv.user.pw>fhht3sterci</test.mshv.user.pw>
-                <test.mshv.user.display.name>fhh testerci</test.mshv.user.display.name>
             </properties>
             <repositories>
                 <repository>
