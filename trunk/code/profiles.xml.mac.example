@@ -14,9 +14,14 @@
             <mshv.keystore.filename>/Users/path/to/keystore-demo</mshv.keystore.filename>
             <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>
             <test.mshv.user.email>FHH.tester.ci@gmail.com</test.mshv.user.email>
-            <test.mshv.user.pw>fhht3sterci</test.mshv.user.pw>
+            <test.mshv.user.pw>CHANGEME</test.mshv.user.pw>
             <test.mshv.user.display.name>fhh testerci</test.mshv.user.display.name>
             <show.mshv.ui>true</show.mshv.ui>
+	    <mshv.user.pw>fhht3sterlocal</mshv.user.pw>
+	    <mshv.keystore.password>Canc3rizbad</mshv.keystore.password>
+	    <admin.db.username>root</admin.db.username>
+            <admin.db.password>passw0rd</admin.db.password>
+	    <jdbc.password>mfhpuser</jdbc.password>
 	    </properties>
     </profile>
 </profiles>

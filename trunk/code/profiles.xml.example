@@ -10,7 +10,11 @@
             <mshv.keystore.filename>C:/path/to/keystore-demo</mshv.keystore.filename>
             <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>
             <mshv.user.email>FHH.tester.local@gmail.com</mshv.user.email>
-            <mshv.user.pw>fhht3sterlocal</mshv.user.pw>
+            <mshv.user.pw>CHANGEME</mshv.user.pw>
+	    <mshv.keystore.password>Canc3rizbad</mshv.keystore.password>
+	    <admin.db.username>root</admin.db.username>
+            <admin.db.password>passw0rd</admin.db.password>
+	    <jdbc.password>mfhpuser</jdbc.password>
         </properties>
     </profile>
 </profiles>
