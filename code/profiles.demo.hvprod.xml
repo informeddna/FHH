@@ -19,7 +19,7 @@
                 <showErrorStackTraces>true</showErrorStackTraces>
                 <mshv.keystore.filename>/home/jboss405/keystore-nci</mshv.keystore.filename>
 		<mshv.keystore.keyname>mfhp</mshv.keystore.keyname>
-		<mshv.keystore.password>CHANGEME</mshv.keystore.password>
+		<mshv.keystore.password></mshv.keystore.password>
         <mshv.shell.url>https://account.healthvault.com</mshv.shell.url>
                 <mshv.app.id>4f0cc940-7bdb-436e-abc6-9f000f51cf1e</mshv.app.id>
                 <application.base.url>https://demo.5amsolutions.com/fhh-web/</application.base.url>
