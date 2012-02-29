@@ -33,25 +33,48 @@
  */
 package gov.hhs.fhh.web.action;
 
+import gov.hhs.fhh.data.util.FormatUtils;
+import gov.hhs.fhh.data.util.PedigreeFactory;
 import gov.hhs.fhh.data.util.PersonUtils;
 import gov.hhs.fhh.service.util.RiskClient;
+import gov.nih.nci.drc.model.diabetes.DiabetesCritereon;
 import gov.nih.nci.drc.util.FileLanguageCode;
 
 import java.io.ByteArrayInputStream;
+
+import com.fiveamsolutions.hl7.model.Pedigree;
+import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.opensymphony.xwork2.Preparable;
 
 /**
  * @author bpickeral
  *
  */
-public class DiabetesRiskAction extends AbstractRiskAction {
+public class DiabetesRiskAction extends AbstractRiskAction implements Preparable {
     private static final long serialVersionUID = 316273314L;
+    private String dateOfBirthString;
+    private boolean gestationalDiabetes;
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    protected void calculateRisk() {
-        RiskClient.getInstance().calculateDiabetesRisk(getPerson(), getBuilder());
+    public void prepare() {
+        setPerson(getPersonFromSession());
+        if (getPerson() != null) {
+            setPageValues();
+            setReadOnlyRisks();
+        }
+    }
+
+    private void setPageValues() {
+        if (getPerson().getDateOfBirth() != null) {
+            setDateOfBirthString(FormatUtils.format(getPerson().getDateOfBirth()));
+        }
+    }
+
+    private void setReadOnlyRisks() {
+        final Pedigree pedigree = PedigreeFactory.getInstance().createPedigree(getPerson());
+        setGestationalDiabetes(new DiabetesCritereon().getRiskFactor(pedigree) > 0);
     }
 
     /**
@@ -70,6 +93,28 @@ public class DiabetesRiskAction extends AbstractRiskAction {
      */
     public String diabetesAdditionalInformation() {
         return SUCCESS;
+    }
+
+    /**
+     * Method invokes the add person page using Submodal.
+     *
+     * @return path String
+     */
+    public String diabetesRisk() {
+
+        validateSubmitFields();
+        if (this.getFieldErrors().size() > 0) {
+            return INPUT;
+        }
+        RiskClient.getInstance().calculateDiabetesRisk(getPerson(), getBuilder());
+        setRiskHTML(new String(RiskClient.getInstance().getRiskFile(getBuilder().getMessage(),
+                getFileLanguageCode())));
+        return SUCCESS;
+    }
+
+    private void validateSubmitFields() {
+        checkDateOfBirth(getDateOfBirthString());
+        validateRequiredObject("person.gender", "person.gender", getPerson().getGender());
     }
 
     /**
@@ -96,6 +141,41 @@ public class DiabetesRiskAction extends AbstractRiskAction {
                 getFileLanguageCode())));
         setFileName(PersonUtils.getFileNameForPerson(getPerson(), "Diabetes_Risk_Physician_Letter.pdf"));
         return "downloadDiabetesRiskFile";
+    }
+
+    /**
+     * @return the gender enums
+     */
+    public Gender[] getGenderEnums() {
+        return Gender.values();
+    }
+
+    /**
+     * @return the dateOfBirthString
+     */
+    public String getDateOfBirthString() {
+        return dateOfBirthString;
+    }
+
+    /**
+     * @param dateOfBirthString the dateOfBirthString to set
+     */
+    public void setDateOfBirthString(String dateOfBirthString) {
+        this.dateOfBirthString = dateOfBirthString;
+    }
+
+    /**
+     * @return the gestationalDiabetes
+     */
+    public boolean isGestationalDiabetes() {
+        return gestationalDiabetes;
+    }
+
+    /**
+     * @param gestationalDiabetes the gestationalDiabetes to set
+     */
+    public void setGestationalDiabetes(boolean gestationalDiabetes) {
+        this.gestationalDiabetes = gestationalDiabetes;
     }
 
 }

@@ -40,19 +40,25 @@ import gov.nih.nci.drc.util.FileLanguageCode;
 
 import java.io.ByteArrayInputStream;
 
+import com.opensymphony.xwork2.Preparable;
+
 /**
  * @author bpickeral
  *
  */
-public class ColorectalRiskAction extends AbstractRiskAction {
+public class ColorectalRiskAction extends AbstractRiskAction implements Preparable {
     private static final long serialVersionUID = 316273314L;
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    protected void calculateRisk() {
-        RiskClient.getInstance().calculateColorectalRisk(getPerson(), getBuilder());
+    public void prepare() {
+        setPerson(getPersonFromSession());
+        if (getPerson() != null) {
+            RiskClient.getInstance().calculateColorectalRisk(getPerson(), getBuilder());
+            setRiskHTML(new String(RiskClient.getInstance().getRiskFile(getBuilder().getMessage(),
+                    getFileLanguageCode())));
+        }
     }
 
     /**

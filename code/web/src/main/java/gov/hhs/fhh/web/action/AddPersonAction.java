@@ -287,26 +287,12 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     }
 
     private void validateSubmitFields() {
-        checkDateOfBirth();
+        checkDateOfBirth(getDateOfBirthString());
         validateIntegerField("heightUnit1", "person.height.Unit1", getHeightUnit1());
         validateIntegerField("heightUnit2", "person.height.Unit2", getHeightUnit2());
         validateIntegerField("heightMetric", "person.height.Metric", getHeightMetric());
         validateIntegerField("weightString", "person.weight", getWeightString());
         validateRequiredObject("person.gender", "person.gender", getPerson().getGender());
-    }
-
-    /**
-     * Checks for DOB errors and adds fields errors if necessary.
-     *
-     * @return true if dob is valid, otherwise false.
-     */
-    private void checkDateOfBirth() {
-
-        if (StringUtils.isEmpty(getDateOfBirthString())) {
-            addFieldError("dateOfBirthString", getText("person.dateOfBirth") + " " + getText("errors.required.field"));
-        } else if (FormatUtils.convertStringToDate(getDateOfBirthString()) == null) {
-            addFieldError("dateOfBirthString", getText("dateOfBirthString") + " " + getText("errors.invalid.date"));
-        }
     }
 
     /**

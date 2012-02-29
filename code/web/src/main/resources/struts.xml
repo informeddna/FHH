@@ -251,6 +251,7 @@
         </action>
         <action name="popup/diabetesRisk/*" class="gov.hhs.fhh.web.action.DiabetesRiskAction"
             method="{1}">
+            <result name="input">/WEB-INF/jsp/risk/diabetesAdditionalInformation.jsp</result>
             <result name="success">/WEB-INF/jsp/risk/{1}.jsp</result>
             <result name="downloadDiabetesRiskFile" type="stream">
                 <param name="contentType">application/download</param>
