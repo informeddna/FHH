@@ -34,21 +34,16 @@
 package gov.hhs.fhh.web.action;
 
 import gov.hhs.fhh.data.Person;
-import gov.hhs.fhh.service.util.RiskClient;
 import gov.hhs.fhh.service.util.RiskResponseBuilder;
-import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
 import gov.nih.nci.drc.util.FileLanguageCode;
 
 import java.io.InputStream;
-
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.Preparable;
 
 /**
  * @author bpickeral
  *
  */
-public abstract class AbstractRiskAction extends ActionSupport implements Preparable {
+public abstract class AbstractRiskAction extends AbstractFHHAction {
     private static final long serialVersionUID = 316273314L;
 
     private Person person;
@@ -57,22 +52,6 @@ public abstract class AbstractRiskAction extends ActionSupport implements Prepar
     private String fileName;
     private RiskResponseBuilder builder = new RiskResponseBuilder();
 
-    /**
-     * {@inheritDoc}
-     */
-    public void prepare() {
-        Person rootPerson = FhhHttpSessionUtil.getRootPerson();
-        if (rootPerson != null && rootPerson.isCompletedForm()) {
-            setPerson(rootPerson);
-            calculateRisk();
-            riskHTML = new String(RiskClient.getInstance().getRiskFile(builder.getMessage(), getFileLanguageCode()));
-        }
-    }
-
-    /**
-     * Calculates risk for the person.
-     */
-    protected abstract void calculateRisk();
 
     /**
      * Gets File language code based on current language of the user.

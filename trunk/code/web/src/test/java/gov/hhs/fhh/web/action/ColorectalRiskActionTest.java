@@ -35,7 +35,6 @@ package gov.hhs.fhh.web.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.service.FhhWebException;
@@ -90,15 +89,6 @@ public class ColorectalRiskActionTest extends AbstractFhhWebTest {
 
     @Test
     public void testPrepare() {
-        // Test prepare with no person set in session
-        FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, null);
-        action.setPerson(null);
-        action.prepare();
-        assertNull(action.getPerson());
-
-        FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, p);
-
-        action.prepare();
         assertEquals(p, action.getPerson());
 
         assertTrue(StringUtils.contains(action.getRiskHTML(), "not elevated"));
@@ -111,7 +101,6 @@ public class ColorectalRiskActionTest extends AbstractFhhWebTest {
 
     @Test
     public void downloadColorectalRisk() throws Exception {
-        action.setPerson(p);
         assertEquals(SUCCESS, action.colorectal());
         assertEquals("downloadColorectalRiskFile", action.downloadColorectalRisk());
         assertNotNull(action.getRiskFile());
@@ -119,7 +108,6 @@ public class ColorectalRiskActionTest extends AbstractFhhWebTest {
     }
     @Test
     public void downloadColorectalRiskEspanol() throws Exception {
-        action.setPerson(p);
         CurrentLanguageHolder.setCurrentLanguage("es");
         assertEquals("downloadColorectalRiskFile", action.downloadColorectalRisk());
         assertNotNull(action.getRiskFile());
@@ -128,7 +116,6 @@ public class ColorectalRiskActionTest extends AbstractFhhWebTest {
 
     @Test
     public void downloadPhysicianLetter() throws Exception {
-        action.setPerson(p);
         assertEquals("downloadColorectalRiskFile", action.downloadColorectalLetter());
         assertNotNull(action.getRiskFile());
         assertEquals("John_Doe_Colorectal_Risk_Physician_Letter.pdf", action.getFileName());

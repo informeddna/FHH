@@ -84,22 +84,24 @@ public class DiabetesRiskActionTest extends AbstractFhhWebTest {
 
         FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, p);
         FhhHttpSessionUtil.getSession().setAttribute(FhhHttpSessionUtil.ROOT_KEY, MIN_HEX);
+        action.prepare();
     }
 
     @Test
-    public void testPrepare() {
-        // Test prepare with no person set in session
+    public void prepare() {
         FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, null);
-
+        action.setDateOfBirthString(null);
         action.prepare();
+
         assertNull(action.getPerson());
+        assertNull(action.getDateOfBirthString());
 
         FhhHttpSessionUtil.getSession().setAttribute(MIN_HEX, p);
         action.prepare();
 
         assertEquals(p, action.getPerson());
+        assertNotNull(action.getDateOfBirthString());
 
-        assertTrue(StringUtils.contains(action.getRiskHTML(), "not elevated"));
     }
 
     @Test
@@ -108,8 +110,13 @@ public class DiabetesRiskActionTest extends AbstractFhhWebTest {
     }
 
     @Test
+    public void diabetesRisk() {
+        assertEquals(SUCCESS, action.diabetesRisk());
+        assertTrue(StringUtils.contains(action.getRiskHTML(), "not elevated"));
+    }
+
+    @Test
     public void downloadDiabetesRisk() throws Exception {
-        action.setPerson(p);
         assertEquals("downloadDiabetesRiskFile", action.downloadDiabetesRisk());
         assertNotNull(action.getRiskFile());
         assertEquals("John_Doe_Diabetes_Risk.pdf", action.getFileName());
@@ -117,7 +124,6 @@ public class DiabetesRiskActionTest extends AbstractFhhWebTest {
 
     @Test
     public void downloadPhysicianLetter() throws Exception {
-        action.setPerson(p);
         assertEquals("downloadDiabetesRiskFile", action.downloadDiabetesLetter());
         assertNotNull(action.getRiskFile());
         assertEquals("John_Doe_Diabetes_Risk_Physician_Letter.pdf", action.getFileName());
