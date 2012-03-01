@@ -1865,7 +1865,7 @@ border-radius: 4px;
 
 #update_history{
 background-color: #FFF0B5;
-width: 800px;
+width: 930px;
 height: 126px;
 text-align: left;
 padding:10px;
@@ -1879,6 +1879,11 @@ float:left;
 #update_title{
 font-fize: 1em;
 font-weight: bold;
+}
+
+.inactive_copy{
+width: 350px;
+color: #666;
 }
 
 /* basic update container */

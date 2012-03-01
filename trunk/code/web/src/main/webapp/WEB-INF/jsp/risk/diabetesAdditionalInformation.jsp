@@ -26,16 +26,16 @@ returnToFamilyHistory = function() {
 				diagnosed with high blood pressure. If you are a woman, please
 				update any gestational diabetes history</div>
 			<div class="message_copy">
-				<div xmlns="http://www.w3.org/1999/xhtml" class="buttonContainer">
+				<div class="buttonContainer">
 					<c:url value="/familyHistory/familyHistory.action" var="familyHistory" />
 					<a id="navFamilyHistory" href="javascript://nop/" onclick="returnToFamilyHistory();"><fmt:message key="risk.button.editHistory" /></a>
 				</div>
 			</div>
 		</div>
 		<h2>Diabetes Risk Calculator - Please Add Additional Information</h2>
-		<s:form action="/popup/diabetesRisk/diabetesRisk.action" cssClass="form" method="post" id="personForm" theme="readonly_xhtml">
+		<s:form action="/popup/diabetesRisk/diabetesRisk.action" cssClass="form" method="post" id="personForm" theme="simple">
 		    <span class="required">*</span>Indicates required information.<br />
-		    <span class="readonly">*</span><i>Indicates read-only information.</i><br />
+		    <span class="readonly">*Indicates read-only information.</span><br />
 		    <table cellspacing="0" cellpadding="0" border="0" summary="Enter personal information." class="form">
 		        <tbody>
 		            <tr>
@@ -66,10 +66,9 @@ returnToFamilyHistory = function() {
 		                <th scope="row"><span class="required">*</span><label for="personForm_person_genderMALE"><fmt:message key="person.gender" /></label>:</th>
 		                <td><s:radio key="person.gender" name="person.gender" list="genderEnums" listKey="name" listValue="%{getText(resourceKey)}" theme="simple" tabindex="2" /></td>
 		            </tr>
-		            <!--  tr>
-                        <th scope="row"><label for="personForm_gestationalDiabetes">If you are a woman, have you ever been diagnosed with gestational diabetes?</label>:</th>
-                        <td><s:checkbox id="gestationalDiabetes" name="gestationalDiabetes" tabindex="12" disabled="true" /> <fmt:message bundle="${der}" key="term.yes" /></td>
-                    </tr-->
+                    <fhh:readOnlyCheckbox id="personForm_gestationalDiabetes" conditionTrue="${gestationalDiabetes}" labelKey="If you are a woman, have you ever been diagnosed with gestational diabetes?" />
+                    <fhh:readOnlyCheckbox id="personForm_nuclearFamilyDiabetes" conditionTrue="${nuclearFamilyDiabetes}" labelKey="Do you have a mother, father, sister, or brother with diabetes?" />
+                    <fhh:readOnlyCheckbox id="personForm_hypertension" conditionTrue="${hypertension}" labelKey="Have you ever been diagnosed with Hypertension? (High Blood Pressure)" />
 		        </tbody>
 		    </table>
 		    <!-- BEGIN INCLUDE = SAVE CANCEL BUTTONS -->

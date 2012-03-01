@@ -38,6 +38,8 @@ import gov.hhs.fhh.data.util.PedigreeFactory;
 import gov.hhs.fhh.data.util.PersonUtils;
 import gov.hhs.fhh.service.util.RiskClient;
 import gov.nih.nci.drc.model.diabetes.DiabetesCritereon;
+import gov.nih.nci.drc.model.diabetes.HypertensionCritereon;
+import gov.nih.nci.drc.model.diabetes.NuclearFamilyDiabetesRiskCritereon;
 import gov.nih.nci.drc.util.FileLanguageCode;
 
 import java.io.ByteArrayInputStream;
@@ -54,6 +56,8 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
     private static final long serialVersionUID = 316273314L;
     private String dateOfBirthString;
     private boolean gestationalDiabetes;
+    private boolean nuclearFamilyDiabetes;
+    private boolean hypertension;
 
     /**
      * {@inheritDoc}
@@ -75,6 +79,8 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
     private void setReadOnlyRisks() {
         final Pedigree pedigree = PedigreeFactory.getInstance().createPedigree(getPerson());
         setGestationalDiabetes(new DiabetesCritereon().getRiskFactor(pedigree) > 0);
+        setNuclearFamilyDiabetes(new NuclearFamilyDiabetesRiskCritereon().getRiskFactor(pedigree) > 0);
+        setHypertension(new HypertensionCritereon().getRiskFactor(pedigree) > 0);
     }
 
     /**
@@ -106,6 +112,7 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
         if (this.getFieldErrors().size() > 0) {
             return INPUT;
         }
+        storeDateOfBirth();
         RiskClient.getInstance().calculateDiabetesRisk(getPerson(), getBuilder());
         setRiskHTML(new String(RiskClient.getInstance().getRiskFile(getBuilder().getMessage(),
                 getFileLanguageCode())));
@@ -115,6 +122,10 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
     private void validateSubmitFields() {
         checkDateOfBirth(getDateOfBirthString());
         validateRequiredObject("person.gender", "person.gender", getPerson().getGender());
+    }
+
+    private void storeDateOfBirth() {
+        getPerson().setDateOfBirth(FormatUtils.convertStringToDate(dateOfBirthString));
     }
 
     /**
@@ -176,6 +187,34 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
      */
     public void setGestationalDiabetes(boolean gestationalDiabetes) {
         this.gestationalDiabetes = gestationalDiabetes;
+    }
+
+    /**
+     * @return the nuclearFamilyDiabetes
+     */
+    public boolean isNuclearFamilyDiabetes() {
+        return nuclearFamilyDiabetes;
+    }
+
+    /**
+     * @param nuclearFamilyDiabetes the nuclearFamilyDiabetes to set
+     */
+    public void setNuclearFamilyDiabetes(boolean nuclearFamilyDiabetes) {
+        this.nuclearFamilyDiabetes = nuclearFamilyDiabetes;
+    }
+
+    /**
+     * @return the hypertension
+     */
+    public boolean isHypertension() {
+        return hypertension;
+    }
+
+    /**
+     * @param hypertension the hypertension to set
+     */
+    public void setHypertension(boolean hypertension) {
+        this.hypertension = hypertension;
     }
 
 }
