@@ -33,7 +33,6 @@
  */
 package gov.hhs.fhh.web.action;
 
-import gov.hhs.fhh.data.Person;
 import gov.hhs.fhh.service.util.RiskResponseBuilder;
 import gov.nih.nci.drc.util.FileLanguageCode;
 
@@ -43,10 +42,9 @@ import java.io.InputStream;
  * @author bpickeral
  *
  */
-public abstract class AbstractRiskAction extends AbstractFHHAction {
+public abstract class AbstractRiskAction extends AbstractEditPersonAction {
     private static final long serialVersionUID = 316273314L;
 
-    private Person person;
     private InputStream riskFile;
     private String riskHTML;
     private String fileName;
@@ -58,20 +56,6 @@ public abstract class AbstractRiskAction extends AbstractFHHAction {
      * @return file language code
      */
     protected abstract FileLanguageCode getFileLanguageCode();
-
-    /**
-     * @return the person
-     */
-    public Person getPerson() {
-        return person;
-    }
-
-    /**
-     * @param person the person to set
-     */
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 
     /**
      * @return the riskHTML
