@@ -44,8 +44,9 @@ import gov.hhs.fhh.data.util.FormatUtils;
 import gov.hhs.fhh.data.util.LabelValue;
 import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.service.locator.FhhRegistry;
-import gov.hhs.fhh.service.util.FhhUtils;
+import gov.hhs.fhh.web.data.HeightUnitHolder;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+import gov.hhs.fhh.web.util.PersonActionUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -62,8 +63,6 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 
 import com.fiveamsolutions.hl7.model.age.AgeRangeEnum;
 import com.fiveamsolutions.hl7.model.mfhp.Gender;
-import com.fiveamsolutions.hl7.model.mfhp.Height;
-import com.fiveamsolutions.hl7.model.mfhp.HeightUnit;
 import com.fiveamsolutions.hl7.model.mfhp.TwinStatus;
 import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 import com.opensymphony.xwork2.Preparable;
@@ -74,7 +73,6 @@ import com.opensymphony.xwork2.Preparable;
  */
 @SuppressWarnings({ "PMD.TooManyFields", "PMD.ExcessiveClassLength", "PMD.TooManyMethods" })
 public class AddPersonAction extends AbstractFHHAction implements Preparable {
-    private static final int INCHES_IN_A_FOOT = 12;
     private static final long serialVersionUID = 19278463L;
     private static final String SUBMIT_ACTION = "submit";
     private static final String FAMILY_TREE_ACTION = "addFamilyTree";
@@ -165,18 +163,10 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
      * @param p Person containing height
      */
     protected void setupHeight(Person p) {
-        Height height = p.getHeight();
-        if (height != null && height.getValue() != null) {
-            int v = height.getValue();
-            if (HeightUnit.US.equals(height.getUnit())) {
-                int feet = v / INCHES_IN_A_FOOT;
-                int inches = v % INCHES_IN_A_FOOT;
-                setHeightUnit1(Integer.toString(feet));
-                setHeightUnit2(Integer.toString(inches));
-            } else {
-                setHeightMetric(Integer.toString(v));
-            }
-        }
+        final HeightUnitHolder holder = PersonActionUtils.getInstance().extractHeightUnits(p);
+        setHeightUnit1(holder.getHeightUnit1());
+        setHeightUnit2(holder.getHeightUnit2());
+        setHeightMetric(holder.getHeightMetric());
     }
 
     /**
@@ -266,13 +256,12 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
             return INPUT;
         }
         storeDateOfBirth();
-        storeHeight();
+        getPerson().setHeight(PersonActionUtils.getInstance().getHeight(heightUnit1, heightUnit2, heightMetric));
+        storeWeight();
         person.setObservations(setupClinicalObservations());
         person.setRaces(setupRaces());
         person.setEthnicities(setupEthnicities());
-        if (!StringUtils.isEmpty(getWeightString())) {
-            person.getWeight().setValue(Integer.valueOf(getWeightString()));
-        }
+
         if (person.isUnmatchedCondition()) {
             person.setUnmatchedCondition(false);
         }
@@ -302,18 +291,10 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         person.setDateOfBirth(FormatUtils.convertStringToDate(dateOfBirthString));
     }
 
-    private void storeHeight() {
-        Height height;
-        if (StringUtils.isEmpty(heightMetric)) {
-            height = new Height(FhhUtils.calculateHeightUS(heightUnit1, heightUnit2), HeightUnit.US);
-        } else {
-            Integer heightMetricInt = null;
-            if (!StringUtils.isEmpty(heightMetric)) {
-                heightMetricInt = Integer.valueOf(heightMetric);
-            }
-            height = new Height(heightMetricInt, HeightUnit.METRIC);
+    private void storeWeight() {
+        if (!StringUtils.isEmpty(getWeightString())) {
+            person.getWeight().setValue(Integer.valueOf(getWeightString()));
         }
-        person.setHeight(height);
     }
 
     /**
@@ -455,14 +436,14 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
     }
 
     /**
-     * @return the gender enums
+     * @return the weight unit enums
      */
     public WeightUnit[] getWeightUnitEnums() {
         return WeightUnit.values();
     }
 
     /**
-     * @return the thwin status enums
+     * @return the twin status enums
      */
     public TwinStatus[] getTwinStatusEnums() {
         return TwinStatus.values();

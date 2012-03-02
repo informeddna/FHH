@@ -47,6 +47,8 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 public class AbstractFHHAction extends ActionSupport {
     private static final long serialVersionUID = 1L;
+    private static final int MIN_VALUE_NON_ZERO = 1;
+    private static final int MIN_VALUE_ZERO = 0;
 
     /**
      * Adds a field error if a required field (String Value) is empty.
@@ -71,10 +73,26 @@ public class AbstractFHHAction extends ActionSupport {
      * @return true if value was valid, otherwise false
      */
     public boolean validateIntegerField(String fieldName, String fieldKey, String fieldValue) {
+        return validateIntegerField(fieldName, fieldKey, fieldValue, true);
+    }
+
+    /**
+     * Adds a field error if a required Integer field (String Value) is not a valid integer value.
+     * @param fieldName name of the field
+     * @param fieldKey name of the resource key
+     * @param fieldValue String value of the field
+     * @param nonZero if true, adds error if field is equal to 0
+     * @return true if value was valid, otherwise false
+     */
+    public boolean validateIntegerField(String fieldName, String fieldKey, String fieldValue, boolean nonZero) {
+        int minValue = MIN_VALUE_ZERO;
+        if (nonZero) {
+            minValue = MIN_VALUE_NON_ZERO;
+        }
         if (!StringUtils.isEmpty(fieldValue)) {
             try {
                 Integer i = Integer.valueOf(fieldValue);
-                if (i.intValue() <= 0) {
+                if (i.intValue() <= minValue) {
                     addFieldError(fieldName, getText(fieldKey) + " " + getText("errors.invalid.integer"));
                     return false;
                 }

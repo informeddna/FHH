@@ -17,7 +17,7 @@
             <h2><fmt:message key="${titleTextKey}"/></h2>
         </td>
         <td class="accordianTitleTdBtn">
-            <a href="javascript://nop/" tabindex="50" onclick="popupWindow('${helpUrl}');"><fmt:message key="menu.text.getHelp" /></a>
+            <a href="javascript://nop/" id="getHelp" tabindex="50" onclick="popupWindow('${helpUrl}');"><fmt:message key="menu.text.getHelp" /></a>
         </td>
     </tr>
 </table>

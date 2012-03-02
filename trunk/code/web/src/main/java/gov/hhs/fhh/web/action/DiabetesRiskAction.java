@@ -37,6 +37,7 @@ import gov.hhs.fhh.data.util.FormatUtils;
 import gov.hhs.fhh.data.util.PedigreeFactory;
 import gov.hhs.fhh.data.util.PersonUtils;
 import gov.hhs.fhh.service.util.RiskClient;
+import gov.hhs.fhh.web.util.PersonActionUtils;
 import gov.nih.nci.drc.model.diabetes.DiabetesCritereon;
 import gov.nih.nci.drc.model.diabetes.HypertensionCritereon;
 import gov.nih.nci.drc.model.diabetes.NuclearFamilyDiabetesRiskCritereon;
@@ -44,8 +45,11 @@ import gov.nih.nci.drc.util.FileLanguageCode;
 
 import java.io.ByteArrayInputStream;
 
+import org.apache.commons.lang.xwork.StringUtils;
+
 import com.fiveamsolutions.hl7.model.Pedigree;
 import com.fiveamsolutions.hl7.model.mfhp.Gender;
+import com.fiveamsolutions.hl7.model.mfhp.WeightUnit;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -54,7 +58,7 @@ import com.opensymphony.xwork2.Preparable;
  */
 public class DiabetesRiskAction extends AbstractRiskAction implements Preparable {
     private static final long serialVersionUID = 316273314L;
-    private String dateOfBirthString;
+
     private boolean gestationalDiabetes;
     private boolean nuclearFamilyDiabetes;
     private boolean hypertension;
@@ -65,14 +69,9 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
     public void prepare() {
         setPerson(getPersonFromSession());
         if (getPerson() != null) {
-            setPageValues();
+            setupDateOfBirth();
             setReadOnlyRisks();
-        }
-    }
-
-    private void setPageValues() {
-        if (getPerson().getDateOfBirth() != null) {
-            setDateOfBirthString(FormatUtils.format(getPerson().getDateOfBirth()));
+            setupHeight();
         }
     }
 
@@ -112,7 +111,10 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
         if (this.getFieldErrors().size() > 0) {
             return INPUT;
         }
-        storeDateOfBirth();
+        getPerson().setDateOfBirth(FormatUtils.convertStringToDate(getDateOfBirthString()));
+        getPerson().setHeight(PersonActionUtils.getInstance().getHeight(getHeightUnit1(), getHeightUnit2(),
+                getHeightMetric()));
+        storeWeight();
         RiskClient.getInstance().calculateDiabetesRisk(getPerson(), getBuilder());
         setRiskHTML(new String(RiskClient.getInstance().getRiskFile(getBuilder().getMessage(),
                 getFileLanguageCode())));
@@ -122,10 +124,19 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
     private void validateSubmitFields() {
         checkDateOfBirth(getDateOfBirthString());
         validateRequiredObject("person.gender", "person.gender", getPerson().getGender());
+        validateRequiredObject("weightString", "person.weight", getWeightString());
+        validateHeight();
+        validateIntegerField("weightString", "person.weight", getWeightString());
+        validateIntegerField("heightUnit1", "person.height.Unit1", getHeightUnit1(), false);
+        validateIntegerField("heightUnit2", "person.height.Unit2", getHeightUnit2(), false);
+        validateIntegerField("heightMetric", "person.height.Metric", getHeightMetric());
     }
 
-    private void storeDateOfBirth() {
-        getPerson().setDateOfBirth(FormatUtils.convertStringToDate(dateOfBirthString));
+    private void validateHeight() {
+        if (StringUtils.isEmpty(getHeightUnit1()) && StringUtils.isEmpty(getHeightUnit2())
+                && StringUtils.isEmpty(getHeightMetric())) {
+            addFieldError("heightUnit1", getText("person.height") + " " + getText("errors.required.field"));
+        }
     }
 
     /**
@@ -157,22 +168,17 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
     /**
      * @return the gender enums
      */
+    @Override
     public Gender[] getGenderEnums() {
         return Gender.values();
     }
 
     /**
-     * @return the dateOfBirthString
+     * @return the weight unit enums
      */
-    public String getDateOfBirthString() {
-        return dateOfBirthString;
-    }
-
-    /**
-     * @param dateOfBirthString the dateOfBirthString to set
-     */
-    public void setDateOfBirthString(String dateOfBirthString) {
-        this.dateOfBirthString = dateOfBirthString;
+    @Override
+    public WeightUnit[] getWeightUnitEnums() {
+        return WeightUnit.values();
     }
 
     /**

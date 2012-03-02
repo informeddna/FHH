@@ -71,7 +71,7 @@ public class DiabetesRiskActionTest extends AbstractFhhWebTest {
     private final GregorianCalendar DUMMY_DATE = new GregorianCalendar(1970, 10, 7, 0, 0, 0);
     public static final String IMPORT_COMPLETE = "importComplete";
     public static final String BASIC_IMPORT_TEST = "/Basic_Test_FamilyHistory.xml";
-    private final Weight BASIC_TEST_WEIGHT = new Weight(180, WeightUnit.METRIC);
+    private final Weight BASIC_TEST_WEIGHT = new Weight(180, WeightUnit.US);
 
     @Before
     public void before() throws FhhWebException {
@@ -115,6 +115,12 @@ public class DiabetesRiskActionTest extends AbstractFhhWebTest {
 
     @Test
     public void diabetesRisk() {
+        action.setDateOfBirthString("01/01/1980");
+        action.setHeightUnit1("6");
+        action.setHeightUnit2("2");
+        action.setHeightMetric("");
+        action.setWeightString("170");
+
         assertEquals(SUCCESS, action.diabetesRisk());
         assertTrue(StringUtils.contains(action.getRiskHTML(), "not elevated"));
     }

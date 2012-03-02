@@ -28,7 +28,7 @@ returnToFamilyHistory = function() {
 			<div class="message_copy">
 				<div class="buttonContainer">
 					<c:url value="/familyHistory/familyHistory.action" var="familyHistory" />
-					<a id="navFamilyHistory" href="javascript://nop/" onclick="returnToFamilyHistory();"><fmt:message key="risk.button.editHistory" /></a>
+					<a id="editFamilyHistory" href="javascript://nop/" onclick="returnToFamilyHistory();" tabindex="1"><fmt:message key="risk.button.editHistory" /></a>
 				</div>
 			</div>
 		</div>
@@ -69,6 +69,39 @@ returnToFamilyHistory = function() {
                     <fhh:readOnlyCheckbox id="personForm_gestationalDiabetes" conditionTrue="${gestationalDiabetes}" labelKey="If you are a woman, have you ever been diagnosed with gestational diabetes?" />
                     <fhh:readOnlyCheckbox id="personForm_nuclearFamilyDiabetes" conditionTrue="${nuclearFamilyDiabetes}" labelKey="Do you have a mother, father, sister, or brother with diabetes?" />
                     <fhh:readOnlyCheckbox id="personForm_hypertension" conditionTrue="${hypertension}" labelKey="Have you ever been diagnosed with Hypertension? (High Blood Pressure)" />
+                    <tr>
+                        <th><fmt:message key="person.exerciseMoreThanPeers" /></th>
+                        <td><s:checkbox id="exerciseMoreThanPeers" name="person.exerciseMoreThanPeers" tabindex="3" /> <fmt:message
+                            bundle="${der}" key="term.yes" /></td>
+                    </tr>
+                    <tr errorfor="personForm_heightUnit1">
+                        <td scope="row" colspan="2" valign="top" align="center"><s:if test="fieldErrors['weightString'] != null">
+                            <span class="errorMessage">${fieldErrors['weightString'][0]}</span>
+                        </s:if></td>
+                    </tr>
+                    <tr>
+		                <th scope="row"><span class="required">*</span><label for="heightUnit1"><fmt:message key="person.height" /></label>:</th>
+		                <td><s:textfield id="heightUnit1" theme="simple" name="heightUnit1" size="6" value="%{heightUnit1}"
+		                    tabindex="4" onblur="clearMetric()" /> <label for="heightUnit1"><fmt:message
+		                    key="person.height.Unit1" /></label> &nbsp;&nbsp;<s:textfield id="heightUnit2" theme="simple"
+		                    name="heightUnit2" size="6" value="%{heightUnit2}" tabindex="5" onblur="clearMetric()" /> <label
+		                    for="heightUnit2"><fmt:message key="person.height.Unit2" /></label> <span class="or"><fmt:message
+		                    key="person.height.or" /></span> <s:textfield id="heightMetric" theme="simple" name="heightMetric"
+		                    size="6" value="%{heightMetric}" tabindex="6" onblur="clearUS()" /> <label for="heightMetric"><fmt:message
+		                    key="person.height.Metric" /></label></td>
+		            </tr>
+		            <tr errorfor="personForm_weightString">
+		                <td scope="row" colspan="2" valign="top" align="center"><s:if test="fieldErrors['weightString'] != null">
+		                    <span class="errorMessage">${fieldErrors['weightString'][0]}</span>
+		                </s:if></td>
+		            </tr>
+		            <tr>
+		                <th scope="row"><span class="required">*</span><label for="weightString"><fmt:message key="person.weight" />:</label></th>
+		                <td><s:textfield key="person.weight.value" name="weightString" value="%{person.weight.value}"
+		                    size="5" maxlength="4" theme="simple" tabindex="7" /> <s:select key="person.weight.unit"
+		                    name="person.weight.unit" value="%{person.weight.unit}" list="weightUnitEnums"
+		                    listValue="%{getText(resourceKey)}" tabindex="8" /></td>
+		            </tr>
 		        </tbody>
 		    </table>
 		    <!-- BEGIN INCLUDE = SAVE CANCEL BUTTONS -->
@@ -80,8 +113,6 @@ returnToFamilyHistory = function() {
 		</s:form>
 	</fhh:accordianContainer>
 </div>
-
 <script type="text/javascript">
-    setFocusById("downloadRisk");
+    setFocusById("getHelp");
 </script>
-
