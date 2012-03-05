@@ -38,7 +38,7 @@ import gov.hhs.fhh.data.util.PedigreeFactory;
 import gov.hhs.fhh.data.util.PersonUtils;
 import gov.hhs.fhh.service.util.RiskClient;
 import gov.hhs.fhh.web.util.PersonActionUtils;
-import gov.nih.nci.drc.model.diabetes.DiabetesCritereon;
+import gov.nih.nci.drc.model.diabetes.GestationalDiabetesCritereon;
 import gov.nih.nci.drc.model.diabetes.HypertensionCritereon;
 import gov.nih.nci.drc.model.diabetes.NuclearFamilyDiabetesRiskCritereon;
 import gov.nih.nci.drc.util.FileLanguageCode;
@@ -77,7 +77,7 @@ public class DiabetesRiskAction extends AbstractRiskAction implements Preparable
 
     private void setReadOnlyRisks() {
         final Pedigree pedigree = PedigreeFactory.getInstance().createPedigree(getPerson());
-        setGestationalDiabetes(new DiabetesCritereon().getRiskFactor(pedigree) > 0);
+        setGestationalDiabetes(new GestationalDiabetesCritereon().getRiskFactor(pedigree) > 0);
         setNuclearFamilyDiabetes(new NuclearFamilyDiabetesRiskCritereon().getRiskFactor(pedigree) > 0);
         setHypertension(new HypertensionCritereon().getRiskFactor(pedigree) > 0);
     }

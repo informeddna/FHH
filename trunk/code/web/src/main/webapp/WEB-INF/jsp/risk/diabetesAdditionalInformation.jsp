@@ -48,7 +48,7 @@ returnToFamilyHistory = function() {
                         </s:if></td>
                     </tr>
                     <tr>
-                        <th scope="row"><label for="personForm_dateOfBirthString"><fmt:message key="person.dateOfBirth" /></label>:</th>
+                        <th scope="row"><span class="required">*</span><label for="personForm_dateOfBirthString"><fmt:message key="person.dateOfBirth" /></label>:</th>
                         <td><s:textfield key="person.dateOfBirth" name="dateOfBirthString" size="30"
                             maxlength="255" theme="simple" tabindex="1" />
                         <div><fmt:message key="default.date.format" /></div>
