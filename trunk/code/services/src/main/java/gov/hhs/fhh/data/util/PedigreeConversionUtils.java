@@ -184,6 +184,7 @@ public final class PedigreeConversionUtils {
         demographics.setHeight(person.getHeight());
         demographics.setWaistCircumference(person.getWaistCircumference());
         demographics.setAdopted(person.isAdopted());
+        demographics.setExerciseMoreThanPeers(person.isExerciseMoreThanPeers());
         demographics.setTwinStatus(person.getTwinStatus());
         addRaces(demographics, person);
         addEthnicities(demographics, person);
