@@ -51,6 +51,7 @@
         <test.mshv.user.pw></test.mshv.user.pw>
         <test.mshv.user.display.name>fhh tester</test.mshv.user.display.name>
 		<show.mshv.ui>true</show.mshv.ui>
+        <skip-liquibase>true</skip-liquibase>
     </properties>
 
     <!-- General Project information -->
