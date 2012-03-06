@@ -11,20 +11,16 @@ returnToFamilyHistory = function() {
 	<fhh:accordianContainer helpUrl="${helpUrl}"
 		titleTextKey="diabetes.additionalInfo.title">
 		<div id="process_steps">
-			<div class="process_step_selected">1. Save Your Information</div>
+			<div class="process_step_selected"><fmt:message key="diabetes.additionalInfo.step1" /></div>
 			<div class="process_arrow_right">
 				<img alt="Right Arrow" src="/fhh-web/images/process_arrow_right.gif" />
 			</div>
-			<div class="process_step">2. Manage Your Information</div>
+			<div class="process_step"><fmt:message key="diabetes.additionalInfo.step2" /></div>
 		</div>
 
 		<div id="update_history">
-			<p id="update_title">Please update your history in order to get
-				accurate results from the Diabetes Risk Calculator.</p>
-			<div class="message_copy">Make sure your history is updated for
-				mother/father/sister/brother with diabetes and if you have been
-				diagnosed with high blood pressure. If you are a woman, please
-				update any gestational diabetes history</div>
+			<p id="update_title"><fmt:message key="diabetes.additionalInfo.updateHistory" /></p>
+			<div class="message_copy"><fmt:message key="diabetes.additionalInfo.updateInfo" /></div>
 			<div class="message_copy">
 				<div class="buttonContainer">
 					<c:url value="/familyHistory/familyHistory.action" var="familyHistory" />
@@ -32,10 +28,10 @@ returnToFamilyHistory = function() {
 				</div>
 			</div>
 		</div>
-		<h2>Diabetes Risk Calculator - Please Add Additional Information</h2>
+		<h2><fmt:message key="diabetes.additionalInfo.addInfo" /></h2>
 		<s:form action="/popup/diabetesRisk/diabetesRisk.action" cssClass="form" method="post" id="personForm" theme="simple">
-		    <span class="required">*</span>Indicates required information.<br />
-		    <span class="readonly">*Indicates read-only information.</span><br />
+		    <span class="required">*</span><fmt:message key="form.requiredInformation.text" /><br />
+		    <span class="readonly"><fmt:message key="diabetes.additionalInfo.readOnly" /></span><br />
 		    <table cellspacing="0" cellpadding="0" border="0" summary="Enter personal information." class="form">
 		        <tbody>
 		            <tr>
@@ -66,9 +62,9 @@ returnToFamilyHistory = function() {
 		                <th scope="row"><span class="required">*</span><label for="personForm_person_genderMALE"><fmt:message key="person.gender" /></label>:</th>
 		                <td><s:radio key="person.gender" name="person.gender" list="genderEnums" listKey="name" listValue="%{getText(resourceKey)}" theme="simple" tabindex="2" /></td>
 		            </tr>
-                    <fhh:readOnlyCheckbox id="personForm_gestationalDiabetes" conditionTrue="${gestationalDiabetes}" labelKey="If you are a woman, have you ever been diagnosed with gestational diabetes?" />
-                    <fhh:readOnlyCheckbox id="personForm_nuclearFamilyDiabetes" conditionTrue="${nuclearFamilyDiabetes}" labelKey="Do you have a mother, father, sister, or brother with diabetes?" />
-                    <fhh:readOnlyCheckbox id="personForm_hypertension" conditionTrue="${hypertension}" labelKey="Have you ever been diagnosed with Hypertension? (High Blood Pressure)" />
+                    <fhh:readOnlyCheckbox id="personForm_gestationalDiabetes" conditionTrue="${gestationalDiabetes}" labelKey="diabetes.additionalInfo.gestationalDiabetes" />
+                    <fhh:readOnlyCheckbox id="personForm_nuclearFamilyDiabetes" conditionTrue="${nuclearFamilyDiabetes}" labelKey="diabetes.additionalInfo.nuclearFamilyDiabetes" />
+                    <fhh:readOnlyCheckbox id="personForm_hypertension" conditionTrue="${hypertension}" labelKey="diabetes.additionalInfo.hypertention" />
                     <tr>
                         <th><fmt:message key="person.exerciseMoreThanPeers" /></th>
                         <td><s:checkbox id="exerciseMoreThanPeers" name="person.exerciseMoreThanPeers" tabindex="3" /> <fmt:message
