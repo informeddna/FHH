@@ -6,7 +6,7 @@ returnToFamilyHistory = function() {
 }
 </script>
 <div class="submodalContainer" id="diabetesAdditionalInformation">
-	<s:url value="/popup/getHelp/helpDetailsColorectalRisk.action"
+	<s:url value="/popup/getHelp/helpDetailsDiabetesAdditionalInfo.action"
 		id="helpUrl" />
 	<fhh:accordianContainer helpUrl="${helpUrl}"
 		titleTextKey="diabetes.additionalInfo.title">
