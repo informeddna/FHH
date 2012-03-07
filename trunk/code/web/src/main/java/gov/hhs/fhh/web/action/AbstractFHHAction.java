@@ -92,7 +92,7 @@ public class AbstractFHHAction extends ActionSupport {
         if (!StringUtils.isEmpty(fieldValue)) {
             try {
                 Integer i = Integer.valueOf(fieldValue);
-                if (i.intValue() <= minValue) {
+                if (i.intValue() < minValue) {
                     addFieldError(fieldName, getText(fieldKey) + " " + getText("errors.invalid.integer"));
                     return false;
                 }

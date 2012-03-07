@@ -71,9 +71,17 @@ returnToFamilyHistory = function() {
                             bundle="${der}" key="term.yes" /></td>
                     </tr>
                     <tr errorfor="personForm_heightUnit1">
-                        <td scope="row" colspan="2" valign="top" align="center"><s:if test="fieldErrors['weightString'] != null">
-                            <span class="errorMessage">${fieldErrors['weightString'][0]}</span>
-                        </s:if></td>
+                        <td scope="row" colspan="2" valign="top" align="center">
+                            <s:if test="fieldErrors['heightUnit1'] != null">
+                                <span class="errorMessage">${fieldErrors['heightUnit1'][0]}</span>
+                            </s:if>
+                            <s:if test="fieldErrors['heightUnit2'] != null">
+                                <span class="errorMessage">${fieldErrors['heightUnit2'][0]}</span>
+                            </s:if>
+                            <s:if test="fieldErrors['heightMetric'] != null">
+                                <span class="errorMessage">${fieldErrors['heightMetric'][0]}</span>
+                            </s:if>
+                         </td>
                     </tr>
                     <tr>
 		                <th scope="row"><span class="required">*</span><label for="heightUnit1"><fmt:message key="person.height" /></label>:</th>
