@@ -62,9 +62,9 @@ returnToFamilyHistory = function() {
 		                <th scope="row"><span class="required">*</span><label for="personForm_person_genderMALE"><fmt:message key="person.gender" /></label>:</th>
 		                <td><s:radio key="person.gender" name="person.gender" list="genderEnums" listKey="name" listValue="%{getText(resourceKey)}" theme="simple" tabindex="2" /></td>
 		            </tr>
-                    <fhh:readOnlyCheckbox id="personForm_gestationalDiabetes" conditionTrue="${gestationalDiabetes}" labelKey="diabetes.additionalInfo.gestationalDiabetes" />
-                    <fhh:readOnlyCheckbox id="personForm_nuclearFamilyDiabetes" conditionTrue="${nuclearFamilyDiabetes}" labelKey="diabetes.additionalInfo.nuclearFamilyDiabetes" />
-                    <fhh:readOnlyCheckbox id="personForm_hypertension" conditionTrue="${hypertension}" labelKey="diabetes.additionalInfo.hypertention" />
+                    <fhh:yesNoValues id="personForm_gestationalDiabetes" conditionTrue="${gestationalDiabetes}" labelKey="diabetes.additionalInfo.gestationalDiabetes" />
+                    <fhh:yesNoValues id="personForm_nuclearFamilyDiabetes" conditionTrue="${nuclearFamilyDiabetes}" labelKey="diabetes.additionalInfo.nuclearFamilyDiabetes" />
+                    <fhh:yesNoValues id="personForm_hypertension" conditionTrue="${hypertension}" labelKey="diabetes.additionalInfo.hypertention" />
                     <tr>
                         <th><fmt:message key="person.exerciseMoreThanPeers" /></th>
                         <td><s:checkbox id="exerciseMoreThanPeers" name="person.exerciseMoreThanPeers" tabindex="3" /> <fmt:message
