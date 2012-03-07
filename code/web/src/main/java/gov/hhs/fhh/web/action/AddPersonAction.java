@@ -277,8 +277,8 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
 
     private void validateSubmitFields() {
         checkDateOfBirth(getDateOfBirthString());
-        validateIntegerField("heightUnit1", "person.height.Unit1", getHeightUnit1());
-        validateIntegerField("heightUnit2", "person.height.Unit2", getHeightUnit2());
+        validateIntegerField("heightUnit1", "person.height.Unit1", getHeightUnit1(), false);
+        validateIntegerField("heightUnit2", "person.height.Unit2", getHeightUnit2(), false);
         validateIntegerField("heightMetric", "person.height.Metric", getHeightMetric());
         validateIntegerField("weightString", "person.weight", getWeightString());
         validateRequiredObject("person.gender", "person.gender", getPerson().getGender());
