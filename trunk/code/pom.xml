@@ -33,22 +33,22 @@
         <database.url.prefix>jdbc:mysql://localhost:3306/</database.url.prefix>
         <database.name>mfhp</database.name>
         <admin.db.username>root</admin.db.username>
-        <admin.db.password></admin.db.password>
+        <admin.db.password />
         <jdbc.url>${database.url.prefix}${database.name}</jdbc.url>
         <jdbc.username>mfhpuser</jdbc.username>
-        <jdbc.password></jdbc.password>
+        <jdbc.password />
         <jdbc.groupId>mysql</jdbc.groupId>
         <jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
         <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
         <jdbc.version>5.1.6</jdbc.version>
         <application.base.url>http://${jboss.hostname}:${jboss.port}/fhh-web/</application.base.url>
-        <mshv.app.id></mshv.app.id>
+        <mshv.app.id />
         <mshv.shell.url>https://account.healthvault-ppe.com</mshv.shell.url>
         <mshv.service.endpoint.url>https://platform.healthvault-ppe.com/platform/wildcat.ashx</mshv.service.endpoint.url>
         <mshv.keystore.keyname>fhh</mshv.keystore.keyname>
-        <mshv.keystore.password></mshv.keystore.password>
+        <mshv.keystore.password />
         <test.mshv.user.email>FHH.tester.prod@gmail.com</test.mshv.user.email>
-        <test.mshv.user.pw></test.mshv.user.pw>
+        <test.mshv.user.pw />
         <test.mshv.user.display.name>fhh tester</test.mshv.user.display.name>
 		<show.mshv.ui>true</show.mshv.ui>
     </properties>
