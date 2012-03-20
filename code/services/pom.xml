@@ -583,7 +583,7 @@
                             <onError>continue</onError>
                             <srcFiles>
                                 <srcFile>src/main/db/db-install/mysql/extraDropSchema.sql</srcFile>
-                                <srcFile>target/hibernate3/sql/${schema.file}</srcFile>
+                                <srcFile>src/main/db/db-install/mysql/${schema.file}</srcFile>
                                 <srcFile>src/main/db/db-install/mysql/extraCreateSchema.sql</srcFile>
                                 <srcFile>src/main/db/db-install/mysql/observations.sql</srcFile>
                                 <srcFile>src/main/db/db-install/mysql/race.sql</srcFile>
