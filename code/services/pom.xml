@@ -298,7 +298,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>gov.nih.nci</groupId>
+            <groupId>gov.nih.nci.drc</groupId>
             <artifactId>drc-services</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
