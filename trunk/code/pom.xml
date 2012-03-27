@@ -5,7 +5,7 @@
     <artifactId>fhh</artifactId>
     <packaging>pom</packaging>
     <name>fhh</name>
-    <version>2.4.3</version>
+    <version>2.4.3-SNAPSHOT</version>
     <inceptionYear>2008</inceptionYear>
     <properties>
         <!-- general build properties -->
@@ -55,8 +55,8 @@
 
     <!-- General Project information -->
     <scm>
-        <connection>scm:svn:https://ncisvn.nci.nih.gov/svn/mvn-quickstart-archetype/releases/fhh-2.4.3</connection>
-        <developerConnection>scm:svn:https://ncisvn.nci.nih.gov/svn/mvn-quickstart-archetype/releases/fhh-2.4.3</developerConnection>
+        <connection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code</connection>
+        <developerConnection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code</developerConnection>
     </scm>
 
 
@@ -128,9 +128,9 @@
             <url>https://ncimvn.nci.nih.gov/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
         <site>
-            <id>systems-sites</id>
-            <name>SCM Project Sites</name>
-            <url>dav:https://ncisvn.nci.nih.gov/nexus/content/sites/system-site-repo/nciscm/mvn-quickstart-archetype</url>
+            <id>sites</id>
+            <name>CBIIT Project Sites</name>
+            <url>dav:https://ncisvn.nci.nih.gov/nexus/content/sites/cbiit-sites/mfph</url>
         </site>
     </distributionManagement>
 
@@ -250,7 +250,7 @@
                 <configuration>
                     <preparationGoals>clean install</preparationGoals>
                     <arguments>-Dskip-liquibase=true</arguments>
-                    <tagBase>https://ncisvn.nci.nih.gov/svn/mvn-quickstart-archetype/releases</tagBase>
+                    <tagBase>https://ncisvn.nci.nih.gov/svn/mfhp/releases</tagBase>
                     <stagingRepository>releases::default::https://ncimvn.nci.nih.gov/nexus/service/local/staging/deploy/maven2</stagingRepository>
                 </configuration>
             </plugin>
