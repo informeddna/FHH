@@ -12,7 +12,7 @@
 	<url>../../web/target/site</url>
 
 	<properties>
-		<showErrorStackTraces>true</showErrorStackTraces>
+		<showErrorStackTraces>false</showErrorStackTraces>
 		<defaultPageSize>20</defaultPageSize>
 		<jboss.home>target/jbossDeploy</jboss.home>
         <struts.devMode>false</struts.devMode>
