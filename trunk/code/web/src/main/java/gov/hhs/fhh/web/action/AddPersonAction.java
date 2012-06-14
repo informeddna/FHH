@@ -46,6 +46,7 @@ import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.web.data.HeightUnitHolder;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
+import gov.hhs.fhh.web.util.FilterUtils;
 import gov.hhs.fhh.web.util.PersonActionUtils;
 
 import java.io.ByteArrayInputStream;
@@ -232,6 +233,8 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
      * @return path String
      */
     public String addPerson() {
+        // Other Disease Values should be reset when a new person is added
+        setOtherDiseaseValues(new ArrayList<String>());
         return SUCCESS;
     }
 
@@ -250,7 +253,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
      * @return path String
      */
     public String submitPerson() {
-
+        filterOtherDiseaseValues();
         validateSubmitFields();
         if (this.getFieldErrors().size() > 0) {
             return INPUT;
@@ -273,6 +276,17 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         } else {
             return SUBMIT_ACTION;
         }
+    }
+
+    /**
+     * Filters other disease values of control characters.
+     */
+    protected void filterOtherDiseaseValues() {
+        List<String> filteredValues = new ArrayList<String>();
+        for (String currDisease : otherDiseaseValues) {
+            filteredValues.add(FilterUtils.getInstance().removeControlCharacters(currDisease));
+        }
+        otherDiseaseValues = filteredValues;
     }
 
     private void validateSubmitFields() {
@@ -318,8 +332,8 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
                 // if (currDisease.getDisplayName() != null && currDisease.getDisplayName().equals(OTHER_DISEASE)
                 // && currDisease.getOriginalText() == null) {
                 if (!StringUtils.isEmpty(otherDiseaseValues.get(i))) {
-                    currDisease = DiseaseUtils.findOrCreateNewDisease(FormatUtils.performXSSFilter(otherDiseaseValues
-                            .get(i)));
+                    currDisease = DiseaseUtils.findOrCreateNewDisease(
+                            otherDiseaseValues.get(i));
                     FhhHttpSessionUtil.addUserEnteredDisease(currDisease);
                 }
                 observation.setDisease(currDisease);

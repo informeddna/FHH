@@ -352,6 +352,7 @@
 			method="{1}">
 			<interceptor-ref name="fhhPerMethodValidationStack" />
 			<result name="input">/WEB-INF/jsp/person/selectRelative.jsp</result>
+            <result name="addPerson">/WEB-INF/jsp/person/addPerson.jsp</result>
 			<result name="success">/WEB-INF/jsp/person/{1}.jsp</result>
 		</action>
 		<action name="popup/addFamilyTree/*" class="gov.hhs.fhh.web.action.AddFamilyTreeAction"

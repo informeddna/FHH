@@ -5,7 +5,7 @@
         checkRelativeCodeAjax('${checkRelativeCode}');
     }
 </script>
-<s:form action="/popup/selectRelative/addPerson.action" cssClass="form" method="post" id="relativeForm" theme="simple">
+<s:form action="/popup/selectRelative/confirmSelectedRelative.action" cssClass="form" method="post" id="relativeForm" theme="simple">
 
 <div class="submodalContainer">
     <%-- BEGIN ACCORDION SECTION = ADD RELATIVE --%>
