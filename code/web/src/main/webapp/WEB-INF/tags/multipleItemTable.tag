@@ -46,7 +46,7 @@
             <c:otherwise>
                 <c:forEach items="${listField}" var="currentItem" varStatus="status">
                     <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${otherDiseaseValues[status.index]}"/>
-                    <option selected="selected" id="SelectedItemOption${currId}" value="${currentItem.id}">${currentItem.id}</option>
+                    <option selected="selected" id="SelectedItemOption<c:out value='${currId}'/>" value="${currentItem.id}">${currentItem.id}</option>
                 </c:forEach>
             </c:otherwise>
         </c:choose>
@@ -62,7 +62,7 @@
             <c:otherwise>
                 <c:forEach items="${listField}" var="currentItem" varStatus="status">
                     <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${otherDiseaseValues[status.index]}"/>
-                    <option selected="selected" id="SelectedAgeOption${currId}" value="${listField2[status.index]}">${listField2[status.index]}</option>
+                    <option selected="selected" id="SelectedAgeOption<c:out value='${currId}'/>" value="${listField2[status.index]}">${listField2[status.index]}</option>
                 </c:forEach>
             </c:otherwise>
         </c:choose>
@@ -73,7 +73,7 @@
         <option value=""></option>
         <c:forEach items="${listField}" var="currentItem" varStatus="status">
             <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${otherDiseaseValues[status.index]}"/>
-            <option selected="selected" id="otherDiseaseOption${currId}" value="${otherDiseaseValues[status.index]}">${otherDiseaseValues[status.index]}</option>
+            <option selected="selected" id="otherDiseaseOption<c:out value='${currId}'/>" value="<c:out value='${otherDiseaseValues[status.index]}'/>"><c:out value='${otherDiseaseValues[status.index]}'/></option>
         </c:forEach>
     </select>
 </span>
@@ -85,7 +85,7 @@
         <th class="diseaseCol"><fmt:message key="${tableHeader1}" /></th>
         <th class="ageCol"><fmt:message key="${tableHeader2}" /></th>
         <th class="actionCol"><fmt:message key="form.diseases.table.action"/></th>
-    </tr> 
+    </tr>
     <c:choose>
         <c:when test="${multiple != 'true' && !empty listField}">
             <tr id="SelectedItemRow0">
@@ -106,7 +106,7 @@
         <c:otherwise>
             <c:forEach items="${listField}" var="currentItem" varStatus="status">
                 <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${otherDiseaseValues[status.index]}"/>
-                <tr id="SelectedItemRow${currId}">
+                <tr id="SelectedItemRow<c:out value='${currId}'/>">
                     <td class="diseaseCol">
                         <c:choose>
                             <c:when test="${!empty otherDiseaseValues[status.index]}">
@@ -118,7 +118,7 @@
                         </c:choose>
                     </td>
                     <td class="ageCol"><fmt:message bundle="${der}" key="${listField2[status.index].resourceKey}"/></td>
-                    <td class="actionCol buttonContainer"><a href="javascript://nop/" onclick="ItemSelectorUtils.removeItemFromList('${baseId}', '${currId}');"><fmt:message key="button.remove"/></a></td>
+                    <td class="actionCol buttonContainer"><a href="javascript://nop/" onclick="ItemSelectorUtils.removeItemFromList('${baseId}', '<c:out value='${currId}'/>');"><fmt:message key="button.remove"/></a></td>
                 </tr>
             </c:forEach>
         </c:otherwise>

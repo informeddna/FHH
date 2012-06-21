@@ -46,7 +46,6 @@ import gov.hhs.fhh.model.mfhp.LivingStatus;
 import gov.hhs.fhh.service.locator.FhhRegistry;
 import gov.hhs.fhh.web.data.HeightUnitHolder;
 import gov.hhs.fhh.web.util.FhhHttpSessionUtil;
-import gov.hhs.fhh.web.util.FilterUtils;
 import gov.hhs.fhh.web.util.PersonActionUtils;
 
 import java.io.ByteArrayInputStream;
@@ -253,7 +252,6 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
      * @return path String
      */
     public String submitPerson() {
-        filterOtherDiseaseValues();
         validateSubmitFields();
         if (this.getFieldErrors().size() > 0) {
             return INPUT;
@@ -276,17 +274,6 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
         } else {
             return SUBMIT_ACTION;
         }
-    }
-
-    /**
-     * Filters other disease values of control characters.
-     */
-    protected void filterOtherDiseaseValues() {
-        List<String> filteredValues = new ArrayList<String>();
-        for (String currDisease : otherDiseaseValues) {
-            filteredValues.add(FilterUtils.getInstance().removeControlCharacters(currDisease));
-        }
-        otherDiseaseValues = filteredValues;
     }
 
     private void validateSubmitFields() {

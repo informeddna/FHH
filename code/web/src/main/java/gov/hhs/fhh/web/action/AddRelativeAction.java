@@ -347,7 +347,6 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
      * @return path String
      */
     public String submitRelative() {
-        filterOtherDiseaseValues();
         validateSubmitFields();
         if (this.getFieldErrors().size() > 0) {
             return INPUT;
