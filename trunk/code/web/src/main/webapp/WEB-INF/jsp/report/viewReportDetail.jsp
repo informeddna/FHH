@@ -77,9 +77,9 @@
                     </c:when>
                  </c:choose>
                  <td>
-                    ${diseaseToAbreviation[legendDisease]} =
+                    <c:out value="${diseaseToAbreviation[legendDisease]}"/> =
                     <%-- some diseases do not have displayName - use originalText instead --%>
-                    ${legendDisease.escapedReportDisplay}
+                    <c:out value="${legendDisease.escapedReportDisplay}"/>
                 </td>
                 <c:set var="legendSize" value="${legendSize + 1}"/>
             </c:forEach>
