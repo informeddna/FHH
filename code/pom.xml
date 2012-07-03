@@ -5,7 +5,7 @@
     <artifactId>fhh</artifactId>
     <packaging>pom</packaging>
     <name>fhh</name>
-    <version>3.4</version>
+    <version>3.5-SNAPSHOT</version>
     <inceptionYear>2008</inceptionYear>
     <properties>
         <!-- general build properties -->
@@ -55,8 +55,8 @@
 
     <!-- General Project information -->
     <scm>
-        <connection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/releases/fhh-3.4</connection>
-        <developerConnection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/releases/fhh-3.4</developerConnection>
+        <connection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code</connection>
+        <developerConnection>scm:svn:https://ncisvn.nci.nih.gov/svn/mfhp/trunk/code</developerConnection>
     </scm>
 
 
