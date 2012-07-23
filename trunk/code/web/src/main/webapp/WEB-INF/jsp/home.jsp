@@ -28,7 +28,6 @@
     <div class="headerContainerHome">
         <table border="0" cellpadding="0" cellspacing="0" class="mainNavTable">
             <tr>
-
                 <s:url id="helpUrl" action="popup/getHelp/helpDetailsHome" />
                 <td class="utilNavTd"><a href="javascript://nop/" onclick="popupWindow('${helpUrl}')"><fmt:message key="icon.text.getHelp" /></a></td>
             </tr>
@@ -54,20 +53,25 @@
                         <p><a href="javascript://nop/" id="learnMore" onclick="popupWindow('${helpUrl}')"><fmt:message key="home.text.learn" /> <em><fmt:message key="home.text.appName" /></em></a></p>
                     </div>
                     <!--Start of throw away code, only meant to be temporary during testing on stage-->
-                    <style type="text/css">
-                      #announcements { float:right; width:99%; border:1px solid #656565; background:#ffffdc; -moz-box-shadow: 2px 2px 2px rgba(0,0,0,0.1); -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,0.1); }
-                      #announcements H3 { background:#ffe060 url("/fhh-web/images/bg_header_yellow.gif") repeat-x; padding:5px; margin:0; color:#000; font-family:arial,helvetica; font-size:100%; text-align:left; border-bottom:1px solid #656565; }
-                      #announcements H3 DIV { background:url("/fhh-web/images/ico_important.gif") no-repeat 0 1px; padding-left:20px; }
-                      #announcements P { padding:10px; margin:0; }
-                    </style>
 
-                    <div id="announcements">
-                        <h3><div>Important Disclaimer</div></h3>
-                        <p>This is a test web site for the purpose of a private study. This web site is <b>NOT</b> intended
-                        for general use outside of the identified study group. <br><br>To track your family health history, please visit our public web site - My
-                         Family Health Portrait at <a href="http://familyhistory.hhs.gov/">http://familyhistory.hhs.gov/</a>.<br>Thank you.
-                       </p>
-                    </div>
+                    <% if(!request.getRequestURL().toString().contains("fhh.nci.nih.gov")
+                            && !request.getRequestURL().toString().contains("familyhistory.hhs.gov")) { %>
+                        <style type="text/css">
+                          #announcements { float:right; width:99%; border:1px solid #656565; background:#ffffdc; -moz-box-shadow: 2px 2px 2px rgba(0,0,0,0.1); -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,0.1); }
+                          #announcements H3 { background:#ffe060 url("/fhh-web/images/bg_header_yellow.gif") repeat-x; padding:5px; margin:0; color:#000; font-family:arial,helvetica; font-size:100%; text-align:left; border-bottom:1px solid #656565; }
+                          #announcements H3 DIV { background:url("/fhh-web/images/ico_important.gif") no-repeat 0 1px; padding-left:20px; }
+                          #announcements P { padding:10px; margin:0; }
+                        </style>
+
+                        <div id="announcements">
+                            <h3><div>Important Disclaimer</div></h3>
+                            <p>This is a test web site for the purpose of a private study. This web site is <b>NOT</b> intended
+                            for general use outside of the identified study group. <br><br>To track your family health history, please visit our public web site - My
+                             Family Health Portrait at <a href="http://familyhistory.hhs.gov/">http://familyhistory.hhs.gov/</a>.<br>Thank you.
+                           </p>
+                        </div>
+                    <% } %>
+
                     <!--End of throw away code, only meant to be temporary during testing on stage-->
                     <div class="buttonContainer">
                         <a id="createNew" href="${createFamilyHistory}"><fmt:message key="home.fhh.button1" /></a>
