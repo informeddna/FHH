@@ -208,8 +208,12 @@ public class AddRelativeAction extends AddPersonAction implements Preparable {
     @Validations(requiredFields = { @RequiredFieldValidator(fieldName = "selectedCode",
             key = REQUIRED_FIELD, message = "") })
     public String confirmSelectedRelative() {
-        addPerson();
-        return "addPerson";
+        String addPersonRetrnValue = addPerson();
+        if (SUCCESS.equals(addPersonRetrnValue)) {
+            return "addPerson";
+        } else {
+            return addPersonRetrnValue;
+        }
     }
 
     /**

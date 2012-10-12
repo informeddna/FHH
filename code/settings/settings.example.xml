@@ -1,0 +1,99 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+	    <properties>
+		<mshv.keystore.filename>/Users/bpickeral/keystore-demo</mshv.keystore.filename>
+                <jboss.home>/Applications/jboss-5.1.0.GA</jboss.home>
+                <jboss.hostname>localhost</jboss.hostname>
+                <jboss.port>8080</jboss.port>
+                <jboss.naming.port>1099</jboss.naming.port>
+                <jboss.configuration>drc</jboss.configuration>
+
+                <logger.debug>false</logger.debug>
+                <logger.level>WARN</logger.level>
+            <mshv.app.id>a966f790-2e79-49ce-b06b-1de714a957a8</mshv.app.id>
+            <test.mshv.user.email>FHH.tester.ci@gmail.com</test.mshv.user.email>
+            <test.mshv.user.pw>changeme</test.mshv.user.pw>
+            <test.mshv.user.display.name>fhh testerci</test.mshv.user.display.name>
+            <show.mshv.ui>true</show.mshv.ui>
+	    <mshv.user.pw>fhht3sterlocal</mshv.user.pw>
+            <mshv.keystore.password>changeme</mshv.keystore.password>
+	    <admin.db.username>mfhpuser</admin.db.username>
+            <admin.db.password>changeme</admin.db.password>
+	    <jdbc.username>mfhpuser</jdbc.username>
+	    <jdbc.password>changeme</jdbc.password>
+	    <showErrorStackTraces>true</showErrorStackTraces>
+	    <test.selenium.browser>*firefox /Applications/Firefox-3.0.11.app/Contents/MacOS/firefox-bin</test.selenium.browser>
+	    <drc.riskCalculator.enabled>true</drc.riskCalculator.enabled>
+            </properties>
+
+        </profile>
+        <profile>
+            <id>quick</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <cobertura.check.haltOnFailure>false</cobertura.check.haltOnFailure>
+                <skipTests>true</skipTests>
+                <checkstyle.skip>true</checkstyle.skip>
+                <pmd.skip>true</pmd.skip>
+            </properties>
+        </profile>
+	<profile>
+      <id>nexus</id>
+      <!-- Enable snapshots for the built in central repo to direct -->
+      <!-- all requests to nexus via the mirror -->
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+     <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+    </profiles>
+<mirrors>
+    <mirror>
+      <id>nexus</id>
+      <mirrorOf>*</mirrorOf>
+      <url>https://ncimvn.nci.nih.gov/nexus/content/groups/public</url>
+    </mirror>
+  </mirrors>
+<servers>
+    <server>
+      <id>snapshots</id>
+      <username></username>
+      <password></password>
+    </server>
+    <server>
+      <id>releases</id>
+      <username></username>
+      <password></password>
+    </server>
+  </servers>
+  <activeProfiles>
+    <!-- make the profile active all the time -->
+    <activeProfile>nexus</activeProfile>
+  </activeProfiles>
+  
+  <pluginGroups>
+    <pluginGroup>org.sonatype.plugins</pluginGroup>
+  </pluginGroups>
+</settings>

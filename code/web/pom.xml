@@ -16,6 +16,8 @@
 		<defaultPageSize>20</defaultPageSize>
 		<jboss.home>target/jbossDeploy</jboss.home>
         <struts.devMode>false</struts.devMode>
+        <struts2.version>2.3.4.1</struts2.version>
+        <drc.riskCalculator.enabled>false</drc.riskCalculator.enabled>
 	</properties>
 
 	<dependencies>
@@ -23,13 +25,13 @@
 		<dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-core</artifactId>
-            <version>2.2.1.1</version>
+            <version>${struts2.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-json-plugin</artifactId>
-            <version>2.2.1.1</version>
+            <version>${struts2.version}</version>
             <scope>compile</scope>
         </dependency>
 		<dependency>

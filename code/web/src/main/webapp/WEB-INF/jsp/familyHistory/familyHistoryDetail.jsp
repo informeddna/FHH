@@ -21,7 +21,6 @@ addPersonOnclickFunc = function() {
 
 </script>
 
-
 <table border="0" cellpadding="0" cellspacing="0" class="form" id="familyHistoryDataHeader">
     <tbody>
         <tr>
@@ -74,7 +73,9 @@ addPersonOnclickFunc = function() {
                                 <a id="addAnotherFamilyMember1" href="javascript://nop/" onclick="handlePopup('${selectRelativeUrl}');"><fmt:message key="button.addAnotherFamily"/></a>
                                 <a id="save_history" href="javascript://nop/" onclick="handlePopup('${saveFamilyHistoryUrl}');"><fmt:message key="button.saveXmlDocument"/></a>
                                 <a id="viewReport1" href="${viewReport}"><fmt:message key="menu.text.viewReport" /></a>
-                                <a id="risk1" href="${risk}"><fmt:message key="menu.text.risk" /></a>
+                                <c:if test="%{@gov.hhs.fhh.web.Settings@isRiskCalculatorEnabled()}">
+                                    <a id="risk1" href="${risk}"><fmt:message key="menu.text.risk" /></a>
+                                </c:if>
                             </div>
                             <script type="text/javascript">
                                setFocusById("addAnotherFamilyMember1");

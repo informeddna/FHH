@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Use to define application configuration information, this is not resource bundle for i18n information.
- * 
+ *
  * @author smatyas
  *
  */
@@ -24,7 +24,12 @@ public final class Settings {
     public static final String LOAD_PEDIGREE = "load.pedigree.return.url.context";
 
     /**
-     * Settings Instance. 
+     * Risk Calculator enabled.
+     */
+    public static final String DRC_RISK_CALCULATOR_ENABLED = "drc.riskCalculator.enabled";
+
+    /**
+     * Settings Instance.
      */
     public static final Settings INSTANCE = new Settings();
 
@@ -53,6 +58,11 @@ public final class Settings {
         return props;
     }
 
+    public static boolean isRiskCalculatorEnabled() {
+        return Boolean.valueOf(Settings.INSTANCE
+                .getSetting(Settings.DRC_RISK_CALCULATOR_ENABLED));
+    }
+
     /**
      * @param name setting name
      * @return the setting value
@@ -60,7 +70,7 @@ public final class Settings {
     public String getSetting(String name) {
         return props.getProperty(name);
     }
-    
+
     /**
      * @param name setting name
      * @param defaultValue if not found, value returned

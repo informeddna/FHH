@@ -28,7 +28,7 @@ public class AddRemoveUserEnterredConditionTest extends AbstractFHHSeleniumTest 
         Assert.assertEquals("User-entered condition1", selenium.getTable("healthHistoryTableList.1.0"));
         Assert.assertEquals("Septicemia", selenium.getTable("healthHistoryTableList.2.0"));
         Assert.assertEquals("Asthma", selenium.getTable("healthHistoryTableList.3.0"));
-        
+
         selenium.click("cancelRelative");
         selenium.selectFrame("relative=parent");
         waitForText("Update My Family History");
