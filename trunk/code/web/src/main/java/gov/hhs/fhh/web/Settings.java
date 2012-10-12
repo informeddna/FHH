@@ -58,6 +58,10 @@ public final class Settings {
         return props;
     }
 
+    /**
+     * Returns true if Risk calculator is enabled.
+     * @return true if enabled, otherwise false
+     */
     public static boolean isRiskCalculatorEnabled() {
         return Boolean.valueOf(Settings.INSTANCE
                 .getSetting(Settings.DRC_RISK_CALCULATOR_ENABLED));
