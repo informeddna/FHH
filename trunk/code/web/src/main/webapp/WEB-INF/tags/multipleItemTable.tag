@@ -45,7 +45,7 @@
             </c:when>
             <c:otherwise>
                 <c:forEach items="${listField}" var="currentItem" varStatus="status">
-                    <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${otherDiseaseValues[status.index]}"/>
+                    <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${currentItem.escapedOriginalText}"/>
                     <option selected="selected" id="SelectedItemOption<c:out value='${currId}'/>" value="${currentItem.id}">${currentItem.id}</option>
                 </c:forEach>
             </c:otherwise>
@@ -61,7 +61,7 @@
             </c:when>
             <c:otherwise>
                 <c:forEach items="${listField}" var="currentItem" varStatus="status">
-                    <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${otherDiseaseValues[status.index]}"/>
+                    <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${currentItem.escapedOriginalText}"/>
                     <option selected="selected" id="SelectedAgeOption<c:out value='${currId}'/>" value="${listField2[status.index]}">${listField2[status.index]}</option>
                 </c:forEach>
             </c:otherwise>
@@ -72,8 +72,8 @@
     <select id="otherDiseaseValues" name="otherDiseaseValues" multiple="${multiple}">
         <option value=""></option>
         <c:forEach items="${listField}" var="currentItem" varStatus="status">
-            <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${otherDiseaseValues[status.index]}"/>
-            <option selected="selected" id="otherDiseaseOption<c:out value='${currId}'/>" value="<c:out value='${otherDiseaseValues[status.index]}'/>"><c:out value='${otherDiseaseValues[status.index]}'/></option>
+            <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${currentItem.escapedOriginalText}"/>
+            <option selected="selected" id="otherDiseaseOption<c:out value='${currId}'/>" value="<c:out value='${currentItem.escapedOriginalText}'/>"><c:out value='${currentItem.escapedOriginalText}'/></option>
         </c:forEach>
     </select>
 </span>
@@ -105,7 +105,7 @@
         </c:when>
         <c:otherwise>
             <c:forEach items="${listField}" var="currentItem" varStatus="status">
-                <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${otherDiseaseValues[status.index]}"/>
+                <c:set var="currId" value="${currentItem.id}${listField2[status.index]}${currentItem.escapedOriginalText}"/>
                 <tr id="SelectedItemRow<c:out value='${currId}'/>">
                     <td class="diseaseCol">
                         <c:choose>

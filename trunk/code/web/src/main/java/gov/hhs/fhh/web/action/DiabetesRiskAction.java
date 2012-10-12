@@ -45,7 +45,7 @@ import gov.nih.nci.drc.util.FileLanguageCode;
 
 import java.io.ByteArrayInputStream;
 
-import org.apache.commons.lang.xwork.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.fiveamsolutions.hl7.model.Pedigree;
 import com.fiveamsolutions.hl7.model.mfhp.Gender;

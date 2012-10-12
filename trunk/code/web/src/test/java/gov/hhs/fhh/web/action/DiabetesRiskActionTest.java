@@ -122,7 +122,7 @@ public class DiabetesRiskActionTest extends AbstractFhhWebTest {
         action.setWeightString("170");
 
         assertEquals(SUCCESS, action.diabetesRisk());
-        assertTrue(StringUtils.contains(action.getRiskHTML(), "not elevated"));
+        assertTrue(StringUtils.contains(action.getRiskHTML(), "lower risk"));
     }
 
     @Test

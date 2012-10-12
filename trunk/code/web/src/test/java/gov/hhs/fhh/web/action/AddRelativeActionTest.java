@@ -441,10 +441,14 @@ public class AddRelativeActionTest extends AbstractFhhWebTest {
     public void testConfirmSelectedRelative() {
         // Test setting Maternal/Paternal specifier when entering add
         // person method from selecting a code
-        Person p = new Person();
-        action.setPerson(p);
-        action.setSelectedCode(RelativeCode.NMTH.toString());
+        action.setPerson(new Person());
+        action.setSelectedCode(RelativeCode.SON.toString());
+        action.setRelationshipSpecifier(RelativeCode.NMTH.toString());
         assertEquals("addPerson", action.confirmSelectedRelative());
+
+        action.setSelectedCode(RelativeCode.AUNT.toString());
+        action.setRelationshipSpecifier(null);
+        assertEquals(INPUT, action.confirmSelectedRelative());
     }
 
     @Test

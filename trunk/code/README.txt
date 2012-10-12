@@ -36,7 +36,7 @@ curl -O https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/com/sun/xml/bind/jaxb-
 curl -O https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar
 
 5. Adapt the installation for your local environment:
-5.1 Configure your ~/.m2/settings.xml by copying settings/settings.ci.xml to ~/.m2/settings.xml and overwriting any build property needed.
+5.1 Configure your ~/.m2/settings.xml by copying settings/settings.example.xml to ~/.m2/settings.xml and overwriting any build property needed.
 most importantly check the values for: jboss.home, admin.db.username, admin.db.password
 
 5.2 login into mysql and create a db called mfhp if it does not already exist

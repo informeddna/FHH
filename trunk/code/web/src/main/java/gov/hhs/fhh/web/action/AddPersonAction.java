@@ -144,7 +144,7 @@ public class AddPersonAction extends AbstractFHHAction implements Preparable {
                 addSelectedDisease(obs.getDisease());
                 ageOfDiagnosisList.add(obs.getAgeRange());
                 if (obs.getDisease().isOther()) {
-                    getOtherDiseaseValues().add(obs.getDisease().getOriginalText());
+                    getOtherDiseaseValues().add(obs.getDisease().getEscapedOriginalText());
                 } else {
                     getOtherDiseaseValues().add("");
                 }
