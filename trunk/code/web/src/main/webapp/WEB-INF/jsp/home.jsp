@@ -53,9 +53,10 @@
                         <p><a href="javascript://nop/" id="learnMore" onclick="popupWindow('${helpUrl}')"><fmt:message key="home.text.learn" /> <em><fmt:message key="home.text.appName" /></em></a></p>
                     </div>
                     <!--Start of throw away code, only meant to be temporary during testing on stage-->
-                    <c:if test="%{@gov.hhs.fhh.web.Settings@isRiskCalculatorEnabled()}">
-                        <% if(!request.getRequestURL().toString().contains("fhh.nci.nih.gov")
-                                && !request.getRequestURL().toString().contains("familyhistory.hhs.gov")) { %>
+
+                    <% if(!request.getRequestURL().toString().contains("fhh.nci.nih.gov")
+                            && !request.getRequestURL().toString().contains("familyhistory.hhs.gov")) { %>
+                        <fhh:conditionalDRC>
                             <style type="text/css">
                               #announcements { float:right; width:99%; border:1px solid #656565; background:#ffffdc; -moz-box-shadow: 2px 2px 2px rgba(0,0,0,0.1); -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,0.1); }
                               #announcements H3 { background:#ffe060 url("/fhh-web/images/bg_header_yellow.gif") repeat-x; padding:5px; margin:0; color:#000; font-family:arial,helvetica; font-size:100%; text-align:left; border-bottom:1px solid #656565; }
@@ -70,8 +71,9 @@
                                  Family Health Portrait at <a href="http://familyhistory.hhs.gov/">http://familyhistory.hhs.gov/</a>.<br>Thank you.
                                </p>
                             </div>
-                        <% } %>
-                    </c:if>
+                        </fhh:conditionalDRC>
+                    <% } %>
+
 
                     <!--End of throw away code, only meant to be temporary during testing on stage-->
                     <div class="buttonContainer">
