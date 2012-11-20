@@ -73,9 +73,9 @@ addPersonOnclickFunc = function() {
                                 <a id="addAnotherFamilyMember1" href="javascript://nop/" onclick="handlePopup('${selectRelativeUrl}');"><fmt:message key="button.addAnotherFamily"/></a>
                                 <a id="save_history" href="javascript://nop/" onclick="handlePopup('${saveFamilyHistoryUrl}');"><fmt:message key="button.saveXmlDocument"/></a>
                                 <a id="viewReport1" href="${viewReport}"><fmt:message key="menu.text.viewReport" /></a>
-                                <c:if test="%{@gov.hhs.fhh.web.Settings@isRiskCalculatorEnabled()}">
+                                <fhh:conditionalDRC>
                                     <a id="risk1" href="${risk}"><fmt:message key="menu.text.risk" /></a>
-                                </c:if>
+                                </fhh:conditionalDRC>
                             </div>
                             <script type="text/javascript">
                                setFocusById("addAnotherFamilyMember1");

@@ -33,6 +33,10 @@
 
         <db-upgrade.run.dir>${pom.basedir}/src/main/db/db-upgrade</db-upgrade.run.dir>
         <db-install.run.dir>${pom.basedir}/src/main/db/db-install</db-install.run.dir>
+
+        <mshv.service.endpoint.url>https://platform.healthvault-ppe.com/platform/wildcat.ashx</mshv.service.endpoint.url>
+        <mshv.keystore.filename>/Users/bpickeral/keystore-demo</mshv.keystore.filename>
+        <mshv.keystore.keyname>fhh</mshv.keystore.keyname>
     </properties>
 
     <build>

@@ -45,7 +45,7 @@ displayConfirm = function(message) {
             <s:url value="/home.action" includeParams="none" id="homeUrl" />
             <td class="mainNavTd">
                 <!-- Note: Any line breaks here will add spacers in the header -->
-                <a id="warnAndGoHome" href="${homeUrl}" onclick="javascript:return homeWarn('<%=gov.hhs.fhh.service.util.CurrentLanguageHolder.getCurrentLanguage()%>');"><fmt:message key="menu.text.home" /></a><a id="navFamilyHistory" href="${familyHistory}"><fmt:message key="menu.text.myHistory" /></a><a id="navReindex" href="${reindex}"><fmt:message key="menu.text.reindex" /></a><c:if test="%{@gov.hhs.fhh.web.Settings@isRiskCalculatorEnabled()}"><a id="navRisk" href="${risk}"><fmt:message key="menu.text.risk" /></a></c:if><a id="navViewDiagram" href="${viewReport}"><fmt:message key="menu.text.viewReport" /></a>
+                <a id="warnAndGoHome" href="${homeUrl}" onclick="javascript:return homeWarn('<%=gov.hhs.fhh.service.util.CurrentLanguageHolder.getCurrentLanguage()%>');"><fmt:message key="menu.text.home" /></a><a id="navFamilyHistory" href="${familyHistory}"><fmt:message key="menu.text.myHistory" /></a><a id="navReindex" href="${reindex}"><fmt:message key="menu.text.reindex" /></a><fhh:conditionalDRC><a id="navRisk" href="${risk}"><fmt:message key="menu.text.risk" /></a></fhh:conditionalDRC><a id="navViewDiagram" href="${viewReport}"><fmt:message key="menu.text.viewReport" /></a>
             </td>
 
             <s:url id="helpUrl" action="popup/getHelp/help" />
