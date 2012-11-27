@@ -245,7 +245,7 @@
         <dependency>
             <groupId>com.fiveamsolutions.hl7.messaging</groupId>
             <artifactId>hl7-service-client</artifactId>
-            <version>1.0.14</version>
+            <version>1.0.15</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
