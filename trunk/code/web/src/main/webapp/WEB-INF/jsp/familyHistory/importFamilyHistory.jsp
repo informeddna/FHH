@@ -8,16 +8,16 @@
             <fhh:statusMessages/>
             <div class="thumb"><img src="<s:url value="/images/ico_open_local.gif"/>" alt="<fmt:message key="importLocal.fromPc"/>" /></div>
             <div class="thumb_content">
-                <h2><fmt:message key="importLocal.fromPc"/></h2>    
+                <h2><fmt:message key="importLocal.fromPc"/></h2>
                 <p><fmt:message key="importLocal.fromPcDetail"/></p>
                 <p><fmt:message key="importLocal.fromPcInstruction"/></p>
                 <s:if test="fieldErrors['importedFile'] != null">
                         <span class="errorMessage">${fieldErrors['importedFile'][0]}</span>
                 </s:if>
-<s:form action="/popup/familyHistory/importXmlFile.action" 
+<s:form action="/popup/familyHistory/importXmlFile.action"
     enctype="multipart/form-data" method="post" id="importForm" theme="simple"
     onsubmit="$('importingFamilyHistoryLoading').show();$('importFamilyHistoryForm').hide(); return true;">
-                <label for="importedFile"><fmt:message key="importFamilyHistory.fileLocation"/></label><s:file key="importedFile" size="40" tabindex="1" required="true" />
+                <label for="importedFile"><fmt:message key="importFamilyHistory.fileLocation"/></label><s:file key="importedFile" size="40" tabindex="1" requiredLabel="true" />
                 <div class="buttonContainer">
                     <div class="btn_float_right"><a id="loadFromComputer" href="#" onclick="$('importingFamilyHistoryLoading').show(); $('importFamilyHistoryForm').hide(); return $('importForm').submit();"><fmt:message key="importLocal.fromPc"/></a></div>
                 </div>
@@ -29,7 +29,7 @@
                 <br />
 	            <div class="thumb"><a href="http://www.healthvault.com/personal" target="_new"><img src="<s:url value="/images/tile_HealthVaultBlue_h_rgb_147width.png"/>" alt="<fmt:message key="importLocal.fromMshv"/>" /></a></div>
 	            <div class="thumb_content">
-	                <h2><fmt:message key="importLocal.fromMshv"/></h2>   
+	                <h2><fmt:message key="importLocal.fromMshv"/></h2>
 	                <p><fmt:message key="importLocal.fromMshvDetail1"/></p>
 	                <p><fmt:message key="importLocal.fromMshvDetail2"/></p>
 	                <div class="hvButtonContainer">
