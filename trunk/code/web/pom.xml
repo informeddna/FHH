@@ -16,7 +16,7 @@
 		<defaultPageSize>20</defaultPageSize>
 		<jboss.home>target/jbossDeploy</jboss.home>
         <struts.devMode>false</struts.devMode>
-        <struts2.version>2.3.15.1</struts2.version>
+        <struts2.version>2.3.16.3</struts2.version>
         <drc.riskCalculator.enabled>false</drc.riskCalculator.enabled>
 	</properties>
 
